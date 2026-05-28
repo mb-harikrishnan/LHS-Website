@@ -1,17 +1,30 @@
 :root {
-    --g50: #f0fdf4;
-    --g100: #dcfce7;
-    --g200: #bbf7d0;
-    --g300: #86efac;
-    --g400: #4ade80;
-    --g500: #22c55e;
-    --g600: #16a34a;
-    --g700: #15803d;
-    --g800: #166534;
-    --g900: #14532d;
-    --e400: #34d399;
-    --e500: #10b981;
-    --e600: #059669;
+    /* Blue Shades */
+    --g50: #eff6ff;
+    --g100: #dbeafe;
+    --g200: #bfdbfe;
+    --g300: #93c5fd;
+    --g400: #60a5fa;
+    --g500: #3b82f6;
+    --g600: #2563eb;
+    --g700: #1d4ed8;
+    --g800: #1e3a8a;
+    --g900: #172554;
+
+    /* Sky Blue Accent */
+    --o100: #f0f9ff;
+    --o200: #bae6fd;
+    --o300: #7dd3fc;
+    --o400: #38bdf8;
+    --o500: #0ea5e9;
+    --o600: #0284c7;
+
+    /* Indigo */
+    --e400: #818cf8;
+    --e500: #6366f1;
+    --e600: #4f46e5;
+
+    /* Neutral */
     --white: #ffffff;
     --gray50: #f8fafc;
     --gray100: #f1f5f9;
@@ -23,12 +36,17 @@
     --gray700: #334155;
     --gray800: #1e293b;
     --gray900: #0f172a;
+
     --red: #ef4444;
     --amber: #f59e0b;
     --gold: #d4a017;
+
     --sidebar-w: 240px;
-    --card-shadow: 0 2px 16px rgba(22, 163, 74, 0.08), 0 1px 4px rgba(22, 163, 74, 0.05);
-    --card-border: 1px solid rgba(134, 239, 172, 0.3);
+
+    --card-shadow: 0 2px 16px rgba(37, 99, 235, 0.08),
+                   0 1px 4px rgba(37, 99, 235, 0.05);
+
+    --card-border: 1px solid rgba(59, 130, 246, 0.20);
 }
 
 *,
@@ -147,7 +165,7 @@ body {
     font-family: "Montserrat", sans-serif;
     font-size: 17px;
     color: var(--g900);
-    box-shadow: 0 4px 16px rgba(74, 222, 128, 0.4);
+    box-shadow: 0 4px 16px rgba(143, 74, 222, 0.4);
     flex-shrink: 0;
 }
 
@@ -974,7 +992,7 @@ body {
     width: 5px;
     height: 5px;
     border-radius: 50%;
-    background: #4ade80;
+    background: #21095e;
     animation: blink 1s infinite;
 }
 
@@ -1033,7 +1051,7 @@ body {
 .gauge-title {
     font-family: "Montserrat", sans-serif;
     font-size: 20px;
-    color: #298448;
+    color: #2f2984;
     font-weight: 600;
 }
 .income-pill {
@@ -1168,7 +1186,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
+    box-shadow: 0 4px 12px rgba(34, 9, 132, 0.25);
     flex-shrink: 0;
 }
 
@@ -1333,7 +1351,7 @@ body {
     align-items: center;
     justify-content: space-between;
     transition: all 0.2s;
-    border: 1px solid #2882445e;
+    border: 1px solid #2206755e;
     background: linear-gradient(135deg, var(--g800) 0%, var(--g600) 100%) !important;
 }
 
@@ -1344,7 +1362,7 @@ body {
 
 .earn-stat-label {
     font-size: 17px;
-    color: #80ffb8;
+    color: #14187c;
     font-weight: 600;
     letter-spacing: 0.3px;
     margin-bottom: 3px;
@@ -1502,7 +1520,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border-bottom: 1px solid var(--g100);
-    background: #168e42;
+    background: #3410a1;
 }
 
 .tx-row {
@@ -1640,4 +1658,24 @@ body {
     .content{
         padding: 24px 15px;
     }
+}
+
+.sidebar {
+    background: linear-gradient(170deg, var(--g900) 0%, var(--g800) 40%, var(--e600) 100%);
+}
+
+.deposit-banner {
+    background: linear-gradient(135deg, var(--g700), var(--e600));
+}
+
+.share-card {
+    background: linear-gradient(160deg, var(--g700) 0%, var(--e600) 100%);
+}
+
+.earn-stat {
+    background: linear-gradient(135deg, var(--g800) 0%, var(--g600) 100%) !important;
+}
+
+.tx-cols {
+    background: var(--g700);
 }

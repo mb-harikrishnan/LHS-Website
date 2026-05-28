@@ -698,7 +698,7 @@
 
         <!-- Logo -->
         <div class="logo-wrap">
-            <img src="<?php echo base_url(); ?>/little_heart_admin/assets/images/school_logo.png" alt="School Logo">
+            <img src="<?php echo base_url(); ?>/assets/images/school_logo.png" alt="School Logo">
         </div>
 
         <form method="post" action="<?php echo base_url('login_check'); ?>">

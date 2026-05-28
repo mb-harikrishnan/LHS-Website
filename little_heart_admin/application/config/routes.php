@@ -53,11 +53,21 @@ $route['default_controller'] = 'welcome';
 $route['login_check'] = 'welcome/login_check';
 $route['check_username'] = 'welcome/check_username';
 
+
+// /////////////   HOME PAGE   //////////////////
+
+$route['dashboard']   = 'HomepageController/dashboard';
+
+
+/////////////    document controller //////////////////////////
+
+$route['general_information']   = 'DocumentController/general_information';
+$route['delete_general_information']   = 'DocumentController/delete_general_information';
+$route['upload_document']   = 'DocumentController/upload_document';
+$route['add_document']   = 'DocumentController/add_document';
+
+
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
-//paranaari abhi 
 
-
-// ok da
-//test
-//test 3
