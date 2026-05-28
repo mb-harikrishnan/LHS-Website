@@ -56,3 +56,6 @@ $route['check_username'] = 'welcome/check_username';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 //paranaari abhi 
+
+
+// ok da
