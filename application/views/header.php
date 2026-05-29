@@ -86,17 +86,19 @@
 <style>
 /* =========================
    COMPACT HEADER FIX
-========================= *//* ONLY COLOR CHANGE FOR HEADER */
+========================= */
+
+/* ONLY COLOR CHANGE FOR HEADER */
 
 /* HEADER BACKGROUND */
 .navbar{
-    background:linear-gradient(135deg,#fff8f2,#fff1e3) !important;
-    box-shadow:0 4px 18px rgba(255,136,0,0.08);
+    background:linear-gradient(135deg,#f0fdfa,#e6fffb) !important;
+    box-shadow:0 4px 18px rgba(15,118,110,0.08);
 }
 
 /* SCHOOL NAME */
 .school-name{
-    color:#ff8a00 !important;
+    color:#0f766e !important;
 }
 
 /* MENU LINKS */
@@ -107,36 +109,36 @@
 /* MENU HOVER */
 .navbar-nav > li > a:hover,
 .navbar-nav > .active > a{
-    color:#ff8a00 !important;
+    color:#0f766e !important;
     background:none !important;
 }
 
 /* DROPDOWN */
 .dropdown-menu{
-    background:#fffdfb !important;
+    background:#f8fffe !important;
 }
 
 /* DROPDOWN HOVER */
 .dropdown-menu li a:hover{
-    background:#fff3e6 !important;
-    color:#ff8a00 !important;
+    background:#e6fffb !important;
+    color:#0f766e !important;
 }
 
 /* MOBILE MENU BUTTON */
 .navbar-toggle{
-    background:#fff3e6 !important;
+    background:#e6fffb !important;
 }
 
 .navbar-toggle i{
-    color:#ff8a00 !important;
+    color:#0f766e !important;
 }
 
 /* NAVBAR */
 .navbar{
     min-height:62px !important;
-    background:#fffdfb !important;
+    background:#f8fffe !important;
     border:none !important;
-    box-shadow:0 4px 18px rgba(255,136,0,0.08);
+    box-shadow:0 4px 18px rgba(15,118,110,0.08);
 }
 
 /* CONTAINER */
@@ -168,7 +170,7 @@
 .school-name{
     font-size:15px;
     font-weight:700;
-    color:#ff8a00 !important;
+    color:#0f766e !important;
     white-space:nowrap;
     line-height:1;
     margin:0;
@@ -202,7 +204,7 @@
 /* HOVER */
 .navbar-nav > li > a:hover,
 .navbar-nav > .active > a{
-    color:#ff8a00 !important;
+    color:#0f766e !important;
     background:none !important;
 }
 
@@ -223,20 +225,20 @@
 }
 
 .dropdown-menu li a:hover{
-    background:#fff3e6 !important;
-    color:#ff8a00 !important;
+    background:#e6fffb !important;
+    color:#0f766e !important;
 }
 
 /* MOBILE BUTTON */
 .navbar-toggle{
     margin-top:12px;
     border:none !important;
-    background:#fff3e6 !important;
+    background:#e6fffb !important;
     border-radius:8px;
 }
 
 .navbar-toggle i{
-    color:#ff8a00;
+    color:#0f766e;
 }
 
 /* MOBILE */
@@ -285,7 +287,7 @@
     .dropdown-menu{
         box-shadow:none;
         border-radius:0 !important;
-        background:#fff8f2;
+        background:#f0fdfa;
     }
 
     .dropdown-menu li a{

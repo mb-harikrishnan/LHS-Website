@@ -58,18 +58,20 @@
         <!-- LAYER NR. 1 -->
         <div class="tp-caption tp-resizeme" 							
         data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
-        data-y="['326','270','270','150']" data-voffset="['0','0','0','0']"						
+        data-y="['180','170','160','100']" data-voffset="['0','0','0','0']"						
         data-responsive_offset="on"
         data-visibility="['on','on','on','on']"
         data-transform_idle="o:1;"
         data-transform_in="z:0;rX:0;rY:0;rZ:0;sX:0.9;sY:0.9;skX:0;skY:0;opacity:0;s:1500;e:Power3.easeInOut;" 
         data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;" 
         data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;"							 
-        data-start="800"><h1 style="color:#ff6600;">Empowering Young Minds for a Bright Future</h1>
+        data-start="800"><h1 class="hero-title">
+    Empowering Young Minds for a Bright Future
+</h1>
         </div>
         <div class="tp-caption tp-resizeme" 							
         data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
-        data-y="['380','340','300','350']" data-voffset="['0','0','0','0']"
+        data-y="['250','220','210','170']" data-voffset="['0','0','0','0']"
         data-responsive_offset="on"
         data-visibility="['on','on','off','off']"
         data-transform_idle="o:1;"
@@ -81,7 +83,7 @@
         </div>
         <div class="tp-caption  tp-resizeme" 							
         data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
-        data-y="['450','390','350','250']" data-voffset="['0','0','0','0']"							
+        data-y="['250','200','260','120']" data-voffset="['0','0','0','0']"							
         data-responsive_offset="on"
         data-visibility="['on','on','on','on']"
         data-transform_idle="o:1;"
@@ -137,34 +139,6 @@
                 Our vision of education consists in "the formation of the human being for the fulfillment of his individual and social responsibilities". We aim at moulding leaders "Who will champion the cause of justice, love, truth and peace and who are ever open to further growth. Education for complete living has been and will be the watchword of all our Educational projects and programmes.
             </p>
 
-            <!-- BOXES -->
-            <div class="row mt-5 g-4">
-
-                <div class="col-md-6">
-                    <div class="about-post">
-
-                        <a href="<?php echo base_url('rules_and_regulations'); ?>">
-                            <img src="<?php echo base_url(); ?>assets/images/hands.png" alt="">
-                        </a>
-
-                        <h4>Our Rules and Regulations</h4>
-
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="about-post">
-
-                        <a href="<?php echo base_url('gallery'); ?>">
-                            <img src="<?php echo base_url(); ?>assets/images/awesome.png" alt="">
-                        </a>
-
-                        <h4>Happy Students</h4>
-
-                    </div>
-                </div>
-
-            </div>
 
         </div>
 
@@ -928,69 +902,119 @@
 /**container foe welcome about */
 /**container foe key feature about */
 /* SECTION */
+/* ================================
+   FEATURE SECTION
+================================ */
+
 .feature-section{
     padding:90px 0;
-    background:#f7f8fc;
+    background:
+    linear-gradient(
+        135deg,
+        #f4fffd,
+        #ffffff
+    );
     overflow:hidden;
 }
 
-/* BOX STYLE */
+/* FEATURE BOX */
 .feature-box{
     position:relative;
-    background:#ffffff;
-    border-radius:35px;
-    padding: 30px 25px;
+
+    background:rgba(255,255,255,0.55);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+
+    border:1px solid rgba(255,255,255,0.35);
+
+    border-radius:32px;
+
+    padding:40px 30px;
+
     margin-bottom:35px;
-    min-height:400px;  
+
+    min-height:380px;
+
     overflow:hidden;
+
     transition:0.4s ease;
-    border:1px solid #edf0f7;
-    box-shadow:0 10px 30px rgba(0,0,0,0.05);
+
+    box-shadow:
+    0 10px 30px rgba(15,118,110,0.10);
 }
 
-/* TOP CURVE SHAPE */
-.feature-box:before{
+/* TOP GLASS SHAPE */
+.feature-box::before{
     content:"";
     position:absolute;
-    top:0;
-    right:0;
-    width:140px;
-    height:140px;
-    background:linear-gradient(135deg,#ff4d6d,#ff9f43);
-    opacity:0.08;
-    border-radius:0 0 0 100%;
+
+    top:-60px;
+    right:-60px;
+
+    width:180px;
+    height:180px;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(15,118,110,0.18),
+        rgba(20,184,166,0.08)
+    );
+
+    border-radius:50%;
 }
 
-/* SIDE NUMBER */
+/* BIG NUMBER */
 .feature-number{
     position:absolute;
     top:18px;
-    right:25px;
+    right:22px;
+
     font-size:70px;
     font-weight:800;
-    color:rgba(0,0,0,0.04);
+
+    color:rgba(15,118,110,0.08);
+
     line-height:1;
 }
 
 /* HOVER */
 .feature-box:hover{
     transform:translateY(-10px);
-    box-shadow:0 20px 40px rgba(0,0,0,0.10);
+
+    box-shadow:
+    0 20px 40px rgba(15,118,110,0.18);
 }
 
 /* ICON */
 .feature-icon{
-    width:80px;
-    height:80px;
-    line-height:80px;
-    border-radius:25px;
-    background:linear-gradient(135deg,#ff4d6d,#ff9f43);
+    width:82px;
+    height:82px;
+
+    border-radius:24px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #0f766e,
+        #14b8a6
+    );
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
     color:#fff;
     font-size:30px;
-    text-align:center;
+
     margin-bottom:25px;
-    transform:rotate(-8deg);
-    transition:0.4s;
+
+    transform:rotate(-6deg);
+
+    transition:0.4s ease;
+
+    box-shadow:
+    0 10px 25px rgba(15,118,110,0.22);
 }
 
 .feature-box:hover .feature-icon{
@@ -1001,20 +1025,25 @@
 .feature-box h4{
     font-size:24px;
     font-weight:700;
-    color:#1c1c1c;
+
+    color:#0f766e;
+
     margin-bottom:18px;
-    line-height:1.4;
+
+    line-height:1.5;
 }
 
 /* CONTENT */
 .feature-box p{
     font-size:15px;
-    line-height:1.9;
-    color:#6d7485;
+    line-height:1.8;
+
+    color:#5b6770;
+
     margin:0;
 }
 
-/* GAP */
+/* ROW GAP */
 .feature-row{
     row-gap:25px;
 }
@@ -1023,7 +1052,8 @@
 @media(max-width:768px){
 
     .feature-box{
-        padding:35px 25px;
+        padding:35px 24px;
+        min-height:auto;
     }
 
     .feature-box h4{
@@ -1031,11 +1061,9 @@
     }
 
     .feature-number{
-        font-size:55px;
+        font-size:52px;
     }
-
 }
-
 /**container foe key feature about */
 
 
@@ -1142,19 +1170,7 @@
 }
 
 /* Button */
-.btn_common.blue {
-    background: linear-gradient(135deg, #ff8a00, #ffb347);
-    border: none;
-    color: #fff !important;
-    padding: 12px 28px;
-    border-radius: 50px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    transition: all 0.4s ease;
-    display: inline-block;
-    text-decoration: none;
-    box-shadow: 0 6px 18px rgba(255, 138, 0, 0.25);
-}
+
 
 .btn_common.blue:hover {
     background: linear-gradient(135deg, #ff7b00, #ff9800);
@@ -1877,6 +1893,395 @@
     }
 }
 /**importend details */
+
+
+/* ================================
+   GLOBAL GLASSY THEME COLORS
+================================ */
+:root{
+    --primary:#0f766e;
+    --primary-light:#14b8a6;
+    --white-glass:rgba(255,255,255,0.55);
+    --border-glass:rgba(255,255,255,0.35);
+    --shadow:0 8px 32px rgba(15,118,110,0.12);
+}
+
+/* ================================
+   SECTION BACKGROUND
+================================ */
+#courses,
+#reviews,
+#pricing,
+#news,
+.feature-section,
+.learning-section{
+    background:
+    linear-gradient(
+        135deg,
+        rgba(240,255,252,0.95),
+        rgba(255,255,255,0.98)
+    );
+}
+
+/* ================================
+   GLASS EFFECT COMMON CARD
+================================ */
+.feature-box,
+.about-post,
+#course_slider .item,
+#review_slider .item,
+.pricing_item,
+.content_wrap,
+.stat-card{
+    background:var(--white-glass);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    border:1px solid var(--border-glass);
+
+    box-shadow:var(--shadow);
+
+    transition:0.4s ease;
+}
+
+/* Hover */
+.feature-box:hover,
+.about-post:hover,
+#course_slider .item:hover,
+#review_slider .item:hover,
+.pricing_item:hover,
+.content_wrap:hover,
+.stat-card:hover{
+    transform:translateY(-8px);
+    box-shadow:
+    0 18px 40px rgba(15,118,110,0.18);
+}
+
+/* ================================
+   HEADINGS
+================================ */
+.heading,
+.section-title h2,
+.school-about-section h2,
+.feature-box h4,
+.about-post h4,
+#course_slider h3 a,
+.news_box h4 a,
+.pricing_item h3,
+#review_slider h4{
+    color:#0f766e !important;
+}
+
+/* ================================
+   DIVIDERS
+================================ */
+.divider-left,
+.divider-center{
+    background:
+    linear-gradient(
+        to right,
+        #0f766e,
+        #14b8a6
+    ) !important;
+}
+
+/* ================================
+   ICONS
+================================ */
+.feature-icon,
+.icon-box{
+    background:
+    linear-gradient(
+        135deg,
+        #0f766e,
+        #14b8a6
+    );
+
+    box-shadow:
+    0 10px 25px rgba(15,118,110,0.25);
+}
+
+/* ================================
+   BUTTONS
+================================ */
+.btn_common,
+.btn_common.blue,
+.news_box .readmore{
+    background:
+    linear-gradient(
+        135deg,
+        #0f766e,
+        #14b8a6
+    ) !important;
+
+    color:#fff !important;
+
+    border:none;
+
+    box-shadow:
+    0 10px 25px rgba(15,118,110,0.22);
+}
+
+.btn_common:hover,
+.btn_common.blue:hover,
+.news_box .readmore:hover{
+    background:
+    linear-gradient(
+        135deg,
+        #115e59,
+        #0f766e
+    ) !important;
+
+    box-shadow:
+    0 15px 30px rgba(15,118,110,0.30);
+}
+
+/* ================================
+   IMAGE OVERLAY
+================================ */
+#course_slider .image::after,
+.content_wrap .image::after{
+    background:
+    linear-gradient(
+        to top,
+        rgba(15,118,110,0.18),
+        rgba(255,255,255,0.05)
+    );
+}
+
+/* ================================
+   DOTS
+================================ */
+.owl-dot span{
+    background:#99f6e4 !important;
+}
+
+.owl-dot.active span{
+    background:#0f766e !important;
+}
+
+/* ================================
+   NAV BUTTONS
+================================ */
+.owl-nav button{
+    color:#0f766e !important;
+    background:rgba(255,255,255,0.8) !important;
+
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+
+    border:1px solid rgba(15,118,110,0.1);
+}
+
+.owl-nav button:hover{
+    background:#0f766e !important;
+    color:#fff !important;
+}
+
+/* ================================
+   FEATURE BOX TOP SHAPES
+================================ */
+.feature-box:before,
+.about-post:before{
+    background:
+    linear-gradient(
+        135deg,
+        #0f766e,
+        #14b8a6
+    );
+
+    opacity:0.08;
+}
+
+/* ================================
+   NEWS ALERT
+================================ */
+.blink_text{
+    color:#0f766e;
+    text-shadow:0 0 8px rgba(15,118,110,0.4);
+}
+
+/* ================================
+   PRICE / IMPORTANT TEXT
+================================ */
+.pricing_sentence{
+    background:rgba(15,118,110,0.08);
+
+    border:1px dashed rgba(15,118,110,0.25);
+
+    color:#0f766e;
+}
+
+/* ================================
+   CLIENT IMAGE BORDER
+================================ */
+.client_pic{
+    border:5px solid rgba(15,118,110,0.12);
+}
+
+/* ================================
+   GLASSY HEADER EFFECT OPTIONAL
+================================ */
+.glass-effect{
+    background:rgba(255,255,255,0.45);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,0.25);
+
+    box-shadow:
+    0 8px 32px rgba(15,118,110,0.10);
+
+    border-radius:24px;
+}
+
+
+
+/* slider */
+.hero-title{
+    display:inline-block;
+
+    padding:18px 18px;
+
+    border-radius:24px;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(255,255,255,0.55),
+        rgba(255,255,255,0.25)
+    );
+
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+
+    border:1px solid rgba(255,255,255,0.35);
+
+    box-shadow:
+    0 10px 35px rgba(15,118,110,0.15);
+
+    color:#0f766e;
+
+    font-size:48px;
+    font-weight:800;
+
+    line-height:1.3;
+
+    letter-spacing:0.5px;
+
+    position:relative;
+
+    overflow:hidden;
+
+    transition:0.4s ease;
+}
+
+/* Glow Shape */
+.hero-title::before{
+    content:"";
+
+    position:absolute;
+
+    top:-40px;
+    right:-40px;
+
+    width:140px;
+    height:140px;
+
+    background:
+    radial-gradient(
+        rgba(20,184,166,0.25),
+        transparent
+    );
+
+    border-radius:50%;
+}
+
+/* Hover */
+.hero-title:hover{
+    transform:translateY(-5px);
+
+    box-shadow:
+    0 18px 45px rgba(15,118,110,0.22);
+}
+
+/* Mobile */
+@media(max-width:768px){
+
+    .hero-title{
+        font-size:30px;
+
+        padding:18px 22px;
+
+        border-radius:18px;
+    }
+}
+
+/* ====================================
+   FIX SLIDER HEIGHT EXACTLY 350px
+==================================== */
+
+/* MAIN SLIDER */
+.rev_slider_wrapper,
+#rev_slider,
+.rev_slider,
+.rev_slider ul,
+.rev_slider ul li,
+.tp-bgimg,
+.rev-slidebg {
+    height: 350px !important;
+    min-height: 350px !important;
+    max-height: 350px !important;
+}
+
+/* IMAGE FIT */
+.rev-slidebg,
+.tp-bgimg {
+    width: 100% !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+}
+
+/* REMOVE EXTRA SPACE */
+.rev_slider_wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+.rev_slider {
+    margin-bottom: 0 !important;
+}
+
+/* REMOVE GAP BELOW SLIDER */
+.rev_slider_wrapper + section,
+.rev_slider_wrapper + div {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* ABOUT SECTION */
+#about{
+    margin-top: 0 !important;
+    padding-top: 50px !important;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+
+    .rev_slider_wrapper,
+    #rev_slider,
+    .rev_slider,
+    .rev_slider ul,
+    .rev_slider ul li,
+    .tp-bgimg,
+    .rev-slidebg {
+        height: 350px !important;
+        min-height: 350px !important;
+    }
+}
+
+
 
 
 
