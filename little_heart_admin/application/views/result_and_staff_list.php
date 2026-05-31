@@ -338,97 +338,72 @@
                             <polyline points="10 9 9 9 8 9"></polyline>
                         </svg>
                     </div>
-                    <div class="card-title-creative">Add New Document</div>
+                    <div class="card-title-creative">General Information List</div>
 
-                   <a href="<?php echo base_url('general_information'); ?>" class="upload-btn">
-                        <i class="fa fa-upload"></i> Document List
+                   <a href="<?php echo base_url('upload_document_details'); ?>" class="upload-btn">
+                        <i class="fa fa-upload"></i> Upload Document
                     </a>
     
                 </div>
 
                 <div class="table-responsive-wrapper">
+                    <form method="post" action="<?php echo base_url('result_and_staff_list'); ?>">
 
-                    <form method="post" enctype="multipart/form-data"  action="<?php echo base_url('add_document'); ?>">
 
-                        <div class="upload-form-grid">
-
-                            <!-- Document Type -->
-                            <div class="form-group-modern">
-                                <label>Select Document Type</label>
-
-                                <select name="document_type" class="modern-select" required>
-                                    <option value="">Choose Document Type</option>
-                                     <option value="general_information">General Information</option>
-                                    <option value="copy_of_affiliation">Copies of Affiliation</option>
-                                    <option value="copy_of_societies">Copies of Societies</option>
-                                    <option value="NOC">NOC</option>
-                                    <option value="copy_of_recognition">Copies of Recognition</option>
-                                    <option value="copy_of_safty">Building Safety Certificate</option>
-                                    <option value="copy_of_fire_and_safety">Fire Safety Certificate</option>
-                                    <option value="DEO">DEO Certificate</option>
-                                    <option value="sanitation">Water, Health and Sanitation Certificates</option>
-                                    <option value="land">Certificate of Land</option>
+                        <div class="date-filter-box">
+                        
+                            <div class="filter-group">
+                                <label>Status</label>
+                                <select id="statusFilter" class="filter-input" name="type">
+                                    <option value="">All</option>
+                                    <option value="fee_structure"  <?php if($this->input->post('type') == 'fee_structure'){ echo 'selected'; } ?>>Fee Structure</option>
+                                    <option value="anual_academic_calendar" <?php if($this->input->post('type') == 'anual_academic_calendar'){ echo 'selected'; } ?>>Annual Academic Calendar</option>
+                                    <option value="school_managment_comitte" <?php if($this->input->post('type') == 'school_managment_comitte'){ echo 'selected'; } ?>>School Management Committee</option>
+                                    <option value="pta_members" <?php if($this->input->post('type') == 'pta_members'){ echo 'selected'; } ?>>PTA Members</option>
+                                    <option value="3_yers_board_exam" <?php if($this->input->post('type') == '3_yers_board_exam'){ echo 'selected'; } ?>>3 Years Board Exam</option>
+                                    <option value="staff_details" <?php if($this->input->post('type') == 'staff_details'){ echo 'selected'; } ?>>Staff Details</option>
                                 </select>
                             </div>
 
+                            <div class="filter-actions">
+                                <button type="submit" class="btn-filter">Filter</button>
+                            </div>
                         
 
+                        
                         </div>
-
-                        <!-- Upload Area -->
-                        <div class="form-group-modern" style="margin-top:25px;">
-
-                            <label>Upload PDF Document</label>
-
-                            <div class="upload-box">
-
-                                <input type="file" 
-                                    name="document_file" 
-                                    id="documentFile"
-                                    accept=".pdf"
-                                    required>
-
-                                <div class="upload-icon">
-                                    <i class="fa fa-cloud-upload"></i>
-                                </div>
-
-                                <div class="upload-title">
-                                    Drag & Drop PDF Here
-                                </div>
-
-                                <div class="upload-sub">
-                                    or click to browse file
-                                </div>
-
-                                <!-- Preview INSIDE Upload Box -->
-                                <div class="file-preview" id="filePreview">
-
-                                    <div class="preview-icon">
-                                        <i class="fa fa-file-pdf-o"></i>
-                                    </div>
-
-                                    <div class="preview-details">
-                                        <div class="preview-name" id="fileName"></div>
-                                        <div class="preview-size" id="fileSize"></div>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                           
-                        </div>
-
-                        <!-- Submit -->
-                        <button type="submit" class="submit-btn-modern">
-                            <i class="fa fa-save"></i> Upload Document
-                        </button>
 
                     </form>
-
-
-
-            
+                    <table id="incomeTable" class="display responsive nowrap creative-table" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>#SL</th>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Information pdf</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php 
+                            $count = 1;
+                            foreach ($information as $row){   ?>
+                            <tr>
+                                <td><?php echo $count; ?></td>
+                                <td><?php echo $row->d_date; ?></td>
+                                <td><?php echo $row->c_type; ?></td>
+                                <td><?php echo $row->c_document; ?></td>
+                                <td>
+                                   <button class="btn btn-danger deleteBtn" 
+                                                data-id="<?php echo $row->n_slno; ?>">
+                                            <i class="fa fa-trash"></i> Delete
+                                        </button>
+                                    </td>
+                            </tr>
+                            <?php $count++; } ?>
+                        </tbody>
+                    </table>
+         
                
                 </div>
             </div>
@@ -460,174 +435,41 @@
     color:#fff;
     text-decoration:none;
     background:linear-gradient(135deg,var(--g700),var(--g900));
+
+
 }
 
 
-/*  */
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 14px rgba(239, 68, 68, 0.25);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
 
+.btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 18px rgba(239, 68, 68, 0.35);
+}
 
- .document-form-wrapper {
-        padding: 30px;
-        background: linear-gradient(135deg, #f8fff8, #eefbf2);
-        border-radius: 24px;
-    }
+.btn-danger:active {
+    transform: scale(0.97);
+}
 
-    .upload-form-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 25px;
-        margin-top: 25px;
-    }
-
-    .form-group-modern {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .form-group-modern label {
-        font-size: 15px;
-        font-weight: 700;
-        color: #1d3b2f;
-    }
-
-    .modern-select,
-    .modern-input {
-        height: 52px;
-        border: 1px solid #d8e7dd;
-        border-radius: 14px;
-        padding: 0 16px;
-        font-size: 15px;
-        background: #fff;
-        transition: 0.3s ease;
-        outline: none;
-    }
-
-    .modern-select:focus,
-    .modern-input:focus {
-        border-color: #38b000;
-        box-shadow: 0 0 0 4px rgba(56, 176, 0, 0.12);
-    }
-
-    /* Upload Box */
-    .upload-box {
-        position: relative;
-        border: 2px dashed #9ad7a4;
-        border-radius: 22px;
-        background: #ffffff;
-        padding: 25px 20px;
-        text-align: center;
-        transition: 0.3s ease;
-        cursor: pointer;
-        overflow: hidden;
-    }
-
-    .upload-box:hover {
-        border-color: #38b000;
-        background: #f6fff6;
-        transform: translateY(-2px);
-    }
-
-    .upload-box input[type="file"] {
-        position: absolute;
-        inset: 0;
-        opacity: 0;
-        cursor: pointer;
-    }
-
-    .upload-icon {
-        width: 70px;
-        height: 70px;
-        background: linear-gradient(135deg, #38b000, #70e000);
-        margin: auto;
-        border-radius: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 28px;
-        margin-bottom: 18px;
-        box-shadow: 0 12px 25px rgba(56, 176, 0, 0.2);
-    }
-
-    .upload-title {
-        font-size: 17px;
-        font-weight: 700;
-        color: #173524;
-    }
-
-    .upload-sub {
-        margin-top: 6px;
-        color: #6b7280;
-        font-size: 14px;
-    }
-
-    /* Preview */
-    .file-preview {
-        margin-top: 20px;
-        display: none;
-        align-items: center;
-        gap: 14px;
-        background: #fff;
-        border: 1px solid #e3efe7;
-        padding: 14px;
-        border-radius: 16px;
-    }
-
-    .preview-icon {
-        width: 55px;
-        height: 55px;
-        border-radius: 14px;
-        background: #ff4d4f;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
-    }
-
-    .preview-details {
-        flex: 1;
-    }
-
-    .preview-name {
-        font-weight: 700;
-        color: #1e293b;
-        font-size: 15px;
-    }
-
-    .preview-size {
-        font-size: 13px;
-        color: #64748b;
-        margin-top: 3px;
-    }
-
-    /* Button */
-    .submit-btn-modern {
-        margin-top: 30px;
-        border: none;
-        background: linear-gradient(135deg, #38b000, #008000);
-        color: white;
-        padding: 14px 34px;
-        border-radius: 14px;
-        font-size: 16px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: 0.3s ease;
-        box-shadow: 0 10px 20px rgba(56, 176, 0, 0.2);
-    }
-
-    .submit-btn-modern:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 14px 24px rgba(56, 176, 0, 0.28);
-    }
-
-    @media(max-width:768px){
-        .document-form-wrapper{
-            padding:20px;
-        }
-    }
-
+.btn-danger:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
+}
 </style>
 
 
@@ -639,46 +481,95 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-<?php if($this->session->flashdata('success')){ ?>
+    <script>
+        $(document).ready(function() {
+            var table = $('#incomeTable').DataTable({
+                responsive: true,
+                "pageLength": 10,
+                "language": {
+                    "search": "",
+                    "searchPlaceholder": "Search records...",
+                    "lengthMenu": "_MENU_ entries",
+                    "paginate": {
+                        "previous": '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>',
+                        "next": '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>'
+                    }
+                },
+                "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+                // "order": [[1, "desc"]]
+            });
+
+            // Adjust table on sidebar toggle if necessary
+            $(window).on('resize', function() {
+                table.columns.adjust();
+            });
+        });
+    </script>
+
+
 <script>
-Swal.fire({
-    icon: 'success',
-    title: 'Success',
-    text: '<?php echo $this->session->flashdata("success"); ?>',
-    confirmButtonColor: '#16a34a',
-    timer: 2500,
-    showConfirmButton: false
-});
-</script>
-<?php } ?>
 
-<?php if($this->session->flashdata('error')){ ?>
-<script>
-Swal.fire({
-    icon: 'error',
-    title: 'Error',
-    text: '<?php echo $this->session->flashdata("error"); ?>',
-    confirmButtonColor: '#dc2626'
-});
-</script>
-<?php } ?>
+$(document).on('click', '.deleteBtn', function () {
 
+    var id = $(this).data('id');
+    var row = $(this).closest('tr');
 
-<script>
-    document.getElementById('documentFile').addEventListener('change', function () {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to delete this record!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, Delete'
+    }).then((result) => {
 
-        const file = this.files[0];
+        if (result.isConfirmed) {
 
-        if (file) {
+            $.ajax({
+                url: "<?php echo base_url('delete_details'); ?>",
+                type: "POST",
+                data: {id:id},
 
-            document.getElementById('filePreview').style.display = 'flex';
+                success: function (response) {
 
-            document.getElementById('fileName').innerText = file.name;
+                    if(response == 1)
+                    {
+                        row.fadeOut(500);
 
-            let size = (file.size / 1024 / 1024).toFixed(2);
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Deleted Successfully',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }
+                    else
+                    {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Delete Failed',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }
 
-            document.getElementById('fileSize').innerText = size + ' MB';
+                }
+
+            });
 
         }
+
     });
+
+});
+
 </script>
+
+
+
+

@@ -41,6 +41,45 @@ class Document_model extends CI_Model
 
 
 
+    // ////
+
+    public function fetch_result_and_staff_list($type)
+    {
+
+       $qry = '';
+
+        if($type != '')
+        {
+            $qry .= " AND c_type = '$type' ";
+        }
+
+      $sql = "SELECT * FROM result_and_staff_list WHERE c_status ='Y' $qry  ";
+       $query = $this->db->query($sql);
+       $result = $query->result();
+
+       return $result;
+
+        
+    }
+
+
+    public function delete_details($id)
+    {
+        $this->db->where('n_slno', $id);
+
+        return $this->db->update('result_and_staff_list', array(
+            'c_status' => 'D'
+        ));
+    }
+
+
+    public function insert_document_details($data)
+    {
+        return $this->db->insert('result_and_staff_list', $data);
+    }
+
+
+
  
 
 

@@ -358,16 +358,12 @@
 
                                 <select name="document_type" class="modern-select" required>
                                     <option value="">Choose Document Type</option>
-                                     <option value="general_information">General Information</option>
-                                    <option value="copy_of_affiliation">Copies of Affiliation</option>
-                                    <option value="copy_of_societies">Copies of Societies</option>
-                                    <option value="NOC">NOC</option>
-                                    <option value="copy_of_recognition">Copies of Recognition</option>
-                                    <option value="copy_of_safty">Building Safety Certificate</option>
-                                    <option value="copy_of_fire_and_safety">Fire Safety Certificate</option>
-                                    <option value="DEO">DEO Certificate</option>
-                                    <option value="sanitation">Water, Health and Sanitation Certificates</option>
-                                    <option value="land">Certificate of Land</option>
+                                      <option value="fee_structure">Fee Structure</option>
+                                    <option value="anual_academic_calendar">Annual Academic Calendar</option>
+                                    <option value="school_managment_comitte">School Management Committee</option>
+                                    <option value="pta_members">PTA Members</option>
+                                    <option value="3_yers_board_exam">3 Years Board Exam</option>
+                                    <option value="staff_details">Staff Details</option>
                                 </select>
                             </div>
 
