@@ -79,6 +79,43 @@ class Document_model extends CI_Model
     }
 
 
+    /////
+    public function fetch_infrastructure_videos($type)
+    {
+
+       $qry = '';
+
+        if($type != '')
+        {
+            $qry .= " AND c_type = '$type' ";
+        }
+
+      $sql = "SELECT * FROM infrastructure_videos WHERE c_status ='Y' $qry  ";
+       $query = $this->db->query($sql);
+       $result = $query->result();
+
+       return $result;
+
+        
+    }
+
+
+    public function delete_videos($id)
+    {
+        $this->db->where('n_slno', $id);
+
+        return $this->db->update('infrastructure_videos', array(
+            'c_status' => 'D'
+        ));
+    }
+
+
+    public function insert_infrastructure_videos($data)
+    {
+        return $this->db->insert('infrastructure_videos', $data);
+    }
+
+
 
  
 

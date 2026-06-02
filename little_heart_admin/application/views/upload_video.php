@@ -338,17 +338,17 @@
                             <polyline points="10 9 9 9 8 9"></polyline>
                         </svg>
                     </div>
-                    <div class="card-title-creative">Add New Document</div>
+                    <div class="card-title-creative">Add New Video</div>
 
-                   <a href="<?php echo base_url('Result_and_Staff'); ?>" class="upload-btn">
-                        <i class="fa fa-upload"></i> Document List
+                   <a href="<?php echo base_url('infrastructure'); ?>" class="upload-btn">
+                        <i class="fa fa-upload"></i> Video List
                     </a>
     
                 </div>
 
                 <div class="table-responsive-wrapper">
 
-                    <form method="post" enctype="multipart/form-data"  action="<?php echo base_url('add_document_details'); ?>">
+                    <form method="post" enctype="multipart/form-data"  action="<?php echo base_url('add_video'); ?>">
 
                         <div class="upload-form-grid">
 
@@ -358,12 +358,8 @@
 
                                 <select name="document_type" class="modern-select" required>
                                     <option value="">Choose Document Type</option>
-                                      <option value="fee_structure">Fee Structure</option>
-                                    <option value="anual_academic_calendar">Annual Academic Calendar</option>
-                                    <option value="school_managment_comitte">School Management Committee</option>
-                                    <option value="pta_members">PTA Members</option>
-                                    <option value="3_yers_board_exam">3 Years Board Exam</option>
-                                    <option value="staff_details">Staff Details</option>
+                                      <option value="infrastructure">Infrastructure</option>
+                                 
                                 </select>
                             </div>
 
@@ -374,14 +370,14 @@
                         <!-- Upload Area -->
                         <div class="form-group-modern" style="margin-top:25px;">
 
-                            <label>Upload PDF Document</label>
+                            <label>Upload Video</label>
 
                             <div class="upload-box">
 
                                 <input type="file" 
                                     name="document_file" 
                                     id="documentFile"
-                                    accept=".pdf"
+                                    accept=".mp4, .avi, .mov, .wmv, .flv, .mkv"
                                     required>
 
                                 <div class="upload-icon">
@@ -389,7 +385,7 @@
                                 </div>
 
                                 <div class="upload-title">
-                                    Drag & Drop PDF Here
+                                    Drag & Drop video Here
                                 </div>
 
                                 <div class="upload-sub">
@@ -400,7 +396,7 @@
                                 <div class="file-preview" id="filePreview">
 
                                     <div class="preview-icon">
-                                        <i class="fa fa-file-pdf-o"></i>
+                                        <i class="fa fa-file-video-o"></i>
                                     </div>
 
                                     <div class="preview-details">
@@ -417,7 +413,7 @@
 
                         <!-- Submit -->
                         <button type="submit" class="submit-btn-modern">
-                            <i class="fa fa-save"></i> Upload Document
+                            <i class="fa fa-save"></i> Upload video
                         </button>
 
                     </form>

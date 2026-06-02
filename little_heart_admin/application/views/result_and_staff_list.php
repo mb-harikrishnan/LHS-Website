@@ -347,7 +347,7 @@
                 </div>
 
                 <div class="table-responsive-wrapper">
-                    <form method="post" action="<?php echo base_url('result_and_staff_list'); ?>">
+                    <form method="post" action="<?php echo base_url('Result_and_Staff'); ?>">
 
 
                         <div class="date-filter-box">

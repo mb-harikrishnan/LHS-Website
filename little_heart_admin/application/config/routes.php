@@ -72,6 +72,11 @@ $route['delete_details']   = 'DocumentController/delete_details';
 $route['upload_document_details']   = 'DocumentController/upload_document_details';
 $route['add_document_details']   = 'DocumentController/add_document_details';
 
+$route['infrastructure']   = 'DocumentController/infrastructure';
+$route['delete_video']   = 'DocumentController/delete_video';
+$route['upload_video']   = 'DocumentController/upload_video';
+$route['add_video']   = 'DocumentController/add_video';
+
 
 
 $route['404_override'] = '';

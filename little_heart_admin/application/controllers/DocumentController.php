@@ -170,10 +170,9 @@ class DocumentController extends CI_Controller {
     if ($this->input->post()) {
 
         $document_type  = $this->input->post('document_type');
-        $document_title = $this->input->post('document_title');
 
         // Upload Configuration
-        $config['upload_path']   ='../assets/uploads/documents';
+        $config['upload_path']   ='../assets/uploads/documents/';
 
         $config['allowed_types'] = 'pdf';
         $config['max_size']      = 10240; // 10MB
@@ -199,6 +198,9 @@ class DocumentController extends CI_Controller {
                 'c_status'  =>'Y'
             );
 
+
+           
+
             $result = $this->Document_model->insert_document_details($insert_array);
 
             if ($result) {
@@ -218,6 +220,117 @@ class DocumentController extends CI_Controller {
                 );
             }
             redirect('upload_document_details');
+        }
+    
+    }
+}
+
+/*** infrastructure videos */
+
+
+ public function infrastructure()
+    {
+
+       $type = $this->input->post('type');
+
+        $information['information'] = $this->Document_model->fetch_infrastructure_videos($type);
+
+        $this->load->view('header');
+        $this->load->view('topbar');
+        $this->load->view('sidebar');
+        $this->load->view('infrastructure' , $information );
+        $this->load->view('footer');
+    }
+   
+    public function delete_video()
+    {
+        $id = $this->input->post('id');
+
+        $result = $this->Document_model->delete_videos($id);
+
+        if($result)
+        {
+            echo 1;
+        }
+        else
+        {
+            echo 0;
+        }
+    }
+
+
+
+
+    public function upload_video()
+    {
+
+
+        $this->load->view('header');
+        $this->load->view('topbar');
+        $this->load->view('sidebar');
+        $this->load->view('upload_video');
+        $this->load->view('footer');
+
+    }
+
+
+    public function add_video()
+{
+    print_r($_POST);
+    if ($this->input->post()) {
+
+        $document_type  = $this->input->post('document_type');
+
+        // Upload Configuration
+        $config['upload_path']   ='../assets/uploads/videos/';
+
+        $config['allowed_types'] = 'mp4|avi|mov|wmv|flv|mkv';
+        $config['max_size']      = 51200; // 50MB
+        $config['encrypt_name']  = TRUE;
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('document_file')) {
+            print_r($this->upload->display_errors());
+
+            $this->session->set_flashdata(
+                'error',
+                $this->upload->display_errors()
+            );
+
+        } else {
+
+            $upload_data = $this->upload->data();
+
+            $insert_array = array(
+                'c_type'  => $document_type,
+                'c_videos'  => $upload_data['file_name'],
+                'd_date'     => date('Y-m-d'),
+                'c_status'  =>'Y'
+            );
+
+
+           
+
+            $result = $this->Document_model->insert_infrastructure_videos($insert_array);
+
+            if ($result) {
+
+                $this->session->set_flashdata(
+                    'success',
+                    'Video Uploaded Successfully'
+                );
+
+                redirect('upload_video');
+
+            } else {
+
+                $this->session->set_flashdata(
+                    'error',
+                    'Something went wrong'
+                );
+            }
+            redirect('upload_video');
         }
     
     }
