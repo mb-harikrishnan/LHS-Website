@@ -1,32 +1,34 @@
-
 <!doctype html>
-<html lang="en"></html>
+<html lang="en">
+
+</html>
+
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Little Hearts | Curriculum</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>Little Hearts | Curriculum</title>
 
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
-
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/font-awesome.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/edua-icons.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/animate.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.carousel.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.transitions.css') ?> ">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/cubeportfolio.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/settings.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootsnav.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/style.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/loader.css') ?>">
-<link rel="icon" href="<?php echo base_url('assets/images/favicon.png')?>">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
 
-<!--[if lt IE 9]>
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/font-awesome.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/edua-icons.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/animate.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.carousel.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.transitions.css') ?> ">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/cubeportfolio.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/settings.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootsnav.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/style.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/loader.css') ?>">
+  <link rel="icon" href="<?php echo base_url('assets/images/favicon.png') ?>">
+
+
+  <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
@@ -37,7 +39,7 @@
 <div id="search">
   <button type="button" class="close">×</button>
   <form>
-    <input type="search" value="" placeholder="Search here...."  required/>
+    <input type="search" value="" placeholder="Search here...." required />
     <button type="submit" class="btn btn_common blue">Search</button>
   </form>
 </div>
@@ -154,147 +156,140 @@
 </section>
 
 <style>
-
-.curriculum_section{
-  background:#f7fbff;
-  position:relative;
-}
-
-/* Heading */
-.curriculum_tag{
-  display:inline-block;
-  background:#22c55e;
-  color:#fff;
-  padding:8px 18px;
-  border-radius:30px;
-  font-size:14px;
-  font-weight:600;
-  margin-bottom:15px;
-  letter-spacing:0.5px;
-}
-
-.curriculum_section .main_title h2{
-  font-size:42px;
-  font-weight:800;
-  color:#1e293b;
-  margin-bottom:20px;
-  line-height:1.3;
-}
-
-.curriculum_section .main_title p{
-  max-width:900px;
-  margin:auto;
-  color:#64748b;
-  font-size:17px;
-  line-height:30px;
-}
-
-/* Cards */
-.curriculum_card{
-  background:#fff;
-  border-radius:20px;
-  padding:35px;
-  margin-bottom:30px;
-  box-shadow:0 10px 35px rgba(0,0,0,0.08);
-  transition:0.4s ease;
-  border-top:5px solid #22c55e;
-  height:100%;
-  position:relative;
-  overflow:hidden;
-}
-
-.curriculum_card:hover{
-  transform:translateY(-8px);
-  box-shadow:0 15px 45px rgba(0,0,0,0.12);
-}
-
-/* Icons */
-.curriculum_icon{
-  width:75px;
-  height:75px;
-  background:linear-gradient(135deg,#22c55e,#16a34a);
-  border-radius:50%;
-  text-align:center;
-  line-height:75px;
-  margin-bottom:25px;
-  box-shadow:0 8px 20px rgba(34,197,94,0.3);
-}
-
-.curriculum_icon i{
-  color:#fff;
-  font-size:30px;
-}
-
-/* Titles */
-.curriculum_card h3{
-  font-size:24px;
-  font-weight:700;
-  color:#0f172a;
-  margin-bottom:18px;
-  line-height:1.4;
-}
-
-/* Paragraph */
-.curriculum_card p{
-  color:#475569;
-  line-height:30px;
-  font-size:16px;
-  margin-bottom:18px;
-}
-
-/* List */
-.curriculum_card ul{
-  padding-left:0;
-  margin:0;
-}
-
-.curriculum_card ul li{
-  list-style:none;
-  position:relative;
-  padding-left:28px;
-  margin-bottom:15px;
-  color:#475569;
-  line-height:28px;
-  font-size:15px;
-}
-
-.curriculum_card ul li:before{
-  content:"✔";
-  position:absolute;
-  left:0;
-  top:0;
-  color:#22c55e;
-  font-weight:bold;
-  font-size:16px;
-}
-
-/* Responsive */
-@media(max-width:991px){
-
-  .curriculum_section .main_title h2{
-    font-size:34px;
+  .curriculum_section {
+    background: #f7fbff;
+    position: relative;
   }
 
-}
-
-@media(max-width:767px){
-
-  .curriculum_section .main_title h2{
-    font-size:28px;
+  /* Heading */
+  .curriculum_tag {
+    display: inline-block;
+    background: #22c55e;
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    letter-spacing: 0.5px;
   }
 
-  .curriculum_card{
-    padding:25px;
+  .curriculum_section .main_title h2 {
+    font-size: 35px;
+    font-weight: 400;
+    color: #0b3d2e;
+    margin-bottom: 15px;
   }
 
-  .curriculum_card h3{
-    font-size:21px;
+  .curriculum_section .main_title p {
+    max-width: 900px;
+    margin: auto;
+    color: #64748b;
+    font-size: 15px;
+    line-height: 30px;
   }
 
-}
+  /* Cards */
+  .curriculum_card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 35px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+    transition: 0.4s ease;
+    border-top: 5px solid #22c55e;
+    height: 525px;
+    position: relative;
+    overflow: hidden;
+  }
 
+  .curriculum_card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Icons */
+  .curriculum_icon {
+    width: 75px;
+    height: 75px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 75px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+  }
+
+  .curriculum_icon i {
+    color: #fff;
+    font-size: 30px;
+  }
+
+  /* Titles */
+  .curriculum_card h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 18px;
+    line-height: 1.4;
+  }
+
+  /* Paragraph */
+  .curriculum_card p {
+    color: #475569;
+    line-height: 30px;
+    font-size: 16px;
+    margin-bottom: 18px;
+  }
+
+  /* List */
+  .curriculum_card ul {
+    padding-left: 0;
+    margin: 0;
+  }
+
+  .curriculum_card ul li {
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    margin-bottom: 15px;
+    color: #475569;
+    line-height: 28px;
+    font-size: 15px;
+  }
+
+  .curriculum_card ul li:before {
+    content: "✔";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #22c55e;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  /* Responsive */
+  @media(max-width:991px) {
+
+    .curriculum_section .main_title h2 {
+      font-size: 34px;
+    }
+
+  }
+
+  @media(max-width:767px) {
+
+    .curriculum_section .main_title h2 {
+      font-size: 28px;
+    }
+
+    .curriculum_card {
+      padding: 25px;
+    }
+
+    .curriculum_card h3 {
+      font-size: 21px;
+    }
+
+  }
 </style>
-
-
-
-
