@@ -338,105 +338,69 @@
                             <polyline points="10 9 9 9 8 9"></polyline>
                         </svg>
                     </div>
-                    <div class="card-title-creative">Add New Video</div>
+                    <div class="card-title-creative">School News List</div>
 
-                   <a href="<?php echo base_url('infrastructure'); ?>" class="upload-btn">
-                        <i class="fa fa-upload"></i> Video List
+                   <a href="<?php echo base_url('add_news'); ?>" class="upload-btn">
+                        <i class="fa fa-upload"></i> Enter New News
                     </a>
     
                 </div>
 
                 <div class="table-responsive-wrapper">
+                    <form method="post" action="<?php echo base_url('school_news'); ?>">
 
-                    <form method="post" enctype="multipart/form-data"  action="<?php echo base_url('add_video'); ?>">
 
-                        <div class="upload-form-grid">
-
-                            <!-- Document Type -->
-                            <div class="form-group-modern">
-                                <label>Select Document Type</label>
-
-                                <select name="document_type" class="modern-select" required>
-                                    <option value="">Choose Document Type</option>
-                                      <option value="infrastructure">Infrastructure</option>
-                                      <option value="slider_video">Slider video</option>
-                                 
-                                </select>
+                        <div class="date-filter-box">
+                        
+                            <div class="filter-group">
+                                <label>From Date</label>
+                                <input type="date" id="fromDate" name="fromDate"  value="<?php echo !empty(set_value('fromDate')) ? set_value('fromDate') : date('Y-m-d'); ?>" class="filter-input">
                             </div>
 
+                            <div class="filter-group">
+                                <label>To Date</label>
+                                <input type="date" id="toDate" name="toDate" value="<?php echo !empty(set_value('toDate')) ? set_value('toDate') : date('Y-m-d'); ?>" class="filter-input">
+                            </div>
+
+                            <div class="filter-actions">
+                                <button type="submit" class="btn-filter">Filter</button>
+                            </div>
                         
 
+                        
                         </div>
-                        <!-- Video Link -->
-<div class="form-group-modern" style="margin-top:25px;">
-    
-    <label>Video Link</label>
-
-    <input type="url"
-        name="video_link"
-        id="videoLink"
-        class="modern-input full-width-input"
-        placeholder="Enter video link (YouTube, Drive, etc)">
-
-</div>
-
-
-                        <!-- Upload Area -->
-                        <div class="form-group-modern" style="margin-top:25px;">
-
-                            <label>Upload Video</label>
-
-                            <div class="upload-box">
-
-                                <input type="file" 
-                                    name="document_file" 
-                                    id="documentFile"
-                                    accept=".mp4, .avi, .mov, .wmv, .flv, .mkv"
-                                    >
-
-                                <div class="upload-icon">
-                                    <i class="fa fa-cloud-upload"></i>
-                                </div>
-
-                                <div class="upload-title">
-                                    Drag & Drop video Here
-                                </div>
-
-                                <div class="upload-sub">
-                                    or click to browse file
-                                </div>
-
-                                <!-- Preview INSIDE Upload Box -->
-                                <div class="file-preview" id="filePreview">
-
-                                    <div class="preview-icon">
-                                        <i class="fa fa-file-video-o"></i>
-                                    </div>
-
-                                    <div class="preview-details">
-                                        <div class="preview-name" id="fileName"></div>
-                                        <div class="preview-size" id="fileSize"></div>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-
-
-                           
-                        </div>
-
-                        <!-- Submit -->
-                        <button type="submit" class="submit-btn-modern">
-                            <i class="fa fa-save"></i> Upload video
-                        </button>
 
                     </form>
-
-
-
-            
+                    <table id="incomeTable" class="display responsive nowrap creative-table" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>#SL</th>
+                                <th>Date</th>
+                                <th>Title</th>
+                                <th>News</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php 
+                            $count = 1;
+                            foreach ($news as $row){   ?>
+                            <tr>
+                                <td><?php echo $count; ?></td>
+                                <td><?php echo $row->d_date; ?></td>
+                                <td><?php echo $row->c_title; ?></td>
+                                <td><?php echo $row->c_news; ?></td>
+                                <td>
+                                   <button class="btn btn-danger deleteBtn" 
+                                                data-id="<?php echo $row->n_slno; ?>">
+                                            <i class="fa fa-trash"></i> Delete
+                                        </button>
+                                    </td>
+                            </tr>
+                            <?php $count++; } ?>
+                        </tbody>
+                    </table>
+         
                
                 </div>
             </div>
@@ -468,174 +432,41 @@
     color:#fff;
     text-decoration:none;
     background:linear-gradient(135deg,var(--g700),var(--g900));
+
+
 }
 
 
-/*  */
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 14px rgba(239, 68, 68, 0.25);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
 
+.btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 18px rgba(239, 68, 68, 0.35);
+}
 
- .document-form-wrapper {
-        padding: 30px;
-        background: linear-gradient(135deg, #f8fff8, #eefbf2);
-        border-radius: 24px;
-    }
+.btn-danger:active {
+    transform: scale(0.97);
+}
 
-    .upload-form-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 25px;
-        margin-top: 25px;
-    }
-
-    .form-group-modern {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .form-group-modern label {
-        font-size: 15px;
-        font-weight: 700;
-        color: #1d3b2f;
-    }
-
-    .modern-select,
-    .modern-input {
-        height: 52px;
-        border: 1px solid #d8e7dd;
-        border-radius: 14px;
-        padding: 0 16px;
-        font-size: 15px;
-        background: #fff;
-        transition: 0.3s ease;
-        outline: none;
-    }
-
-    .modern-select:focus,
-    .modern-input:focus {
-        border-color: #38b000;
-        box-shadow: 0 0 0 4px rgba(56, 176, 0, 0.12);
-    }
-
-    /* Upload Box */
-    .upload-box {
-        position: relative;
-        border: 2px dashed #9ad7a4;
-        border-radius: 22px;
-        background: #ffffff;
-        padding: 25px 20px;
-        text-align: center;
-        transition: 0.3s ease;
-        cursor: pointer;
-        overflow: hidden;
-    }
-
-    .upload-box:hover {
-        border-color: #38b000;
-        background: #f6fff6;
-        transform: translateY(-2px);
-    }
-
-    .upload-box input[type="file"] {
-        position: absolute;
-        inset: 0;
-        opacity: 0;
-        cursor: pointer;
-    }
-
-    .upload-icon {
-        width: 70px;
-        height: 70px;
-        background: linear-gradient(135deg, #38b000, #70e000);
-        margin: auto;
-        border-radius: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 28px;
-        margin-bottom: 18px;
-        box-shadow: 0 12px 25px rgba(56, 176, 0, 0.2);
-    }
-
-    .upload-title {
-        font-size: 17px;
-        font-weight: 700;
-        color: #173524;
-    }
-
-    .upload-sub {
-        margin-top: 6px;
-        color: #6b7280;
-        font-size: 14px;
-    }
-
-    /* Preview */
-    .file-preview {
-        margin-top: 20px;
-        display: none;
-        align-items: center;
-        gap: 14px;
-        background: #fff;
-        border: 1px solid #e3efe7;
-        padding: 14px;
-        border-radius: 16px;
-    }
-
-    .preview-icon {
-        width: 55px;
-        height: 55px;
-        border-radius: 14px;
-        background: #ff4d4f;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
-    }
-
-    .preview-details {
-        flex: 1;
-    }
-
-    .preview-name {
-        font-weight: 700;
-        color: #1e293b;
-        font-size: 15px;
-    }
-
-    .preview-size {
-        font-size: 13px;
-        color: #64748b;
-        margin-top: 3px;
-    }
-
-    /* Button */
-    .submit-btn-modern {
-        margin-top: 30px;
-        border: none;
-        background: linear-gradient(135deg, #38b000, #008000);
-        color: white;
-        padding: 14px 34px;
-        border-radius: 14px;
-        font-size: 16px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: 0.3s ease;
-        box-shadow: 0 10px 20px rgba(56, 176, 0, 0.2);
-    }
-
-    .submit-btn-modern:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 14px 24px rgba(56, 176, 0, 0.28);
-    }
-
-    @media(max-width:768px){
-        .document-form-wrapper{
-            padding:20px;
-        }
-    }
-
+.btn-danger:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
+}
 </style>
 
 
@@ -646,47 +477,120 @@
     <script src="<?php echo JS_PATH ?>dataTables.responsive.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
-<?php if($this->session->flashdata('success')){ ?>
 <script>
-Swal.fire({
-    icon: 'success',
-    title: 'Success',
-    text: '<?php echo $this->session->flashdata("success"); ?>',
-    confirmButtonColor: '#16a34a',
-    timer: 2500,
-    showConfirmButton: false
+
+$(document).ready(function () {
+
+    var table = $('#incomeTable').DataTable({
+        responsive: true,
+        pageLength: 10,
+        language: {
+            search: "",
+            searchPlaceholder: "Search records...",
+            lengthMenu: "_MENU_ entries",
+            paginate: {
+                previous: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>',
+                next: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>'
+            }
+        },
+        dom: '<"top"lf>rt<"bottom"ip><"clear">'
+    });
+
+    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+
+        var min  = $('#fromDate').val();
+        var max  = $('#toDate').val();
+        var date = data[1];
+
+        if (!date) {
+            return true;
+        }
+
+        if (
+            (min === "" && max === "") ||
+            (min === "" && date <= max) ||
+            (min <= date && max === "") ||
+            (min <= date && date <= max)
+        ) {
+            return true;
+        }
+
+        return false;
+    });
+
+    $('#fromDate, #toDate').on('change', function () {
+        table.draw();
+    });
+
 });
-</script>
-<?php } ?>
 
-<?php if($this->session->flashdata('error')){ ?>
-<script>
-Swal.fire({
-    icon: 'error',
-    title: 'Error',
-    text: '<?php echo $this->session->flashdata("error"); ?>',
-    confirmButtonColor: '#dc2626'
-});
 </script>
-<?php } ?>
+
 
 
 <script>
-    document.getElementById('documentFile').addEventListener('change', function () {
 
-        const file = this.files[0];
+$(document).on('click', '.deleteBtn', function () {
 
-        if (file) {
+    var id = $(this).data('id');
+    var row = $(this).closest('tr');
 
-            document.getElementById('filePreview').style.display = 'flex';
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to delete this record!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, Delete'
+    }).then((result) => {
 
-            document.getElementById('fileName').innerText = file.name;
+        if (result.isConfirmed) {
 
-            let size = (file.size / 1024 / 1024).toFixed(2);
+            $.ajax({
+                url: "<?php echo base_url('delete_news'); ?>",
+                type: "POST",
+                data: {id:id},
 
-            document.getElementById('fileSize').innerText = size + ' MB';
+                success: function (response) {
+
+                    if(response == 1)
+                    {
+                        row.fadeOut(500);
+
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Deleted Successfully',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }
+                    else
+                    {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Delete Failed',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }
+
+                }
+
+            });
 
         }
+
     });
+
+});
+
 </script>
+
+
+
+

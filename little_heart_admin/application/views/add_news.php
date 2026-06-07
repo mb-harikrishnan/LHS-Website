@@ -1,7 +1,4 @@
 
-<!-- DataTables CSS -->
-<link rel="stylesheet" href="<?php echo CSS_PATH ?>jquery.dataTables.min.css">
-<link rel="stylesheet" href="<?php echo CSS_PATH ?>responsive.dataTables.min.css">
 <style>
     :root {
         --primary: var(--g600);
@@ -317,134 +314,174 @@
     background: #e2e8f0;
 }
 </style>
-
-
-
 <div class="main">
 
     <div class="content">
         <div class="report-container">
-            
-        
 
             <div class="premium-card">
+
                 <div class="card-header-creative">
+
                     <div class="card-icon-box">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                             <polyline points="14 2 14 8 20 8"></polyline>
                             <line x1="16" y1="13" x2="8" y2="13"></line>
                             <line x1="16" y1="17" x2="8" y2="17"></line>
                             <polyline points="10 9 9 9 8 9"></polyline>
+
                         </svg>
                     </div>
-                    <div class="card-title-creative">Add New Video</div>
 
-                   <a href="<?php echo base_url('infrastructure'); ?>" class="upload-btn">
-                        <i class="fa fa-upload"></i> Video List
+                    <div class="card-title-creative">
+                        Add School News
+                    </div>
+
+                    <a href="<?php echo base_url('school_news'); ?>" class="upload-btn">
+                        <i class="fa fa-list"></i> News List
                     </a>
-    
+
                 </div>
 
-                <div class="table-responsive-wrapper">
+                <div class="news-form-container">
 
-                    <form method="post" enctype="multipart/form-data"  action="<?php echo base_url('add_video'); ?>">
+                    <form id="newsform"
+                        method="post"
+                        action="<?php echo base_url('insert_school_news'); ?>">
 
-                        <div class="upload-form-grid">
+                        <!-- Title -->
+                        <div class="news-form-group">
 
-                            <!-- Document Type -->
-                            <div class="form-group-modern">
-                                <label>Select Document Type</label>
+                            <label>
+                                News Title
+                            </label>
 
-                                <select name="document_type" class="modern-select" required>
-                                    <option value="">Choose Document Type</option>
-                                      <option value="infrastructure">Infrastructure</option>
-                                      <option value="slider_video">Slider video</option>
-                                 
-                                </select>
-                            </div>
-
-                        
+                            <input type="text"
+                                name="title"
+                                id="title"
+                                class="news-input"
+                                placeholder="Enter News Title">
 
                         </div>
-                        <!-- Video Link -->
-<div class="form-group-modern" style="margin-top:25px;">
-    
-    <label>Video Link</label>
 
-    <input type="url"
-        name="video_link"
-        id="videoLink"
-        class="modern-input full-width-input"
-        placeholder="Enter video link (YouTube, Drive, etc)">
+                        <!-- Description -->
+                        <div class="news-form-group">
 
-</div>
+                            <label>
+                                Description
+                            </label>
 
+                            <textarea name="description"
+                                id="description"
+                                class="news-textarea"
+                                placeholder="Enter News Description"></textarea>
 
-                        <!-- Upload Area -->
-                        <div class="form-group-modern" style="margin-top:25px;">
-
-                            <label>Upload Video</label>
-
-                            <div class="upload-box">
-
-                                <input type="file" 
-                                    name="document_file" 
-                                    id="documentFile"
-                                    accept=".mp4, .avi, .mov, .wmv, .flv, .mkv"
-                                    >
-
-                                <div class="upload-icon">
-                                    <i class="fa fa-cloud-upload"></i>
-                                </div>
-
-                                <div class="upload-title">
-                                    Drag & Drop video Here
-                                </div>
-
-                                <div class="upload-sub">
-                                    or click to browse file
-                                </div>
-
-                                <!-- Preview INSIDE Upload Box -->
-                                <div class="file-preview" id="filePreview">
-
-                                    <div class="preview-icon">
-                                        <i class="fa fa-file-video-o"></i>
-                                    </div>
-
-                                    <div class="preview-details">
-                                        <div class="preview-name" id="fileName"></div>
-                                        <div class="preview-size" id="fileSize"></div>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-
-
-                           
                         </div>
 
-                        <!-- Submit -->
-                        <button type="submit" class="submit-btn-modern">
-                            <i class="fa fa-save"></i> Upload video
-                        </button>
+                        <!-- Buttons -->
+                        <div class="news-btn-group">
+
+                            <button type="submit" class="submit-btn">
+                                <i class="fa fa-save"></i> Submit
+                            </button>
+
+                     
+
+                        </div>
 
                     </form>
 
-
-
-            
-               
                 </div>
+
             </div>
 
         </div>
     </div>
 
+</div>
 <style>
+
+   .news-form-container {
+        padding: 30px;
+    }
+
+    .news-form-group {
+        margin-bottom: 20px;
+    }
+
+    .news-form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #1e293b;
+        font-size: 15px;
+    }
+
+    .news-input,
+    .news-textarea {
+        width: 100%;
+        border: 1px solid #dbeafe;
+        border-radius: 12px;
+        padding: 14px 16px;
+        font-size: 15px;
+        outline: none;
+        transition: 0.3s;
+        background: #fff;
+    }
+
+    .news-input:focus,
+    .news-textarea:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    .news-textarea {
+        min-height: 160px;
+        resize: vertical;
+    }
+
+    .news-btn-group {
+        display: flex;
+        gap: 12px;
+        margin-top: 10px;
+    }
+
+    .submit-btn {
+        background: #2563eb;
+        color: #fff;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .submit-btn:hover {
+        background: #1d4ed8;
+    }
+
+    .reset-btn {
+        background: #e2e8f0;
+        color: #1e293b;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .reset-btn:hover {
+        background: #cbd5e1;
+    }
+
     .card-header-creative{
     position:relative;
 }
@@ -468,225 +505,146 @@
     color:#fff;
     text-decoration:none;
     background:linear-gradient(135deg,var(--g700),var(--g900));
+
+
 }
 
 
-/*  */
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 14px rgba(239, 68, 68, 0.25);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
 
+.btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 18px rgba(239, 68, 68, 0.35);
+}
 
- .document-form-wrapper {
-        padding: 30px;
-        background: linear-gradient(135deg, #f8fff8, #eefbf2);
-        border-radius: 24px;
-    }
+.btn-danger:active {
+    transform: scale(0.97);
+}
 
-    .upload-form-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 25px;
-        margin-top: 25px;
-    }
-
-    .form-group-modern {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .form-group-modern label {
-        font-size: 15px;
-        font-weight: 700;
-        color: #1d3b2f;
-    }
-
-    .modern-select,
-    .modern-input {
-        height: 52px;
-        border: 1px solid #d8e7dd;
-        border-radius: 14px;
-        padding: 0 16px;
-        font-size: 15px;
-        background: #fff;
-        transition: 0.3s ease;
-        outline: none;
-    }
-
-    .modern-select:focus,
-    .modern-input:focus {
-        border-color: #38b000;
-        box-shadow: 0 0 0 4px rgba(56, 176, 0, 0.12);
-    }
-
-    /* Upload Box */
-    .upload-box {
-        position: relative;
-        border: 2px dashed #9ad7a4;
-        border-radius: 22px;
-        background: #ffffff;
-        padding: 25px 20px;
-        text-align: center;
-        transition: 0.3s ease;
-        cursor: pointer;
-        overflow: hidden;
-    }
-
-    .upload-box:hover {
-        border-color: #38b000;
-        background: #f6fff6;
-        transform: translateY(-2px);
-    }
-
-    .upload-box input[type="file"] {
-        position: absolute;
-        inset: 0;
-        opacity: 0;
-        cursor: pointer;
-    }
-
-    .upload-icon {
-        width: 70px;
-        height: 70px;
-        background: linear-gradient(135deg, #38b000, #70e000);
-        margin: auto;
-        border-radius: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 28px;
-        margin-bottom: 18px;
-        box-shadow: 0 12px 25px rgba(56, 176, 0, 0.2);
-    }
-
-    .upload-title {
-        font-size: 17px;
-        font-weight: 700;
-        color: #173524;
-    }
-
-    .upload-sub {
-        margin-top: 6px;
-        color: #6b7280;
-        font-size: 14px;
-    }
-
-    /* Preview */
-    .file-preview {
-        margin-top: 20px;
-        display: none;
-        align-items: center;
-        gap: 14px;
-        background: #fff;
-        border: 1px solid #e3efe7;
-        padding: 14px;
-        border-radius: 16px;
-    }
-
-    .preview-icon {
-        width: 55px;
-        height: 55px;
-        border-radius: 14px;
-        background: #ff4d4f;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
-    }
-
-    .preview-details {
-        flex: 1;
-    }
-
-    .preview-name {
-        font-weight: 700;
-        color: #1e293b;
-        font-size: 15px;
-    }
-
-    .preview-size {
-        font-size: 13px;
-        color: #64748b;
-        margin-top: 3px;
-    }
-
-    /* Button */
-    .submit-btn-modern {
-        margin-top: 30px;
-        border: none;
-        background: linear-gradient(135deg, #38b000, #008000);
-        color: white;
-        padding: 14px 34px;
-        border-radius: 14px;
-        font-size: 16px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: 0.3s ease;
-        box-shadow: 0 10px 20px rgba(56, 176, 0, 0.2);
-    }
-
-    .submit-btn-modern:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 14px 24px rgba(56, 176, 0, 0.28);
-    }
-
-    @media(max-width:768px){
-        .document-form-wrapper{
-            padding:20px;
-        }
-    }
-
+.btn-danger:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
+}
 </style>
 
 
 
     <!-- Scripts -->
     <script src="<?php echo JS_PATH ?>jquery-3.6.0.min.js"></script>
+    <script src="<?php echo JS_PATH ?>jquery.validate.min.js"></script>
     <script src="<?php echo JS_PATH ?>jquery.dataTables.min.js"></script>
     <script src="<?php echo JS_PATH ?>dataTables.responsive.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-<?php if($this->session->flashdata('success')){ ?>
+
 <script>
+$(document).ready(function () {
+
+    $("#newsform").validate({
+
+        rules: {
+            title: {
+                required: true
+            },
+
+            description: {
+                required: true
+            }
+        },
+
+        messages: {
+
+            title: {
+                required: "Please enter the news title"
+            },
+
+            description: {
+                required: "Please enter the description"
+            }
+        },
+
+        errorElement: 'span',
+
+        errorPlacement: function (error, element) {
+            error.css({
+                'color': 'red',
+                'font-size': '13px',
+                'margin-top': '5px',
+                'display': 'block'
+            });
+
+            error.insertAfter(element);
+        },
+
+        highlight: function (element) {
+            $(element).css({
+                'border': '1px solid red'
+            });
+        },
+
+        unhighlight: function (element) {
+            $(element).css({
+                'border': '1px solid #dbeafe'
+            });
+        },
+
+        submitHandler: function (form) {
+
+            form.submit(); // Allow form submission if validation success
+
+        }
+
+    });
+
+});
+</script>
+
+
+
+
+
+<?php if($this->session->flashdata('success')) { ?>
+
+<script>
+
 Swal.fire({
     icon: 'success',
     title: 'Success',
-    text: '<?php echo $this->session->flashdata("success"); ?>',
-    confirmButtonColor: '#16a34a',
-    timer: 2500,
-    showConfirmButton: false
+    text: '<?php echo $this->session->flashdata('success'); ?>',
+    confirmButtonColor: '#2563eb'
 });
+
 </script>
+
 <?php } ?>
 
-<?php if($this->session->flashdata('error')){ ?>
+
+<?php if($this->session->flashdata('error')) { ?>
+
 <script>
+
 Swal.fire({
     icon: 'error',
     title: 'Error',
-    text: '<?php echo $this->session->flashdata("error"); ?>',
-    confirmButtonColor: '#dc2626'
+    text: '<?php echo $this->session->flashdata('error'); ?>'
 });
+
 </script>
+
 <?php } ?>
-
-
-<script>
-    document.getElementById('documentFile').addEventListener('change', function () {
-
-        const file = this.files[0];
-
-        if (file) {
-
-            document.getElementById('filePreview').style.display = 'flex';
-
-            document.getElementById('fileName').innerText = file.name;
-
-            let size = (file.size / 1024 / 1024).toFixed(2);
-
-            document.getElementById('fileSize').innerText = size + ' MB';
-
-        }
-    });
-</script>

@@ -276,37 +276,56 @@ class DocumentController extends CI_Controller {
 
     public function add_video()
 {
-    print_r($_POST);
-    if ($this->input->post()) {
+   
+       if (!empty($_FILES['document_file']['name'])) {
 
-        $document_type  = $this->input->post('document_type');
+            
 
-        // Upload Configuration
-        $config['upload_path']   ='../assets/uploads/videos/';
+            // Upload Configuration
+            $config['upload_path']   ='../assets/uploads/videos/';
 
-        $config['allowed_types'] = 'mp4|avi|mov|wmv|flv|mkv';
-        $config['max_size']      = 51200; // 50MB
-        $config['encrypt_name']  = TRUE;
+            $config['allowed_types'] = 'mp4|avi|mov|wmv|flv|mkv';
+            $config['max_size']      = 51200; // 50MB
+            $config['encrypt_name']  = TRUE;
 
-        $this->load->library('upload', $config);
+            $this->load->library('upload', $config);
 
-        if (!$this->upload->do_upload('document_file')) {
-            print_r($this->upload->display_errors());
+            if (!$this->upload->do_upload('document_file')) {
+                print_r($this->upload->display_errors());
 
-            $this->session->set_flashdata(
-                'error',
-                $this->upload->display_errors()
-            );
+                $this->session->set_flashdata(
+                    'error',
+                    $this->upload->display_errors()
+                );
+        
+            } else {
 
-        } else {
+                $upload_data = $this->upload->data();
+            }
+        }
 
-            $upload_data = $this->upload->data();
+        if($upload_data) {
+
+          $file = $upload_data['file_name'];
+            
+        }else{
+               $file='';
+        }
+        if($this->input->post('video_link') != '')
+            {
+                $link = $this->input->post('video_link');
+            }else{
+                $link = '';
+            }
+
+            $document_type  = $this->input->post('document_type');
 
             $insert_array = array(
                 'c_type'  => $document_type,
-                'c_videos'  => $upload_data['file_name'],
+                'c_videos'  =>$file,
                 'd_date'     => date('Y-m-d'),
-                'c_status'  =>'Y'
+                'c_status'  =>'Y',
+                'links' => $link
             );
 
 
@@ -331,9 +350,9 @@ class DocumentController extends CI_Controller {
                 );
             }
             redirect('upload_video');
-        }
+        
     
-    }
+    
 }
 
 

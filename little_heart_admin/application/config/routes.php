@@ -78,6 +78,32 @@ $route['upload_video']   = 'DocumentController/upload_video';
 $route['add_video']   = 'DocumentController/add_video';
 
 
+$route['school_news']   = 'NewsController/school_news';
+$route['add_news']   = 'NewsController/add_news';
+$route['insert_school_news']   = 'NewsController/insert_school_news';
+$route['delete_news']   = 'NewsController/delete_news';
+
+
+$route['gallery']   = 'GalleryController/gallery';
+$route['add_gallery_image']   = 'GalleryController/add_gallery_image';
+$route['insert_school_image']   = 'GalleryController/insert_school_image';
+$route['delete_image']   = 'GalleryController/delete_image';
+
+
+$route['vaccancy_list']   = 'VaccancyController/vaccancy_list';
+$route['add_vacancy']   = 'VaccancyController/add_vacancy';
+$route['delete_vacancy']   = 'VaccancyController/delete_vacancy';
+$route['insert_vacancy']   = 'VaccancyController/insert_vacancy';
+
+
+$route['questionpaper_list']   = 'QuestionPaperController/questionpaper_list';
+$route['add_paper']   = 'QuestionPaperController/add_paper';
+$route['delete_paper']   = 'QuestionPaperController/delete_paper';
+$route['insert_paper']   = 'QuestionPaperController/insert_paper';
+
+
+
+
 
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

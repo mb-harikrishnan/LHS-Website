@@ -1,7 +1,4 @@
 
-<!-- DataTables CSS -->
-<link rel="stylesheet" href="<?php echo CSS_PATH ?>jquery.dataTables.min.css">
-<link rel="stylesheet" href="<?php echo CSS_PATH ?>responsive.dataTables.min.css">
 <style>
     :root {
         --primary: var(--g600);
@@ -317,120 +314,331 @@
     background: #e2e8f0;
 }
 </style>
-
-
-
 <div class="main">
 
     <div class="content">
         <div class="report-container">
-            
-        
 
             <div class="premium-card">
+
                 <div class="card-header-creative">
+
                     <div class="card-icon-box">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                             <polyline points="14 2 14 8 20 8"></polyline>
                             <line x1="16" y1="13" x2="8" y2="13"></line>
                             <line x1="16" y1="17" x2="8" y2="17"></line>
                             <polyline points="10 9 9 9 8 9"></polyline>
+
                         </svg>
                     </div>
-                    <div class="card-title-creative">Video List</div>
 
-                   <a href="<?php echo base_url('upload_video'); ?>" class="upload-btn">
-                        <i class="fa fa-upload"></i> Upload Video
+                    <div class="card-title-creative">
+                        Add Papper
+                    </div>
+
+                    <a href="<?php echo base_url('questionpaper_list'); ?>" class="upload-btn">
+                        <i class="fa fa-list"></i> Paper List
                     </a>
-    
+
                 </div>
 
-                <div class="table-responsive-wrapper">
-                    <form method="post" action="<?php echo base_url('infrastructure'); ?>">
+                <div class="news-form-container">
+
+                    <form id="newsform"
+                        method="post"
+                        enctype="multipart/form-data"
+                        action="<?php echo base_url('insert_paper'); ?>">
+
+                        <!-- News Type Selector -->
+                        <div class="news-form-group">
+
+                            <label>
+                                Class
+                            </label>
+
+                            <select name="class_pdf"
+                                id="class_pdf"
+                                class="news-select">
+
+                                <option value="">Select Class</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
 
 
-                        <div class="date-filter-box">
-                        
-                            <div class="filter-group">
-                                <label>Status</label>
-                                <select id="statusFilter" class="filter-input" name="type">
-                                    <option value="">All</option>
-                                    <option value="infrastructure"  <?php if($this->input->post('type') == 'infrastructure'){ echo 'selected'; } ?>>Infrastructure</option>
-                                    <option value="slider_video"  <?php if($this->input->post('type') == 'slider_video'){ echo 'selected'; } ?>>Slider Video</option>
-                                    
-                                </select>
-                            </div>
+                            </select>
 
-                            <div class="filter-actions">
-                                <button type="submit" class="btn-filter">Filter</button>
-                            </div>
-                        
+                        </div>
 
-                        
+                    
+
+                   
+
+                     <!-- Image Upload -->
+<!-- PDF Upload -->
+<div class="news-form-group">
+
+    <label>
+        Upload PDF
+    </label>
+
+    <div class="upload-area" id="uploadArea">
+
+        <input type="file"
+            name="pdf"
+            id="pdf"
+            accept="application/pdf"
+            hidden>
+
+        <div class="upload-content" id="uploadContent">
+
+            <div class="upload-icon">
+                <i class="fa fa-file-pdf-o"></i>
+            </div>
+
+            <h4>Drag & Drop PDF Here</h4>
+
+            <p>or click to browse files</p>
+
+            <button type="button" class="browse-btn">
+                Choose PDF
+            </button>
+
+        </div>
+
+        <!-- PDF Preview -->
+        <div class="image-preview" id="imagePreview" style="display:none;">
+
+            <div style="padding:20px; text-align:center;">
+
+                <i class="fa fa-file-pdf-o"
+                   style="font-size:70px;color:#dc2626;"></i>
+
+                <p id="pdfName"
+                   style="margin-top:15px;font-weight:600;"></p>
+
+            </div>
+
+            <button type="button"
+                    class="remove-image"
+                    id="removeImage">
+
+                <i class="fa fa-times"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+                        <!-- Buttons -->
+                        <div class="news-btn-group">
+
+                            <button type="submit" class="submit-btn">
+                                <i class="fa fa-save"></i> Submit
+                            </button>
+
                         </div>
 
                     </form>
-                    <table id="incomeTable" class="display responsive nowrap creative-table" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>#SL</th>
-                                <th>Date</th>
-                                <th>Type</th>
-                                <th>video</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php 
-                            $count = 1;
-                            foreach ($information as $row){   ?>
-                            <tr>
-                                <td><?php echo $count; ?></td>
-                                <td><?php echo $row->d_date; ?></td>
-                                <td><?php echo $row->c_type; ?></td>
-<td>
 
-<?php if(!empty($row->c_videos)) { ?>
-
-    <video class="table-video" controls preload="auto">
-        <source src="<?php echo base_url('../assets/uploads/videos/' . $row->c_videos); ?>" type="video/mp4">
-    </video>
-
-<?php } elseif(!empty($row->links)) { ?>
-
-    <video class="table-video" controls preload="auto">
-        <source src="<?php echo $row->links; ?>" type="video/mp4">
-    </video>
-
-<?php } ?>
-
-</td>
-                                <td>
-                                   <button class="btn btn-danger deleteBtn" 
-                                                data-id="<?php echo $row->n_slno; ?>">
-                                            <i class="fa fa-trash"></i> Delete
-                                        </button>
-                                    </td>
-                            </tr>
-                            <?php $count++; } ?>
-                        </tbody>
-                    </table>
-         
-               
                 </div>
+
             </div>
 
         </div>
     </div>
 
+</div>
 <style>
-.table-video{
-    width: 220px;
-    height: 140px;
-    border-radius: 10px;
-    object-fit: cover;
+
+    .upload-area {
+    width: 100%;
+    border: 2px dashed #cbd5e1;
+    border-radius: 18px;
+    background: #f8fafc;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
+
+.upload-area:hover {
+    border-color: #2563eb;
+    background: #eff6ff;
+}
+
+.upload-area.dragover {
+    border-color: #16a34a;
+    background: #ecfdf5;
+    transform: scale(1.01);
+}
+
+.upload-icon {
+    font-size: 50px;
+    color: #2563eb;
+    margin-bottom: 15px;
+}
+
+.upload-content h4 {
+    margin-bottom: 8px;
+    font-size: 20px;
+    color: #111827;
+}
+
+.upload-content p {
+    color: #6b7280;
+    margin-bottom: 18px;
+}
+
+.browse-btn {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+.browse-btn:hover {
+    background: #1d4ed8;
+}
+
+/* Preview */
+
+.image-preview {
+    position: relative;
+    width: 100%;
+}
+
+.image-preview img {
+    width: 100%;
+    max-height: 350px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin-top: 10px;
+}
+
+.remove-image {
+    position: absolute;
+    top: 20px;
+    right: 10px;
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.remove-image:hover {
+    background: #dc2626;
+}
+.news-select,
+.news-file {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+    font-size: 15px;
+    background: #fff;
+}
+
+.news-file {
+    padding: 10px;
+}
+   .news-form-container {
+        padding: 30px;
+    }
+
+    .news-form-group {
+        margin-bottom: 20px;
+    }
+
+    .news-form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #1e293b;
+        font-size: 15px;
+    }
+
+    .news-input,
+    .news-textarea {
+        width: 100%;
+        border: 1px solid #dbeafe;
+        border-radius: 12px;
+        padding: 14px 16px;
+        font-size: 15px;
+        outline: none;
+        transition: 0.3s;
+        background: #fff;
+    }
+
+    .news-input:focus,
+    .news-textarea:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    .news-textarea {
+        min-height: 160px;
+        resize: vertical;
+    }
+
+    .news-btn-group {
+        display: flex;
+        gap: 12px;
+        margin-top: 10px;
+    }
+
+    .submit-btn {
+        background: #2563eb;
+        color: #fff;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .submit-btn:hover {
+        background: #1d4ed8;
+    }
+
+    .reset-btn {
+        background: #e2e8f0;
+        color: #1e293b;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .reset-btn:hover {
+        background: #cbd5e1;
+    }
+
     .card-header-creative{
     position:relative;
 }
@@ -495,91 +703,98 @@
 
     <!-- Scripts -->
     <script src="<?php echo JS_PATH ?>jquery-3.6.0.min.js"></script>
+    <script src="<?php echo JS_PATH ?>jquery.validate.min.js"></script>
     <script src="<?php echo JS_PATH ?>jquery.dataTables.min.js"></script>
     <script src="<?php echo JS_PATH ?>dataTables.responsive.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-    <script>
-        $(document).ready(function() {
-            var table = $('#incomeTable').DataTable({
-                responsive: true,
-                "pageLength": 10,
-                "language": {
-                    "search": "",
-                    "searchPlaceholder": "Search records...",
-                    "lengthMenu": "_MENU_ entries",
-                    "paginate": {
-                        "previous": '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>',
-                        "next": '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>'
-                    }
-                },
-                "dom": '<"top"lf>rt<"bottom"ip><"clear">',
-                // "order": [[1, "desc"]]
-            });
-
-            // Adjust table on sidebar toggle if necessary
-            $(window).on('resize', function() {
-                table.columns.adjust();
-            });
-        });
-    </script>
-
 
 <script>
 
-$(document).on('click', '.deleteBtn', function () {
+$(document).ready(function () {
 
-    var id = $(this).data('id');
-    var row = $(this).closest('tr');
+    $("#newsform").validate({
 
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You want to delete this record!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc2626',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Yes, Delete'
-    }).then((result) => {
+        ignore: [],
 
-        if (result.isConfirmed) {
+        rules: {
 
-            $.ajax({
-                url: "<?php echo base_url('delete_video'); ?>",
-                type: "POST",
-                data: {id:id},
+            class_pdf: {
+                required: true
+            },
 
-                success: function (response) {
+            pdf: {
+                required: true
+            }
 
-                    if(response == 1)
-                    {
-                        row.fadeOut(500);
+        },
 
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'Deleted Successfully',
-                            showConfirmButton: false,
-                            timer: 2000
-                        });
-                    }
-                    else
-                    {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'error',
-                            title: 'Delete Failed',
-                            showConfirmButton: false,
-                            timer: 2000
-                        });
-                    }
+        messages: {
 
-                }
+            class_pdf: {
+                required: "Please select  category"
+            },
 
+            pdf: {
+                required: "Please upload an pdf"
+            }
+
+        },
+
+        errorElement: 'span',
+
+        errorPlacement: function (error, element) {
+
+            error.css({
+                color: 'red',
+                fontSize: '13px',
+                marginTop: '6px',
+                display: 'block'
             });
+
+            /* File Upload Error Position */
+            if (element.attr("name") == "pdf") {
+
+                error.insertAfter("#uploadArea");
+
+            } else {
+
+                error.insertAfter(element);
+            }
+        },
+
+        highlight: function (element) {
+
+            $(element).css({
+                border: '1px solid red'
+            });
+
+            if ($(element).attr("name") == "pdf") {
+
+                $("#uploadArea").css({
+                    border: '2px dashed red'
+                });
+            }
+        },
+
+        unhighlight: function (element) {
+
+            $(element).css({
+                border: '1px solid #dbeafe'
+            });
+
+            if ($(element).attr("name") == "pdf") {
+
+                $("#uploadArea").css({
+                    border: '2px dashed #cbd5e1'
+                });
+            }
+        },
+
+        submitHandler: function (form) {
+
+            form.submit();
 
         }
 
@@ -592,3 +807,126 @@ $(document).on('click', '.deleteBtn', function () {
 
 
 
+
+<?php if($this->session->flashdata('success')) { ?>
+
+<script>
+
+Swal.fire({
+    icon: 'success',
+    title: 'Success',
+    text: '<?php echo $this->session->flashdata('success'); ?>',
+    confirmButtonColor: '#2563eb'
+});
+
+</script>
+
+<?php } ?>
+
+
+<?php if($this->session->flashdata('error')) { ?>
+
+<script>
+
+Swal.fire({
+    icon: 'error',
+    title: 'Error',
+    text: '<?php echo $this->session->flashdata('error'); ?>'
+});
+
+</script>
+
+<?php } ?>
+
+
+
+<script>
+
+const uploadArea    = document.getElementById('uploadArea');
+const fileInput     = document.getElementById('pdf');
+const previewBox    = document.getElementById('imagePreview');
+const uploadContent = document.getElementById('uploadContent');
+const removeBtn     = document.getElementById('removeImage');
+const pdfName       = document.getElementById('pdfName');
+
+/* Click Upload Area */
+uploadArea.addEventListener('click', () => {
+    fileInput.click();
+});
+
+/* File Select */
+fileInput.addEventListener('change', function(e) {
+
+    if (e.target.files.length > 0) {
+
+        showPreview(e.target.files[0]);
+
+    }
+
+});
+
+/* Drag Events */
+uploadArea.addEventListener('dragover', (e) => {
+
+    e.preventDefault();
+
+    uploadArea.classList.add('dragover');
+
+});
+
+uploadArea.addEventListener('dragleave', () => {
+
+    uploadArea.classList.remove('dragover');
+
+});
+
+uploadArea.addEventListener('drop', (e) => {
+
+    e.preventDefault();
+
+    uploadArea.classList.remove('dragover');
+
+    const file = e.dataTransfer.files[0];
+
+    if (file) {
+
+        fileInput.files = e.dataTransfer.files;
+
+        showPreview(file);
+
+    }
+
+});
+
+/* Preview Function */
+function showPreview(file)
+{
+    if(file.type !== "application/pdf")
+    {
+        alert("Please upload PDF only");
+        return;
+    }
+
+    pdfName.innerText = file.name;
+
+    previewBox.style.display = 'block';
+
+    uploadContent.style.display = 'none';
+}
+
+/* Remove PDF */
+removeBtn.addEventListener('click', function(e) {
+
+    e.stopPropagation();
+
+    fileInput.value = "";
+
+    pdfName.innerText = "";
+
+    previewBox.style.display = 'none';
+
+    uploadContent.style.display = 'block';
+
+});
+
+</script>
