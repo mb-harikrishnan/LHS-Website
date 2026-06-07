@@ -1,32 +1,34 @@
-
 <!doctype html>
-<html lang="en"></html>
+<html lang="en">
+
+</html>
+
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Little Hearts | Discipline</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>Little Hearts | Discipline</title>
 
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
-
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/font-awesome.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/edua-icons.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/animate.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.carousel.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.transitions.css') ?> ">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/cubeportfolio.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/settings.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootsnav.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/style.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/loader.css') ?>">
-<link rel="icon" href="<?php echo base_url('assets/images/favicon.png')?>">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
 
-<!--[if lt IE 9]>
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/font-awesome.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/edua-icons.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/animate.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.carousel.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.transitions.css') ?> ">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/cubeportfolio.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/settings.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootsnav.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/style.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/loader.css') ?>">
+  <link rel="icon" href="<?php echo base_url('assets/images/favicon.png') ?>">
+
+
+  <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
@@ -37,7 +39,7 @@
 <div id="search">
   <button type="button" class="close">×</button>
   <form>
-    <input type="search" value="" placeholder="Search here...."  required/>
+    <input type="search" value="" placeholder="Search here...." required />
     <button type="submit" class="btn btn_common blue">Search</button>
   </form>
 </div>
@@ -206,163 +208,158 @@
 </section>
 
 <style>
-
-/* Section */
-.discipline_section{
-  background:#f8fbff;
-  position:relative;
-}
-
-/* Heading */
-.discipline_tag{
-  display:inline-block;
-  background:#7c3aed;
-  color:#fff;
-  padding:8px 18px;
-  border-radius:30px;
-  font-size:14px;
-  font-weight:600;
-  margin-bottom:15px;
-}
-
-.discipline_section .main_title h2{
-  font-size:42px;
-  font-weight:800;
-  color:#0f172a;
-  margin-bottom:18px;
-}
-
-.discipline_section .main_title p{
-  max-width:850px;
-  margin:auto;
-  color:#64748b;
-  font-size:17px;
-  line-height:30px;
-}
-
-/* Wrapper */
-.discipline_wrapper{
-  background:#fff;
-  padding:40px;
-  border-radius:25px;
-  box-shadow:0 10px 35px rgba(0,0,0,0.08);
-}
-
-/* Discipline Items */
-.discipline_item{
-  display:flex;
-  align-items:flex-start;
-  background:#faf5ff;
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:18px;
-  transition:0.3s ease;
-}
-
-.discipline_item:hover{
-  transform:translateY(-4px);
-  background:#fff;
-  box-shadow:0 8px 25px rgba(0,0,0,0.08);
-}
-
-/* Icons */
-.discipline_item i{
-  width:50px;
-  height:50px;
-  background:linear-gradient(135deg,#7c3aed,#6d28d9);
-  color:#fff;
-  border-radius:50%;
-  text-align:center;
-  line-height:50px;
-  font-size:20px;
-  margin-right:15px;
-  flex-shrink:0;
-}
-
-/* Text */
-.discipline_item p{
-  margin:0;
-  color:#475569;
-  line-height:28px;
-  font-size:15px;
-}
-
-/* Motto */
-.school_motto{
-  margin-top:30px;
-  background:linear-gradient(135deg,#7c3aed,#6d28d9);
-  padding:35px;
-  border-radius:22px;
-  text-align:center;
-  color:#fff;
-}
-
-.school_motto h3{
-  font-size:30px;
-  font-weight:700;
-  margin-bottom:10px;
-}
-
-.school_motto p{
-  font-size:32px;
-  font-weight:800;
-  margin-bottom:15px;
-  color:#facc15;
-}
-
-.school_motto span{
-  display:block;
-  font-size:16px;
-  line-height:28px;
-  max-width:850px;
-  margin:auto;
-}
-
-/* Responsive */
-@media(max-width:991px){
-
-  .discipline_section .main_title h2{
-    font-size:34px;
+  /* Section */
+  .discipline_section {
+    background: #f8fbff;
+    position: relative;
   }
 
-}
-
-@media(max-width:767px){
-
-  .discipline_section .main_title h2{
-    font-size:28px;
+  /* Heading */
+  .discipline_tag {
+    display: inline-block;
+    background: #7c3aed;
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 15px;
   }
 
-  .discipline_wrapper{
-    padding:25px;
+  .discipline_section .main_title h2 {
+    font-size: 35px;
+    font-weight: 400;
+    color: #0b3d2e;
+    margin-bottom: 15px;
   }
 
-  .discipline_item{
-    padding:15px;
+  .discipline_section .main_title p {
+    max-width: 850px;
+    margin: auto;
+    color: #64748b;
+    font-size: 15px;
+    line-height: 30px;
   }
 
-  .discipline_item i{
-    width:42px;
-    height:42px;
-    line-height:42px;
-    font-size:18px;
+  /* Wrapper */
+  .discipline_wrapper {
+    background: #fff;
+    padding: 40px;
+    border-radius: 25px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
   }
 
-  .school_motto{
-    padding:25px;
+  /* Discipline Items */
+  .discipline_item {
+    display: flex;
+    align-items: flex-start;
+    background: #faf5ff;
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 18px;
+    transition: 0.3s ease;
   }
 
-  .school_motto h3{
-    font-size:24px;
+  .discipline_item:hover {
+    transform: translateY(-4px);
+    background: #fff;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
   }
 
-  .school_motto p{
-    font-size:26px;
+  /* Icons */
+  .discipline_item i {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    color: #fff;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 50px;
+    font-size: 20px;
+    margin-right: 15px;
+    flex-shrink: 0;
   }
 
-}
+  /* Text */
+  .discipline_item p {
+    margin: 0;
+    color: #475569;
+    line-height: 28px;
+    font-size: 15px;
+  }
 
+  /* Motto */
+  .school_motto {
+    margin-top: 30px;
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    padding: 35px;
+    border-radius: 22px;
+    text-align: center;
+    color: #fff;
+  }
+
+  .school_motto h3 {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .school_motto p {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 15px;
+    color: #facc15;
+  }
+
+  .school_motto span {
+    display: block;
+    font-size: 16px;
+    line-height: 28px;
+    max-width: 850px;
+    margin: auto;
+  }
+
+  /* Responsive */
+  @media(max-width:991px) {
+
+    .discipline_section .main_title h2 {
+      font-size: 34px;
+    }
+
+  }
+
+  @media(max-width:767px) {
+
+    .discipline_section .main_title h2 {
+      font-size: 28px;
+    }
+
+    .discipline_wrapper {
+      padding: 25px;
+    }
+
+    .discipline_item {
+      padding: 15px;
+    }
+
+    .discipline_item i {
+      width: 42px;
+      height: 42px;
+      line-height: 42px;
+      font-size: 18px;
+    }
+
+    .school_motto {
+      padding: 25px;
+    }
+
+    .school_motto h3 {
+      font-size: 24px;
+    }
+
+    .school_motto p {
+      font-size: 26px;
+    }
+
+  }
 </style>
-
-
-

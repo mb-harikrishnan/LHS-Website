@@ -1,32 +1,34 @@
-
 <!doctype html>
-<html lang="en"></html>
+<html lang="en">
+
+</html>
+
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Little Hearts | Parental Support</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>Little Hearts | Parental Support</title>
 
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
-
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/font-awesome.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/edua-icons.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/animate.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.carousel.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.transitions.css') ?> ">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/cubeportfolio.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/settings.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootsnav.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/style.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/loader.css') ?>">
-<link rel="icon" href="<?php echo base_url('assets/images/favicon.png')?>">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
 
-<!--[if lt IE 9]>
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/font-awesome.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/edua-icons.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/animate.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.carousel.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.transitions.css') ?> ">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/cubeportfolio.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/settings.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootsnav.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/style.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/loader.css') ?>">
+  <link rel="icon" href="<?php echo base_url('assets/images/favicon.png') ?>">
+
+
+  <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
@@ -37,7 +39,7 @@
 <div id="search">
   <button type="button" class="close">×</button>
   <form>
-    <input type="search" value="" placeholder="Search here...."  required/>
+    <input type="search" value="" placeholder="Search here...." required />
     <button type="submit" class="btn btn_common blue">Search</button>
   </form>
 </div>
@@ -239,231 +241,229 @@
 </section>
 
 <style>
-
-/* Section */
-.parental_support_section{
-  background:#f8fbff;
-  position:relative;
-}
-
-/* Heading */
-.support_tag{
-  display:inline-block;
-  background:#14b8a6;
-  color:#fff;
-  padding:8px 18px;
-  border-radius:30px;
-  font-size:14px;
-  font-weight:600;
-  margin-bottom:15px;
-}
-
-.parental_support_section .main_title h2{
-  font-size:42px;
-  font-weight:800;
-  color:#0f172a;
-  margin-bottom:18px;
-}
-
-.parental_support_section .main_title p{
-  max-width:850px;
-  margin:auto;
-  color:#64748b;
-  font-size:17px;
-  line-height:30px;
-}
-
-/* Intro Banner */
-.support_intro{
-  background:linear-gradient(135deg,#14b8a6,#0f766e);
-  border-radius:25px;
-  padding:35px;
-  display:flex;
-  align-items:center;
-  margin-bottom:35px;
-  color:#fff;
-  box-shadow:0 12px 35px rgba(20,184,166,0.25);
-}
-
-.intro_icon{
-  width:90px;
-  height:90px;
-  background:rgba(255,255,255,0.15);
-  border-radius:50%;
-  text-align:center;
-  line-height:90px;
-  margin-right:25px;
-  flex-shrink:0;
-}
-
-.intro_icon i{
-  font-size:38px;
-  color:#fff;
-}
-
-.intro_content h3{
-  font-size:32px;
-  font-weight:700;
-  margin-bottom:12px;
-}
-
-.intro_content p{
-  font-size:16px;
-  line-height:30px;
-  margin:0;
-}
-
-/* Cards */
-.support_card{
-  background:#fff;
-  border-radius:22px;
-  padding:28px;
-  margin-bottom:25px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.08);
-  transition:0.3s ease;
-  border-top:5px solid #14b8a6;
-  height:100%;
-}
-
-.support_card:hover{
-  transform:translateY(-5px);
-  box-shadow:0 15px 40px rgba(0,0,0,0.12);
-}
-
-/* Icon */
-.support_icon{
-  width:65px;
-  height:65px;
-  background:linear-gradient(135deg,#14b8a6,#0f766e);
-  border-radius:18px;
-  text-align:center;
-  line-height:65px;
-  margin-bottom:18px;
-  box-shadow:0 8px 20px rgba(20,184,166,0.25);
-}
-
-.support_icon i{
-  color:#fff;
-  font-size:26px;
-}
-
-/* Titles */
-.support_card h3{
-  font-size:24px;
-  font-weight:700;
-  color:#0f172a;
-  margin-bottom:18px;
-}
-
-/* List */
-.support_card ul{
-  padding:0;
-  margin:0;
-}
-
-.support_card ul li{
-  list-style:none;
-  position:relative;
-  padding-left:28px;
-  margin-bottom:12px;
-  color:#475569;
-  line-height:26px;
-  font-size:15px;
-}
-
-.support_card ul li:before{
-  content:"✔";
-  position:absolute;
-  left:0;
-  top:0;
-  color:#14b8a6;
-  font-weight:bold;
-}
-
-/* Closing Message */
-.closing_message{
-  margin-top:30px;
-  background:#ffffff;
-  border-radius:25px;
-  padding:40px;
-  text-align:center;
-  box-shadow:0 10px 35px rgba(0,0,0,0.08);
-  border:2px dashed #14b8a6;
-}
-
-.closing_message i{
-  font-size:42px;
-  color:#14b8a6;
-  margin-bottom:20px;
-}
-
-.closing_message p{
-  font-size:22px;
-  line-height:38px;
-  color:#0f172a;
-  font-weight:600;
-  margin-bottom:18px;
-}
-
-.closing_message span{
-  color:#475569;
-  font-size:16px;
-  line-height:30px;
-  display:block;
-  max-width:900px;
-  margin:auto;
-}
-
-/* Responsive */
-@media(max-width:991px){
-
-  .parental_support_section .main_title h2{
-    font-size:34px;
+  /* Section */
+  .parental_support_section {
+    background: #f8fbff;
+    position: relative;
   }
 
-  .support_intro{
-    flex-direction:column;
-    text-align:center;
+  /* Heading */
+  .support_tag {
+    display: inline-block;
+    background: #0A84FF;
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 15px;
   }
 
-  .intro_icon{
-    margin-right:0;
-    margin-bottom:20px;
+  .parental_support_section .main_title h2 {
+    font-size: 42px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 18px;
   }
 
-}
-
-@media(max-width:767px){
-
-  .parental_support_section .main_title h2{
-    font-size:28px;
+  .parental_support_section .main_title p {
+    max-width: 850px;
+    margin: auto;
+    color: #64748b;
+    font-size: 17px;
+    line-height: 30px;
   }
 
-  .support_intro{
-    padding:25px;
+  /* Intro Banner */
+  .support_intro {
+    background: linear-gradient(135deg, #0A84FF, #0654c2);
+    border-radius: 25px;
+    padding: 35px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 35px;
+    color: #fff;
+    box-shadow: 0 12px 35px rgba(20, 184, 166, 0.25);
   }
 
-  .intro_content h3{
-    font-size:24px;
+  .intro_icon {
+    width: 90px;
+    height: 90px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 90px;
+    margin-right: 25px;
+    flex-shrink: 0;
   }
 
-  .support_card{
-    padding:22px;
+  .intro_icon i {
+    font-size: 38px;
+    color: #fff;
   }
 
-  .support_card h3{
-    font-size:21px;
+  .intro_content h3 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 12px;
   }
 
-  .closing_message{
-    padding:25px;
+  .intro_content p {
+    font-size: 16px;
+    line-height: 30px;
+    margin: 0;
   }
 
-  .closing_message p{
-    font-size:18px;
-    line-height:32px;
+  /* Cards */
+  .support_card {
+    background: #fff;
+    border-radius: 22px;
+    padding: 28px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: 0.3s ease;
+    border-top: 5px solid #0A84FF;
+    height: 100%;
   }
 
-}
+  .support_card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+  }
 
+  /* Icon */
+  .support_icon {
+    width: 65px;
+    height: 65px;
+    background: linear-gradient(135deg, #0A84FF, #0654c2);
+    border-radius: 18px;
+    text-align: center;
+    line-height: 65px;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 20px rgba(20, 184, 166, 0.25);
+  }
+
+  .support_icon i {
+    color: #fff;
+    font-size: 26px;
+  }
+
+  /* Titles */
+  .support_card h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 18px;
+  }
+
+  /* List */
+  .support_card ul {
+    padding: 0;
+    margin: 0;
+  }
+
+  .support_card ul li {
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    margin-bottom: 12px;
+    color: #475569;
+    line-height: 26px;
+    font-size: 15px;
+  }
+
+  .support_card ul li:before {
+    content: "✔";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #0A84FF;
+    font-weight: bold;
+  }
+
+  /* Closing Message */
+  .closing_message {
+    margin-top: 30px;
+    background: #ffffff;
+    border-radius: 25px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+    border: 2px dashed #0A84FF;
+  }
+
+  .closing_message i {
+    font-size: 42px;
+    color: #0A84FF;
+    margin-bottom: 20px;
+  }
+
+  .closing_message p {
+    font-size: 22px;
+    line-height: 38px;
+    color: #0f172a;
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+
+  .closing_message span {
+    color: #475569;
+    font-size: 16px;
+    line-height: 30px;
+    display: block;
+    max-width: 900px;
+    margin: auto;
+  }
+
+  /* Responsive */
+  @media(max-width:991px) {
+
+    .parental_support_section .main_title h2 {
+      font-size: 34px;
+    }
+
+    .support_intro {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .intro_icon {
+      margin-right: 0;
+      margin-bottom: 20px;
+    }
+
+  }
+
+  @media(max-width:767px) {
+
+    .parental_support_section .main_title h2 {
+      font-size: 28px;
+    }
+
+    .support_intro {
+      padding: 25px;
+    }
+
+    .intro_content h3 {
+      font-size: 24px;
+    }
+
+    .support_card {
+      padding: 22px;
+    }
+
+    .support_card h3 {
+      font-size: 21px;
+    }
+
+    .closing_message {
+      padding: 25px;
+    }
+
+    .closing_message p {
+      font-size: 18px;
+      line-height: 32px;
+    }
+
+  }
 </style>

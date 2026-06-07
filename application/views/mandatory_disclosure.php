@@ -1,32 +1,34 @@
-
 <!doctype html>
-<html lang="en"></html>
+<html lang="en">
+
+</html>
+
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Little Hearts | Mandatory Disclosure</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>Little Hearts | Mandatory Disclosure</title>
 
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
-
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/font-awesome.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/edua-icons.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/animate.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.carousel.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.transitions.css') ?> ">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/cubeportfolio.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/settings.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootsnav.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/style.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/loader.css') ?>">
-<link rel="icon" href="<?php echo base_url('assets/images/favicon.png')?>">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
 
-<!--[if lt IE 9]>
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/font-awesome.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/edua-icons.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/animate.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.carousel.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.transitions.css') ?> ">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/cubeportfolio.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/settings.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootsnav.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/style.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/loader.css') ?>">
+  <link rel="icon" href="<?php echo base_url('assets/images/favicon.png') ?>">
+
+
+  <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
@@ -37,7 +39,7 @@
 <div id="search">
   <button type="button" class="close">×</button>
   <form>
-    <input type="search" value="" placeholder="Search here...."  required/>
+    <input type="search" value="" placeholder="Search here...." required />
     <button type="submit" class="btn btn_common blue">Search</button>
   </form>
 </div>
@@ -472,154 +474,126 @@
 </section>
 
 <style>
-
-.disclosure_section{
-  background:#f5f9ff;
-}
-
-.main_title .subtitle{
-  display:inline-block;
-  background:#0d6efd;
-  color:#fff;
-  padding:8px 18px;
-  border-radius:30px;
-  font-size:14px;
-  margin-bottom:15px;
-  font-weight:600;
-  letter-spacing:1px;
-}
-
-.main_title h2{
-  font-size:42px;
-  font-weight:700;
-  color:#0a2c5e;
-  margin-bottom:15px;
-}
-
-.main_title p{
-  color:#666;
-  font-size:17px;
-}
-
-.disclosure_card{
-  background:#fff;
-  border-radius:20px;
-  padding:30px;
-  margin-bottom:35px;
-  box-shadow:0 10px 40px rgba(0,0,0,0.08);
-  transition:0.4s;
-}
-
-.disclosure_card:hover{
-  transform:translateY(-5px);
-}
-
-.card_title{
-  font-size:24px;
-  font-weight:700;
-  color:#0a2c5e;
-  margin-bottom:25px;
-  border-left:5px solid #0d6efd;
-  padding-left:15px;
-}
-
-.card_title i{
-  color:#0d6efd;
-  margin-right:10px;
-}
-
-.disclosure_table{
-  margin-bottom:0;
-}
-
-.disclosure_table thead{
-  background:#0d6efd;
-  color:#fff;
-}
-
-.disclosure_table thead th{
-  padding:16px;
-  border:none;
-  font-size:15px;
-}
-
-.disclosure_table tbody td{
-  padding:16px;
-  vertical-align:middle;
-  border-color:#edf2f7;
-  color:#444;
-  font-size:15px;
-}
-
-.disclosure_table tbody tr:hover{
-  background:#f7fbff;
-}
-
-.view_btn{
-  background:linear-gradient(45deg,#0d6efd,#00bcd4);
-  color:#fff;
-  padding:8px 18px;
-  border-radius:30px;
-  text-decoration:none;
-  font-size:14px;
-  font-weight:600;
-  transition:0.3s;
-  display:inline-block;
-}
-
-.view_btn:hover{
-  color:#fff;
-  transform:scale(1.05);
-}
-
-.note_box{
-  margin-top:20px;
-  background:#fff8e6;
-  border-left:5px solid #ffc107;
-  padding:18px;
-  border-radius:10px;
-  color:#555;
-  font-size:15px;
-}
-
-.result_heading{
-  margin-top:35px;
-  margin-bottom:20px;
-  color:#0a2c5e;
-  font-weight:700;
-}
-
-.badge_success{
-  background:#28a745;
-  color:#fff;
-  padding:6px 14px;
-  border-radius:30px;
-  font-size:13px;
-  font-weight:600;
-}
-
-@media(max-width:768px){
-
-  .main_title h2{
-    font-size:30px;
+  .disclosure_section {
+    background: #f5f9ff;
   }
 
-  .disclosure_card{
-    padding:20px;
+  .disclosure_card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 35px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    transition: 0.4s;
   }
 
-  .card_title{
-    font-size:20px;
+  .disclosure_card:hover {
+    transform: translateY(-5px);
   }
 
-  .disclosure_table thead th,
-  .disclosure_table tbody td{
-    font-size:13px;
-    padding:12px;
+  .card_title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0a2c5e;
+    margin-bottom: 25px;
+    border-left: 5px solid #0654c2;
+    padding-left: 15px;
   }
 
-}
+  .card_title i {
+    color: #0654c2;
+    margin-right: 10px;
+  }
 
+  .disclosure_table {
+    margin-bottom: 0;
+  }
+
+  .disclosure_table thead {
+    background: #0654c2;
+    color: #fff;
+  }
+
+  .disclosure_table thead th {
+    padding: 16px;
+    border: none;
+    font-size: 15px;
+  }
+
+  .disclosure_table tbody td {
+    padding: 16px;
+    vertical-align: middle;
+    border-color: #edf2f7;
+    color: #444;
+    font-size: 15px;
+  }
+
+  .disclosure_table tbody tr:hover {
+    background: #f7fbff;
+  }
+
+  .view_btn {
+    background: linear-gradient(45deg, #0654c2, #0A84FF);
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.3s;
+    display: inline-block;
+  }
+
+  .view_btn:hover {
+    color: #fff;
+    transform: scale(1.05);
+  }
+
+  .note_box {
+    margin-top: 20px;
+    background: #fff8e6;
+    border-left: 5px solid #ffc107;
+    padding: 18px;
+    border-radius: 10px;
+    color: #555;
+    font-size: 15px;
+  }
+
+  .result_heading {
+    margin-top: 35px;
+    margin-bottom: 20px;
+    color: #0a2c5e;
+    font-weight: 700;
+  }
+
+  .badge_success {
+    background: #0654c2;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  @media(max-width:768px) {
+
+    .main_title h2 {
+      font-size: 30px;
+    }
+
+    .disclosure_card {
+      padding: 20px;
+    }
+
+    .card_title {
+      font-size: 20px;
+    }
+
+    .disclosure_table thead th,
+    .disclosure_table tbody td {
+      font-size: 13px;
+      padding: 12px;
+    }
+
+  }
 </style>
-
-
