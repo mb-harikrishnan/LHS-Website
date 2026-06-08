@@ -260,17 +260,17 @@
   }
 
   .parental_support_section .main_title h2 {
-    font-size: 42px;
-    font-weight: 800;
-    color: #0f172a;
-    margin-bottom: 18px;
+    font-size: 35px;
+    font-weight: 400;
+    color: #0b3d2e;
+    margin-bottom: 15px;
   }
 
   .parental_support_section .main_title p {
     max-width: 850px;
     margin: auto;
     color: #64748b;
-    font-size: 17px;
+    font-size: 15px;
     line-height: 30px;
   }
 
@@ -323,7 +323,7 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     transition: 0.3s ease;
     border-top: 5px solid #0A84FF;
-    height: 100%;
+    height: 325px;
   }
 
   .support_card:hover {
