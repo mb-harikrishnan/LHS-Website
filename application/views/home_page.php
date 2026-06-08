@@ -53,7 +53,6 @@
         <div id="rev_slider" class="rev_slider" data-version="5.0">
             <ul>
                 <!-- SLIDE  -->
-<<<<<<< HEAD
 
                 <?php foreach($slider as $value) {?>
                 <li data-transition="fade">
@@ -128,12 +127,10 @@
 
 
               <!-- LAYER NR. 1 -->
-=======
                 <li data-transition="fade">
                     <!-- MAIN IMAGE -->
                     <img src="<?php echo base_url(); ?>assets/images/main_image/home_banner1.jpg" alt="" data-bgposition="center center" data-bgfit="cover" data-bgparallax="10" class="rev-slidebg">
                     <!-- LAYER NR. 1 -->
->>>>>>> 959cde87395f97fec1d4385fed47d37c88c881c8
                     <div class="tp-caption tp-resizeme"
                         data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
                         data-y="['180','170','160','100']" data-voffset="['0','0','0','0']"
@@ -145,11 +142,8 @@
                         data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;"
                         data-start="800">
                         <h1 class="hero-title">
-<<<<<<< HEAD
                             <?php echo $value->c_title; ?>
-=======
                             Empowering Young Minds for a Bright Future
->>>>>>> 959cde87395f97fec1d4385fed47d37c88c881c8
                         </h1>
                     </div>
                     <div class="tp-caption tp-resizeme"
@@ -162,14 +156,11 @@
                         data-transform_out="opacity:0;s:1000;s:1000;"
                         data-start="1500">
                         <p style="color:#ff6600;">
-<<<<<<< HEAD
 
                         <?php echo $value->c_description ; ?>
                                        </p>
-=======
                             Providing quality education, creativity, and values to help students achieve academic excellence and personal growth.
                         </p>
->>>>>>> 959cde87395f97fec1d4385fed47d37c88c881c8
                     </div>
                     <div class="tp-caption  tp-resizeme"
                         data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
@@ -188,12 +179,9 @@
                 </li>
 
 
-<<<<<<< HEAD
                 <?php }?>
 
 
-=======
->>>>>>> 959cde87395f97fec1d4385fed47d37c88c881c8
             </ul>
         </div><!-- END REVOLUTION SLIDER -->
     </section>
@@ -586,7 +574,6 @@
     <!--Fun Facts-->
     <section id="facts" class="learning-section">
         <div class="container">
-<<<<<<< HEAD
 
             <div class="section-title text-center">
                 <h2>Learning Journey</h2>
@@ -632,8 +619,6 @@
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowfullscreen>
                         </iframe>
-=======
->>>>>>> 959cde87395f97fec1d4385fed47d37c88c881c8
 
             <div class="section-title text-center">
                 <h2>Learning Journey</h2>
@@ -643,7 +628,6 @@
                 </p>
             </div>
 
-<<<<<<< HEAD
                         </div>
 
                     <?php } ?>
@@ -665,9 +649,7 @@
                             </video>
 
                         </div>
-=======
             <div class="learning-wrapper">
->>>>>>> 959cde87395f97fec1d4385fed47d37c88c881c8
 
                 <!-- Left Side Content -->
                 <div class="learning-video">
@@ -679,7 +661,6 @@
                     </iframe>
                 </div>
 
-<<<<<<< HEAD
                <?php } ?>
 
 
@@ -720,7 +701,6 @@
                         <p>Pass Percentage</p>
                     </div>
 
-=======
                 <!-- Right Side Stats -->
                 <div class="stats-grid">
 
@@ -756,7 +736,6 @@
                         <p>Pass Percentage</p>
                     </div>
 
->>>>>>> 959cde87395f97fec1d4385fed47d37c88c881c8
                 </div>
 
             </div>
