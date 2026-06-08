@@ -82,6 +82,11 @@ $route['parental_support'] = 'welcome/parental_support';
 
 
 
+
+
+
+
+
 $route['contact'] = 'welcome/contact';
 $route['testimonials'] = 'welcome/testimonials';
 $route['teachers'] = 'welcome/teachers';

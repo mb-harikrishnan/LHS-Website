@@ -101,6 +101,13 @@ $route['add_paper']   = 'QuestionPaperController/add_paper';
 $route['delete_paper']   = 'QuestionPaperController/delete_paper';
 $route['insert_paper']   = 'QuestionPaperController/insert_paper';
 
+$route['slider_list']   = 'SliderController/slider_list';
+$route['add_slider']   = 'SliderController/add_slider';
+$route['insert_slider']   = 'SliderController/insert_slider';
+$route['delete_slider']   = 'SliderController/delete_slider';
+
+
+
 
 
 

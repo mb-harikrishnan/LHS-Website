@@ -53,10 +53,80 @@
         <div id="rev_slider" class="rev_slider" data-version="5.0">
             <ul>
                 <!-- SLIDE  -->
+
+                <?php foreach($slider as $value) {?>
                 <li data-transition="fade">
                     <!-- MAIN IMAGE -->
-                    <img src="<?php echo base_url(); ?>assets/images/main_image/home_banner1.jpg" alt="" data-bgposition="center center" data-bgfit="cover" data-bgparallax="10" class="rev-slidebg">
-                    <!-- LAYER NR. 1 -->
+
+
+                    
+                <?php if($value->c_upload_type == "image") { ?>
+
+                    <!-- IMAGE -->
+
+                    <img src="<?php echo base_url('../assets/images/gallery/'.$value->c_file); ?>"
+                        alt=""
+                        data-bgposition="center center"
+                        data-bgfit="cover"
+                        data-bgparallax="10"
+                        class="rev-slidebg">
+
+                <?php } ?>
+
+                    <?php if($value->c_upload_type == "video") { ?>
+
+                    <video autoplay muted loop playsinline controls
+                        width="100%"
+                        height="700"
+                        style="object-fit:cover;">
+
+                        <source src="<?php echo base_url('../assets/images/gallery/'.$value->c_file); ?>" type="video/mp4">
+
+                        Your browser does not support the video tag.
+
+                    </video>
+
+                    <?php } ?>
+
+                <?php if($value->c_upload_type == "link") { ?>
+
+                <?php
+                $link = trim($value->c_file);
+
+                $video_id = '';
+
+                parse_str(parse_url($link, PHP_URL_QUERY), $vars);
+
+                if(isset($vars['v'])) {
+                    $video_id = $vars['v'];
+                }
+
+                // support youtu.be links also
+                if(empty($video_id)) {
+                    $path = parse_url($link, PHP_URL_PATH);
+                    $video_id = trim($path, '/');
+                }
+                ?>
+
+                <?php if(!empty($video_id)) { ?>
+
+                <iframe width="100%"
+                        height="700"
+                        src="https://www.youtube.com/embed/<?php echo $video_id; ?>?autoplay=1&mute=1&playsinline=1&loop=1&playlist=<?php echo $video_id; ?>&controls=1&rel=0"
+                        title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                </iframe>
+
+                <?php } ?>
+
+                <?php } ?>
+
+                    
+
+
+              <!-- LAYER NR. 1 -->
                     <div class="tp-caption tp-resizeme"
                         data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
                         data-y="['180','170','160','100']" data-voffset="['0','0','0','0']"
@@ -68,7 +138,7 @@
                         data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;"
                         data-start="800">
                         <h1 class="hero-title">
-                            Empowering Young Minds for a Bright Future
+                            <?php echo $value->c_title; ?>
                         </h1>
                     </div>
                     <div class="tp-caption tp-resizeme"
@@ -81,8 +151,9 @@
                         data-transform_out="opacity:0;s:1000;s:1000;"
                         data-start="1500">
                         <p style="color:#ff6600;">
-                            Providing quality education, creativity, and values to help students achieve academic excellence and personal growth.
-                        </p>
+
+                        <?php echo $value->c_description ; ?>
+                                       </p>
                     </div>
                     <div class="tp-caption  tp-resizeme"
                         data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
@@ -99,6 +170,9 @@
                         <!-- <a href="#." class="border_radius btn_common blue">Get a quote</a> -->
                     </div>
                 </li>
+
+
+                <?php }?>
 
 
             </ul>
@@ -504,15 +578,69 @@
 
             <div class="learning-wrapper">
 
-                <!-- Left Side Content -->
-                <div class="learning-video">
-                    <iframe
-                        src="https://www.youtube.com/embed/yLj1rhb8rM4"
-                        title="School Video"
-                        frameborder="0"
-                        allowfullscreen>
-                    </iframe>
-                </div>
+               <?php foreach($homepage_video as $link_value) {?>
+             
+               <?php if($link_value->c_type=='infrastructure'){?>
+
+                <?php if($link_value->links != "") { ?>
+
+                        <?php
+                            $link = trim($link_value->links);
+
+                            $video_id = '';
+
+                            parse_str(parse_url($link, PHP_URL_QUERY), $vars);
+
+                            if(isset($vars['v'])) {
+                                $video_id = $vars['v'];
+                            }
+
+                            // support youtu.be links also
+                            if(empty($video_id)) {
+                                $path = parse_url($link, PHP_URL_PATH);
+                                $video_id = trim($path, '/');
+                            }
+                        ?>
+
+                    <?php if(!empty($video_id)) { ?>
+                        <div class="learning-video">
+
+                        <iframe 
+                                src="https://www.youtube.com/embed/<?php echo $video_id; ?>?autoplay=1&mute=1&playsinline=1&loop=1&playlist=<?php echo $video_id; ?>&controls=1&rel=0"
+                                title="YouTube video player"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                        </iframe>
+
+
+                        </div>
+
+                    <?php } ?>
+
+                <?php }else{  ?>
+
+                     <div class="learning-video">
+
+                         <?php
+                            $video = base_url('../assets/uploads/videos/'.$link_value->c_videos);
+                            ?>
+
+                            <video width="100%" height="450" autoplay muted loop controls playsinline>
+                                
+                                <source src="<?php echo $video; ?>" type="video/*">
+                                
+                                Your browser does not support the video tag.
+
+                            </video>
+
+                        </div>
+
+
+               <?php } ?>
+
+
+                <?php }   }?>
 
                 <!-- Right Side Stats -->
                 <div class="stats-grid">

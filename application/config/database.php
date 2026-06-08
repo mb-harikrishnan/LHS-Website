@@ -64,10 +64,16 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => '',
-	'password' => '',
-	'database' => '',
+	// 'hostname' => 'localhost',
+	// 'username' => 'root',
+	// 'password' => '',
+	// 'database' => 'school_managment_db',
+
+	
+	'hostname' => '103.122.182.25',
+	'username' => 'lhs_demo',
+	'password' => 'lhsdemo@123',
+	'database' => 'lhs_demo',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

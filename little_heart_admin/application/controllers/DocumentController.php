@@ -285,7 +285,7 @@ class DocumentController extends CI_Controller {
             $config['upload_path']   ='../assets/uploads/videos/';
 
             $config['allowed_types'] = 'mp4|avi|mov|wmv|flv|mkv';
-            $config['max_size']      = 51200; // 50MB
+            $config['max_size']      = 1048576; // 1gb
             $config['encrypt_name']  = TRUE;
 
             $this->load->library('upload', $config);
