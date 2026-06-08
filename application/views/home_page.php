@@ -649,17 +649,7 @@
                             </video>
 
                         </div>
-            <div class="learning-wrapper">
-
-                <!-- Left Side Content -->
-                <div class="learning-video">
-                    <iframe
-                        src="https://www.youtube.com/embed/yLj1rhb8rM4"
-                        title="School Video"
-                        frameborder="0"
-                        allowfullscreen>
-                    </iframe>
-                </div>
+       
 
                <?php } ?>
 
@@ -701,42 +691,7 @@
                         <p>Pass Percentage</p>
                     </div>
 
-                <!-- Right Side Stats -->
-                <div class="stats-grid">
-
-                    <div class="stat-card">
-                        <div class="icon-box">
-                            <i class="icon-trophy"></i>
-                        </div>
-                        <h3 data-to="10000">10,000+</h3>
-                        <p>Passed-Out Students</p>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="icon-box">
-                            <i class="icon-checkmark3"></i>
-                        </div>
-                        <h3 data-to="8539">8539</h3>
-                        <p>Campus Area (Sq Mtr)</p>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="icon-box">
-                            <i class="fa fa-user"></i>
-                        </div>
-                        <h3 data-to="186">186+</h3>
-                        <p>Experienced Teachers</p>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="icon-box">
-                            <i class="icon-happy"></i>
-                        </div>
-                        <h3 data-to="100">100%</h3>
-                        <p>Pass Percentage</p>
-                    </div>
-
-                </div>
+               
 
             </div>
         </div>
