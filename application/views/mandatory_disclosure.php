@@ -819,32 +819,328 @@
             <tr>
               <td>1</td>
               <td>Fee Structure of the School</td>
-              <td><a href="#" class="view_btn">View</a></td>
+              <?php
+            if(!empty($fee_structure))
+            {
+                $found = false;
+
+                foreach($fee_structure as $value)
+                {
+                    if($value->c_type == 'fee_structure' && !empty($value->c_document))
+                    {
+                        $found = true;
+
+                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        ?>
+                        
+                        <td>
+                            <a href="<?php echo $pdf_path; ?>" 
+                              target="_blank" 
+                              class="view_btn">
+                                View
+                            </a>
+                        </td>
+
+                        <?php
+                    }
+                }
+
+                // if no matching document found
+                if($found == false)
+                {
+                    ?>
+                    <td>
+                        <a href="javascript:void(0);" 
+                          onclick="showEmptyMessage(this)"
+                          class="view_btn">
+                            View
+                        </a>
+
+                        <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                            Empty
+                        </div>
+                    </td>
+                    <?php
+                }
+            }
+            else
+            {
+                ?>
+                <td>
+                    <a href="javascript:void(0);" 
+                      onclick="showEmptyMessage(this)"
+                      class="view_btn">
+                        View
+                    </a>
+
+                    <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                        Empty
+                    </div>
+                </td>
+                <?php
+            }
+            ?>
             </tr>
 
             <tr>
               <td>2</td>
               <td>Annual Academic Calendar</td>
-              <td><a href="#" class="view_btn">View</a></td>
-            </tr>
+<?php
+            if(!empty($anual_academic_calendar))
+            {
+                $found = false;
+
+                foreach($anual_academic_calendar as $value)
+                {
+                    if($value->c_type == 'anual_academic_calendar' && !empty($value->c_document))
+                    {
+                        $found = true;
+
+                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        ?>
+                        
+                        <td>
+                            <a href="<?php echo $pdf_path; ?>" 
+                              target="_blank" 
+                              class="view_btn">
+                                View
+                            </a>
+                        </td>
+
+                        <?php
+                    }
+                }
+
+                // if no matching document found
+                if($found == false)
+                {
+                    ?>
+                    <td>
+                        <a href="javascript:void(0);" 
+                          onclick="showEmptyMessage(this)"
+                          class="view_btn">
+                            View
+                        </a>
+
+                        <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                            Empty
+                        </div>
+                    </td>
+                    <?php
+                }
+            }
+            else
+            {
+                ?>
+                <td>
+                    <a href="javascript:void(0);" 
+                      onclick="showEmptyMessage(this)"
+                      class="view_btn">
+                        View
+                    </a>
+
+                    <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                        Empty
+                    </div>
+                </td>
+                <?php
+            }
+            ?>            </tr>
 
             <tr>
               <td>3</td>
               <td>List of School Management Committee (SMC)</td>
-              <td><a href="#" class="view_btn">View</a></td>
-            </tr>
+<?php
+            if(!empty($school_managment_comitte))
+            {
+                $found = false;
+
+                foreach($school_managment_comitte as $value)
+                {
+                    if($value->c_type == 'school_managment_comitte' && !empty($value->c_document))
+                    {
+                        $found = true;
+
+                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        ?>
+                        
+                        <td>
+                            <a href="<?php echo $pdf_path; ?>" 
+                              target="_blank" 
+                              class="view_btn">
+                                View
+                            </a>
+                        </td>
+
+                        <?php
+                    }
+                }
+
+                // if no matching document found
+                if($found == false)
+                {
+                    ?>
+                    <td>
+                        <a href="javascript:void(0);" 
+                          onclick="showEmptyMessage(this)"
+                          class="view_btn">
+                            View
+                        </a>
+
+                        <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                            Empty
+                        </div>
+                    </td>
+                    <?php
+                }
+            }
+            else
+            {
+                ?>
+                <td>
+                    <a href="javascript:void(0);" 
+                      onclick="showEmptyMessage(this)"
+                      class="view_btn">
+                        View
+                    </a>
+
+                    <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                        Empty
+                    </div>
+                </td>
+                <?php
+            }
+            ?>            </tr>
 
             <tr>
               <td>4</td>
               <td>List of Parents Teachers Association (PTA) Members</td>
-              <td><a href="#" class="view_btn">View</a></td>
-            </tr>
+<?php
+            if(!empty($pta_members))
+            {
+                $found = false;
+
+                foreach($pta_members as $value)
+                {
+                    if($value->c_type == 'pta_members' && !empty($value->c_document))
+                    {
+                        $found = true;
+
+                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        ?>
+                        
+                        <td>
+                            <a href="<?php echo $pdf_path; ?>" 
+                              target="_blank" 
+                              class="view_btn">
+                                View
+                            </a>
+                        </td>
+
+                        <?php
+                    }
+                }
+
+                // if no matching document found
+                if($found == false)
+                {
+                    ?>
+                    <td>
+                        <a href="javascript:void(0);" 
+                          onclick="showEmptyMessage(this)"
+                          class="view_btn">
+                            View
+                        </a>
+
+                        <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                            Empty
+                        </div>
+                    </td>
+                    <?php
+                }
+            }
+            else
+            {
+                ?>
+                <td>
+                    <a href="javascript:void(0);" 
+                      onclick="showEmptyMessage(this)"
+                      class="view_btn">
+                        View
+                    </a>
+
+                    <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                        Empty
+                    </div>
+                </td>
+                <?php
+            }
+            ?>            </tr>
 
             <tr>
               <td>5</td>
               <td>Last Three-Year Result of Board Examination</td>
-              <td><a href="#" class="view_btn">View</a></td>
-            </tr>
+<?php
+            if(!empty($_yers_board_exam))
+            {
+                $found = false;
+
+                foreach($_yers_board_exam as $value)
+                {
+                    if($value->c_type == '_yers_board_exam' && !empty($value->c_document))
+                    {
+                        $found = true;
+
+                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        ?>
+                        
+                        <td>
+                            <a href="<?php echo $pdf_path; ?>" 
+                              target="_blank" 
+                              class="view_btn">
+                                View
+                            </a>
+                        </td>
+
+                        <?php
+                    }
+                }
+
+                // if no matching document found
+                if($found == false)
+                {
+                    ?>
+                    <td>
+                        <a href="javascript:void(0);" 
+                          onclick="showEmptyMessage(this)"
+                          class="view_btn">
+                            View
+                        </a>
+
+                        <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                            Empty
+                        </div>
+                    </td>
+                    <?php
+                }
+            }
+            else
+            {
+                ?>
+                <td>
+                    <a href="javascript:void(0);" 
+                      onclick="showEmptyMessage(this)"
+                      class="view_btn">
+                        View
+                    </a>
+
+                    <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                        Empty
+                    </div>
+                </td>
+                <?php
+            }
+            ?>            </tr>
           </tbody>
         </table>
       </div>
@@ -969,7 +1265,67 @@
 
             <tr>
               <td>Staff Details</td>
-              <td><a href="#" class="view_btn">View</a></td>
+              <?php
+            if(!empty($staff_details))
+            {
+                $found = false;
+
+                foreach($staff_details as $value)
+                {
+                    if($value->c_type == 'staff_details' && !empty($value->c_document))
+                    {
+                        $found = true;
+
+                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        ?>
+                        
+                        <td>
+                            <a href="<?php echo $pdf_path; ?>" 
+                              target="_blank" 
+                              class="view_btn">
+                                View
+                            </a>
+                        </td>
+
+                        <?php
+                    }
+                }
+
+                // if no matching document found
+                if($found == false)
+                {
+                    ?>
+                    <td>
+                        <a href="javascript:void(0);" 
+                          onclick="showEmptyMessage(this)"
+                          class="view_btn">
+                            View
+                        </a>
+
+                        <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                            Empty
+                        </div>
+                    </td>
+                    <?php
+                }
+            }
+            else
+            {
+                ?>
+                <td>
+                    <a href="javascript:void(0);" 
+                      onclick="showEmptyMessage(this)"
+                      class="view_btn">
+                        View
+                    </a>
+
+                    <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                        Empty
+                    </div>
+                </td>
+                <?php
+            }
+            ?> 
             </tr>
 
             <tr>
@@ -1053,8 +1409,39 @@
 
             <tr>
               <td>Infrastructure Inspection Video</td>
-              <td><a href="#" class="view_btn">Play Video</a></td>
-            </tr>
+              <td>
+
+        <?php 
+        if(!empty($video))
+        {
+            foreach($video as $value)
+            {
+                if(!empty($value->links))
+                {
+        ?>
+
+                    <a href="<?php echo $value->links; ?>" 
+                       target="_blank" 
+                       class="view_btn">
+                       Play Video
+                    </a>
+
+        <?php
+                }
+                else
+                {
+                    echo "No Video";
+                }
+            }
+        }
+        else
+        {
+            echo "No Video";
+        }
+        ?>
+
+    </td>
+             </tr>
           </tbody>
         </table>
       </div>

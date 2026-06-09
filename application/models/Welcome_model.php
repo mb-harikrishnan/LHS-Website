@@ -113,7 +113,69 @@ class Welcome_model extends CI_Model
       $result = $query->result();
       return $result;
    }
-
+  public function fee_structure()
+   {
+      $sql = "SELECT * FROM result_and_staff_list WHERE c_status='Y' AND c_type ='fee_structure' LIMIT 1";
+      $query = $this->db->query($sql);
+      $result = $query->result();
+      return $result;
+   }
+  public function anual_academic_calendar()
+   {
+      $sql = "SELECT * FROM result_and_staff_list WHERE c_status='Y' AND c_type ='anual_academic_calendar' LIMIT 1";
+      $query = $this->db->query($sql);
+      $result = $query->result();
+      return $result;
+   }
+  public function school_managment_comitte()
+   {
+      $sql = "SELECT * FROM result_and_staff_list WHERE c_status='Y' AND c_type ='school_managment_comitte' LIMIT 1";
+      $query = $this->db->query($sql);
+      $result = $query->result();
+      return $result;
+   }
+  public function pta_members()
+   {
+      $sql = "SELECT * FROM result_and_staff_list WHERE c_status='Y' AND c_type ='pta_members' LIMIT 1";
+      $query = $this->db->query($sql);
+      $result = $query->result();
+      return $result;
+   }
+  public function three_yers_board_exam()
+   {
+      $sql = "SELECT * FROM result_and_staff_list WHERE c_status='Y' AND c_type ='3_yers_board_exam' LIMIT 1";
+      $query = $this->db->query($sql);
+      $result = $query->result();
+      return $result;
+   }
+  public function staff_details()
+   {
+      $sql = "SELECT * FROM result_and_staff_list WHERE c_status='Y' AND c_type ='staff_details' LIMIT 1";
+      $query = $this->db->query($sql);
+      $result = $query->result();
+      return $result;
+   }
+  public function video()
+   {
+      $sql = "SELECT * FROM infrastructure_videos WHERE c_status='Y' AND c_type ='infrastructure' and links!='' LIMIT 1";
+      $query = $this->db->query($sql);
+      $result = $query->result();
+      return $result;
+   }
+  public function fetch_all_news()
+   {
+      $sql = "SELECT * FROM school_news WHERE c_status='Y' ";
+      $query = $this->db->query($sql);
+      $result = $query->result();
+      return $result;
+   }
+  public function fetch_all_Q_paper()
+   {
+      $sql = "SELECT * FROM question_paper WHERE c_status='Y' ";
+      $query = $this->db->query($sql);
+      $result = $query->result();
+      return $result;
+   }
 
    
 

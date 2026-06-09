@@ -63,58 +63,61 @@
     <!-- Download Boxes -->
     <div class="row">
 
-      <!-- Class IX -->
-      <div class="col-md-3 col-sm-6">
-        <div class="download_box text-center">
-          <i class="fa fa-file-pdf-o"></i>
-          <h4>Class IX</h4>
-          <p>CBSE Sample Question Papers</p>
+      <?php 
 
-          <a href="downloads/class9-sample-paper.pdf" download class="btn_download">
-            Download
-          </a>
+      $roman = [
+          1  => 'I',
+          2  => 'II',
+          3  => 'III',
+          4  => 'IV',
+          5  => 'V',
+          6  => 'VI',
+          7  => 'VII',
+          8  => 'VIII',
+          9  => 'IX',
+          10 => 'X',
+          11 => 'XI',
+          12 => 'XII'
+      ];
+      
+      
+      if(!empty($Q_paper)) { ?>
+
+    <?php foreach($Q_paper as $value) { ?>
+
+        <div class="col-md-3 col-sm-6">
+            <div class="download_box text-center">
+
+                <i class="fa fa-file-pdf-o"></i>
+
+                <h4>    Class <?php echo isset($roman[$value->c_class]) ? $roman[$value->c_class] : $value->c_class; ?></h4>
+
+                <p><?php echo $value->c_title ; ?></p>
+
+                <a href="<?php echo base_url('../assets/documents/'.$value->c_document); ?>" 
+                  target="_blank"
+                  class="btn_download">
+                  Download
+                </a>
+
+            </div>
         </div>
-      </div>
 
-      <!-- Class X -->
-      <div class="col-md-3 col-sm-6">
+    <?php } ?>
+
+<?php } else { ?>
+
+    <div class="col-12">
         <div class="download_box text-center">
-          <i class="fa fa-file-pdf-o"></i>
-          <h4>Class X</h4>
-          <p>CBSE Sample Question Papers</p>
 
-          <a href="downloads/class10-sample-paper.pdf" download class="btn_download">
-            Download
-          </a>
+            <i class="fa fa-file-pdf-o"></i>
+
+            <h4>No Question Papers Available</h4>
+
         </div>
-      </div>
+    </div>
 
-      <!-- Class XI -->
-      <div class="col-md-3 col-sm-6">
-        <div class="download_box text-center">
-          <i class="fa fa-file-pdf-o"></i>
-          <h4>Class XI</h4>
-          <p>CBSE Sample Question Papers</p>
-
-          <a href="downloads/class11-sample-paper.pdf" download class="btn_download">
-            Download
-          </a>
-        </div>
-      </div>
-
-      <!-- Class XII -->
-      <div class="col-md-3 col-sm-6">
-        <div class="download_box text-center">
-          <i class="fa fa-file-pdf-o"></i>
-          <h4>Class XII</h4>
-          <p>CBSE Sample Question Papers</p>
-
-          <a href="downloads/class12-sample-paper.pdf" download class="btn_download">
-            Download
-          </a>
-        </div>
-      </div>
-
+<?php } ?>     
     </div>
 
   </div>

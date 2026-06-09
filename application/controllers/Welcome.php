@@ -93,9 +93,11 @@ class Welcome extends CI_Controller {
 	}	
 	public function news()
 	{
+
+	    $data['news_list'] = $this->Welcome_model->fetch_all_news();
 		$this->load->view('topbar');
 		$this->load->view('header');
-		$this->load->view('news');
+		$this->load->view('news',$data);
 		$this->load->view('footer');
 	}	
 	public function vaccancy()
@@ -107,18 +109,13 @@ class Welcome extends CI_Controller {
 	}	
 	public function downloads()
 	{
+		$data['Q_paper']  = $this->Welcome_model->fetch_all_Q_paper();
 		$this->load->view('topbar');
 		$this->load->view('header');
-		$this->load->view('downloads');
+		$this->load->view('downloads',$data);
 		$this->load->view('footer');
 	}	
-	public function circulars()
-	{
-		$this->load->view('topbar');
-		$this->load->view('header');
-		$this->load->view('circulars');
-		$this->load->view('footer');
-	}	
+
 
 		public function about_us()
 	{
@@ -169,6 +166,13 @@ class Welcome extends CI_Controller {
 	    $general_information['DEO']                     = $this->Welcome_model->DEO();
 	    $general_information['sanitation']              = $this->Welcome_model->sanitation();
 	    $general_information['land']                    = $this->Welcome_model->land();
+	    $general_information['fee_structure']                    = $this->Welcome_model->fee_structure();
+	    $general_information['anual_academic_calendar']                    = $this->Welcome_model->anual_academic_calendar();
+	    $general_information['school_managment_comitte']                    = $this->Welcome_model->school_managment_comitte();
+	    $general_information['pta_members']                    = $this->Welcome_model->pta_members();
+	    $general_information['_yers_board_exam']                    = $this->Welcome_model->three_yers_board_exam();
+	    $general_information['staff_details']                    = $this->Welcome_model->staff_details();
+	    $general_information['video']                    = $this->Welcome_model->video();
 		
 		$this->load->view('topbar');
 		$this->load->view('header');

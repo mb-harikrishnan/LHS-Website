@@ -64,13 +64,9 @@
                             <li><a href="<?php echo base_url('co_curricular_activities'); ?>">Co-Curricular Activities</a></li>
                             <li><a href="<?php echo base_url('sports_and_games'); ?>">Sports & Games</a></li>
                             <li><a href="<?php echo base_url('clubs'); ?>">Clubs</a></li>
-                            <li><a href="<?php echo base_url('band_page'); ?>">School Band</a></li>
-                            <li><a href="<?php echo base_url('study_tour'); ?>">Study Tour</a></li>
-                            <li><a href="<?php echo base_url('annual_day'); ?>">Annual Day</a></li>
                         </ul>
                     </li>
 
-                    <li><a href="<?php echo base_url('circulars'); ?>">Circulars</a></li>
                     <li><a href="<?php echo base_url('gallery'); ?>">Gallery</a></li>
                     <li><a href="<?php echo base_url('vaccancy'); ?>">Vacancies</a></li>
                     <li class="active"><a href="<?php echo base_url('contact'); ?>">Contact Us</a></li>

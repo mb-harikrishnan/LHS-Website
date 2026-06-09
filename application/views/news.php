@@ -61,29 +61,28 @@
     <div class="row">
       <div class="col-md-12">
 
-        <div class="news_box">
-          <h4>Annual Day Celebration</h4>
-          <p>
-            Our Annual Day celebration will be held on June 15 with cultural programs and student performances.
-          </p>
-          <span><i class="fa fa-calendar"></i> May 21, 2026</span>
-        </div>
+      <?php foreach($news_list as $value){
+
+        if($value->c_news!=''){
+        
+        ?>
 
         <div class="news_box">
-          <h4>Admissions Open</h4>
+          <h4><?php echo $value->c_title;?></h4>
           <p>
-            Admissions for the academic year 2026-27 are now open for all classes.
+            <?php echo $value->c_news;?>
           </p>
-          <span><i class="fa fa-calendar"></i> May 18, 2026</span>
+          <span><i class="fa fa-calendar"></i>    <?php echo date('F j Y', strtotime($value->d_date)); ?>
+</span>
         </div>
 
-        <div class="news_box">
-          <h4>Sports Meet Winners</h4>
-          <p>
-            Congratulations to all students who participated and won prizes in the annual sports meet.
-          </p>
-          <span><i class="fa fa-calendar"></i> May 10, 2026</span>
-        </div>
+        <?php }else{  ?>
+
+         <div class="news_box">NO NEWS</div>
+
+         <?php } }?>
+
+       
 
       </div>
     </div>
