@@ -129,7 +129,6 @@
               <!-- LAYER NR. 1 -->
                 <li data-transition="fade">
                     <!-- MAIN IMAGE -->
-                    <img src="<?php echo base_url(); ?>assets/images/main_image/home_banner1.jpg" alt="" data-bgposition="center center" data-bgfit="cover" data-bgparallax="10" class="rev-slidebg">
                     <!-- LAYER NR. 1 -->
                     <div class="tp-caption tp-resizeme"
                         data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
@@ -742,29 +741,39 @@
                     <p class="heading_space margin10">Regular updates and announcements for students and parents.</p>
                 </div>
 
+                
 
-                <div class="col-md-12">
+
+                    <div class="col-md-12">
+                        
 
 
-                    <div class="pricing">
-                        <div class="pricing_item wow fadeInUp" data-wow-delay="300ms">
+                        <div class="pricing">
+                            <?php foreach($latest_news as $news){?>
+                            <div class="pricing_item wow fadeInUp" data-wow-delay="300ms">
 
-                            <h3>CBSE CLASS X Result 2025-26</h3>
+                                <h3><?php echo $news->c_title; ?></h3>
 
-                            <p class="pricing_sentence blink_text">100% SUCCESS, 95% & ABOVE - 10, 90% ABOVE - 28, DISTINCTION - 78, FIRST CLASS - 13 </p>
+                                    <p class="pricing_sentence blink_text">
+                                        <?php echo nl2br($news->c_news); ?>
+                                    </p>
+                                <ul class="pricing_list">
+                                    <li class="pricing_feature">
+                                        <?php echo date('j F Y', strtotime($news->d_date)); ?>
+                                    </li>
+                                    <!-- <li class="pricing_feature">Available for all students</li>
+                                    <li class="pricing_feature">Visit school office for support</li> -->
+                                </ul>
 
-                            <ul class="pricing_list">
-                                <li class="pricing_feature">Result published on CBSE portal</li>
-                                <li class="pricing_feature">Available for all students</li>
-                                <li class="pricing_feature">Visit school office for support</li>
-                            </ul>
+                                <a class="btn_common text-center" href="<?php echo base_url('news'); ?>">Read More</a>
 
-                            <a class="btn_common text-center" href="<?php echo base_url('news'); ?>">Read More</a>
-
+                            </div>
+                             <?php }?>
                         </div>
-                    </div>
+                        
 
-                </div>
+                    </div>
+               
             </div>
         </div>
         </div>
@@ -881,6 +890,14 @@
 
 
     <style>
+
+
+        .pricing_sentence{
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    line-height: 1.6;
+}
         .icon_box {
             min-height: 250px;
         }

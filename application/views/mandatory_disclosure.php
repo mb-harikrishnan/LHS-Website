@@ -118,11 +118,56 @@
               <td>Contact Details</td>
               <td>0484-2446939</td>
             </tr>
-            <tr>
-              <td>9</td>
-              <td>SARAS 6.0 Upload Link</td>
-              <td><a href="#" class="view_btn">View</a></td>
-            </tr>
+     
+                  <?php
+
+                  foreach($general_information as $value){
+
+                  
+                if($value->c_type == 'general_information' && !empty($value->c_document))
+                {
+                    $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                ?>
+                <tr>
+                    <td>9</td>
+                    <td>SARAS 6.0 </td>
+                    <td>
+                        <a href="<?php echo $pdf_path; ?>" 
+                          target="_blank" 
+                          class="view_btn">
+                          View
+                        </a>
+                    </td>
+                </tr>
+
+                <?php
+                }
+                else
+                {
+                ?>
+                <tr>
+                    <td>9</td>
+                    <td>SARAS 6.0 </td>
+                    <td>
+                        <a href="javascript:void(0);" 
+                          onclick="showEmptyMessage(this)"
+                          class="view_btn">
+                          View
+                        </a>
+
+                        <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                            Empty
+                        </div>
+                    </td>
+                </tr>
+
+
+
+                <?php
+                }  }
+                ?>
+            
+              
           </tbody>
         </table>
       </div>
@@ -146,58 +191,603 @@
           </thead>
 
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>Copies of Affiliation/Upgradation Letter and Recent Extension of Affiliation</td>
-              <td><a href="#" class="view_btn">View</a></td>
-            </tr>
+
+          <tr>
+            <td>1</td>
+
+            <td>
+                Copies of Affiliation/Upgradation Letter and Recent Extension of Affiliation
+            </td>
+
+            <?php
+            if(!empty($copy_of_affiliation))
+            {
+                $found = false;
+
+                foreach($copy_of_affiliation as $value)
+                {
+                    if($value->c_type == 'copy_of_affiliation' && !empty($value->c_document))
+                    {
+                        $found = true;
+
+                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        ?>
+                        
+                        <td>
+                            <a href="<?php echo $pdf_path; ?>" 
+                              target="_blank" 
+                              class="view_btn">
+                                View
+                            </a>
+                        </td>
+
+                        <?php
+                    }
+                }
+
+                // if no matching document found
+                if($found == false)
+                {
+                    ?>
+                    <td>
+                        <a href="javascript:void(0);" 
+                          onclick="showEmptyMessage(this)"
+                          class="view_btn">
+                            View
+                        </a>
+
+                        <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                            Empty
+                        </div>
+                    </td>
+                    <?php
+                }
+            }
+            else
+            {
+                ?>
+                <td>
+                    <a href="javascript:void(0);" 
+                      onclick="showEmptyMessage(this)"
+                      class="view_btn">
+                        View
+                    </a>
+
+                    <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                        Empty
+                    </div>
+                </td>
+                <?php
+            }
+            ?>
+        </tr>
 
             <tr>
               <td>2</td>
               <td>Copies of Societies/Trust/Company Registration/Renewal Certificate</td>
-              <td><a href="#" class="view_btn">View</a></td>
+               <?php
+            if(!empty($copy_of_societies))
+            {
+                $found = false;
+
+                foreach($copy_of_societies as $value)
+                {
+                    if($value->c_type == 'copy_of_societies' && !empty($value->c_document))
+                    {
+                        $found = true;
+
+                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        ?>
+                        
+                        <td>
+                            <a href="<?php echo $pdf_path; ?>" 
+                              target="_blank" 
+                              class="view_btn">
+                                View
+                            </a>
+                        </td>
+
+                        <?php
+                    }
+                }
+
+                // if no matching document found
+                if($found == false)
+                {
+                    ?>
+                    <td>
+                        <a href="javascript:void(0);" 
+                          onclick="showEmptyMessage(this)"
+                          class="view_btn">
+                            View
+                        </a>
+
+                        <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                            Empty
+                        </div>
+                    </td>
+                    <?php
+                }
+            }
+            else
+            {
+                ?>
+                <td>
+                    <a href="javascript:void(0);" 
+                      onclick="showEmptyMessage(this)"
+                      class="view_btn">
+                        View
+                    </a>
+
+                    <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                        Empty
+                    </div>
+                </td>
+                <?php
+            }
+            ?>
             </tr>
 
             <tr>
               <td>3</td>
               <td>Copy of No Objection Certificate (NOC)</td>
-              <td><a href="#" class="view_btn">View</a></td>
+                  <?php
+            if(!empty($NOC))
+            {
+                $found = false;
+
+                foreach($NOC as $value)
+                {
+                    if($value->c_type == 'NOC' && !empty($value->c_document))
+                    {
+                        $found = true;
+
+                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        ?>
+                        
+                        <td>
+                            <a href="<?php echo $pdf_path; ?>" 
+                              target="_blank" 
+                              class="view_btn">
+                                View
+                            </a>
+                        </td>
+
+                        <?php
+                    }
+                }
+
+                // if no matching document found
+                if($found == false)
+                {
+                    ?>
+                    <td>
+                        <a href="javascript:void(0);" 
+                          onclick="showEmptyMessage(this)"
+                          class="view_btn">
+                            View
+                        </a>
+
+                        <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                            Empty
+                        </div>
+                    </td>
+                    <?php
+                }
+            }
+            else
+            {
+                ?>
+                <td>
+                    <a href="javascript:void(0);" 
+                      onclick="showEmptyMessage(this)"
+                      class="view_btn">
+                        View
+                    </a>
+
+                    <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                        Empty
+                    </div>
+                </td>
+                <?php
+            }
+            ?>
             </tr>
 
             <tr>
               <td>4</td>
               <td>Copies of Recognition Certificate under RTE Act, 2009</td>
-              <td><a href="#" class="view_btn">View</a></td>
+                  <?php
+            if(!empty($copy_of_recognition))
+            {
+                $found = false;
+
+                foreach($copy_of_recognition as $value)
+                {
+                    if($value->c_type == 'copy_of_recognition' && !empty($value->c_document))
+                    {
+                        $found = true;
+
+                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        ?>
+                        
+                        <td>
+                            <a href="<?php echo $pdf_path; ?>" 
+                              target="_blank" 
+                              class="view_btn">
+                                View
+                            </a>
+                        </td>
+
+                        <?php
+                    }
+                }
+
+                // if no matching document found
+                if($found == false)
+                {
+                    ?>
+                    <td>
+                        <a href="javascript:void(0);" 
+                          onclick="showEmptyMessage(this)"
+                          class="view_btn">
+                            View
+                        </a>
+
+                        <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                            Empty
+                        </div>
+                    </td>
+                    <?php
+                }
+            }
+            else
+            {
+                ?>
+                <td>
+                    <a href="javascript:void(0);" 
+                      onclick="showEmptyMessage(this)"
+                      class="view_btn">
+                        View
+                    </a>
+
+                    <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                        Empty
+                    </div>
+                </td>
+                <?php
+            }
+            ?>
             </tr>
 
             <tr>
               <td>5</td>
               <td>Copy of Valid Building Safety Certificate</td>
-              <td><a href="#" class="view_btn">View</a></td>
+                  <?php
+            if(!empty($copy_of_safty))
+            {
+                $found = false;
+
+                foreach($copy_of_safty as $value)
+                {
+                    if($value->c_type == 'copy_of_safty' && !empty($value->c_document))
+                    {
+                        $found = true;
+
+                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        ?>
+                        
+                        <td>
+                            <a href="<?php echo $pdf_path; ?>" 
+                              target="_blank" 
+                              class="view_btn">
+                                View
+                            </a>
+                        </td>
+
+                        <?php
+                    }
+                }
+
+                // if no matching document found
+                if($found == false)
+                {
+                    ?>
+                    <td>
+                        <a href="javascript:void(0);" 
+                          onclick="showEmptyMessage(this)"
+                          class="view_btn">
+                            View
+                        </a>
+
+                        <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                            Empty
+                        </div>
+                    </td>
+                    <?php
+                }
+            }
+            else
+            {
+                ?>
+                <td>
+                    <a href="javascript:void(0);" 
+                      onclick="showEmptyMessage(this)"
+                      class="view_btn">
+                        View
+                    </a>
+
+                    <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                        Empty
+                    </div>
+                </td>
+                <?php
+            }
+            ?>
             </tr>
 
             <tr>
               <td>6</td>
               <td>Copy of Valid Fire Safety Certificate</td>
-              <td><a href="#" class="view_btn">View</a></td>
+                  <?php
+            if(!empty($copy_of_fire_and_safety))
+            {
+                $found = false;
+
+                foreach($copy_of_fire_and_safety as $value)
+                {
+                    if($value->c_type == 'copy_of_fire_and_safety' && !empty($value->c_document))
+                    {
+                        $found = true;
+
+                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        ?>
+                        
+                        <td>
+                            <a href="<?php echo $pdf_path; ?>" 
+                              target="_blank" 
+                              class="view_btn">
+                                View
+                            </a>
+                        </td>
+
+                        <?php
+                    }
+                }
+
+                // if no matching document found
+                if($found == false)
+                {
+                    ?>
+                    <td>
+                        <a href="javascript:void(0);" 
+                          onclick="showEmptyMessage(this)"
+                          class="view_btn">
+                            View
+                        </a>
+
+                        <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                            Empty
+                        </div>
+                    </td>
+                    <?php
+                }
+            }
+            else
+            {
+                ?>
+                <td>
+                    <a href="javascript:void(0);" 
+                      onclick="showEmptyMessage(this)"
+                      class="view_btn">
+                        View
+                    </a>
+
+                    <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                        Empty
+                    </div>
+                </td>
+                <?php
+            }
+            ?>
             </tr>
 
             <tr>
               <td>7</td>
               <td>Copy of the DEO Certificate</td>
-              <td><a href="#" class="view_btn">View</a></td>
+                  <?php
+            if(!empty($DEO))
+            {
+                $found = false;
+
+                foreach($DEO as $value)
+                {
+                    if($value->c_type == 'DEO' && !empty($value->c_document))
+                    {
+                        $found = true;
+
+                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        ?>
+                        
+                        <td>
+                            <a href="<?php echo $pdf_path; ?>" 
+                              target="_blank" 
+                              class="view_btn">
+                                View
+                            </a>
+                        </td>
+
+                        <?php
+                    }
+                }
+
+                // if no matching document found
+                if($found == false)
+                {
+                    ?>
+                    <td>
+                        <a href="javascript:void(0);" 
+                          onclick="showEmptyMessage(this)"
+                          class="view_btn">
+                            View
+                        </a>
+
+                        <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                            Empty
+                        </div>
+                    </td>
+                    <?php
+                }
+            }
+            else
+            {
+                ?>
+                <td>
+                    <a href="javascript:void(0);" 
+                      onclick="showEmptyMessage(this)"
+                      class="view_btn">
+                        View
+                    </a>
+
+                    <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                        Empty
+                    </div>
+                </td>
+                <?php
+            }
+            ?>
             </tr>
 
             <tr>
               <td>8</td>
               <td>Copies of Valid Water, Health and Sanitation Certificates</td>
-              <td><a href="#" class="view_btn">View</a></td>
+                  <?php
+            if(!empty($sanitation))
+            {
+                $found = false;
+
+                foreach($sanitation as $value)
+                {
+                    if($value->c_type == 'sanitation' && !empty($value->c_document))
+                    {
+                        $found = true;
+
+                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        ?>
+                        
+                        <td>
+                            <a href="<?php echo $pdf_path; ?>" 
+                              target="_blank" 
+                              class="view_btn">
+                                View
+                            </a>
+                        </td>
+
+                        <?php
+                    }
+                }
+
+                // if no matching document found
+                if($found == false)
+                {
+                    ?>
+                    <td>
+                        <a href="javascript:void(0);" 
+                          onclick="showEmptyMessage(this)"
+                          class="view_btn">
+                            View
+                        </a>
+
+                        <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                            Empty
+                        </div>
+                    </td>
+                    <?php
+                }
+            }
+            else
+            {
+                ?>
+                <td>
+                    <a href="javascript:void(0);" 
+                      onclick="showEmptyMessage(this)"
+                      class="view_btn">
+                        View
+                    </a>
+
+                    <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                        Empty
+                    </div>
+                </td>
+                <?php
+            }
+            ?>
             </tr>
 
             <tr>
               <td>9</td>
               <td>Certificate of Land</td>
-              <td><a href="#" class="view_btn">View</a></td>
+                  <?php
+            if(!empty($land))
+            {
+                $found = false;
+
+                foreach($land as $value)
+                {
+                    if($value->c_type == 'land' && !empty($value->c_document))
+                    {
+                        $found = true;
+
+                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        ?>
+                        
+                        <td>
+                            <a href="<?php echo $pdf_path; ?>" 
+                              target="_blank" 
+                              class="view_btn">
+                                View
+                            </a>
+                        </td>
+
+                        <?php
+                    }
+                }
+
+                // if no matching document found
+                if($found == false)
+                {
+                    ?>
+                    <td>
+                        <a href="javascript:void(0);" 
+                          onclick="showEmptyMessage(this)"
+                          class="view_btn">
+                            View
+                        </a>
+
+                        <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                            Empty
+                        </div>
+                    </td>
+                    <?php
+                }
+            }
+            else
+            {
+                ?>
+                <td>
+                    <a href="javascript:void(0);" 
+                      onclick="showEmptyMessage(this)"
+                      class="view_btn">
+                        View
+                    </a>
+
+                    <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                        Empty
+                    </div>
+                </td>
+                <?php
+            }
+            ?>
             </tr>
           </tbody>
         </table>
@@ -597,3 +1187,17 @@
 
   }
 </style>
+
+<script>
+function showEmptyMessage(element)
+{
+    let msg = element.nextElementSibling;
+
+    msg.style.display = 'block';
+
+    setTimeout(function() {
+        msg.style.display = 'none';
+    }, 2000); // 2000 milliseconds = 2 seconds
+}
+</script>
+

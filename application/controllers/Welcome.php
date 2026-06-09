@@ -15,6 +15,7 @@ class Welcome extends CI_Controller {
 
 	    $fetch_details['slider'] =  $this->Welcome_model->fetch_all_sliders();
 	    $fetch_details['homepage_video'] =  $this->Welcome_model->fetch_all_homepage_video();
+	    $fetch_details['latest_news'] =  $this->Welcome_model->fetch_all_latest_news();
 
 		$this->load->view('topbar');
 		$this->load->view('header');
@@ -157,9 +158,21 @@ class Welcome extends CI_Controller {
 
 	public function mandatory_disclosure()
 	{
+
+		$general_information['general_information'] 	= $this->Welcome_model->fetch_general_information();
+		$general_information['copy_of_affiliation'] 	= $this->Welcome_model->copy_of_affiliation();
+		$general_information['copy_of_societies']   	= $this->Welcome_model->copy_of_societies();
+		$general_information['NOC']                 	= $this->Welcome_model->NOC();
+		$general_information['copy_of_recognition'] 	= $this->Welcome_model->copy_of_recognition();
+		$general_information['copy_of_safty']       	= $this->Welcome_model->copy_of_safty();
+	    $general_information['copy_of_fire_and_safety'] = $this->Welcome_model->copy_of_fire_and_safety();
+	    $general_information['DEO']                     = $this->Welcome_model->DEO();
+	    $general_information['sanitation']              = $this->Welcome_model->sanitation();
+	    $general_information['land']                    = $this->Welcome_model->land();
+		
 		$this->load->view('topbar');
 		$this->load->view('header');
-		$this->load->view('mandatory_disclosure');
+		$this->load->view('mandatory_disclosure',$general_information);
 		$this->load->view('footer');
 	}
 	public function fun_n_learn()
