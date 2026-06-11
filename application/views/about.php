@@ -128,14 +128,6 @@
 
       </div>
 
-      <!-- Image -->
-      <div class="col-md-5 wow fadeInRight" data-wow-delay="300ms">
-        <div class="image">
-          <img src="<?php echo base_url(); ?>assets/images/main_image/school_full_image.png"
-            alt="Little Hearts School"
-            class="img-responsive">
-        </div>
-      </div>
 
     </div>
 
@@ -243,67 +235,315 @@
 
 
 <style>
-  .feature-box {
-    background: #f8f9fa;
-    padding: 25px 18px;
-    border-radius: 12px;
-    transition: 0.4s;
+ /*================================
+        ABOUT SECTION
+================================*/
+
+#about{
+    background: linear-gradient(to bottom,#f7faff,#eef5ff);
+    padding: 100px 0;
+    position: relative;
+}
+
+.aboutus{
+    position: relative;
+    z-index: 2;
+}
+
+/*================================
+        HEADING AREA
+================================*/
+
+.heading{
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 65px;
+    color: #111;
     margin-bottom: 20px;
-    min-height: 260px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-  }
+    text-align: center;
+}
 
-  .feature-box:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
-  }
-
-  .feature-box i {
-    font-size: 40px;
-    color: #0654c2;
-    margin-bottom: 15px;
+.divider-left{
+    width: 120px;
+    height: 5px;
+    background: linear-gradient(90deg,#0654c2,#2ea7ff);
     display: block;
-  }
+    margin: 22px auto 0;
+    border-radius: 50px;
+}
 
-  .feature-box h4 {
+#about h4{
+    text-align: center;
+    font-size: 24px;
+    line-height: 38px;
+    color: #0654c2;
     font-weight: 600;
-    margin-bottom: 15px;
-  }
+    margin-bottom: 35px;
+}
 
-  .feature-box p {
-    line-height: 1.8;
-    color: #666;
-  }
-
-  .about-detail-box {
-    background: #ffffff;
-    padding: 35px;
-    border-radius: 15px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
-  }
-
-  .about-detail-box p {
-    line-height: 25px;
+#about p{
     color: #555;
-    font-size: 15px;
-  }
+    font-size: 16px;
+    line-height: 34px;
+    text-align: justify;
+}
 
-  .school-quote {
-    background: #f4fff4;
-    border-left: 5px solid #0654c2;
-    padding: 25px;
-    border-radius: 10px;
+/*================================
+        INTRO CONTENT
+================================*/
+
+.about-intro{
+    background: #fff;
+    padding: 60px;
+    border-radius: 30px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.06);
+    margin-bottom: 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+.about-intro::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg,#0654c2,#2ea7ff);
+}
+
+/*================================
+        CORE VALUES
+================================*/
+
+.mission-box{
+    margin-top: 55px;
+}
+
+.mission-box h3{
+    text-align: center;
+    font-size: 36px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 45px;
+}
+
+/* SAME SIZE BOXES */
+
+.core-value-row{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+}
+
+.core-value-col{
+    flex: 1;
+    display: flex;
+}
+
+.feature-box{
+    width: 100%;
+    background: #fff;
+    border-radius: 28px;
+    padding: 40px 28px;
+    text-align: center;
+    box-shadow: 0 15px 45px rgba(0,0,0,0.06);
+    transition: 0.4s ease;
+    position: relative;
+    overflow: hidden;
+
+    /* SAME HEIGHT */
+    min-height: 360px;
+
+    /* PERFECT ALIGN */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.feature-box::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg,#0654c2,#2ea7ff);
+}
+
+.feature-box:hover{
+    transform: translateY(-12px);
+    box-shadow: 0 20px 55px rgba(0,0,0,0.12);
+}
+
+.feature-box i{
+    width: 95px;
+    height: 95px;
+    line-height: 95px;
+    border-radius: 50%;
+    background: rgba(6,84,194,0.10);
+    color: #0654c2;
+    font-size: 40px;
+    margin-bottom: 25px;
+}
+
+.feature-box h4{
+    font-size: 24px !important;
+    font-weight: 700;
+    color: #111 !important;
+    margin-bottom: 18px !important;
+    line-height: 32px;
+}
+
+.feature-box p{
+    text-align: center !important;
+    font-size: 15px !important;
+    line-height: 30px !important;
+    color: #666 !important;
+}
+
+/*================================
+        JOURNEY SECTION
+================================*/
+
+.about-detail-box{
+    background: #fff;
+    border-radius: 35px;
+    padding: 70px;
+    margin-top: 70px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.06);
+    position: relative;
+    overflow: hidden;
+}
+
+.about-detail-box::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg,#0654c2,#2ea7ff);
+}
+
+.about-detail-box h3{
+    font-size: 42px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 45px;
+    color: #111;
+}
+
+.about-detail-box p{
+    margin-bottom: 28px;
+    color: #555;
+    font-size: 16px;
+    line-height: 34px;
+}
+
+/*================================
+        QUOTE BOX
+================================*/
+
+.school-quote{
+    margin-top: 50px;
+    background: linear-gradient(135deg,#0654c2,#0b76ff);
+    border: none;
+    border-radius: 30px;
+    padding: 55px;
+    color: #fff;
+    font-size: 20px;
+    line-height: 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
     font-style: italic;
-    line-height: 2;
-    margin-top: 25px;
-    color: #444;
-  }
+}
 
-  .top40 {
-    margin-top: 40px;
-  }
+.school-quote::before{
+    content: "❝";
+    position: absolute;
+    top: -35px;
+    left: 30px;
+    font-size: 140px;
+    color: rgba(255,255,255,0.12);
+    font-family: serif;
+}
 
-  .top20 {
+.school-quote strong{
+    display: inline-block;
     margin-top: 20px;
-  }
+    font-size: 24px;
+    color: #fff;
+}
+
+/*================================
+        SPACING
+================================*/
+
+.bottom20{
+    margin-bottom: 20px;
+}
+
+.bottom25{
+    margin-bottom: 25px;
+}
+
+.bottom30{
+    margin-bottom: 30px;
+}
+
+.top20{
+    margin-top: 20px;
+}
+
+.top40{
+    margin-top: 40px;
+}
+
+/*================================
+        RESPONSIVE
+================================*/
+
+@media(max-width:991px){
+
+    .heading{
+        font-size: 38px;
+        line-height: 52px;
+    }
+
+    #about h4{
+        font-size: 20px;
+        line-height: 32px;
+    }
+
+    .about-intro,
+    .about-detail-box{
+        padding: 35px 25px;
+    }
+
+    .mission-box h3,
+    .about-detail-box h3{
+        font-size: 30px;
+    }
+
+    .core-value-row{
+        flex-direction: column;
+    }
+
+    .feature-box{
+        min-height: auto;
+    }
+
+    .school-quote{
+        padding: 35px 25px;
+        font-size: 17px;
+        line-height: 32px;
+    }
+
+    #about p{
+        text-align: left;
+    }
+}
 </style>
