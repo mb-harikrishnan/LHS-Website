@@ -80,6 +80,8 @@ $route['admissions'] = 'welcome/admissions';
 $route['school_uniform'] = 'welcome/school_uniform';
 $route['parental_support'] = 'welcome/parental_support';
 
+$route['apply_job'] = 'welcome/apply_job';
+
 
 
 

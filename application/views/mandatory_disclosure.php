@@ -118,54 +118,74 @@
               <td>Contact Details</td>
               <td>0484-2446939</td>
             </tr>
-     
-                  <?php
+               
+              <tr>
+              <td>9</td>
+              <td>SARAS 6.0 Upload Link</td>
+               
+             <?php
+            if(!empty($general_information))
+            {
+                $found = false;
 
-                  foreach($general_information as $value){
-
-                  
-                if($value->c_type == 'general_information' && !empty($value->c_document))
+                foreach($general_information as $value)
                 {
-                    $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
-                ?>
-                <tr>
-                    <td>9</td>
-                    <td>SARAS 6.0 </td>
-                    <td>
-                        <a href="<?php echo $pdf_path; ?>" 
-                          target="_blank" 
-                          class="view_btn">
-                          View
-                        </a>
-                    </td>
-                </tr>
+                    if($value->c_type == 'general_information' && !empty($value->c_document))
+                    {
+                        $found = true;
 
-                <?php
+                        $pdf_path = base_url('assets/uploads/documents/' . $value->c_document);
+                        ?>
+                        
+                        <td>
+                            <a href="<?php echo $pdf_path; ?>" 
+                              target="_blank" 
+                              class="view_btn">
+                                View
+                            </a>
+                        </td>
+
+                        <?php
+                    }
                 }
-                else
+
+                // if no matching document found
+                if($found == false)
                 {
-                ?>
-                <tr>
-                    <td>9</td>
-                    <td>SARAS 6.0 </td>
+                    ?>
                     <td>
                         <a href="javascript:void(0);" 
                           onclick="showEmptyMessage(this)"
                           class="view_btn">
-                          View
+                            View
                         </a>
 
                         <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
                             Empty
                         </div>
                     </td>
-                </tr>
-
-
-
-                <?php
-                }  }
+                    <?php
+                }
+            }
+            else
+            {
                 ?>
+                <td>
+                    <a href="javascript:void(0);" 
+                      onclick="showEmptyMessage(this)"
+                      class="view_btn">
+                        View
+                    </a>
+
+                    <div class="empty_msg" style="color:red; display:none; margin-top:5px;">
+                        Empty
+                    </div>
+                </td>
+                <?php
+            }
+            ?> 
+     
+          </tr>
             
               
           </tbody>
@@ -210,7 +230,7 @@
                     {
                         $found = true;
 
-                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        $pdf_path = base_url('assets/uploads/documents/' . $value->c_document);
                         ?>
                         
                         <td>
@@ -276,7 +296,7 @@
                     {
                         $found = true;
 
-                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        $pdf_path = base_url('assets/uploads/documents/' . $value->c_document);
                         ?>
                         
                         <td>
@@ -342,7 +362,7 @@
                     {
                         $found = true;
 
-                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        $pdf_path = base_url('assets/uploads/documents/' . $value->c_document);
                         ?>
                         
                         <td>
@@ -408,7 +428,7 @@
                     {
                         $found = true;
 
-                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        $pdf_path = base_url('assets/uploads/documents/' . $value->c_document);
                         ?>
                         
                         <td>
@@ -474,7 +494,7 @@
                     {
                         $found = true;
 
-                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        $pdf_path = base_url('assets/uploads/documents/' . $value->c_document);
                         ?>
                         
                         <td>
@@ -540,7 +560,7 @@
                     {
                         $found = true;
 
-                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        $pdf_path = base_url('assets/uploads/documents/' . $value->c_document);
                         ?>
                         
                         <td>
@@ -606,7 +626,7 @@
                     {
                         $found = true;
 
-                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        $pdf_path = base_url('assets/uploads/documents/' . $value->c_document);
                         ?>
                         
                         <td>
@@ -672,7 +692,7 @@
                     {
                         $found = true;
 
-                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        $pdf_path = base_url('assets/uploads/documents/' . $value->c_document);
                         ?>
                         
                         <td>
@@ -738,7 +758,7 @@
                     {
                         $found = true;
 
-                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        $pdf_path = base_url('assets/uploads/documents/' . $value->c_document);
                         ?>
                         
                         <td>
@@ -830,7 +850,7 @@
                     {
                         $found = true;
 
-                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        $pdf_path = base_url('assets/uploads/documents/' . $value->c_document);
                         ?>
                         
                         <td>
@@ -896,7 +916,7 @@
                     {
                         $found = true;
 
-                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        $pdf_path = base_url('assets/uploads/documents/' . $value->c_document);
                         ?>
                         
                         <td>
@@ -961,7 +981,7 @@
                     {
                         $found = true;
 
-                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        $pdf_path = base_url('assets/uploads/documents/' . $value->c_document);
                         ?>
                         
                         <td>
@@ -1026,7 +1046,7 @@
                     {
                         $found = true;
 
-                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        $pdf_path = base_url('assets/uploads/documents/' . $value->c_document);
                         ?>
                         
                         <td>
@@ -1091,7 +1111,7 @@
                     {
                         $found = true;
 
-                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        $pdf_path = base_url('assets/uploads/documents/' . $value->c_document);
                         ?>
                         
                         <td>
@@ -1276,7 +1296,7 @@
                     {
                         $found = true;
 
-                        $pdf_path = base_url('../assets/uploads/documents/' . $value->c_document);
+                        $pdf_path = base_url('assets/uploads/documents/' . $value->c_document);
                         ?>
                         
                         <td>

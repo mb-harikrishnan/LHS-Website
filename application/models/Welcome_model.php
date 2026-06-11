@@ -176,6 +176,34 @@ class Welcome_model extends CI_Model
       $result = $query->result();
       return $result;
    }
+  public function fetch_all_certificates()
+   {
+      $sql = "SELECT * FROM transfer_certificate WHERE c_status='Y' ";
+      $query = $this->db->query($sql);
+      $result = $query->result();
+      return $result;
+   }
+  public function fetch_all_images()
+   {
+      $sql = "SELECT * FROM school_event_images WHERE c_status='Y' ";
+      $query = $this->db->query($sql);
+      $result = $query->result();
+      return $result;
+   }
+  public function fetch_all_types()
+   {
+      $sql = "SELECT distinct(c_type) as c_type FROM school_event_images WHERE c_status='Y' ";
+      $query = $this->db->query($sql);
+      $result = $query->result();
+      return $result;
+   }
+  public function fetch_all_vacancy()
+   {
+      $sql = "SELECT * FROM school_vacancy WHERE c_status='Y' ";
+      $query = $this->db->query($sql);
+      $result = $query->result();
+      return $result;
+   }
 
    
 

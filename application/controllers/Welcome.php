@@ -36,9 +36,12 @@ class Welcome extends CI_Controller {
 
 	public function gallery()
 	{
+		$data['all_images'] = $this->Welcome_model->fetch_all_images();
+		$data['all_types'] = $this->Welcome_model->fetch_all_types();
+
 		$this->load->view('topbar');
 		$this->load->view('header');
-		$this->load->view('gallery');
+		$this->load->view('gallery',$data);
 		$this->load->view('footer');
 	}
 	public function house_system()
@@ -102,9 +105,12 @@ class Welcome extends CI_Controller {
 	}	
 	public function vaccancy()
 	{
+
+	    $data['all_vacancy'] = $this->Welcome_model->fetch_all_vacancy();
+
 		$this->load->view('topbar');
 		$this->load->view('header');
-		$this->load->view('vaccancy');
+		$this->load->view('vaccancy',$data);
 		$this->load->view('footer');
 	}	
 	public function downloads()
@@ -147,9 +153,10 @@ class Welcome extends CI_Controller {
 	}
 	public function transfer_certificates()
 	{
+		$data['transfer_details']  = $this->Welcome_model->fetch_all_certificates();
 		$this->load->view('topbar');
 		$this->load->view('header');
-		$this->load->view('transfer_certificates');
+		$this->load->view('transfer_certificates',$data);
 		$this->load->view('footer');
 	}
 
@@ -278,5 +285,15 @@ class Welcome extends CI_Controller {
 		$this->load->view('home_page');
 		$this->load->view('footer');
 	}
+
+
+
+
+
+
+
+
+
+
 
 }

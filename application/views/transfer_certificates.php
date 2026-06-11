@@ -79,27 +79,24 @@
 
               <tbody>
 
+                <?php foreach($transfer_details as $value){?>
+
                 <tr>
-                  <td>NADALIA MIRIAM</td>
-                  <td>3123/25-26</td>
-                  <td>3596</td>
+                  <td><?php echo $value->c_name ; ?></td>
+                  <td><?php echo $value->c_tc_number ; ?></td>
+                  <td><?php echo $value->c_adminssion_number ; ?></td>
                   <td>
-                    <a href="#" class="download_btn">
-                      <i class="fa fa-eye"></i> View
-                    </a>
+                      <a href="<?php echo base_url('assets/uploads/certificate/' . $value->c_certificate); ?>" 
+                        class="download_btn" 
+                        target="_blank">
+                          <i class="fa fa-eye"></i> View
+                      </a>
                   </td>
                 </tr>
 
-                <tr>
-                  <td>ADAM MICHAEL NITHIN</td>
-                  <td>3935/25-26</td>
-                  <td>5440</td>
-                  <td>
-                    <a href="#" class="download_btn">
-                      <i class="fa fa-eye"></i> View
-                    </a>
-                  </td>
-                </tr>
+                <?php }?>
+
+               
 
               </tbody>
 
