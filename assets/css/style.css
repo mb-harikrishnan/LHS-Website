@@ -1387,7 +1387,7 @@ nav.navbar.bootsnav .dropdown .megamenu-content .col-menu .title {
 nav.navbar.bootsnav ul.nav>li.dropdown .dropdown-menu .dropdown-toggle:hover,
 nav.navbar.bootsnav ul.nav .dropdown-menu li.dropdown.on .dropdown-toggle,
 nav.navbar.bootsnav li.dropdown ul.dropdown-menu>li>a:hover {
-	color: #fff !important;
+	color: #0f0f0f !important;
 	background: #0654c2;
 }
 
