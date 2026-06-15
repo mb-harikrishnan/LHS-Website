@@ -54,131 +54,131 @@
             <ul>
                 <!-- SLIDE  -->
 
-                <?php foreach($slider as $value) {?>
-                <li data-transition="fade">
-                    <!-- MAIN IMAGE -->
+                <?php foreach ($slider as $value) { ?>
+                    <li data-transition="fade">
+                        <!-- MAIN IMAGE -->
 
 
-                    
-                <?php if($value->c_upload_type == "image") { ?>
 
-                    <!-- IMAGE -->
+                        <?php if ($value->c_upload_type == "image") { ?>
 
-                    <img src="<?php echo base_url('../assets/images/gallery/'.$value->c_file); ?>"
-                        alt=""
-                        data-bgposition="center center"
-                        data-bgfit="cover"
-                        data-bgparallax="10"
-                        class="rev-slidebg">
+                            <!-- IMAGE -->
 
-                <?php } ?>
+                            <img src="<?php echo base_url('../assets/images/gallery/' . $value->c_file); ?>"
+                                alt=""
+                                data-bgposition="center center"
+                                data-bgfit="cover"
+                                data-bgparallax="10"
+                                class="rev-slidebg">
 
-                    <?php if($value->c_upload_type == "video") { ?>
+                        <?php } ?>
 
-                    <video autoplay muted loop playsinline controls
-                        width="100%"
-                        height="700"
-                        style="object-fit:cover;">
+                        <?php if ($value->c_upload_type == "video") { ?>
 
-                        <source src="<?php echo base_url('../assets/images/gallery/'.$value->c_file); ?>" type="video/mp4">
+                            <video autoplay muted loop playsinline controls
+                                width="100%"
+                                height="700"
+                                style="object-fit:cover;">
 
-                        Your browser does not support the video tag.
+                                <source src="<?php echo base_url('../assets/images/gallery/' . $value->c_file); ?>" type="video/mp4">
 
-                    </video>
+                                Your browser does not support the video tag.
 
-                    <?php } ?>
+                            </video>
 
-                <?php if($value->c_upload_type == "link") { ?>
+                        <?php } ?>
 
-                <?php
-                $link = trim($value->c_file);
+                        <?php if ($value->c_upload_type == "link") { ?>
 
-                $video_id = '';
+                            <?php
+                            $link = trim($value->c_file);
 
-                parse_str(parse_url($link, PHP_URL_QUERY), $vars);
+                            $video_id = '';
 
-                if(isset($vars['v'])) {
-                    $video_id = $vars['v'];
-                }
+                            parse_str(parse_url($link, PHP_URL_QUERY), $vars);
 
-                // support youtu.be links also
-                if(empty($video_id)) {
-                    $path = parse_url($link, PHP_URL_PATH);
-                    $video_id = trim($path, '/');
-                }
-                ?>
+                            if (isset($vars['v'])) {
+                                $video_id = $vars['v'];
+                            }
 
-                <?php if(!empty($video_id)) { ?>
+                            // support youtu.be links also
+                            if (empty($video_id)) {
+                                $path = parse_url($link, PHP_URL_PATH);
+                                $video_id = trim($path, '/');
+                            }
+                            ?>
 
-                <iframe width="100%"
-                        height="700"
-                        src="https://www.youtube.com/embed/<?php echo $video_id; ?>?autoplay=1&mute=1&playsinline=1&loop=1&playlist=<?php echo $video_id; ?>&controls=1&rel=0"
-                        title="YouTube video player"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                </iframe>
+                            <?php if (!empty($video_id)) { ?>
 
-                <?php } ?>
+                                <iframe width="100%"
+                                    height="700"
+                                    src="https://www.youtube.com/embed/<?php echo $video_id; ?>?autoplay=1&mute=1&playsinline=1&loop=1&playlist=<?php echo $video_id; ?>&controls=1&rel=0"
+                                    title="YouTube video player"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen>
+                                </iframe>
 
-                <?php } ?>
+                            <?php } ?>
 
-                    
+                        <?php } ?>
 
 
-              <!-- LAYER NR. 1 -->
-                <li data-transition="fade">
-                    <!-- MAIN IMAGE -->
-                    <!-- LAYER NR. 1 -->
-                    <div class="tp-caption tp-resizeme"
-                        data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
-                        data-y="['180','170','160','100']" data-voffset="['0','0','0','0']"
-                        data-responsive_offset="on"
-                        data-visibility="['on','on','on','on']"
-                        data-transform_idle="o:1;"
-                        data-transform_in="z:0;rX:0;rY:0;rZ:0;sX:0.9;sY:0.9;skX:0;skY:0;opacity:0;s:1500;e:Power3.easeInOut;"
-                        data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
-                        data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;"
-                        data-start="800">
-                        <h1 class="hero-title">
-                            <?php echo $value->c_title; ?>
-                            Empowering Young Minds for a Bright Future
-                        </h1>
-                    </div>
-                    <div class="tp-caption tp-resizeme"
-                        data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
-                        data-y="['250','220','210','170']" data-voffset="['0','0','0','0']"
-                        data-responsive_offset="on"
-                        data-visibility="['on','on','off','off']"
-                        data-transform_idle="o:1;"
-                        data-transform_in="opacity:0;s:1000;e:Power2.easeInOut;"
-                        data-transform_out="opacity:0;s:1000;s:1000;"
-                        data-start="1500">
-                        <p style="color:#ff6600;">
 
-                        <?php echo $value->c_description ; ?>
-                                       </p>
+
+                        <!-- LAYER NR. 1 -->
+                    <li data-transition="fade">
+                        <!-- MAIN IMAGE -->
+                        <!-- LAYER NR. 1 -->
+                        <div class="tp-caption tp-resizeme"
+                            data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                            data-y="['180','170','160','100']" data-voffset="['0','0','0','0']"
+                            data-responsive_offset="on"
+                            data-visibility="['on','on','on','on']"
+                            data-transform_idle="o:1;"
+                            data-transform_in="z:0;rX:0;rY:0;rZ:0;sX:0.9;sY:0.9;skX:0;skY:0;opacity:0;s:1500;e:Power3.easeInOut;"
+                            data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                            data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;"
+                            data-start="800">
+                            <h1 class="hero-title">
+                                <?php echo $value->c_title; ?>
+                                Empowering Young Minds for a Bright Future
+                            </h1>
+                        </div>
+                        <div class="tp-caption tp-resizeme"
+                            data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                            data-y="['250','220','210','170']" data-voffset="['0','0','0','0']"
+                            data-responsive_offset="on"
+                            data-visibility="['on','on','off','off']"
+                            data-transform_idle="o:1;"
+                            data-transform_in="opacity:0;s:1000;e:Power2.easeInOut;"
+                            data-transform_out="opacity:0;s:1000;s:1000;"
+                            data-start="1500">
+                            <p style="color:#ff6600;">
+
+                                <?php echo $value->c_description; ?>
+                            </p>
                             Providing quality education, creativity, and values to help students achieve academic excellence and personal growth.
-                        </p>
-                    </div>
-                    <div class="tp-caption  tp-resizeme"
-                        data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
-                        data-y="['250','200','260','120']" data-voffset="['0','0','0','0']"
-                        data-responsive_offset="on"
-                        data-visibility="['on','on','on','on']"
-                        data-transform_idle="o:1;"
-                        data-transform_in="y:[-200%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;s:1500;e:Power3.easeInOut;"
-                        data-transform_out="auto:auto;s:1000;e:Power3.easeInOut;"
-                        data-mask_in="x:0px;y:0px;s:inherit;e:inherit;"
-                        data-mask_out="x:0;y:0;s:inherit;e:inherit;"
-                        data-start="2000">
-                        <a href="<?php echo base_url('about_us'); ?>" class="border_radius btn_common white_border">our services</a>
-                        <!-- <a href="#." class="border_radius btn_common blue">Get a quote</a> -->
-                    </div>
-                </li>
+                            </p>
+                        </div>
+                        <div class="tp-caption  tp-resizeme"
+                            data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                            data-y="['250','200','260','120']" data-voffset="['0','0','0','0']"
+                            data-responsive_offset="on"
+                            data-visibility="['on','on','on','on']"
+                            data-transform_idle="o:1;"
+                            data-transform_in="y:[-200%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;s:1500;e:Power3.easeInOut;"
+                            data-transform_out="auto:auto;s:1000;e:Power3.easeInOut;"
+                            data-mask_in="x:0px;y:0px;s:inherit;e:inherit;"
+                            data-mask_out="x:0;y:0;s:inherit;e:inherit;"
+                            data-start="2000">
+                            <a href="<?php echo base_url('about_us'); ?>" class="border_radius btn_common white_border">our services</a>
+                            <!-- <a href="#." class="border_radius btn_common blue">Get a quote</a> -->
+                        </div>
+                    </li>
 
 
-                <?php }?>
+                <?php } ?>
 
 
             </ul>
@@ -584,76 +584,77 @@
 
             <div class="learning-wrapper">
 
-               <?php foreach($homepage_video as $link_value) {?>
-             
-               <?php if($link_value->c_type=='infrastructure'){?>
+                <?php foreach ($homepage_video as $link_value) { ?>
 
-                <?php if($link_value->links != "") { ?>
+                    <?php if ($link_value->c_type == 'infrastructure') { ?>
 
-                        <?php
+                        <?php if ($link_value->links != "") { ?>
+
+                            <?php
                             $link = trim($link_value->links);
 
                             $video_id = '';
 
                             parse_str(parse_url($link, PHP_URL_QUERY), $vars);
 
-                            if(isset($vars['v'])) {
+                            if (isset($vars['v'])) {
                                 $video_id = $vars['v'];
                             }
 
                             // support youtu.be links also
-                            if(empty($video_id)) {
+                            if (empty($video_id)) {
                                 $path = parse_url($link, PHP_URL_PATH);
                                 $video_id = trim($path, '/');
                             }
-                        ?>
-
-                    <?php if(!empty($video_id)) { ?>
-                        <div class="learning-video">
-
-                        <iframe 
-                                src="https://www.youtube.com/embed/<?php echo $video_id; ?>?autoplay=1&mute=1&playsinline=1&loop=1&playlist=<?php echo $video_id; ?>&controls=1&rel=0"
-                                title="YouTube video player"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen>
-                        </iframe>
-
-            <div class="section-title text-center">
-                <h2>Learning Journey</h2>
-                <p>
-                    Our school provides a supportive environment where students learn,
-                    explore talents, and grow into confident individuals.
-                </p>
-            </div>
-
-                        </div>
-
-                    <?php } ?>
-
-                <?php }else{  ?>
-
-                     <div class="learning-video">
-
-                         <?php
-                            $video = base_url('../assets/uploads/videos/'.$link_value->c_videos);
                             ?>
 
-                            <video width="100%" height="450" autoplay muted loop controls playsinline>
-                                
-                                <source src="<?php echo $video; ?>" type="video/*">
-                                
-                                Your browser does not support the video tag.
+                            <?php if (!empty($video_id)) { ?>
+                                <div class="learning-video">
 
-                            </video>
+                                    <iframe
+                                        src="https://www.youtube.com/embed/<?php echo $video_id; ?>?autoplay=1&mute=1&playsinline=1&loop=1&playlist=<?php echo $video_id; ?>&controls=1&rel=0"
+                                        title="YouTube video player"
+                                        frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen>
+                                    </iframe>
 
-                        </div>
-       
+                                    <div class="section-title text-center">
+                                        <h2>Learning Journey</h2>
+                                        <p>
+                                            Our school provides a supportive environment where students learn,
+                                            explore talents, and grow into confident individuals.
+                                        </p>
+                                    </div>
 
-               <?php } ?>
+                                </div>
+
+                            <?php } ?>
+
+                        <?php } else {  ?>
+
+                            <div class="learning-video">
+
+                                <?php
+                                $video = base_url('../assets/uploads/videos/' . $link_value->c_videos);
+                                ?>
+
+                                <video width="100%" height="450" autoplay muted loop controls playsinline>
+
+                                    <source src="<?php echo $video; ?>" type="video/*">
+
+                                    Your browser does not support the video tag.
+
+                                </video>
+
+                            </div>
 
 
-                <?php }   }?>
+                        <?php } ?>
+
+
+                <?php }
+                } ?>
 
                 <!-- Right Side Stats -->
                 <div class="stats-grid">
@@ -690,10 +691,10 @@
                         <p>Pass Percentage</p>
                     </div>
 
-               
 
+
+                </div>
             </div>
-        </div>
     </section>
 
     <!--Customers Review-->
@@ -741,22 +742,22 @@
                     <p class="heading_space margin10">Regular updates and announcements for students and parents.</p>
                 </div>
 
-                
 
 
-                    <div class="col-md-12">
-                        
+
+                <div class="col-md-12">
 
 
-                        <div class="pricing">
-                            <?php foreach($latest_news as $news){?>
+
+                    <div class="pricing">
+                        <?php foreach ($latest_news as $news) { ?>
                             <div class="pricing_item wow fadeInUp" data-wow-delay="300ms">
 
                                 <h3><?php echo $news->c_title; ?></h3>
 
-                                    <p class="pricing_sentence blink_text">
-                                        <?php echo nl2br($news->c_news); ?>
-                                    </p>
+                                <p class="pricing_sentence blink_text">
+                                    <?php echo nl2br($news->c_news); ?>
+                                </p>
                                 <ul class="pricing_list">
                                     <li class="pricing_feature">
                                         <?php echo date('j F Y', strtotime($news->d_date)); ?>
@@ -768,12 +769,12 @@
                                 <a class="btn_common text-center" href="<?php echo base_url('news'); ?>">Read More</a>
 
                             </div>
-                             <?php }?>
-                        </div>
-                        
-
+                        <?php } ?>
                     </div>
-               
+
+
+                </div>
+
             </div>
         </div>
         </div>
@@ -890,14 +891,13 @@
 
 
     <style>
+        .pricing_sentence {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            line-height: 1.6;
+        }
 
-
-        .pricing_sentence{
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    white-space: normal;
-    line-height: 1.6;
-}
         .icon_box {
             min-height: 250px;
         }
