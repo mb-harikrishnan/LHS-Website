@@ -3,16 +3,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $route['default_controller'] = 'Login/member_login';
 
-////////////////     REGISTRION   ////////////////////////
-
-$route['registration'] = 'welcome/registration';
-$route['check_sponsor_id'] = 'welcome/check_sponsor_id';
-$route['registration_confirm'] = 'welcome/registration_confirm';
-$route['check_pan'] = 'welcome/check_pan';
-$route['check_email'] = 'welcome/check_email';
-$route['check_mobile'] = 'welcome/check_mobile';
-$route['registration_insert_data'] = 'Registration_insert_data';
-
 
 ////////////////    LOGIN   /////////////////////////
 
@@ -25,16 +15,6 @@ $route['member_login_check'] = 'Login/member_login_check';
 ////////////////     DASHBOARD //////////////////////
 
 $route['dashboard']  ='members_area/Dashboard';
-
-
-////////////////     PROFILE   //////////////////////
-
-$route['profile']  ='members_area/Profile_controller';
-$route['update_profile_photo']  ='members_area/Profile_controller/update_profile_photo';
-$route['edit_profile']  ='members_area/Profile_controller/edit_profile';
-$route['update_bank_details']  ='members_area/Profile_controller/update_bank_details';
-$route['update_pan']  ='members_area/Profile_controller/update_pan';
-
 
 
 ////////////////     CHANGE PASSWORD   //////////////////////
@@ -56,6 +36,31 @@ $route['logout'] = 'members_area/Logout/member_logout';
 
 
 $route['notifications'] = 'members_area/Notifications/notifications';
+
+
+
+
+/////////////////////     DOCUMENT UPLOAD //////////////////////////
+
+
+/////////////    document controller //////////////////////////
+
+$route['general_information']   = 'members_area/Document_Controller/general_information';
+$route['delete_general_information']   = 'members_area/Document_Controller/delete_general_information';
+$route['upload_document']   = 'members_area/Document_Controller/upload_document';
+$route['add_document']   = 'members_area/Document_Controller/add_document';
+
+
+$route['Result_and_Staff']   = 'members_area/Document_Controller/result_and_staff_list';
+$route['delete_details']   = 'members_area/Document_Controller/delete_details';
+$route['upload_document_details']   = 'members_area/Document_Controller/upload_document_details';
+$route['add_document_details']   = 'members_area/Document_Controller/add_document_details';
+
+$route['infrastructure']   = 'members_area/Document_Controller/infrastructure';
+$route['delete_video']   = 'members_area/Document_Controller/delete_video';
+$route['upload_video']   = 'members_area/Document_Controller/upload_video';
+$route['add_video']   = 'members_area/Document_Controller/add_video';
+
 
 
 

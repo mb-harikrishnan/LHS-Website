@@ -145,7 +145,7 @@ class Login extends CI_Controller {
 
 				 
                     $sess_array = array(
-                    'id' => $row->pn_id,
+                    'id' => $row->sl_no,
                     'c_username' => $row->c_username,
                     'login_time' => $row->currentdate,
                     );

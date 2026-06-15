@@ -9,17 +9,13 @@ if (!isset($pageHeadScripts)) $pageHeadScripts = [];
 
 $userId = $this->session->userdata('id');
 
-//  $sql = "SELECT c_profile_photo,C_FNAME FROM address_dtl  WHERE n_id='$userId'";
-//   $qry = $this->db->query($sql);
-//   $c_profile_photo =$qry->row()->c_profile_photo;
-//   $firstName =$qry->row()->C_FNAME;
-$firstName ='';
+  $firstName =$this->session->userdata('c_username');
+
 
 //  $sql1 = "SELECT c_title,c_news,d_date  FROM news  WHERE c_status='A' LIMIT 3";
 //   $qry1 = $this->db->query($sql1);
 //   $result =$qry1->result();
 
-//   $count = $qry1->num_rows(); 
   $count = 1; 
  
 
@@ -134,17 +130,15 @@ $initials = strtoupper(substr($firstName, 0, 2));
             <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
           </svg>
         </div>
-        <span class="nav-label">Team Members</span>
-        <span class="nav-badge" id="memberBadge">12</span>
+        <span class="nav-label">School Documents</span>
         <span class="nav-arrow">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
         </span>
       </div>
       <div class="sub-nav" id="subnav-0">
-        <div class="sub-item active" onclick="setSubActive(this)">All Members</div>
-        <div class="sub-item" onclick="setSubActive(this)">Diamond Leaders</div>
-        <div class="sub-item" onclick="setSubActive(this)">New Joinings</div>
-        <div class="sub-item" onclick="setSubActive(this)">Inactive Members</div>
+        <div class="sub-item active" onclick="window.location.href='general_information'">Upload Documents</div>
+        <div class="sub-item" onclick="window.location.href='Result_and_Staff'">Result & Staff</div>
+        <div class="sub-item " onclick="window.location.href='infrastructure'">Infrastructure video</div>
       </div>
 
       <div class="nav-item<?php echo $activePage === 'bv-matching' ? ' active open' : ''; ?>" onclick="toggleNav(this)">
@@ -159,23 +153,23 @@ $initials = strtoupper(substr($firstName, 0, 2));
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
         </span>
       </div>
-      <div class="sub-nav<?php echo $activePage === 'bv-matching' ? ' open' : ''; ?>" id="subnav-1"<?php echo $activePage === 'bv-matching' ? ' style="max-height:300px"' : ''; ?>>
+      <!-- <div class="sub-nav<?php echo $activePage === 'bv-matching' ? ' open' : ''; ?>" id="subnav-1"<?php echo $activePage === 'bv-matching' ? ' style="max-height:300px"' : ''; ?>>
         <div class="sub-item" onclick="setSubActive(this)">Transactions</div>
         <div class="sub-item" onclick="setSubActive(this)">Commission Report</div>
         <div class="sub-item" onclick="setSubActive(this)">Bonuses</div>
         <div class="sub-item<?php echo $activePage === 'bv-matching' ? ' active' : ''; ?>" onclick="window.location='bv-matching.php'">BV Matching Details</div>
-      </div>
+      </div> -->
 
-      <div class="nav-item" onclick="setActive(this)">
+      <!-- <div class="nav-item" onclick="setActive(this)">
         <div class="nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
           </svg>
         </div>
         <span class="nav-label">Growth Analytics</span>
-      </div>
+      </div> -->
 
-      <div class="nav-item<?php echo $activePage === 'genealogy' ? ' active' : ''; ?>" onclick="window.location='genealogy.php'">
+      <!-- <div class="nav-item<?php echo $activePage === 'genealogy' ? ' active' : ''; ?>" onclick="window.location='genealogy.php'">
         <div class="nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <circle cx="12" cy="5" r="3"/>
@@ -186,9 +180,9 @@ $initials = strtoupper(substr($firstName, 0, 2));
           </svg>
         </div>
         <span class="nav-label">Board Plan</span>
-      </div>
+      </div> -->
 
-      <div class="nav-item<?php echo $activePage === 'reports' ? ' active' : ''; ?>" onclick="window.location='reports.php'">
+      <!-- <div class="nav-item<?php echo $activePage === 'reports' ? ' active' : ''; ?>" onclick="window.location='reports.php'">
         <div class="nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -199,9 +193,9 @@ $initials = strtoupper(substr($firstName, 0, 2));
           </svg>
         </div>
         <span class="nav-label">Reports</span>
-      </div>
+      </div> -->
 
-      <div class="nav-item<?php echo in_array($activePage, ['purchase-package', 'activation-logs', 'checkout']) ? ' active open' : ''; ?>" onclick="toggleNav(this)">
+      <!-- <div class="nav-item<?php echo in_array($activePage, ['purchase-package', 'activation-logs', 'checkout']) ? ' active open' : ''; ?>" onclick="toggleNav(this)">
         <div class="nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
@@ -213,11 +207,11 @@ $initials = strtoupper(substr($firstName, 0, 2));
         <span class="nav-arrow">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
         </span>
-      </div>
-      <div class="sub-nav<?php echo in_array($activePage, ['purchase-package', 'activation-logs', 'checkout']) ? ' open' : ''; ?>" id="subnav-2"<?php echo in_array($activePage, ['purchase-package', 'activation-logs', 'checkout']) ? ' style="max-height:300px"' : ''; ?>>
+      </div> -->
+      <!-- <div class="sub-nav<?php echo in_array($activePage, ['purchase-package', 'activation-logs', 'checkout']) ? ' open' : ''; ?>" id="subnav-2"<?php echo in_array($activePage, ['purchase-package', 'activation-logs', 'checkout']) ? ' style="max-height:300px"' : ''; ?>>
         <div class="sub-item<?php echo $activePage === 'purchase-package' ? ' active' : ''; ?>" onclick="window.location='purchase-package.php'">Purchase Package</div>
         <div class="sub-item<?php echo $activePage === 'activation-logs' ? ' active' : ''; ?>" onclick="window.location='activation-logs.php'">Activation Logs</div>
-      </div>
+      </div> -->
 
       <div class="sb-divider"></div>
       <div class="nav-section-label">Settings</div>
@@ -243,7 +237,7 @@ $initials = strtoupper(substr($firstName, 0, 2));
         <span class="nav-label">Change Password</span>
       </div>
 
-      <div class="nav-item<?php echo $activePage === 'profile' ? ' active' : ''; ?>" onclick="window.location='<?php echo base_url('profile')?>'">
+      <!-- <div class="nav-item<?php echo $activePage === 'profile' ? ' active' : ''; ?>" onclick="window.location='<?php echo base_url('profile')?>'">
         <div class="nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <circle cx="12" cy="8" r="4"/>
@@ -251,7 +245,7 @@ $initials = strtoupper(substr($firstName, 0, 2));
           </svg>
         </div>
         <span class="nav-label">My Profile</span>
-      </div>
+      </div> -->
     </nav>
 
     <!-- Logout -->
@@ -337,16 +331,7 @@ $initials = strtoupper(substr($firstName, 0, 2));
         <div class="tb-user">
           <div class="tb-avatar">
 
-            <?php if(!empty($c_profile_photo)) { ?>
-
-                <img src="<?php echo base_url('assets/images/'.$c_profile_photo); ?>" 
-                    style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
-
-            <?php } else { ?>
-
-                <?php echo $initials; ?>
-
-            <?php } ?>
+            <?php echo $initials; ?>
 
         </div>
           <span class="tb-uname"><?php echo $firstName ; ?></span>
