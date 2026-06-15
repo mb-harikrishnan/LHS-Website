@@ -1,25 +1,26 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Welcome extends CI_Controller {
+class Welcome extends CI_Controller
+{
 
 
-    public function __construct()
+	public function __construct()
 	{
 		parent::__construct();
 		$this->load->model('Welcome_model');
 	}
-	
+
 	public function index()
 	{
 
-	    $fetch_details['slider'] =  $this->Welcome_model->fetch_all_sliders();
-	    $fetch_details['homepage_video'] =  $this->Welcome_model->fetch_all_homepage_video();
-	    $fetch_details['latest_news'] =  $this->Welcome_model->fetch_all_latest_news();
+		$fetch_details['slider'] =  $this->Welcome_model->fetch_all_sliders();
+		$fetch_details['homepage_video'] =  $this->Welcome_model->fetch_all_homepage_video();
+		$fetch_details['latest_news'] =  $this->Welcome_model->fetch_all_latest_news();
 
 		$this->load->view('topbar');
 		$this->load->view('header');
-		$this->load->view('home_page',$fetch_details);
+		$this->load->view('home_page', $fetch_details);
 		$this->load->view('footer');
 	}
 
@@ -41,7 +42,7 @@ class Welcome extends CI_Controller {
 
 		$this->load->view('topbar');
 		$this->load->view('header');
-		$this->load->view('gallery',$data);
+		$this->load->view('gallery', $data);
 		$this->load->view('footer');
 	}
 	public function house_system()
@@ -86,51 +87,51 @@ class Welcome extends CI_Controller {
 		$this->load->view('header');
 		$this->load->view('study_tour');
 		$this->load->view('footer');
-	}	
+	}
 	public function annual_day()
 	{
 		$this->load->view('topbar');
 		$this->load->view('header');
 		$this->load->view('anual_day');
 		$this->load->view('footer');
-	}	
+	}
 	public function news()
 	{
 
-	    $data['news_list'] = $this->Welcome_model->fetch_all_news();
+		$data['news_list'] = $this->Welcome_model->fetch_all_news();
 		$this->load->view('topbar');
 		$this->load->view('header');
-		$this->load->view('news',$data);
+		$this->load->view('news', $data);
 		$this->load->view('footer');
-	}	
+	}
 	public function vaccancy()
 	{
 
-	    $data['all_vacancy'] = $this->Welcome_model->fetch_all_vacancy();
+		$data['all_vacancy'] = $this->Welcome_model->fetch_all_vacancy();
 
 		$this->load->view('topbar');
 		$this->load->view('header');
-		$this->load->view('vaccancy',$data);
+		$this->load->view('vaccancy', $data);
 		$this->load->view('footer');
-	}	
+	}
 	public function downloads()
 	{
 		$data['Q_paper']  = $this->Welcome_model->fetch_all_Q_paper();
 		$this->load->view('topbar');
 		$this->load->view('header');
-		$this->load->view('downloads',$data);
+		$this->load->view('downloads', $data);
 		$this->load->view('footer');
-	}	
+	}
 
 
-		public function about_us()
+	public function about_us()
 	{
 		$this->load->view('topbar');
 		$this->load->view('header');
 		$this->load->view('about');
 		$this->load->view('footer');
 	}
-		public function directors_message()
+	public function directors_message()
 	{
 		$this->load->view('topbar');
 		$this->load->view('header');
@@ -156,7 +157,7 @@ class Welcome extends CI_Controller {
 		$data['transfer_details']  = $this->Welcome_model->fetch_all_certificates();
 		$this->load->view('topbar');
 		$this->load->view('header');
-		$this->load->view('transfer_certificates',$data);
+		$this->load->view('transfer_certificates', $data);
 		$this->load->view('footer');
 	}
 
@@ -169,21 +170,21 @@ class Welcome extends CI_Controller {
 		$general_information['NOC']                 	= $this->Welcome_model->NOC();
 		$general_information['copy_of_recognition'] 	= $this->Welcome_model->copy_of_recognition();
 		$general_information['copy_of_safty']       	= $this->Welcome_model->copy_of_safty();
-	    $general_information['copy_of_fire_and_safety'] = $this->Welcome_model->copy_of_fire_and_safety();
-	    $general_information['DEO']                     = $this->Welcome_model->DEO();
-	    $general_information['sanitation']              = $this->Welcome_model->sanitation();
-	    $general_information['land']                    = $this->Welcome_model->land();
-	    $general_information['fee_structure']                    = $this->Welcome_model->fee_structure();
-	    $general_information['anual_academic_calendar']                    = $this->Welcome_model->anual_academic_calendar();
-	    $general_information['school_managment_comitte']                    = $this->Welcome_model->school_managment_comitte();
-	    $general_information['pta_members']                    = $this->Welcome_model->pta_members();
-	    $general_information['_yers_board_exam']                    = $this->Welcome_model->three_yers_board_exam();
-	    $general_information['staff_details']                    = $this->Welcome_model->staff_details();
-	    $general_information['video']                    = $this->Welcome_model->video();
-		
+		$general_information['copy_of_fire_and_safety'] = $this->Welcome_model->copy_of_fire_and_safety();
+		$general_information['DEO']                     = $this->Welcome_model->DEO();
+		$general_information['sanitation']              = $this->Welcome_model->sanitation();
+		$general_information['land']                    = $this->Welcome_model->land();
+		$general_information['fee_structure']                    = $this->Welcome_model->fee_structure();
+		$general_information['anual_academic_calendar']                    = $this->Welcome_model->anual_academic_calendar();
+		$general_information['school_managment_comitte']                    = $this->Welcome_model->school_managment_comitte();
+		$general_information['pta_members']                    = $this->Welcome_model->pta_members();
+		$general_information['_yers_board_exam']                    = $this->Welcome_model->three_yers_board_exam();
+		$general_information['staff_details']                    = $this->Welcome_model->staff_details();
+		$general_information['video']                    = $this->Welcome_model->video();
+
 		$this->load->view('topbar');
 		$this->load->view('header');
-		$this->load->view('mandatory_disclosure',$general_information);
+		$this->load->view('mandatory_disclosure', $general_information);
 		$this->load->view('footer');
 	}
 	public function fun_n_learn()
@@ -277,7 +278,7 @@ class Welcome extends CI_Controller {
 		$this->load->view('pricing');
 		$this->load->view('footer');
 	}
-	
+
 	public function home_page()
 	{
 		$this->load->view('topbar');
@@ -285,15 +286,4 @@ class Welcome extends CI_Controller {
 		$this->load->view('home_page');
 		$this->load->view('footer');
 	}
-
-
-
-
-
-
-
-
-
-
-
 }
