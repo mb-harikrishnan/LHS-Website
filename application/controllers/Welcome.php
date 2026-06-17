@@ -9,6 +9,7 @@ class Welcome extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->model('Welcome_model');
+		$this->load->library('session');
 	}
 
 	public function index()
@@ -286,4 +287,84 @@ class Welcome extends CI_Controller
 		$this->load->view('home_page');
 		$this->load->view('footer');
 	}
+	public function apply_job($id)
+	{
+		$data['job'] = $this->db
+		->where('n_slno', $id)
+		->get('school_vacancy')
+		->row();
+
+		if(empty($data['job']))
+		{
+			show_404();
+		}
+         $this->load->view('topbar');
+		 $this->load->view('header');
+	     $this->load->view('apply_job', $data);
+	   	 $this->load->view('footer');
+
+	
+
+	}
+
+
+
+
+public function submit_job_application()
+{
+    $config['upload_path']   = 'assets/images/resumes';
+    $config['allowed_types']  = 'pdf|doc|docx';
+    $config['max_size']       = 2048;
+
+    $this->load->library('upload', $config);
+
+    if (!$this->upload->do_upload('resume')) {
+
+        echo json_encode([
+            'status' => 'error',
+            'message' => $this->upload->display_errors()
+        ]);
+        return;
+    }
+
+    $fileData = $this->upload->data();
+
+    $insert_array = [
+        'vacancy_id' => $this->input->post('vacancy_id'),
+        'c_name'       => $this->input->post('name'),
+        'n_mobile'     => $this->input->post('mobile'),
+        'c_email'      => $this->input->post('email'),
+        'c_resume'     => $fileData['file_name'],
+        'c_status'   => 'Y',
+		'd_date'    => date('Y-m-d')
+    ];
+
+    $this->db->insert('job_applications', $insert_array);
+
+    echo json_encode([
+        'status' => 'success',
+        'message' => 'Application submitted successfully'
+    ]);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

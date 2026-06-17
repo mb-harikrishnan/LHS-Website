@@ -62,7 +62,12 @@ $route['clubs'] = 'welcome/clubs';
 // $route['study_tour'] = 'welcome/study_tour';
 // $route['annual_day'] = 'welcome/annual_day';
 $route['news'] = 'welcome/news';
+
 $route['vaccancy'] = 'welcome/vaccancy';
+$route['apply_job/(:any)'] = 'welcome/apply_job/$1';
+$route['submit_job_application'] = 'welcome/submit_job_application';
+
+
 $route['downloads'] = 'welcome/downloads';
 $route['about_us'] = 'welcome/about_us';
 $route['principals_message'] = 'welcome/principals_message';

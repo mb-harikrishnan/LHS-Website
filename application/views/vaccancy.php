@@ -76,87 +76,31 @@
 
 
         <div class="row">
+<div class="vacancy_wrapper">
 
 <?php foreach($all_vacancy as $value){ ?>
 
 <div class="vacancy_card">
 
-    <!-- LEFT CONTENT -->
-    <div class="vacancy_left">
+    <div class="vacancy_content">
 
-        <span class="job_badge">
-            Career Opportunity
+        <span class="vacancy_tag">
+            We're Hiring
         </span>
 
-        <h2 class="vacancy_title">
+        <h4 class="vacancy_title">
             <?php echo $value->c_title; ?>
-        </h2>
+        </h4>
 
         <p class="vacancy_description">
             <?php echo nl2br($value->c_description); ?>
         </p>
 
-        <button class="apply_button"
-                onclick="showApplyForm('<?php echo $value->n_slno; ?>')">
+        <div class="vacancy_footer">
 
-            Apply Now
-
-        </button>
-
-    </div>
-
-    <!-- RIGHT FORM -->
-    <div class="vacancy_right">
-
-        <div class="apply_form"
-             id="applyForm<?php echo $value->n_slno; ?>">
-
-            <h3>Job Application Form</h3>
-
-            <form method="POST"
-                  action="<?php echo base_url('submit_job_application');?>"
-                  enctype="multipart/form-data">
-
-                <input type="hidden"
-                       name="job_id"
-                       value="<?php echo $value->n_slno; ?>">
-
-                <div class="form-group">
-                    <input type="text"
-                           name="full_name"
-                           class="form-control"
-                           placeholder="Enter Full Name"
-                           required>
-                </div>
-
-                <div class="form-group">
-                    <input type="text"
-                           name="mobile"
-                           class="form-control"
-                           placeholder="Enter Contact Number"
-                           required>
-                </div>
-
-                <div class="form-group">
-                    <input type="email"
-                           name="email"
-                           class="form-control"
-                           placeholder="Enter Email Address"
-                           required>
-                </div>
-
-                <div class="form-group">
-                    <input type="file"
-                           name="resume"
-                           class="form-control"
-                           required>
-                </div>
-
-                <button type="submit" class="submit_application_btn">
-                    Submit Application
-                </button>
-
-            </form>
+            <a href="<?php echo base_url('apply_job/'.$value->n_slno); ?>" class="apply_btn">
+                Apply Now
+            </a>
 
         </div>
 
@@ -166,6 +110,7 @@
 
 <?php } ?>
 
+</div>
 </div>
         </div>
 
@@ -181,166 +126,122 @@
 
 
 <style>
+/* MAIN SECTION */
+#vacancy{
+    background:#f4f7fc;
+}
+
+/* WRAPPER */
+.vacancy_wrapper{
+    width:100%;
+}
+
+/* CARD */
 .vacancy_card{
     background:#fff;
-    border-radius:20px;
-    padding:50px;
-    margin-bottom:40px;
-    box-shadow:0 8px 25px rgba(0,0,0,0.08);
-
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:50px;
-    flex-wrap:wrap;
-}
-/* LEFT SIDE */
-.vacancy_left{
-    flex:1;
-    min-width:300px;
+    border-radius:22px;
+    padding:45px;
+    margin-bottom:35px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+    transition:0.3s ease;
+    border-left:6px solid #0654c2;
 }
 
-/* RIGHT SIDE */
-.vacancy_right{
-    width:420px;
+.vacancy_card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 15px 40px rgba(0,0,0,0.12);
 }
 
-
-.job_badge{
-    background:#edf4ff;
+/* TAG */
+.vacancy_tag{
+    display:inline-block;
+    background:#eaf2ff;
     color:#0654c2;
-    padding:10px 22px;
+    padding:8px 20px;
     border-radius:30px;
     font-size:14px;
     font-weight:600;
-    display:inline-block;
-    margin-bottom:25px;
+    margin-bottom:22px;
 }
 
+/* TITLE */
 .vacancy_title{
-    font-size:48px;
+    font-size:38px;
     font-weight:800;
-    color:#0654c2;
-    margin-bottom:25px;
-    line-height:60px;
-
-    /* FIX LONG WORD */
+    color:#111;
+    margin-bottom:20px;
+    line-height:52px;
     word-break:break-word;
 }
 
+/* DESCRIPTION */
 .vacancy_description{
-    color:#555;
     font-size:17px;
-    line-height:34px;
+    line-height:32px;
+    color:#555;
     margin-bottom:35px;
 
-    /* IMPORTANT */
     white-space:normal;
-    overflow-wrap:break-word;
     word-wrap:break-word;
-    word-break:break-word;
-
-    max-width:100%;
-}
-/* BUTTON */
-.apply_button{
-    background:#ff0000;
-    color:#fff;
-    border:none;
-    padding:14px 40px;
-    border-radius:8px;
-    font-size:17px;
-    font-weight:600;
-    transition:0.3s;
+    overflow-wrap:break-word;
 }
 
-.apply_button:hover{
-    background:#d80000;
+/* FOOTER */
+.vacancy_footer{
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
 }
 
-/* FORM */
-.apply_form{
-    display:none;
-
-    background:#f9fbff;
-    border:1px solid #dce7ff;
-    border-radius:18px;
-    padding:35px;
-}
-
-.apply_form h3{
-    color:#0654c2;
-    font-size:38px;
-    font-weight:700;
-    text-align:center;
-    margin-bottom:30px;
-}
-
-.form-control{
-    height:55px;
-    border-radius:10px;
-    border:1px solid #d9d9d9;
-    box-shadow:none;
-    font-size:16px;
-    padding-left:18px;
-    margin-bottom:20px;
-}
-
-input[type="file"]{
-    padding-top:12px;
-}
-
-.submit_application_btn{
-    width:100%;
-    height:55px;
-    border:none;
-    border-radius:10px;
+/* APPLY BUTTON */
+.apply_btn{
     background:#0654c2;
-    color:#fff;
-    font-size:18px;
+    color:#fff !important;
+    padding:15px 35px;
+    border-radius:10px;
+    text-decoration:none;
+    font-size:16px;
     font-weight:600;
-    transition:0.3s;
+    transition:0.3s ease;
+    display:inline-block;
 }
 
-.submit_application_btn:hover{
+.apply_btn:hover{
     background:#043b89;
+    transform:scale(1.03);
 }
 
 /* MOBILE */
-@media(max-width:991px){
+@media(max-width:768px){
 
     .vacancy_card{
-        padding:30px;
-        gap:30px;
-    }
-
-    .vacancy_right{
-        width:100%;
+        padding:28px;
     }
 
     .vacancy_title{
-        font-size:34px;
-        line-height:46px;
+        font-size:28px;
+        line-height:40px;
     }
 
-    .apply_form h3{
-        font-size:30px;
+    .vacancy_description{
+        font-size:15px;
+        line-height:28px;
+    }
+
+    .apply_btn{
+        width:100%;
+        text-align:center;
     }
 }
 
 
 </style>
 
-<script src="<?php echo base_url('assets/js/jquery-2.2.3.js'); ?>"></script>
-<script src="<?php echo base_url('assets/js/bootstrap.min.js'); ?>"></script>
+    <!-- Scripts -->
+    <script src="<?php echo JS_PATH ?>jquery-3.6.0.min.js"></script>
+    <script src="<?php echo JS_PATH ?>jquery.validate.min.js"></script>
+    <script src="<?php echo JS_PATH ?>jquery.dataTables.min.js"></script>
+    <script src="<?php echo JS_PATH ?>dataTables.responsive.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
 
-function showApplyForm(id)
-{
-    $('.apply_form').slideUp();
-
-    $('#applyForm'+id).slideToggle();
-}
-
-</script>

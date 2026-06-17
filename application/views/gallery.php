@@ -26,6 +26,7 @@
   <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/style.css') ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/loader.css') ?>">
   <link rel="icon" href="<?php echo base_url('assets/images/favicon.png') ?>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css">
 
 
   <!--[if lt IE 9]>
@@ -88,18 +89,24 @@
 
             <div class="col-md-4 gallery-item <?php echo strtolower($value->c_type); ?>">
 
-                <div class="gallery-card">
+    <div class="gallery-card">
 
-                    <img src="<?php echo base_url('assets/images/gallery/'.$value->c_image); ?>" 
-                         class="img-fluid">
+        <a href="<?php echo base_url('assets/images/gallery/'.$value->c_image); ?>" 
+           data-lightbox="gallery"
+           data-title="<?php echo ucfirst($value->c_type); ?>">
 
-                    <div class="overlay">
-                        <?php echo ucfirst($value->c_type); ?>
-                    </div>
+            <img src="<?php echo base_url('assets/images/gallery/'.$value->c_image); ?>" 
+                 class="img-fluid gallery-img">
 
-                </div>
+        </a>
 
-            </div>
+        <div class="overlay">
+            <?php echo ucfirst($value->c_type); ?>
+        </div>
+
+    </div>
+
+</div>
 
         <?php } ?>
 
@@ -219,4 +226,15 @@ function filterGallery(type, btn){
 
     });
 }
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
+
+<script>
+lightbox.option({
+    'resizeDuration': 200,
+    'wrapAround': true,
+    'fadeDuration': 300
+});
 </script>
