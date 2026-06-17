@@ -51,138 +51,101 @@
     <section class="rev_slider_wrapper text-center">
         <!-- START REVOLUTION SLIDER 5.0 auto mode -->
         <div id="rev_slider" class="rev_slider" data-version="5.0">
-            <ul>
-                <!-- SLIDE  -->
+        <ul>
 
-                <?php foreach ($slider as $value) { ?>
-                    <li data-transition="fade">
-                        <!-- MAIN IMAGE -->
+<?php foreach ($slider as $value) { ?>
 
+<li data-transition="fade">
 
+    <?php if ($value->c_upload_type == "image") { ?>
 
-                        <?php if ($value->c_upload_type == "image") { ?>
+        <img src="<?php echo base_url('../assets/images/gallery/' . $value->c_file); ?>"
+            alt=""
+            data-bgposition="center center"
+            data-bgfit="cover"
+            data-bgparallax="10"
+            class="rev-slidebg">
 
-                            <!-- IMAGE -->
-
-                            <img src="<?php echo base_url('../assets/images/gallery/' . $value->c_file); ?>"
-                                alt=""
-                                data-bgposition="center center"
-                                data-bgfit="cover"
-                                data-bgparallax="10"
-                                class="rev-slidebg">
-
-                        <?php } ?>
-
-                        <?php if ($value->c_upload_type == "video") { ?>
-
-                            <video autoplay muted loop playsinline controls
-                                width="100%"
-                                height="700"
-                                style="object-fit:cover;">
-
-                                <source src="<?php echo base_url('../assets/images/gallery/' . $value->c_file); ?>" type="video/mp4">
-
-                                Your browser does not support the video tag.
-
-                            </video>
-
-                        <?php } ?>
-
-                        <?php if ($value->c_upload_type == "link") { ?>
-
-                            <?php
-                            $link = trim($value->c_file);
-
-                            $video_id = '';
-
-                            parse_str(parse_url($link, PHP_URL_QUERY), $vars);
-
-                            if (isset($vars['v'])) {
-                                $video_id = $vars['v'];
-                            }
-
-                            // support youtu.be links also
-                            if (empty($video_id)) {
-                                $path = parse_url($link, PHP_URL_PATH);
-                                $video_id = trim($path, '/');
-                            }
-                            ?>
-
-                            <?php if (!empty($video_id)) { ?>
-
-                                <iframe width="100%"
-                                    height="700"
-                                    src="https://www.youtube.com/embed/<?php echo $video_id; ?>?autoplay=1&mute=1&playsinline=1&loop=1&playlist=<?php echo $video_id; ?>&controls=1&rel=0"
-                                    title="YouTube video player"
-                                    frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowfullscreen>
-                                </iframe>
-
-
-                            <?php } ?>
-
-                        <?php } ?>
+    <?php } ?>
 
 
 
+    <?php if ($value->c_upload_type == "video") { ?>
 
-                        <!-- LAYER NR. 1 -->
-                    <li data-transition="fade">
-                        <!-- MAIN IMAGE -->
-                        <!-- LAYER NR. 1 -->
-                        <div class="tp-caption tp-resizeme"
-                            data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
-                            data-y="['180','170','160','100']" data-voffset="['0','0','0','0']"
-                            data-responsive_offset="on"
-                            data-visibility="['on','on','on','on']"
-                            data-transform_idle="o:1;"
-                            data-transform_in="z:0;rX:0;rY:0;rZ:0;sX:0.9;sY:0.9;skX:0;skY:0;opacity:0;s:1500;e:Power3.easeInOut;"
-                            data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
-                            data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;"
-                            data-start="800">
-                            <h1 class="hero-title">
-                                <?php echo $value->c_title; ?>
-                                Empowering Young Minds for a Bright Future
-                            </h1>
-                        </div>
-                        <div class="tp-caption tp-resizeme"
-                            data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
-                            data-y="['250','220','210','170']" data-voffset="['0','0','0','0']"
-                            data-responsive_offset="on"
-                            data-visibility="['on','on','off','off']"
-                            data-transform_idle="o:1;"
-                            data-transform_in="opacity:0;s:1000;e:Power2.easeInOut;"
-                            data-transform_out="opacity:0;s:1000;s:1000;"
-                            data-start="1500">
-                            <p style="color:#ff6600;">
+        <video autoplay muted loop playsinline
+            class="rev-slidebg"
+            style="width:100%; height:100vh; object-fit:cover;">
 
-                                <?php echo $value->c_description; ?>
-                            </p>
-                            Providing quality education, creativity, and values to help students achieve academic excellence and personal growth.
-                            </p>
-                        </div>
-                        <div class="tp-caption  tp-resizeme"
-                            data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
-                            data-y="['250','200','260','120']" data-voffset="['0','0','0','0']"
-                            data-responsive_offset="on"
-                            data-visibility="['on','on','on','on']"
-                            data-transform_idle="o:1;"
-                            data-transform_in="y:[-200%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;s:1500;e:Power3.easeInOut;"
-                            data-transform_out="auto:auto;s:1000;e:Power3.easeInOut;"
-                            data-mask_in="x:0px;y:0px;s:inherit;e:inherit;"
-                            data-mask_out="x:0;y:0;s:inherit;e:inherit;"
-                            data-start="2000">
-                            <a href="<?php echo base_url('about_us'); ?>" class="border_radius btn_common white_border">our services</a>
-                            <!-- <a href="#." class="border_radius btn_common blue">Get a quote</a> -->
-                        </div>
-                    </li>
+            <source src="<?php echo base_url('../assets/images/gallery/' . $value->c_file); ?>" type="video/mp4">
+
+        </video>
+
+    <?php } ?>
 
 
-                <?php } ?>
+
+    <?php if ($value->c_upload_type == "link") { ?>
+
+        <video autoplay muted loop playsinline
+            class="rev-slidebg"
+            style="width:100%; height:100vh; object-fit:cover;">
+
+            <source src="<?php echo $value->c_file; ?>" type="video/webm">
+
+        </video>
+
+    <?php } ?>
 
 
-            </ul>
+
+    <!-- TITLE -->
+    <div class="tp-caption tp-resizeme"
+        data-x="center"
+        data-y="180"
+        data-start="1500">
+
+        <h4 class="hero-title">
+            <?php echo $value->c_title; ?>
+        </h4>
+
+    </div>
+
+
+
+    <!-- DESCRIPTION -->
+    <div class="tp-caption tp-resizeme"
+        data-x="center"
+        data-y="260"
+        data-start="1500">
+
+        <p style="color:#ff6600;">
+            <?php echo $value->c_description; ?>
+        </p>
+
+    </div>
+
+
+
+    <!-- BUTTON -->
+    <div class="tp-caption tp-resizeme"
+        data-x="center"
+        data-y="350"
+        data-start="2000">
+
+        <a href="<?php echo base_url('about_us'); ?>"
+            class="border_radius btn_common white_border">
+
+            our services
+
+        </a>
+
+    </div>
+
+</li>
+
+<?php } ?>
+
+</ul>
         </div><!-- END REVOLUTION SLIDER -->
     </section>
 
