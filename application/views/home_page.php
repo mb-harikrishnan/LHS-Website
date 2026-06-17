@@ -97,8 +97,9 @@
 
     </video>
 
-    <!-- UNMUTE BUTTON -->
-    <button onclick="unmuteVideo()"
+    <!-- MUTE / UNMUTE BUTTON -->
+    <button id="muteBtn"
+        onclick="toggleMute()"
         style="
             position:absolute;
             top:20px;
@@ -110,15 +111,34 @@
             border:none;
             cursor:pointer;
         ">
+
         Unmute
+
     </button>
 
     <script>
-        function unmuteVideo() {
+
+        function toggleMute() {
+
             var video = document.getElementById("bannerVideo");
-            video.muted = false;
+            var button = document.getElementById("muteBtn");
+
+            if (video.muted == true) {
+
+                video.muted = false;
+                button.innerHTML = "Mute";
+
+            } else {
+
+                video.muted = true;
+                button.innerHTML = "Unmute";
+
+            }
+
             video.play();
+
         }
+
     </script>
 
 <?php } ?>
