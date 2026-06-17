@@ -83,18 +83,45 @@
     <?php } ?>
 
 
+<?php if ($value->c_upload_type == "link") { ?>
 
-    <?php if ($value->c_upload_type == "link") { ?>
+    <video id="bannerVideo"
+        autoplay
+        muted
+        loop
+        playsinline
+        class="rev-slidebg"
+        style="width:100%; height:100vh; object-fit:cover;">
 
-        <video autoplay muted loop playsinline
-            class="rev-slidebg"
-            style="width:100%; height:100vh; object-fit:cover;">
+        <source src="<?php echo $value->c_file; ?>" type="video/webm">
 
-            <source src="<?php echo $value->c_file; ?>" type="video/webm">
+    </video>
 
-        </video>
+    <!-- UNMUTE BUTTON -->
+    <button onclick="unmuteVideo()"
+        style="
+            position:absolute;
+            top:20px;
+            right:20px;
+            z-index:9999;
+            padding:10px 15px;
+            background:#000;
+            color:#fff;
+            border:none;
+            cursor:pointer;
+        ">
+        Unmute
+    </button>
 
-    <?php } ?>
+    <script>
+        function unmuteVideo() {
+            var video = document.getElementById("bannerVideo");
+            video.muted = false;
+            video.play();
+        }
+    </script>
+
+<?php } ?>
 
 
 
