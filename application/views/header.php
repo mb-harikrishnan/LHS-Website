@@ -15,7 +15,7 @@
                         class="logo logo-scrolled"
                         alt="School Logo">
 
-                    <span class="school-name">--</span>
+                    <span class="school-name">LITTLE HEARTS</span>
                 </a>
             </div>
 

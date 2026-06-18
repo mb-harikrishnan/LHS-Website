@@ -96,6 +96,8 @@ $route['apply_job'] = 'welcome/apply_job';
 
 
 $route['contact'] = 'welcome/contact';
+$route['submit_contact'] = 'welcome/submit_contact';
+
 $route['testimonials'] = 'welcome/testimonials';
 $route['teachers'] = 'welcome/teachers';
 $route['pricing'] = 'welcome/pricing';

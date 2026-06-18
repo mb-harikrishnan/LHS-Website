@@ -27,15 +27,15 @@
                     <h3 class="heading bottom25">Quick Links<span class="divider-left"></span></h3>
                     <ul class="links">
                         <li><a href="<?php echo base_url() ?>"><i class="icon-chevron-small-right"></i>Home</a></li>
-                        <li><a href="<?php echo base_url('about_us') ?>"><i class="icon-chevron-small-right"></i>Company</a></li>
+                        <li><a href="<?php echo base_url('about_us') ?>"><i class="icon-chevron-small-right"></i>About Us</a></li>
                         <!-- <li><a href="<?php echo base_url('services') ?>"><i class="icon-chevron-small-right"></i>Services</a></li> -->
-                        <li><a href="<?php echo base_url('teachers') ?>"><i class="icon-chevron-small-right"></i>Our Team</a></li>
+                        <!-- <li><a href="<?php echo base_url('teachers') ?>"><i class="icon-chevron-small-right"></i>Our Team</a></li> -->
                         <li><a href="<?php echo base_url('mission_vision') ?>"><i class="icon-chevron-small-right"></i>Mission & Vision</a></li>
-                        <li><a href="<?php echo base_url('certifications') ?>"><i class="icon-chevron-small-right"></i>Certifications</a></li>
+                        <!-- <li><a href="<?php echo base_url('certifications') ?>"><i class="icon-chevron-small-right"></i>Certifications</a></li> -->
                         <!-- <li><a href="#."><i class="icon-chevron-small-right"></i>Blog</a></li> -->
                         <!-- <li><a href="#."><i class="icon-chevron-small-right"></i>Shop</a></li> -->
-                        <!-- <li><a href="#."><i class="icon-chevron-small-right"></i>Privacy Policy</a></li> -->
-                        <!-- <li><a href="#."><i class="icon-chevron-small-right"></i>Contact Us</a></li> -->
+                        <li><a href="<?php echo base_url('vaccancy') ?>"><i class="icon-chevron-small-right"></i>Vacancies</a></li>
+                        <li><a href="<?php echo base_url('contact') ?>"><i class="icon-chevron-small-right"></i>Contact Us</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4 col-sm-4 footer_panel bottom25">
@@ -43,7 +43,19 @@
                     <p class=" address"><i class="icon-map-pin"></i>AFFILIATED TO CBSE, NEW DELHI NO.930601, KIZHAKKEPRAM, N. PARAVUR - 683 513</p>
                     <p class=" address"><i class="icon-phone"></i>+91-9744693905|0484-2446939</p>
                     <p class=" address"><i class="icon-mail"></i><a href="mailto:littleheartsschool97@gmail.com">littleheartsschool97@gmail.com</a></p>
-                    <img src="<?php echo base_url('assets/images/footer-map.png') ?>" alt="we are here" class="img-responsive">
+                    <!-- <img src="<?php echo base_url('assets/images/footer-map.png') ?>" alt="we are here" class="img-responsive"> -->
+                     <div class="row wow bounceIn" data-wow-delay="300ms">
+    <div class="col-md-12">
+        <iframe 
+            src="https://www.google.com/maps?q=Little+Hearts+School+North+Paravur&output=embed"
+            width="100%"
+            height="150"
+            style="border:0; border-radius:10px;"
+            allowfullscreen=""
+            loading="lazy">
+        </iframe>
+    </div>
+</div>
                 </div>
             </div>
         </div>

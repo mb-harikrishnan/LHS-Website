@@ -257,6 +257,31 @@ class Welcome extends CI_Controller
 		$this->load->view('footer');
 	}
 
+
+	public function submit_contact()
+	{
+		$data = array(
+			'c_name'       => $this->input->post('name'),
+			'c_email'      => $this->input->post('email'),
+			'n_mobile'     => $this->input->post('mobile'),
+			'c_comment'    => $this->input->post('message'),
+			'd_date'   => date('Y-m-d'),
+			'c_status' =>'Y'
+		);
+
+		$insert = $this->db->insert('contact_us', $data);
+
+		if($insert)
+		{
+			echo json_encode(array('status' => 1));
+		}
+		else
+		{
+			echo json_encode(array('status' => 0));
+		}
+		exit;
+	}
+
 	public function testimonials()
 	{
 		$this->load->view('topbar');
@@ -310,43 +335,84 @@ class Welcome extends CI_Controller
 
 
 
+
 public function submit_job_application()
 {
-    $config['upload_path']   = 'assets/images/resumes';
-    $config['allowed_types']  = 'pdf|doc|docx';
-    $config['max_size']       = 2048;
 
-    $this->load->library('upload', $config);
+    header('Content-Type: application/json');
 
-    if (!$this->upload->do_upload('resume')) {
+    $name       = $this->input->post('name');
+    $mobile     = $this->input->post('mobile');
+    $email      = $this->input->post('email');
+    $vacancy_id = $this->input->post('vacancy_id');
 
-        echo json_encode([
-            'status' => 'error',
-            'message' => $this->upload->display_errors()
-        ]);
-        return;
+    $resume = '';
+
+    // FILE UPLOAD
+    if(isset($_FILES['resume']) && $_FILES['resume']['name'] != '')
+    {
+
+        $config['upload_path']   = './assets/images/resumes';
+        $config['allowed_types'] = 'pdf|doc|docx';
+        $config['encrypt_name']  = TRUE;
+
+        $this->load->library('upload', $config);
+
+        if($this->upload->do_upload('resume'))
+        {
+
+            $uploadData = $this->upload->data();
+
+            $resume = $uploadData['file_name'];
+
+        }
+        else
+        {
+
+            echo json_encode([
+                'status'  => 'error',
+                'message' => strip_tags($this->upload->display_errors())
+            ]);
+
+            exit;
+        }
     }
 
-    $fileData = $this->upload->data();
+	  $insertData = [
 
-    $insert_array = [
-        'vacancy_id' => $this->input->post('vacancy_id'),
-        'c_name'       => $this->input->post('name'),
-        'n_mobile'     => $this->input->post('mobile'),
-        'c_email'      => $this->input->post('email'),
-        'c_resume'     => $fileData['file_name'],
-        'c_status'   => 'Y',
-		'd_date'    => date('Y-m-d')
+        'n_job_id' => $vacancy_id,
+        'c_name'       => $name,
+        'n_mobile'     => $mobile,
+        'c_email'      => $email,
+        'c_resume'     => $resume,
+		'd_date'      => date('Y-m-d'),
+		'c_status'   => 'Y'
+
     ];
 
-    $this->db->insert('job_applications', $insert_array);
+    $insert = $this->db->insert('job_applications', $insertData);
 
-    echo json_encode([
-        'status' => 'success',
-        'message' => 'Application submitted successfully'
-    ]);
+    if($insert)
+    {
+
+        echo json_encode([
+            'status'  => 'success',
+            'message' => 'Application submitted successfully'
+        ]);
+
+    }
+    else
+    {
+
+        echo json_encode([
+            'status'  => 'error',
+            'message' => 'Database insertion failed'
+        ]);
+
+    }
+
+    exit;
 }
-
 
 
 
