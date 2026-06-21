@@ -20,7 +20,7 @@ public function get_all_images()
 
 
 
-  public function delete_image($id)
+  public function delete_slider($id)
     {
         $this->db->where('n_slno', $id);
 

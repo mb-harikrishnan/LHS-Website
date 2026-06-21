@@ -32,7 +32,7 @@ $initials = strtoupper(substr($firstName, 0, 2));
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Radha Madhav Growth — <?php echo htmlspecialchars($pageTitle); ?></title>
+<title>Little Heart School — <?php echo htmlspecialchars($pageTitle); ?></title>
 <meta name="description" content="Radha Madhav Growth premium business dashboard for team management, income tracking, and growth analytics.">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -64,20 +64,11 @@ $initials = strtoupper(substr($firstName, 0, 2));
 
     <!-- Header -->
     <div class="sb-header">
-      <div class="sb-logo-wrap">
-        <svg class="sb-logo-svg" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="40" cy="40" r="36" fill="rgba(184,150,46,0.15)" stroke="rgba(184,150,46,0.4)" stroke-width="1"/>
-          <path d="M40 20 C36 28 28 32 20 32 C28 32 32 40 28 48 C34 42 40 44 40 44" fill="rgba(184,150,46,0.6)"/>
-          <path d="M40 20 C44 28 52 32 60 32 C52 32 48 40 52 48 C46 42 40 44 40 44" fill="rgba(184,150,46,0.6)"/>
-          <path d="M40 20 C40 30 40 38 40 44" stroke="#D4AF5A" stroke-width="1.5"/>
-          <path d="M20 50 C28 46 34 50 40 56 C46 50 52 46 60 50" stroke="#D4AF5A" stroke-width="1.2" fill="none"/>
-          <circle cx="40" cy="44" r="4" fill="#D4AF5A"/>
-          <path d="M30 22 C34 30 38 34 40 44" stroke="rgba(212,175,90,0.5)" stroke-width="1" fill="none"/>
-          <path d="M50 22 C46 30 42 34 40 44" stroke="rgba(212,175,90,0.5)" stroke-width="1" fill="none"/>
-        </svg>
-      </div>
+       <!-- <img src="http://localhost:8000/assets/images/main_image/school_logo.png"
+          id="headerProfileImage"
+          style="width:100%;height:100%;object-fit:cover;border-radius:50%;"> -->
       <div class="sb-brand">
-        <div class="sb-name">Radha Madhav Growth</div>
+        <div class="sb-name">Little Heart School</div>
         <div class="sb-tag">Management Portal</div>
       </div>
     </div>
@@ -87,22 +78,15 @@ $initials = strtoupper(substr($firstName, 0, 2));
       <!-- <div class="sb-avatar">RM</div> -->
        <div class="sb-avatar">
 
-          <?php if(!empty($c_profile_photo)) { ?>
 
-              <img src="<?php echo base_url('assets/images/'.$c_profile_photo); ?>" 
-                  id="headerProfileImage"
-                  style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
-
-          <?php } else { ?>
-
-              <?php echo $initials; ?>
-
-          <?php } ?>
+          <img src="http://localhost:8000/assets/images/main_image/school_logo.png"
+          id="headerProfileImage"
+          style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
 
       </div>
       <div class="sb-user-info">
         <div class="sb-user-name"><?php echo $firstName; ?></div>
-        <div class="sb-user-id"> ID: <?php echo $this->session->userdata('c_username') ; ?></div>
+        <div class="sb-user-id"><?php echo $this->session->userdata('c_username') ; ?></div>
       </div>
       <div class="sb-badge">Active</div>
     </div>
@@ -175,7 +159,7 @@ $initials = strtoupper(substr($firstName, 0, 2));
 
     </div>
 
-
+<!-- 
      <div class="nav-item<?php echo $activePage === 'school-vaccancy_list' ? ' active' : ''; ?>" 
         onclick="window.location.href='<?php echo base_url('vaccancy_list'); ?>'">
 
@@ -191,7 +175,28 @@ $initials = strtoupper(substr($firstName, 0, 2));
 
         <span class="nav-label">Add Vaccancy</span>
 
-    </div>
+    </div> -->
+
+
+    
+      <div class="nav-item" onclick="toggleNav(this)">
+        <div class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <span class="nav-label">Vacancy</span>
+        <span class="nav-arrow">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </span>
+      </div>
+      <div class="sub-nav" id="subnav-0">
+        <div class="sub-item active" onclick="window.location.href='vaccancy_list'">Add Vacancy</div>
+        <div class="sub-item" onclick="window.location.href='apply_members'">Applications</div>
+      </div>
 
      <div class="nav-item<?php echo $activePage === 'school-questionpaper_list' ? ' active' : ''; ?>" 
         onclick="window.location.href='<?php echo base_url('questionpaper_list'); ?>'">

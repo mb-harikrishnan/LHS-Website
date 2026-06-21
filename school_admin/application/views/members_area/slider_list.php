@@ -333,7 +333,7 @@ $(document).on('click', '.deleteBtn', function (e) {
 
             $.ajax({
 
-                url: "<?php echo base_url('delete_video'); ?>",
+                url: "<?php echo base_url('delete_slider'); ?>",
                 type: "POST",
                 data: {id:id},
 

@@ -28,6 +28,14 @@ public function get_all_vacancy($from_date , $to_date)
             'c_status' => 'D'
         ));
     }
+  public function delete_application($id)
+    {
+        $this->db->where('n_slno', $id);
+
+        return $this->db->update('job_applications', array(
+            'c_status' => 'D'
+        ));
+    }
 
 
 }

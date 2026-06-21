@@ -348,7 +348,76 @@ class Document_Controller extends CI_Controller {
 
 
 
+public function check_document_exist()
+{
+    $document_type = $this->input->post('document_type');
 
+    $check = $this->db
+        ->where('c_type', $document_type)
+        ->where('c_status', 'Y')
+        ->get('document_master')
+        ->row();
+
+    if ($check) {
+
+        echo json_encode([
+            'status' => 'exists'
+        ]);
+
+    } else {
+
+        echo json_encode([
+            'status' => 'not_exists'
+        ]);
+    }
+}
+
+public function check_result_exist()
+{
+    $document_type = $this->input->post('document_type');
+
+    $check = $this->db
+        ->where('c_type', $document_type)
+        ->where('c_status', 'Y')
+        ->get('result_and_staff_list')
+        ->row();
+
+    if ($check) {
+
+        echo json_encode([
+            'status' => 'exists'
+        ]);
+
+    } else {
+
+        echo json_encode([
+            'status' => 'not_exists'
+        ]);
+    }
+}
+public function check_video_exist()
+{
+    $document_type = $this->input->post('document_type');
+
+    $check = $this->db
+        ->where('c_type', $document_type)
+        ->where('c_status', 'Y')
+        ->get('infrastructure_videos')
+        ->row();
+
+    if ($check) {
+
+        echo json_encode([
+            'status' => 'exists'
+        ]);
+
+    } else {
+
+        echo json_encode([
+            'status' => 'not_exists'
+        ]);
+    }
+}
 
 
 

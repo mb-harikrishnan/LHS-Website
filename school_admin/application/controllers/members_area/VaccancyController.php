@@ -81,6 +81,53 @@ class VaccancyController extends CI_Controller {
             echo 0;
         }
     }
+      public function delete_application()
+    {
+        $id = $this->input->post('id');
+
+        $result = $this->Vacancy_model->delete_application($id);
+
+        if($result)
+        {
+            echo 1;
+        }
+        else
+        {
+            echo 0;
+        }
+    }
+
+
+
+public function apply_members()
+{
+
+   $select ="SELECT * FROM  job_applications WHERE c_status='Y'";
+   $query = $this->db->query($select);
+   $res['applications'] = $query->result();
+    $this->load->view('members_area/header');
+    $this->load->view('members_area/apply_members',$res);
+    $this->load->view('members_area/footer');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

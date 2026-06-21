@@ -49,17 +49,20 @@ $route['general_information']   = 'members_area/Document_Controller/general_info
 $route['delete_general_information']   = 'members_area/Document_Controller/delete_general_information';
 $route['upload_document']   = 'members_area/Document_Controller/upload_document';
 $route['add_document']   = 'members_area/Document_Controller/add_document';
+$route['check_document_exist'] = 'members_area/Document_Controller/check_document_exist';
 
 
 $route['Result_and_Staff']   = 'members_area/Document_Controller/result_and_staff_list';
 $route['delete_details']   = 'members_area/Document_Controller/delete_details';
 $route['upload_document_details']   = 'members_area/Document_Controller/upload_document_details';
 $route['add_document_details']   = 'members_area/Document_Controller/add_document_details';
+$route['check_result_exist']   = 'members_area/Document_Controller/check_result_exist';
 
 $route['infrastructure']   = 'members_area/Document_Controller/infrastructure';
 $route['delete_video']   = 'members_area/Document_Controller/delete_video';
 $route['upload_video']   = 'members_area/Document_Controller/upload_video';
 $route['add_video']   = 'members_area/Document_Controller/add_video';
+$route['check_video_exist']   = 'members_area/Document_Controller/check_video_exist';
 
 
 
@@ -88,6 +91,10 @@ $route['vaccancy_list']   = 'members_area/VaccancyController/vaccancy_list';
 $route['add_vacancy']   = 'members_area/VaccancyController/add_vacancy';
 $route['delete_vacancy']   = 'members_area/VaccancyController/delete_vacancy';
 $route['insert_vacancy']   = 'members_area/VaccancyController/insert_vacancy';
+
+
+$route['apply_members']   = 'members_area/VaccancyController/apply_members';
+$route['delete_application']   = 'members_area/VaccancyController/delete_application';
 
 
 ///////////////////  Question Papper  //////////////////////////////

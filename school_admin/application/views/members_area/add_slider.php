@@ -41,94 +41,156 @@ $showGlobalSearch = false;
         </div>
 
 
+<form id="newsform"
+      method="post"
+      enctype="multipart/form-data"
+      action="<?php echo base_url('insert_slider'); ?>">
 
+    <div class="form-grid">
 
+        <!-- TITLE -->
+        <div class="news-form-group full-width">
+            <label>Title</label>
 
+            <input type="text"
+                   name="title"
+                   id="title"
+                   class="news-input"
+                   placeholder="Enter title">
+        </div>
 
-                    <form method="post" enctype="multipart/form-data"  action="<?php echo base_url('insert_slider'); ?>">
+        <!-- DESCRIPTION -->
+        <div class="news-form-group full-width">
+            <label>Description</label>
 
-                        <div class="upload-form-grid">
+            <textarea name="description"
+                      id="description"
+                      class="news-textarea"
+                      placeholder="Enter description"></textarea>
+        </div>
 
-                            <!-- Document Type -->
-                            <div class="form-group-modern">
-                                <label>Select Document Type</label>
+        <!-- UPLOAD TYPE -->
+        <div class="news-form-group">
+            <label>Upload Type</label>
 
-                                <select name="document_type" class="modern-select" required>
-                                    <option value="">Choose Document Type</option>
-                                      <option value="infrastructure">Infrastructure</option>
-                                 
-                                </select>
-                            </div>
+            <select name="upload_type"
+                    id="upload_type"
+                    class="news-select">
 
-                        
+                <option value="">Select Upload Type</option>
+                <option value="image">Image</option>
+                <option value="video">Video</option>
+                <option value="link">External Link</option>
 
-                        </div>
-                        <!-- Video Link -->
-                    <div class="form-group-modern" >
-                        
-                        <label>Video Link</label>
+            </select>
+        </div>
 
-                        <input type="url"
-                            name="video_link"
-                            id="videoLink"
-                            class="modern-input full-width-input"
-                            placeholder="Enter video link (YouTube, Drive, etc)">
+        <!-- IMAGE SECTION -->
+        <div class="news-form-group upload-section full-width"
+             id="imageSection">
 
-                    </div>
+            <label>Upload Image</label>
 
+            <div class="upload-box">
 
-                        <!-- Upload Area -->
-                        <div class="form-group-modern" style="margin-top:25px;">
+                <input type="file"
+                       name="news_image"
+                       id="news_image"
+                       accept="image/*">
 
-                            <label>Upload Video</label>
+                <div class="upload-icon">
+                    <i class="fa fa-image"></i>
+                </div>
 
-                            <div class="upload-box">
+                <div class="upload-title">
+                    Choose Image
+                </div>
 
-                                <input type="file" 
-                                    name="document_file" 
-                                    id="documentFile"
-                                    accept=".mp4, .avi, .mov, .wmv, .flv, .mkv"
-                                    >
+                <div class="upload-sub">
+                    JPG, PNG, JPEG files allowed
+                </div>
 
-                                <div class="upload-icon">
-                                    <i class="fa fa-cloud-upload"></i>
-                                </div>
+            </div>
 
-                                <div class="upload-title">
-                                    Drag & Drop video Here
-                                </div>
+            <div class="file-preview" id="imagePreview">
+                <div class="preview-icon">
+                    <i class="fa fa-file-image"></i>
+                </div>
 
-                                <div class="upload-sub">
-                                    or click to browse file
-                                </div>
+                <div class="preview-details">
+                    <div class="preview-name" id="imageName"></div>
+                    <div class="preview-size" id="imageSize"></div>
+                </div>
+            </div>
 
-                                <!-- Preview INSIDE Upload Box -->
-                                <div class="file-preview" id="filePreview">
+        </div>
 
-                                    <div class="preview-icon">
-                                        <i class="fa fa-file-video-o"></i>
-                                    </div>
+        <!-- VIDEO SECTION -->
+        <div class="news-form-group upload-section full-width"
+             id="videoSection">
 
-                                    <div class="preview-details">
-                                        <div class="preview-name" id="fileName"></div>
-                                        <div class="preview-size" id="fileSize"></div>
-                                    </div>
+            <label>Upload Video</label>
 
-                                </div>
+            <div class="upload-box">
 
-                            </div>
+                <input type="file"
+                       name="news_video"
+                       id="news_video"
+                       accept="video/webm">
 
+                <div class="upload-icon">
+                    <i class="fa fa-video-camera"></i>
+                </div>
 
+                <div class="upload-title">
+                    Choose WEBM Video
+                </div>
 
-                           
-                        </div>
+                <div class="upload-sub">
+                    Only WEBM video allowed
+                </div>
 
-                        <!-- Submit -->
-                        <button type="submit" class="submit-btn-modern">
-                            <i class="fa fa-save"></i> Upload video
-                        </button>
+            </div>
 
-                    </form>
+            <div class="file-preview" id="videoPreview">
+                <div class="preview-icon">
+                    <i class="fa fa-file-video-o"></i>
+                </div>
+
+                <div class="preview-details">
+                    <div class="preview-name" id="videoName"></div>
+                    <div class="preview-size" id="videoSize"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- LINK SECTION -->
+        <div class="news-form-group upload-section full-width"
+             id="linkSection">
+
+            <label>External Link</label>
+
+            <input type="url"
+                   name="external_link"
+                   id="external_link"
+                   class="news-input"
+                   placeholder="https://example.com">
+
+        </div>
+
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="news-btn-group">
+
+        <button type="submit" class="submit-btn">
+            <i class="fa fa-save"></i> Submit
+        </button>
+
+    </div>
+
+</form>
 
 
             
@@ -146,115 +208,25 @@ $showGlobalSearch = false;
 
 <style>
 /* =========================
-   PAGE HEADER
+   FORM DESIGN
 ========================= */
-.page-header{
-    margin-bottom: 28px;
-}
 
-.page-eyebrow{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-size:13px;
-    font-weight:600;
-    color:#16a34a;
-    text-transform:uppercase;
-    letter-spacing:.08em;
-    margin-bottom:10px;
-}
-
-.eyebrow-pulse{
-    width:10px;
-    height:10px;
-    border-radius:50%;
-    background:#22c55e;
-    animation:pulse 1.8s infinite;
-}
-
-@keyframes pulse{
-    0%{transform:scale(.9);opacity:.7;}
-    70%{transform:scale(1.4);opacity:0;}
-    100%{transform:scale(.9);opacity:0;}
-}
-
-.page-title{
-    font-size:34px;
-    font-weight:800;
-    color:#111827;
-    margin:0;
-}
-
-.page-sub{
-    color:#6b7280;
-    margin-top:8px;
-    font-size:15px;
-}
-
-/* =========================
-   CARD
-========================= */
-.card{
-    background:#fff;
-    border-radius:24px;
-    padding:35px;
-    box-shadow:0 10px 40px rgba(0,0,0,0.06);
-    border:1px solid #eef2f7;
-}
-
-.card-head{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:35px;
-    flex-wrap:wrap;
-    gap:15px;
-}
-
-.card-title{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    font-size:20px;
-    font-weight:700;
-    color:#111827;
-}
-
-/* =========================
-   ACTION BUTTON
-========================= */
-.card-action{
-    border:none;
-    outline:none;
-    background:linear-gradient(135deg,#16a34a,#22c55e);
-    color:#fff;
-    padding:12px 22px;
-    border-radius:12px;
-    font-weight:600;
-    cursor:pointer;
-    transition:.3s ease;
-    box-shadow:0 8px 20px rgba(34,197,94,.25);
-}
-
-.card-action:hover{
-    transform:translateY(-2px);
-    box-shadow:0 12px 25px rgba(34,197,94,.35);
-}
-
-/* =========================
-   FORM GRID
-========================= */
-.upload-form-grid{
+.form-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:22px;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:24px;
 }
 
-/* =========================
-   FORM GROUP
-========================= */
-.form-group-modern label{
-    display:block;
+.full-width{
+    grid-column:1/-1;
+}
+
+.news-form-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.news-form-group label{
     margin-bottom:10px;
     font-size:14px;
     font-weight:700;
@@ -262,33 +234,45 @@ $showGlobalSearch = false;
 }
 
 /* =========================
-   SELECT
+   INPUT / SELECT / TEXTAREA
 ========================= */
-.modern-select{
+
+.news-input,
+.news-select,
+.news-textarea{
     width:100%;
-    padding:14px 16px;
-    border-radius:14px;
     border:1px solid #d1d5db;
     background:#f9fafb;
+    border-radius:16px;
+    padding:14px 16px;
     font-size:15px;
+    color:#111827;
     transition:.3s ease;
     outline:none;
 }
 
-.modern-select:focus{
+.news-input:focus,
+.news-select:focus,
+.news-textarea:focus{
     border-color:#22c55e;
     background:#fff;
     box-shadow:0 0 0 4px rgba(34,197,94,.12);
 }
 
+.news-textarea{
+    min-height:130px;
+    resize:vertical;
+}
+
 /* =========================
    UPLOAD BOX
 ========================= */
+
 .upload-box{
     position:relative;
     border:2px dashed #22c55e;
-    border-radius:24px;
-    padding:45px 25px;
+    border-radius:22px;
+    padding:40px 20px;
     text-align:center;
     background:linear-gradient(to bottom,#f0fdf4,#ffffff);
     transition:.3s ease;
@@ -297,7 +281,7 @@ $showGlobalSearch = false;
 
 .upload-box:hover{
     transform:translateY(-2px);
-    box-shadow:0 15px 35px rgba(34,197,94,.12);
+    box-shadow:0 10px 25px rgba(34,197,94,.12);
 }
 
 .upload-box input[type="file"]{
@@ -310,15 +294,15 @@ $showGlobalSearch = false;
 }
 
 .upload-icon{
-    width:85px;
-    height:85px;
+    width:80px;
+    height:80px;
     border-radius:50%;
     background:#dcfce7;
     display:flex;
     align-items:center;
     justify-content:center;
     margin:0 auto 18px;
-    font-size:34px;
+    font-size:32px;
     color:#16a34a;
 }
 
@@ -330,148 +314,178 @@ $showGlobalSearch = false;
 }
 
 .upload-sub{
-    color:#6b7280;
     font-size:14px;
+    color:#6b7280;
 }
 
 /* =========================
    FILE PREVIEW
 ========================= */
+
 .file-preview{
-    margin-top:28px;
+    margin-top:20px;
     display:none;
     align-items:center;
-    gap:16px;
-    background:#fff;
+    gap:15px;
     border:1px solid #dcfce7;
+    background:#fff;
     padding:16px;
     border-radius:16px;
-    text-align:left;
-    box-shadow:0 6px 18px rgba(0,0,0,0.04);
 }
 
 .preview-icon{
-    width:52px;
-    height:52px;
+    width:50px;
+    height:50px;
     border-radius:12px;
-    background:#fee2e2;
+    background:#dcfce7;
     display:flex;
     align-items:center;
     justify-content:center;
-    color:#dc2626;
-    font-size:24px;
-    flex-shrink:0;
-}
-
-.preview-details{
-    overflow:hidden;
+    color:#16a34a;
+    font-size:22px;
 }
 
 .preview-name{
     font-weight:700;
     color:#111827;
-    font-size:15px;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
 }
 
 .preview-size{
-    color:#6b7280;
     font-size:13px;
-    margin-top:4px;
+    color:#6b7280;
+    margin-top:3px;
 }
 
 /* =========================
-   SUBMIT BUTTON
+   BUTTON
 ========================= */
-.submit-btn-modern{
-    margin-top:32px;
-    width:100%;
+
+.news-btn-group{
+    margin-top:30px;
+}
+
+.submit-btn{
     border:none;
-    outline:none;
-    background:linear-gradient(135deg,#15803d,#22c55e);
+    background:linear-gradient(135deg,#16a34a,#22c55e);
     color:#fff;
-    padding:16px;
+    padding:15px 28px;
     border-radius:16px;
-    font-size:16px;
+    font-size:15px;
     font-weight:700;
     cursor:pointer;
     transition:.3s ease;
-    box-shadow:0 12px 28px rgba(34,197,94,.25);
+    box-shadow:0 10px 25px rgba(34,197,94,.25);
 }
 
-.submit-btn-modern:hover{
+.submit-btn:hover{
     transform:translateY(-2px);
-    box-shadow:0 16px 34px rgba(34,197,94,.35);
+    box-shadow:0 14px 30px rgba(34,197,94,.35);
 }
 
 /* =========================
    RESPONSIVE
 ========================= */
+
 @media(max-width:768px){
 
-    .card{
-        padding:22px;
+    .form-grid{
+        grid-template-columns:1fr;
     }
 
-    .page-title{
-        font-size:26px;
-    }
-
-    .card-head{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .card-action{
-        width:100%;
-    }
-}
-
-
-/* =========================
-   INPUT FIELD
-========================= */
-.modern-input{
-    width:100%;
-    padding:14px 16px;
-    border-radius:14px;
-    border:1px solid #d1d5db;
-    background:#f9fafb;
-    font-size:15px;
-    transition:.3s ease;
-    outline:none;
-    color:#111827;
-}
-
-.modern-input:focus{
-    border-color:#22c55e;
-    background:#fff;
-    box-shadow:0 0 0 4px rgba(34,197,94,.12);
-}
-
-.full-width-input{
-    width:100%;
 }
 </style>
 
-
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-document.getElementById('documentFile').addEventListener('change', function(e){
 
-    const file = e.target.files[0];
+$(document).ready(function () {
 
-    if(file){
+    // Hide all sections initially
+    $('#imageSection').hide();
+    $('#videoSection').hide();
+    $('#linkSection').hide();
 
-        document.getElementById('filePreview').style.display = 'flex';
+    // Upload type change
+    $('#upload_type').on('change', function () {
 
-        document.getElementById('fileName').innerText = file.name;
+        var type = $(this).val();
 
-        document.getElementById('fileSize').innerText =
-            (file.size / 1024 / 1024).toFixed(2) + ' MB';
-    }
+        // Hide all first
+        $('#imageSection').hide();
+        $('#videoSection').hide();
+        $('#linkSection').hide();
+
+        // Show selected section
+        if (type == 'image') {
+
+            $('#imageSection').slideDown();
+
+        } else if (type == 'video') {
+
+            $('#videoSection').slideDown();
+
+        } else if (type == 'link') {
+
+            $('#linkSection').slideDown();
+        }
+
+    });
+
+    // IMAGE PREVIEW
+    $('#news_image').on('change', function () {
+
+        let file = this.files[0];
+
+        if (file) {
+
+            $('#imagePreview').css('display', 'flex');
+
+            $('#imageName').text(file.name);
+
+            $('#imageSize').text(
+                (file.size / 1024 / 1024).toFixed(2) + ' MB'
+            );
+        }
+
+    });
+
+    // VIDEO PREVIEW
+    $('#news_video').on('change', function () {
+
+        let file = this.files[0];
+
+        if (file) {
+
+            let extension = file.name.split('.').pop().toLowerCase();
+
+            // Allow only WEBM
+            if (extension != 'webm') {
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid File',
+                    text: 'Only WEBM video allowed'
+                });
+
+                $('#news_video').val('');
+                $('#videoPreview').hide();
+
+                return false;
+            }
+
+            $('#videoPreview').css('display', 'flex');
+
+            $('#videoName').text(file.name);
+
+            $('#videoSize').text(
+                (file.size / 1024 / 1024).toFixed(2) + ' MB'
+            );
+        }
+
+    });
+
 });
+
 </script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

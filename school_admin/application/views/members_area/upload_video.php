@@ -500,3 +500,59 @@ Swal.fire({
 });
 </script>
 <?php } ?>
+
+
+
+
+<!-- jQuery CDN -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+$(document).ready(function () {
+
+    $('form').on('submit', function (e) {
+
+        e.preventDefault();
+
+        let form = this;
+
+        let document_type = $('select[name="document_type"]').val();
+
+        $.ajax({
+            url: "<?php echo base_url('check_video_exist'); ?>",
+            type: "POST",
+            data: {
+                document_type: document_type
+            },
+            dataType: "json",
+
+            success: function (response) {
+
+                // DOCUMENT EXISTS
+                if (response.status == 'exists') {
+
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Video Already Exists',
+                        text: 'Delete existing video first.',
+                        confirmButtonColor: '#22c55e',
+                        width: '350px'
+                    });
+
+                     form.reset();
+
+            // HIDE FILE PREVIEW
+            $('#filePreview').hide();
+
+                } else {
+
+                    // SUBMIT FORM
+                    form.submit();
+                }
+            }
+        });
+
+    });
+
+});
+</script>
