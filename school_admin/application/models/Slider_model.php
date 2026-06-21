@@ -4,11 +4,11 @@ class Slider_model extends CI_Model
 {
 
 
-public function get_all_images($from_date , $to_date)
+public function get_all_images()
 {
   
 
-    $sql="SELECT * FROM school_sliders WHERE c_status='Y' AND d_date BETWEEN '$from_date' AND '$to_date'  
+    $sql="SELECT * FROM school_sliders WHERE c_status='A' 
     ORDER BY n_slno DESC";
     $query = $this->db->query($sql);
 

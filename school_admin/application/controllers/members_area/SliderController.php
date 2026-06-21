@@ -15,15 +15,8 @@ class SliderController extends CI_Controller {
     {   
 
 
-        $from_date = $this->input->post('fromDate');
-        $to_date = $this->input->post('toDate');
 
-        if(empty($from_date) && empty($to_date)) {
-            $from_date = date('Y-m-d');
-            $to_date = date('Y-m-d');
-        } 
-
-        $image['image'] = $this->Slider_model->get_all_images($from_date, $to_date);
+        $image['image'] = $this->Slider_model->get_all_images();
 
         $this->load->view('members_area/header');
         $this->load->view('members_area/slider_list', $image);
