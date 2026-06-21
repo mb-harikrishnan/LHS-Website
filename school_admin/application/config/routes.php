@@ -63,6 +63,52 @@ $route['add_video']   = 'members_area/Document_Controller/add_video';
 
 
 
+//////////////////   SCHOOL NEWS   ////////////////////////
+
+
+
+$route['school_news']   = 'members_area/NewsController/school_news';
+$route['add_news']   = 'members_area/NewsController/add_news';
+$route['insert_school_news']   = 'members_area/NewsController/insert_school_news';
+$route['delete_news']   = 'members_area/NewsController/delete_news';
+
+///////////////////   galleeryyyy ///////////////////////////////////
+
+
+$route['gallery']   = 'members_area/GalleryController/gallery';
+$route['add_gallery_image']   = 'members_area/GalleryController/add_gallery_image';
+$route['insert_school_image']   = 'members_area/GalleryController/insert_school_image';
+$route['delete_image']   = 'members_area/GalleryController/delete_image';
+
+
+/////////////////////// vaccancy_list /////////////////////////////////////////////
+
+
+$route['vaccancy_list']   = 'members_area/VaccancyController/vaccancy_list';
+$route['add_vacancy']   = 'members_area/VaccancyController/add_vacancy';
+$route['delete_vacancy']   = 'members_area/VaccancyController/delete_vacancy';
+$route['insert_vacancy']   = 'members_area/VaccancyController/insert_vacancy';
+
+
+///////////////////  Question Papper  //////////////////////////////
+
+
+$route['questionpaper_list']   = 'members_area/QuestionPaperController/questionpaper_list';
+$route['add_paper']   = 'members_area/QuestionPaperController/add_paper';
+$route['delete_paper']   = 'members_area/QuestionPaperController/delete_papper';
+$route['insert_paper']   = 'members_area/QuestionPaperController/insert_paper';
+
+/////////////////////////    SLIDER IMAGE VIDEO LINK ///////////////////////////
+
+$route['slider_list']   = 'members_area/SliderController/slider_list';
+$route['add_slider']   = 'members_area/SliderController/add_slider';
+$route['insert_slider']   = 'members_area/SliderController/insert_slider';
+$route['delete_slider']   = 'members_area/SliderController/delete_slider';
+
+
+
+
+
 
 
 $route['404_override'] = '';

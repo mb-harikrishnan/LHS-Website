@@ -15,9 +15,9 @@ $showGlobalSearch = false;
       <div class="page-header">
         <div class="page-eyebrow">
           <div class="eyebrow-pulse"></div>
-          Uploads
+          Add News
         </div>
-        <h1 class="page-title">Upload Documents
+        <h1 class="page-title">Add News
           <!-- <em>Reports</em> -->
         </h1>
         <p class="page-sub"></p>
@@ -32,10 +32,10 @@ $showGlobalSearch = false;
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>
             </svg>
-            Upload Documents
+            Upload News
           </div>
           <button class="card-action" 
-              onclick="window.location.href='<?php echo base_url('Result_and_Staff'); ?>'">
+              onclick="window.location.href='<?php echo base_url('school_news'); ?>'">
           <i class="fa fa-upload"></i> List 
           </button>
         </div>
@@ -45,80 +45,51 @@ $showGlobalSearch = false;
 
 
 
-                    <form method="post" enctype="multipart/form-data"  action="<?php echo base_url('add_document_details'); ?>">
+                    <form id="newsform"
+                        method="post"
+                        action="<?php echo base_url('insert_school_news'); ?>">
 
-                        <div class="upload-form-grid">
+                        <!-- Title -->
+                        <div class="news-form-group">
 
-                            <!-- Document Type -->
-                            <div class="form-group-modern">
-                                <label>Select Document Type</label>
+                            <label>
+                                News Title
+                            </label>
 
-                                <select name="document_type" class="modern-select" required>
-                                    <option value="">Choose Document Type</option>
-                                      <option value="fee_structure">Fee Structure</option>
-                                    <option value="anual_academic_calendar">Annual Academic Calendar</option>
-                                    <option value="school_managment_comitte">School Management Committee</option>
-                                    <option value="pta_members">PTA Members</option>
-                                    <option value="3_yers_board_exam">3 Years Board Exam</option>
-                                    <option value="staff_details">Staff Details</option>
-                                </select>
-                            </div>
-
-                        
+                            <input type="text"
+                                name="title"
+                                id="title"
+                                class="news-input"
+                                placeholder="Enter News Title">
 
                         </div>
 
-                        <!-- Upload Area -->
-                        <div class="form-group-modern" style="margin-top:25px;">
+                        <!-- Description -->
+                        <div class="news-form-group">
 
-                            <label>Upload PDF Document</label>
+                            <label>
+                                Description
+                            </label>
 
-                            <div class="upload-box">
+                            <textarea name="description"
+                                id="description"
+                                class="news-textarea"
+                                placeholder="Enter News Description"></textarea>
 
-                                <input type="file" 
-                                    name="document_file" 
-                                    id="documentFile"
-                                    accept=".pdf"
-                                    required>
-
-                                <div class="upload-icon">
-                                    <i class="fa fa-cloud-upload"></i>
-                                </div>
-
-                                <div class="upload-title">
-                                    Drag & Drop PDF Here
-                                </div>
-
-                                <div class="upload-sub">
-                                    or click to browse file
-                                </div>
-
-                                <!-- Preview INSIDE Upload Box -->
-                                <div class="file-preview" id="filePreview">
-
-                                    <div class="preview-icon">
-                                        <i class="fa fa-file-pdf-o"></i>
-                                    </div>
-
-                                    <div class="preview-details">
-                                        <div class="preview-name" id="fileName"></div>
-                                        <div class="preview-size" id="fileSize"></div>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                           
                         </div>
 
-                        <!-- Submit -->
-                        <button type="submit" class="submit-btn-modern">
-                            <i class="fa fa-save"></i> Upload Document
-                        </button>
+                        <!-- Buttons -->
+                        <div class="news-btn-group">
+
+                            <button type="submit" class="submit-btn">
+                                <i class="fa fa-save"></i> Submit
+                            </button>
+
+                     
+
+                        </div>
 
                     </form>
-
 
 
             
@@ -135,6 +106,102 @@ $showGlobalSearch = false;
      
 
 <style>
+
+
+/* =========================
+   INPUT FIELD DESIGN
+========================= */
+.news-form-group{
+    margin-bottom:24px;
+}
+
+.news-form-group label{
+    display:block;
+    margin-bottom:10px;
+    font-size:14px;
+    font-weight:700;
+    color:#374151;
+    letter-spacing:.3px;
+}
+
+.news-input,
+.news-textarea{
+    width:100%;
+    border:1px solid #dbe4ee;
+    background:#f8fafc;
+    border-radius:18px;
+    padding:16px 18px;
+    font-size:15px;
+    color:#111827;
+    transition:all .3s ease;
+    outline:none;
+    box-shadow:0 2px 6px rgba(0,0,0,0.03);
+}
+
+.news-input{
+    height:58px;
+}
+
+.news-textarea{
+    min-height:180px;
+    resize:none;
+    line-height:1.7;
+}
+
+/* Focus Effect */
+.news-input:focus,
+.news-textarea:focus{
+    background:#ffffff;
+    border-color:#22c55e;
+    box-shadow:
+        0 0 0 4px rgba(34,197,94,.12),
+        0 10px 25px rgba(34,197,94,.08);
+    transform:translateY(-1px);
+}
+
+/* Placeholder */
+.news-input::placeholder,
+.news-textarea::placeholder{
+    color:#9ca3af;
+    font-weight:400;
+}
+
+/* =========================
+   BUTTON DESIGN
+========================= */
+.news-btn-group{
+    margin-top:10px;
+}
+
+.submit-btn{
+    border:none;
+    outline:none;
+    background:linear-gradient(135deg,#16a34a,#22c55e);
+    color:#fff;
+    padding:15px 34px;
+    border-radius:18px;
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:.3px;
+    cursor:pointer;
+    transition:all .3s ease;
+    box-shadow:0 12px 25px rgba(34,197,94,.25);
+}
+
+.submit-btn i{
+    margin-right:8px;
+}
+
+/* Hover */
+.submit-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 18px 35px rgba(34,197,94,.35);
+}
+
+/* Click Effect */
+.submit-btn:active{
+    transform:scale(.98);
+}
 /* =========================
    PAGE HEADER
 ========================= */
@@ -269,107 +336,6 @@ $showGlobalSearch = false;
     border-color:#22c55e;
     background:#fff;
     box-shadow:0 0 0 4px rgba(34,197,94,.12);
-}
-
-/* =========================
-   UPLOAD BOX
-========================= */
-.upload-box{
-    position:relative;
-    border:2px dashed #22c55e;
-    border-radius:24px;
-    padding:45px 25px;
-    text-align:center;
-    background:linear-gradient(to bottom,#f0fdf4,#ffffff);
-    transition:.3s ease;
-    overflow:hidden;
-}
-
-.upload-box:hover{
-    transform:translateY(-2px);
-    box-shadow:0 15px 35px rgba(34,197,94,.12);
-}
-
-.upload-box input[type="file"]{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    opacity:0;
-    cursor:pointer;
-}
-
-.upload-icon{
-    width:85px;
-    height:85px;
-    border-radius:50%;
-    background:#dcfce7;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin:0 auto 18px;
-    font-size:34px;
-    color:#16a34a;
-}
-
-.upload-title{
-    font-size:20px;
-    font-weight:700;
-    color:#111827;
-    margin-bottom:8px;
-}
-
-.upload-sub{
-    color:#6b7280;
-    font-size:14px;
-}
-
-/* =========================
-   FILE PREVIEW
-========================= */
-.file-preview{
-    margin-top:28px;
-    display:none;
-    align-items:center;
-    gap:16px;
-    background:#fff;
-    border:1px solid #dcfce7;
-    padding:16px;
-    border-radius:16px;
-    text-align:left;
-    box-shadow:0 6px 18px rgba(0,0,0,0.04);
-}
-
-.preview-icon{
-    width:52px;
-    height:52px;
-    border-radius:12px;
-    background:#fee2e2;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#dc2626;
-    font-size:24px;
-    flex-shrink:0;
-}
-
-.preview-details{
-    overflow:hidden;
-}
-
-.preview-name{
-    font-weight:700;
-    color:#111827;
-    font-size:15px;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-.preview-size{
-    color:#6b7280;
-    font-size:13px;
-    margin-top:4px;
 }
 
 /* =========================

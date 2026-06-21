@@ -227,10 +227,9 @@ class Document_Controller extends CI_Controller {
 
         $information['information'] = $this->Document_model->fetch_infrastructure_videos($type);
 
-        $this->load->view('header');
-
+        $this->load->view('members_area/header');
         $this->load->view('members_area/infrastructure' , $information );
-        $this->load->view('footer');
+        $this->load->view('members_area/footer');
     }
    
     public function delete_video()

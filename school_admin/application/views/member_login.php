@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Radha Madhav Growth — Login</title>
+<title>School — Login</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -547,12 +547,12 @@
 
     <div class="left-logo">
       <div class="logo-mark">
-        <!-- RM Logo SVG -->
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="20" cy="20" r="19" stroke="#2D5A40" stroke-width="1.5"/>
-          <text x="20" y="26" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="16" font-weight="700" fill="#1B3A2D">RM</text>
-        </svg>
-      </div>
+        <img 
+            src="<?php echo base_url('assets/logos/school_logo.png'); ?>" 
+            alt="School Logo"
+            class="school-logo"
+        >
+    </div>
       <div class="brand-name">Little Hearts School</div>
       <div class="brand-sub">AFFILIATED TO CBSE, NEW DELHI NO.930601, KIZHAKKEPRAM, N. PARAVUR - 683 513</div>
     </div>

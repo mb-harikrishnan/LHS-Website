@@ -17,7 +17,7 @@ $showGlobalSearch = false;
           <div class="eyebrow-pulse"></div>
           Reports
         </div>
-        <h1 class="page-title">General Information List
+        <h1 class="page-title">News List
           <!-- <em>Reports</em> -->
         </h1>
         <p class="page-sub"></p>
@@ -36,32 +36,55 @@ $showGlobalSearch = false;
             <!-- <span class="card-badge" id="tableBadge">0 records</span> -->
           </div>
           <button class="card-action" 
-              onclick="window.location.href='<?php echo base_url('upload_document_details'); ?>'">
-          <i class="fa fa-upload"></i> Add Document
+              onclick="window.location.href='<?php echo base_url('add_news'); ?>'">
+          <i class="fa fa-upload"></i> Add News
           </button>
         </div>
 
         <!-- Date Filter -->
-        <form method="post" action="<?php echo base_url('Result_and_Staff'); ?>">
-        <div class="filter-bar">
-       
-          <div class="filter-group">
-            <label for="reportType">Report Type</label>
-            <select class="form-select" id="type" name="type" style="padding:9px 12px">
-           <option value="">All</option>
-            <option value="fee_structure"  <?php if($this->input->post('type') == 'fee_structure'){ echo 'selected'; } ?>>Fee Structure</option>
-            <option value="anual_academic_calendar" <?php if($this->input->post('type') == 'anual_academic_calendar'){ echo 'selected'; } ?>>Annual Academic Calendar</option>
-            <option value="school_managment_comitte" <?php if($this->input->post('type') == 'school_managment_comitte'){ echo 'selected'; } ?>>School Management Committee</option>
-            <option value="pta_members" <?php if($this->input->post('type') == 'pta_members'){ echo 'selected'; } ?>>PTA Members</option>
-            <option value="3_yers_board_exam" <?php if($this->input->post('type') == '3_yers_board_exam'){ echo 'selected'; } ?>>3 Years Board Exam</option>
-            <option value="staff_details" <?php if($this->input->post('type') == 'staff_details'){ echo 'selected'; } ?>>Staff Details</option>
-            </select>
-          </div>
-          <div class="filter-actions">
-            <button  type="submit" class="btn btn-primary">Apply Filter</button>
-          </div>
+       <form method="post" action="<?php echo base_url('school_news'); ?>" class="filter-form">
+
+    <div class="date-filter-box">
+
+        <div class="filter-group">
+            <label for="fromDate">From Date</label>
+
+            <div class="input-wrapper">
+                <i class="fa fa-calendar"></i>
+
+                <input type="date"
+                       id="fromDate"
+                       name="fromDate"
+                       value="<?php echo !empty(set_value('fromDate')) ? set_value('fromDate') : date('Y-m-d'); ?>"
+                       class="filter-input">
+            </div>
         </div>
-        </form>
+
+        <div class="filter-group">
+            <label for="toDate">To Date</label>
+
+            <div class="input-wrapper">
+                <i class="fa fa-calendar"></i>
+
+                <input type="date"
+                       id="toDate"
+                       name="toDate"
+                       value="<?php echo !empty(set_value('toDate')) ? set_value('toDate') : date('Y-m-d'); ?>"
+                       class="filter-input">
+            </div>
+        </div>
+
+        <div class="filter-actions">
+            <button type="submit" class="btn-filter">
+                <i class="fa fa-filter"></i> Filter
+            </button>
+
+         
+        </div>
+
+    </div>
+
+</form>
 
         <p class="report-meta" style="padding:12px 24px 0" id="filterMeta">Showing all reports</p>
 
@@ -69,86 +92,60 @@ $showGlobalSearch = false;
           <table class="report-table display" id="reportsDataTable" style="width:100%">
               <thead>
                   <tr>
-                      <th>#</th>
-                      <th>Date</th>
-                      <th>Type</th>
-                      <th>PDF</th>
-                      <th>View</th>
-                      <th>Action</th>
+                       <th>#SL</th>
+                        <th>Date</th>
+                        <th>Title</th>
+                        <th>News</th>
+                        <th>Action</th>
                   </tr>
               </thead>
 
-    <tbody>
+   <tbody>
 
-<?php if(!empty($information)) { ?>
+<?php if(!empty($news)) { ?>
 
-    <?php $i=1; foreach($information as $row){ ?>
+    <?php $i=1; foreach($news as $row){ ?>
 
         <tr>
 
             <td><?php echo $i++; ?></td>
 
-            <td>
+            <td data-order="<?php echo date('Y-m-d', strtotime($row->d_date)); ?>">
                 <?php echo date('d-m-Y', strtotime($row->d_date)); ?>
             </td>
 
             <td>
                 <span class="report-type-badge">
-                    <?php echo ucfirst(str_replace('_',' ', $row->c_type)); ?>
+                    <?php echo ucfirst(str_replace('_',' ', $row->c_title)); ?>
                 </span>
             </td>
 
-            <td>
-
-                <?php if(!empty($row->c_document)){ ?>
-
-                    <a href="<?php echo base_url('../assets/uploads/documents/'.$row->c_document); ?>"
-                       target="_blank"
-                       class="pdf-btn">
-
-                        <i class="fa fa-file-pdf"></i> View PDF
-
-                    </a>
-
-                <?php } else { ?>
-
-                    <span class="no-file">No File</span>
-
-                <?php } ?>
-
-            </td>
+            <td><?php echo $row->c_news; ?></td>
 
             <td>
-
-                <div class="action-btn-group">
-
-                    <a href="<?php echo base_url('../assets/uploads/documents/'.$row->c_document); ?>"
-                       download
-                       class="table-btn download-btn">
-
-                        <i class="fa fa-download"></i> Download
-
-                    </a>
-
-                </div>
-
-            </td>
-
-            <td>
-
                 <button type="button"
                         class="table-btn btn btn-danger deleteBtn"
                         data-id="<?php echo $row->n_slno; ?>">
 
                     <i class="fa fa-trash"></i> Delete
-
                 </button>
-
             </td>
 
         </tr>
 
     <?php } ?>
+
+<?php } else { ?>
+
+
+        <tr>
+    <td></td>
+    <td></td>
+    <td class="text-center">No News Found</td>
+    <td></td>
+    <td></td>
+</tr>
+    
 
 <?php } ?>
 
@@ -279,6 +276,134 @@ $showGlobalSearch = false;
     color:#999;
     font-size:15px;
 }
+
+.filter-form{
+    margin-top:20px;
+}
+
+.date-filter-box{
+    background:#ffffff;
+    border:1px solid #e5e7eb;
+    border-radius:16px;
+    padding:20px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    align-items:end;
+    box-shadow:0 4px 15px rgba(0,0,0,0.04);
+}
+
+.filter-group{
+    flex:1;
+    min-width:220px;
+}
+
+.filter-group label{
+    display:block;
+    margin-bottom:8px;
+    font-size:14px;
+    font-weight:600;
+    color:#1f2937;
+}
+
+.input-wrapper{
+    position:relative;
+}
+
+.input-wrapper i{
+    position:absolute;
+    left:14px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#6b7280;
+    font-size:14px;
+}
+
+.filter-input{
+    width:100%;
+    height:48px;
+    border:1px solid #d1d5db;
+    border-radius:12px;
+    padding:0 14px 0 42px;
+    font-size:14px;
+    background:#f9fafb;
+    transition:all 0.3s ease;
+    outline:none;
+}
+
+.filter-input:focus{
+    border-color:#198754;
+    background:#fff;
+    box-shadow:0 0 0 4px rgba(25,135,84,0.12);
+}
+
+.filter-actions{
+    display:flex;
+    gap:12px;
+    align-items:center;
+}
+
+.btn-filter{
+    height:48px;
+    padding:0 22px;
+    border:none;
+    border-radius:12px;
+    background:#198754;
+    color:#fff;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.btn-filter:hover{
+    background:#157347;
+    transform:translateY(-1px);
+}
+
+.btn-reset{
+    height:48px;
+    padding:0 20px;
+    border-radius:12px;
+    background:#f3f4f6;
+    color:#374151;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    transition:0.3s;
+}
+
+.btn-reset:hover{
+    background:#e5e7eb;
+}
+
+@media(max-width:768px){
+
+    .date-filter-box{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .filter-group{
+        width:100%;
+    }
+
+    .filter-actions{
+        width:100%;
+    }
+
+    .btn-filter,
+    .btn-reset{
+        width:100%;
+        justify-content:center;
+    }
+}
       </style>
 
 
@@ -301,7 +426,6 @@ $showGlobalSearch = false;
 <!-- SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
 <script>
 $(document).ready(function () {
 
@@ -311,7 +435,7 @@ $(document).ready(function () {
         autoWidth: false,
 
         columnDefs: [
-            { orderable: false, targets: [3,4,5] }
+            { orderable: false, targets: [3,4] }
         ],
 
         language: {
@@ -324,6 +448,7 @@ $(document).ready(function () {
 });
 
 </script>
+
 
 
 
@@ -351,7 +476,7 @@ $(document).on('click', '.deleteBtn', function (e) {
 
             $.ajax({
 
-                url: "<?php echo base_url('delete_details'); ?>",
+                url: "<?php echo base_url('delete_news'); ?>",
                 type: "POST",
                 data: {id:id},
 
@@ -403,3 +528,5 @@ $(document).on('click', '.deleteBtn', function (e) {
 });
 
 </script>
+
+

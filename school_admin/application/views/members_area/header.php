@@ -141,24 +141,92 @@ $initials = strtoupper(substr($firstName, 0, 2));
         <div class="sub-item " onclick="window.location.href='infrastructure'">Infrastructure video</div>
       </div>
 
-      <div class="nav-item<?php echo $activePage === 'bv-matching' ? ' active open' : ''; ?>" onclick="toggleNav(this)">
+     <div class="nav-item<?php echo $activePage === 'school-news' ? ' active' : ''; ?>" 
+        onclick="window.location.href='<?php echo base_url('school_news'); ?>'">
+
         <div class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <line x1="12" y1="1" x2="12" y2="23"/>
-            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-          </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                stroke-width="2" stroke-linecap="round">
+
+                <line x1="12" y1="1" x2="12" y2="23"/>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+
+            </svg>
         </div>
-        <span class="nav-label">Income & Finance</span>
-        <span class="nav-arrow">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </span>
-      </div>
-      <!-- <div class="sub-nav<?php echo $activePage === 'bv-matching' ? ' open' : ''; ?>" id="subnav-1"<?php echo $activePage === 'bv-matching' ? ' style="max-height:300px"' : ''; ?>>
-        <div class="sub-item" onclick="setSubActive(this)">Transactions</div>
-        <div class="sub-item" onclick="setSubActive(this)">Commission Report</div>
-        <div class="sub-item" onclick="setSubActive(this)">Bonuses</div>
-        <div class="sub-item<?php echo $activePage === 'bv-matching' ? ' active' : ''; ?>" onclick="window.location='bv-matching.php'">BV Matching Details</div>
-      </div> -->
+
+        <span class="nav-label">School News</span>
+
+    </div>
+
+     <div class="nav-item<?php echo $activePage === 'school-gallery' ? ' active' : ''; ?>" 
+        onclick="window.location.href='<?php echo base_url('gallery'); ?>'">
+
+        <div class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                stroke-width="2" stroke-linecap="round">
+
+                <line x1="12" y1="1" x2="12" y2="23"/>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+
+            </svg>
+        </div>
+
+        <span class="nav-label">Gallery</span>
+
+    </div>
+
+
+     <div class="nav-item<?php echo $activePage === 'school-vaccancy_list' ? ' active' : ''; ?>" 
+        onclick="window.location.href='<?php echo base_url('vaccancy_list'); ?>'">
+
+        <div class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                stroke-width="2" stroke-linecap="round">
+
+                <line x1="12" y1="1" x2="12" y2="23"/>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+
+            </svg>
+        </div>
+
+        <span class="nav-label">Add Vaccancy</span>
+
+    </div>
+
+     <div class="nav-item<?php echo $activePage === 'school-questionpaper_list' ? ' active' : ''; ?>" 
+        onclick="window.location.href='<?php echo base_url('questionpaper_list'); ?>'">
+
+        <div class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                stroke-width="2" stroke-linecap="round">
+
+                <line x1="12" y1="1" x2="12" y2="23"/>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+
+            </svg>
+        </div>
+
+        <span class="nav-label">Add Questionpapper</span>
+
+    </div>
+
+     <div class="nav-item<?php echo $activePage === 'school-slider_list' ? ' active' : ''; ?>" 
+        onclick="window.location.href='<?php echo base_url('slider_list'); ?>'">
+
+        <div class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                stroke-width="2" stroke-linecap="round">
+
+                <line x1="12" y1="1" x2="12" y2="23"/>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+
+            </svg>
+        </div>
+
+        <span class="nav-label">Add Slider</span>
+
+    </div>
+     
 
       <!-- <div class="nav-item" onclick="setActive(this)">
         <div class="nav-icon">
@@ -216,16 +284,7 @@ $initials = strtoupper(substr($firstName, 0, 2));
       <div class="sb-divider"></div>
       <div class="nav-section-label">Settings</div>
 
-      <div class="nav-item" onclick="window.location='<?php echo base_url('notifications') ; ?>'">
-        <div class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
-          </svg>
-        </div>
-        <span class="nav-label">Announcements</span>
-        <span class="nav-badge"><?php echo $count ;?></span>
-      </div>
+    
 
       <div class="nav-item<?php echo $activePage === 'change-password' ? ' active' : ''; ?>" onclick="window.location='<?php echo base_url('change_password') ; ?>'">
         <div class="nav-icon">
