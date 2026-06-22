@@ -103,4 +103,196 @@ class GalleryController extends CI_Controller {
 
 
 
+    ///////////////////////////////////   Co-Curricular Activities ////////////////////////////////////
+
+
+
+    public function co_curricular_list()
+    {   
+
+
+        $type = $this->input->post('type');
+
+        $image['image'] = $this->Gallery_model->get_all_activities($type);
+
+        $this->load->view('members_area/header');
+        $this->load->view('members_area/co_curricular_list', $image);
+        $this->load->view('members_area/footer');
+    }
+
+
+    public function add_co_curricular_activities()
+    {
+        $this->load->view('members_area/header');
+        $this->load->view('members_area/add_co_curricular_activities');
+        $this->load->view('members_area/footer');
+    }
+
+
+    public function insert_activities()
+    {
+        $data = array(
+            'c_type' => $this->input->post('news_type'),
+            'c_status' => 'Y',
+            'd_date' => date('Y-m-d')
+        );
+
+        // Handle file upload
+        if (!empty($_FILES['news_image']['name'])) {
+            $config['upload_path'] = '../assets/images/gallery/';
+            $config['allowed_types'] = 'jpg|jpeg|png|gif';
+            $config['max_size'] = 2048; // 2MB
+
+            $this->load->library('upload', $config);
+
+            if ($this->upload->do_upload('news_image')) {
+                $uploadData = $this->upload->data();
+                $data['c_imageS'] =  $uploadData['file_name'];
+            } else {
+                $this->session->set_flashdata('error', 'Image upload failed: ' . $this->upload->display_errors());
+                redirect('add_co_curricular_activities');
+                return;
+            }
+        }
+
+        $result = $this->db->insert('co_curricular_activities', $data);
+
+        if ($result)
+        {
+            $this->session->set_flashdata('success', 'Image added successfully');
+        }
+        else
+        {
+            $this->session->set_flashdata('error', 'Failed to add image');
+        }
+
+        redirect('add_co_curricular_activities');
+    }
+
+
+
+
+
+      public function delete_activities()
+    {
+        $id = $this->input->post('id');
+
+        $result = $this->Gallery_model->delete_activities($id);
+
+        if($result)
+        {
+            echo 1;
+        }
+        else
+        {
+            echo 0;
+        }
+    }
+
+    ///////////////////////////////////   Co-Curricular Activities all image list ////////////////////////////////////
+
+
+
+    public function activities_list()
+    {   
+
+
+        $type = $this->input->post('type');
+
+        $image['image'] = $this->Gallery_model->get_all_activities_image($type);
+
+        $this->load->view('members_area/header');
+        $this->load->view('members_area/activities_list', $image);
+        $this->load->view('members_area/footer');
+    }
+
+
+    public function activities_add()
+    {
+        $this->load->view('members_area/header');
+        $this->load->view('members_area/activities_add');
+        $this->load->view('members_area/footer');
+    }
+
+
+    public function insert_activities_images()
+    {
+        $data = array(
+            'c_type' => $this->input->post('news_type'),
+            'c_status' => 'Y',
+            'd_date' => date('Y-m-d')
+        );
+
+        // Handle file upload
+        if (!empty($_FILES['news_image']['name'])) {
+            $config['upload_path'] = '../assets/images/gallery/';
+            $config['allowed_types'] = 'jpg|jpeg|png|gif';
+            $config['max_size'] = 2048; // 2MB
+
+            $this->load->library('upload', $config);
+
+            if ($this->upload->do_upload('news_image')) {
+                $uploadData = $this->upload->data();
+                $data['c_imageS'] =  $uploadData['file_name'];
+            } else {
+                $this->session->set_flashdata('error', 'Image upload failed: ' . $this->upload->display_errors());
+                redirect('activities_add');
+                return;
+            }
+        }
+
+        $result = $this->db->insert('all_activities', $data);
+
+        if ($result)
+        {
+            $this->session->set_flashdata('success', 'Image added successfully');
+        }
+        else
+        {
+            $this->session->set_flashdata('error', 'Failed to add image');
+        }
+
+        redirect('activities_add');
+    }
+
+
+
+
+
+      public function delete_activities_image()
+    {
+        $id = $this->input->post('id');
+
+        $result = $this->Gallery_model->delete_activities_image($id);
+
+        if($result)
+        {
+            echo 1;
+        }
+        else
+        {
+            echo 0;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

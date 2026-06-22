@@ -34,4 +34,66 @@ public function get_all_images($from_date , $to_date, $type = null)
     }
 
 
+
+
+
+
+public function get_all_activities( $type = null)
+{
+   $qry='';
+    if($type) {
+
+    $qry.="AND c_type ='$type'";
+    }
+
+    $sql="SELECT * FROM co_curricular_activities WHERE c_status='Y'   $qry
+    ORDER BY n_slno DESC";
+    $query = $this->db->query($sql);
+
+    return $query->result();
+
+
+
+}
+
+
+
+  public function delete_activities($id)
+    {
+        $this->db->where('n_slno', $id);
+
+        return $this->db->update('co_curricular_activities', array(
+            'c_status' => 'D'
+        ));
+    }
+public function get_all_activities_image( $type = null)
+{
+   $qry='';
+    if($type) {
+
+    $qry.="AND c_type ='$type'";
+    }
+
+    $sql="SELECT * FROM all_activities WHERE c_status='Y'   $qry
+    ORDER BY n_slno DESC";
+    $query = $this->db->query($sql);
+
+    return $query->result();
+
+
+
+}
+
+
+
+  public function delete_activities_image($id)
+    {
+        $this->db->where('n_slno', $id);
+
+        return $this->db->update('all_activities', array(
+            'c_status' => 'D'
+        ));
+    }
+
+
 }

@@ -114,6 +114,21 @@ $route['delete_slider']   = 'members_area/SliderController/delete_slider';
 
 
 
+/////////////////////    co curricular activities   //////////////////////
+
+$route['co_curricular_list']   = 'members_area/GalleryController/co_curricular_list';
+$route['add_co_curricular_activities']   = 'members_area/GalleryController/add_co_curricular_activities';
+$route['insert_activities']   = 'members_area/GalleryController/insert_activities';
+$route['delete_activities']   = 'members_area/GalleryController/delete_activities';
+
+$route['activities_list']   = 'members_area/GalleryController/activities_list';
+$route['activities_add']   = 'members_area/GalleryController/activities_add';
+$route['insert_activities_images']   = 'members_area/GalleryController/insert_activities_images';
+$route['delete_activities_image']   = 'members_area/GalleryController/delete_activities_image';
+
+
+
+
 
 
 
