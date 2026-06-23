@@ -125,6 +125,7 @@ $route['activities_list']   = 'members_area/GalleryController/activities_list';
 $route['activities_add']   = 'members_area/GalleryController/activities_add';
 $route['insert_activities_images']   = 'members_area/GalleryController/insert_activities_images';
 $route['delete_activities_image']   = 'members_area/GalleryController/delete_activities_image';
+$route['check_news_type']   = 'members_area/GalleryController/check_news_type';
 
 
 

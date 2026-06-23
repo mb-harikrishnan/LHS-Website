@@ -685,3 +685,83 @@ removeBtn.addEventListener('click', function(e){
     document.getElementById('uploadContent').style.display = 'block';
 });
 </script>
+
+
+
+
+<script>
+
+$("#newsform").on("submit", function(e){
+
+    e.preventDefault();
+
+    var news_type = $("#news_type").val();
+
+    if(news_type == "")
+    {
+        Swal.fire({
+            icon:'warning',
+            title:'Warning',
+            text:'Please select category'
+        });
+
+        return false;
+    }
+
+    $.ajax({
+        url: "<?php echo base_url('check_news_type'); ?>",
+        type: "POST",
+        data: {
+            news_type: news_type
+        },
+        dataType: "json",
+        success: function(response)
+        {
+
+            if(response.status == 'exists')
+            {
+
+                Swal.fire({
+                    title: 'Already Exists',
+                    html: `
+                        <p style="margin-bottom:10px;">
+                            Image already exists.<br>
+                            Delete first and upload new image.
+                        </p>
+
+                        <img src="${response.image}"
+                             style="width:250px;height:auto;border-radius:10px;border:1px solid #ddd;">
+                    `,
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+
+                    // clear select2
+                    $('#news_type').val('').trigger('change');
+
+                    // clear file input
+                    $('#news_image').val('');
+
+                    // hide preview
+                    $('#imagePreview').hide();
+
+                    // remove image src
+                    $('#previewImg').attr('src', '');
+
+                    // show upload content again
+                    $('#uploadContent').show();
+
+    });
+
+            }
+            else
+            {
+                // submit form
+                $("#newsform")[0].submit();
+            }
+        }
+    });
+
+});
+
+</script>

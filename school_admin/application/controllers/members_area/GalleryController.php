@@ -280,6 +280,30 @@ class GalleryController extends CI_Controller {
 
 
 
+    public function check_news_type()
+    {
+        $news_type = $this->input->post('news_type');
+
+        $this->db->where('c_type', $news_type);
+        $query = $this->db->get('co_curricular_activities');
+
+        if($query->num_rows() > 0)
+        {
+            $row = $query->row();
+
+            echo json_encode([
+                'status' => 'exists',
+                'image'  => base_url('../assets/images/gallery/'.$row->c_images)
+            ]);
+        }
+        else
+        {
+            echo json_encode([
+                'status' => 'not_exists'
+            ]);
+        }
+    }
+
 
 
 

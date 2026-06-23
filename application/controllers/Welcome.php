@@ -55,16 +55,37 @@ class Welcome extends CI_Controller
 	}
 	public function co_curricular_activities()
 	{
+		$data['all_images'] = $this->Welcome_model->fetch_all_co_images();
 		$this->load->view('topbar');
 		$this->load->view('header');
-		$this->load->view('co_curricular_activities');
+		$this->load->view('co_curricular_activities',$data);
 		$this->load->view('footer');
+	}
+
+	public function list_all_activities($type = '')
+	{
+		$data['type'] = $type;
+
+		$sql = "SELECT * 
+				FROM all_activities 
+				WHERE c_type = '$type' 
+				AND c_status = 'Y'";
+
+		$query = $this->db->query($sql);
+		$data['gallery'] = $query->result();
+		$this->load->view('topbar');
+		$this->load->view('header');
+		$this->load->view('list_all_activities', $data);
+		$this->load->view('footer');
+
 	}
 	public function sports_and_games()
 	{
+		$data['all_images'] = $this->Welcome_model->fetch_all_co_images();
+
 		$this->load->view('topbar');
 		$this->load->view('header');
-		$this->load->view('sports_and_games');
+		$this->load->view('sports_and_games',$data);
 		$this->load->view('footer');
 	}
 	public function clubs()

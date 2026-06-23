@@ -56,6 +56,8 @@ $route['rules_and_regulations'] = 'welcome/rules_and_regulations';
 $route['gallery'] = 'welcome/gallery';
 $route['house_system'] = 'welcome/house_system';
 $route['co_curricular_activities'] = 'welcome/co_curricular_activities';
+$route['list_all_activities/(:any)'] = 'welcome/list_all_activities/$1';
+
 $route['sports_and_games'] = 'welcome/sports_and_games';
 $route['clubs'] = 'welcome/clubs';
 // $route['band_page'] = 'welcome/band_page';

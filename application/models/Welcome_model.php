@@ -204,6 +204,13 @@ class Welcome_model extends CI_Model
       $result = $query->result();
       return $result;
    }
+  public function fetch_all_co_images()
+   {
+      $sql = "SELECT * FROM co_curricular_activities WHERE c_status='Y' ";
+      $query = $this->db->query($sql);
+      $result = $query->result();
+      return $result;
+   }
 
    
 

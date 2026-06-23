@@ -57,11 +57,40 @@ $showGlobalSearch = false;
 
                              <div class="filter-group">
                                 <label>Status</label>
-                                <select id="statusFilter" class="filter-input" name="type">
+
+                              <?php 
+                                    $sql = "SELECT cid,c_category FROM gallery_category WHERE c_status='Y'";
+                                    $query = $this->db->query($sql);
+                                    $res = $query->result();
+                                    ?>
+
+                                    <select id="statusFilter" class="filter-input" name="type">
+
                                     <option value="">All</option>
-                                    <option value="annual_day"  <?php if($this->input->post('type') == 'annual_day'){ echo 'selected'; } ?>>Annual Day</option>
-                                    <option value="blue_day" <?php if($this->input->post('type') == 'blue_day'){ echo 'selected'; } ?>>Blue Day</option>
-                                </select>
+
+                                    <?php 
+                                    if($res)
+                                    {
+                                        foreach($res as $row)
+                                        {
+                                    ?>
+                                            <option value="<?php echo $row->cid; ?>"
+                                                <?php 
+                                                if($this->input->post('type') == $row->cid)
+                                                { 
+                                                    echo 'selected'; 
+                                                } 
+                                                ?>>
+                                                
+                                                <?php echo $row->c_category; ?>
+
+                                            </option>
+                                    <?php 
+                                        }
+                                    } 
+                                    ?>
+
+                                    </select>
                             </div>
 
                             <div class="filter-actions">
