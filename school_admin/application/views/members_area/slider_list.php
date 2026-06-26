@@ -5,17 +5,7 @@ $activePage = 'reports';
 $showGlobalSearch = false;
 ?>
 
-<!-- PAGE CONTENT -->
-<div class="page-header">
-    <div class="page-eyebrow">
-        <div class="eyebrow-pulse"></div>
-        Reports
-    </div>
 
-    <h1 class="page-title">
-        Slider List
-    </h1>
-</div>
 
 <!-- CARD -->
 <div class="card">
@@ -29,7 +19,7 @@ $showGlobalSearch = false;
                 <polyline points="14 2 14 8 20 8"/>
             </svg>
 
-            Report Records
+            Homepage Slider List
         </div>
 
         <button class="card-action"

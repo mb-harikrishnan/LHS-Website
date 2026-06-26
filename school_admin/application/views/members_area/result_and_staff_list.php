@@ -10,19 +10,6 @@ $showGlobalSearch = false;
 ?>
 
 
-    
-    <!-- PAGE CONTENT -->
-      <div class="page-header">
-        <div class="page-eyebrow">
-          <div class="eyebrow-pulse"></div>
-          Reports
-        </div>
-        <h1 class="page-title">General Information List
-          <!-- <em>Reports</em> -->
-        </h1>
-        <p class="page-sub"></p>
-      </div>
-
      
       <!-- Reports Table Card -->
       <div class="card">
@@ -32,7 +19,7 @@ $showGlobalSearch = false;
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>
             </svg>
-            Report Records
+            General Information List
             <!-- <span class="card-badge" id="tableBadge">0 records</span> -->
           </div>
           <button class="card-action" 

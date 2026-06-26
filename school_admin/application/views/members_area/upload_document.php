@@ -10,19 +10,6 @@ $showGlobalSearch = false;
 ?>
 
 
-    
-    <!-- PAGE CONTENT -->
-      <div class="page-header">
-        <div class="page-eyebrow">
-          <div class="eyebrow-pulse"></div>
-          Uploads
-        </div>
-        <h1 class="page-title">Upload Documents
-          <!-- <em>Reports</em> -->
-        </h1>
-        <p class="page-sub"></p>
-      </div>
-
      
       <!-- Reports Table Card -->
       <div class="card">

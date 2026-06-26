@@ -10,19 +10,6 @@ $showGlobalSearch = false;
 ?>
 
 
-    
-    <!-- PAGE CONTENT -->
-      <div class="page-header">
-        <div class="page-eyebrow">
-          <div class="eyebrow-pulse"></div>
-          Reports
-        </div>
-        <h1 class="page-title">Applications
-          <!-- <em>Reports</em> -->
-        </h1>
-        <p class="page-sub"></p>
-      </div>
-
      
       <!-- Reports Table Card -->
       <div class="card">
@@ -50,8 +37,11 @@ $showGlobalSearch = false;
                       <th>#</th>
                       <th>Date</th>
                       <th>Job</th>
-                      <th>PDF</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Mobile No</th>
                       <th>View</th>
+                      <th>Delete</th>
                       <th>Action</th>
                   </tr>
               </thead>
@@ -79,6 +69,10 @@ $showGlobalSearch = false;
                     <?php echo $res->c_title; ?>
                 </span>
             </td>
+
+            <td><?php echo $row->c_name  ;?></td>
+            <td><?php echo $row->c_email  ;?></td>
+            <td><?php echo $row->n_mobile  ;?></td>
 
             <td>
 
@@ -138,13 +132,7 @@ $showGlobalSearch = false;
           </table>
 
         </div>
-        <div class="empty-reports" id="emptyReports" style="display:none">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/>
-          </svg>
-          <p>No reports found for the selected date range.</p>
-        </div>
+        
       </div>
 
      

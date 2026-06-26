@@ -18,16 +18,6 @@ $daysAgo = floor((time() - strtotime($date)) / (60 * 60 * 24));
 
 
 
-<!-- PAGE CONTENT -->
-<div class="page-header">
-  <div class="page-eyebrow">
-    <div class="eyebrow-pulse"></div>
-    Account Security
-  </div>
-  <h1 class="page-title">Update Your <em>Password</em></h1>
-  <p class="page-sub">Keep your Radha Madhav Growth account safe with a strong, unique password.</p>
-</div>
-
 <div class="pw-page-wrap">
   <div class="pw-hero-grid">
 

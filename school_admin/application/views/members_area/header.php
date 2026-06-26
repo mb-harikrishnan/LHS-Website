@@ -114,13 +114,13 @@ $initials = strtoupper(substr($firstName, 0, 2));
             <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
           </svg>
         </div>
-        <span class="nav-label">School Documents</span>
+        <span class="nav-label">Mandatory Disclosure</span>
         <span class="nav-arrow">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
         </span>
       </div>
       <div class="sub-nav" id="subnav-0">
-        <div class="sub-item active" onclick="window.location.href='general_information'">Upload Documents</div>
+        <div class="sub-item active" onclick="window.location.href='general_information'">Document And Information</div>
         <div class="sub-item" onclick="window.location.href='Result_and_Staff'">Result & Staff</div>
         <div class="sub-item " onclick="window.location.href='infrastructure'">Infrastructure video</div>
       </div>
@@ -216,7 +216,7 @@ $initials = strtoupper(substr($firstName, 0, 2));
             </svg>
         </div>
 
-        <span class="nav-label">Add Questionpapper</span>
+        <span class="nav-label">Add Downloads</span>
 
     </div>
 
@@ -233,7 +233,7 @@ $initials = strtoupper(substr($firstName, 0, 2));
             </svg>
         </div>
 
-        <span class="nav-label">Add Slider</span>
+        <span class="nav-label">Add Homepage Slider</span>
 
     </div>
      
@@ -410,4 +410,3 @@ $initials = strtoupper(substr($firstName, 0, 2));
 
     <!-- PAGE CONTENT (opened here, closed in footer.php) -->
     <div class="page-content">
-<?php include 'page-links.php'; ?>
