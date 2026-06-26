@@ -14,15 +14,15 @@ class NewsController extends CI_Controller {
     public function school_news()
     {
 
-        $from_date = $this->input->post('fromDate');
-        $to_date = $this->input->post('toDate');
+        // $from_date = $this->input->post('fromDate');
+        // $to_date = $this->input->post('toDate');
 
-        if(empty($from_date) && empty($to_date)) {
-            $from_date = date('Y-m-d');
-            $to_date = date('Y-m-d');
-        } 
+        // if(empty($from_date) && empty($to_date)) {
+        //     $from_date = date('Y-m-d');
+        //     $to_date = date('Y-m-d');
+        // } 
 
-        $data['news'] = $this->News_model->get_all_news($from_date, $to_date);
+        $data['news'] = $this->News_model->get_all_news();
 
         $this->load->view('members_area/header');
         $this->load->view('members_area/school_news', $data);

@@ -31,35 +31,47 @@ $showGlobalSearch = false;
         </div>
 
         <!-- Date Filter -->
-          <form method="post" action="<?php echo base_url('vaccancy_list'); ?>">
+         <form method="post" action="<?php echo base_url('vaccancy_list'); ?>">
 
+    <div class="date-filter-box">
 
-                        <div class="date-filter-box">
-                        
-                            <div class="filter-group">
-                                <label>From Date</label>
-                                <input type="date" id="fromDate" name="fromDate"  value="<?php echo !empty(set_value('fromDate')) ? set_value('fromDate') : date('Y-m-d'); ?>" class="filter-input">
-                            </div>
+        <div class="filter-item">
+            <label>FROM DATE</label>
 
-                            <div class="filter-group">
-                                <label>To Date</label>
-                                <input type="date" id="toDate" name="toDate" value="<?php echo !empty(set_value('toDate')) ? set_value('toDate') : date('Y-m-d'); ?>" class="filter-input">
-                            </div>
+            <div class="date-input-box">
+                <i class="fa fa-calendar"></i>
 
+                <input type="date"
+                       id="fromDate"
+                       name="fromDate"
+                       value="<?php echo !empty(set_value('fromDate')) ? set_value('fromDate') : date('Y-m-d'); ?>"
+                       class="filter-input">
+            </div>
+        </div>
 
+        <div class="filter-item">
+            <label>TO DATE</label>
 
-                            <div class="filter-actions">
-                                <button type="submit" class="btn-filter">Filter</button>
-                            </div>
+            <div class="date-input-box">
+                <i class="fa fa-calendar"></i>
 
+                <input type="date"
+                       id="toDate"
+                       name="toDate"
+                       value="<?php echo !empty(set_value('toDate')) ? set_value('toDate') : date('Y-m-d'); ?>"
+                       class="filter-input">
+            </div>
+        </div>
 
-                        
+        <div class="filter-btn-box">
+            <button type="submit" class="btn-filter">
+                <i class="fa fa-filter"></i> Filter
+            </button>
+        </div>
 
-                        
-                        </div>
+    </div>
 
-                    </form>
-
+</form>
         <p class="report-meta" style="padding:12px 24px 0" id="filterMeta">Showing all reports</p>
 
        <div class="report-table-wrap" id="reportTableWrap">
@@ -160,374 +172,414 @@ $showGlobalSearch = false;
 
 
 
-      <style>
-  /* =========================================
-   PAGE HEADER
-========================================= */
-.page-header{
-    margin-bottom:30px;
-}
+<style>
 
-.page-eyebrow{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-size:13px;
-    font-weight:700;
-    color:#16a34a;
-    text-transform:uppercase;
-    letter-spacing:.08em;
-    margin-bottom:10px;
-}
-
-.eyebrow-pulse{
-    width:10px;
-    height:10px;
-    border-radius:50%;
-    background:#22c55e;
-    animation:pulse 1.8s infinite;
-}
-
-@keyframes pulse{
-    0%{
-        transform:scale(.9);
-        opacity:.7;
-    }
-    70%{
-        transform:scale(1.4);
-        opacity:0;
-    }
-    100%{
-        transform:scale(.9);
-        opacity:0;
-    }
-}
-
-.page-title{
-    font-size:34px;
-    font-weight:800;
-    color:#111827;
-    margin:0;
-}
-
-.page-sub{
-    margin-top:8px;
-    color:#6b7280;
-    font-size:15px;
-}
-
-/* =========================================
-   CARD
-========================================= */
 .card{
     background:#ffffff;
-    border-radius:26px;
-    padding:30px;
-    border:1px solid #eef2f7;
-    box-shadow:0 12px 40px rgba(0,0,0,0.06);
+    border-radius:18px;
+    padding:24px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.06);
+    border:1px solid #e8ecef;
+    overflow:hidden;
 }
+
+/* =========================
+   FILTER AREA
+========================= */
+/* CARD HEADER SMALL */
 
 .card-head{
+    padding:10px 0 !important;
+    margin-bottom:10px;
     display:flex;
-    align-items:center;
     justify-content:space-between;
-    gap:20px;
-    flex-wrap:wrap;
-    margin-bottom:30px;
-}
-
-.card-title{
-    display:flex;
     align-items:center;
     gap:12px;
-    font-size:22px;
-    font-weight:700;
-    color:#111827;
 }
+/* FILTER BAR SMALL */
 
-/* =========================================
-   ACTION BUTTON
-========================================= */
-.card-action{
-    border:none;
-    outline:none;
-    background:linear-gradient(135deg,#15803d,#22c55e);
-    color:#fff;
-    padding:13px 22px;
-    border-radius:14px;
-    font-size:14px;
-    font-weight:600;
-    cursor:pointer;
-    transition:.3s ease;
-    box-shadow:0 10px 24px rgba(34,197,94,.25);
-}
-
-.card-action:hover{
-    transform:translateY(-2px);
-    box-shadow:0 15px 30px rgba(34,197,94,.35);
-}
-
-/* =========================================
-   FILTER BOX
-========================================= */
-.date-filter-box{
+.filter-bar{
     display:flex;
+    justify-content:space-between;
     align-items:end;
-    gap:20px;
+    gap:12px;
+    margin-top:10px;
     flex-wrap:wrap;
-    background:#f9fafb;
-    border:1px solid #e5e7eb;
-    padding:24px;
-    border-radius:22px;
-    margin-bottom:25px;
-}
-
-.filter-group{
-    flex:1;
-    min-width:220px;
+    background:#f8faf9;
+    padding:12px 15px;
+    border-radius:10px;
 }
 
 .filter-group label{
     display:block;
-    margin-bottom:10px;
-    font-size:14px;
-    font-weight:700;
-    color:#374151;
-}
-
-.filter-input{
-    width:100%;
-    height:52px;
-    padding:0 16px;
-    border-radius:14px;
-    border:1px solid #d1d5db;
-    background:#fff;
-    font-size:15px;
-    color:#111827;
-    outline:none;
-    transition:.3s ease;
-}
-
-.filter-input:focus{
-    border-color:#22c55e;
-    box-shadow:0 0 0 4px rgba(34,197,94,.12);
-}
-
-.filter-actions{
-    display:flex;
-    align-items:end;
-}
-
-.btn-filter{
-    border:none;
-    outline:none;
-    height:52px;
-    padding:0 28px;
-    border-radius:14px;
-    background:linear-gradient(135deg,#16a34a,#22c55e);
-    color:#fff;
-    font-size:15px;
-    font-weight:700;
-    cursor:pointer;
-    transition:.3s ease;
-    box-shadow:0 10px 24px rgba(34,197,94,.2);
-}
-
-.btn-filter:hover{
-    transform:translateY(-2px);
-    box-shadow:0 14px 30px rgba(34,197,94,.3);
-}
-
-/* =========================================
-   REPORT META
-========================================= */
-.report-meta{
-    margin-bottom:15px;
-    color:#6b7280;
-    font-size:14px;
-    font-weight:500;
-}
-
-/* =========================================
-   TABLE WRAPPER
-========================================= */
-.report-table-wrap{
-    width:100%;
-    overflow-x:auto;
-}
-
-/* =========================================
-   TABLE
-========================================= */
-.report-table{
-    width:100% !important;
-    border-collapse:separate;
-    border-spacing:0;
-    overflow:hidden;
-    border-radius:18px;
-    background:#fff;
-}
-
-.report-table thead tr{
-    background:linear-gradient(135deg,#14532d,#15803d);
-}
-
-.report-table thead th{
-    padding:18px 16px;
-    color:#fff;
-    font-size:14px;
-    font-weight:700;
-    border:none !important;
-    white-space:nowrap;
-}
-
-.report-table tbody td{
-    padding:16px;
-    font-size:14px;
-    color:#374151;
-    border-bottom:1px solid #eef2f7;
-    vertical-align:middle;
-}
-
-.report-table tbody tr{
-    transition:.25s ease;
-}
-
-.report-table tbody tr:hover{
-    background:#f0fdf4;
-}
-
-/* =========================================
-   VIEW BUTTON
-========================================= */
-.view-btn{
-    border:none;
-    outline:none;
-    background:#2563eb;
-    color:#fff;
-    padding:9px 16px;
-    border-radius:10px;
-    font-size:13px;
+    font-size:12px;
     font-weight:600;
-    cursor:pointer;
-    transition:.3s ease;
+    color:#0f2419;
+    margin-bottom:5px;
 }
 
-.view-btn:hover{
-    background:#1d4ed8;
-    transform:translateY(-1px);
+.form-select{
+    min-width:220px;
+    height:40px;
+    border:1px solid #d7e0db;
+    border-radius:10px;
+    padding:0 14px;
+    font-size:13px;
+    background:#fff;
+    transition:0.3s;
 }
 
-/* =========================================
-   DELETE BUTTON
-========================================= */
-.deleteBtn{
-    border:none;
+.form-select:focus{
+    border-color:#0f2419;
     outline:none;
-    background:#dc2626;
+    box-shadow:0 0 0 3px rgba(15,36,25,0.10);
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn-primary{
+    background:#416e54;
+    border:none;
     color:#fff;
     padding:10px 16px;
     border-radius:10px;
     font-size:13px;
     font-weight:600;
-    cursor:pointer;
-    transition:.3s ease;
+    transition:0.3s;
 }
 
-.deleteBtn:hover{
-    background:#b91c1c;
+.btn-primary:hover{
+    background:#18382a;
     transform:translateY(-1px);
 }
 
-/* =========================================
-   DATATABLE CUSTOM
-========================================= */
-.dataTables_wrapper{
-    margin-top:10px;
+/* SMALL TITLE */
+
+.card-title{
+    font-size:16px;
+    font-weight:700;
 }
 
-.dataTables_filter input{
-    border:1px solid #d1d5db !important;
-    border-radius:12px !important;
-    padding:8px 14px !important;
-    margin-left:10px !important;
-    outline:none !important;
+
+.card-action{
+   background:#5e8b72;
+    color:#fff;
+    border:none;
+    padding:8px 14px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
 }
 
-.dataTables_filter input:focus{
-    border-color:#22c55e !important;
-    box-shadow:0 0 0 4px rgba(34,197,94,.12) !important;
+.card-action:hover{
+    background:#416e54;
 }
 
-.dataTables_length select{
-    border:1px solid #d1d5db !important;
-    border-radius:10px !important;
-    padding:6px 10px !important;
-    outline:none !important;
+/* =========================
+   TABLE DESIGN
+========================= */
+/* TABLE HEADER GREEN */
+
+.report-table thead tr,
+.report-table thead th{
+    background:#416e54 !important;
+    color:#ffffff !important;
 }
 
-.dataTables_paginate .paginate_button{
-    border-radius:10px !important;
-    margin:0 3px !important;
-}
+/* HEADER TEXT STYLE */
 
-.dataTables_paginate .paginate_button.current{
-    background:#16a34a !important;
+.report-table thead th{
+    padding:18px 16px;
+    font-size:15px;
+    font-weight:700;
+    text-transform:uppercase;
     border:none !important;
+    letter-spacing:0.5px;
+}
+
+/* ROUNDED CORNERS */
+
+.report-table thead th:first-child{
+    border-top-left-radius:14px;
+}
+
+.report-table thead th:last-child{
+    border-top-right-radius:14px;
+}
+
+/* DATATABLE SORT ICON COLOR */
+
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting_desc:after{
+    color:#ffffff !important;
+    opacity:1 !important;
+}
+
+/* BODY */
+
+.report-table tbody td{
+    padding:18px 16px;
+    font-size:14px;
+    color:#374151;
+    border-bottom:1px solid #edf2ef;
+    vertical-align:middle;
+    background:#fff;
+}
+
+.report-table tbody tr{
+    transition:0.25s;
+}
+
+.report-table tbody tr:hover td{
+    background:#f5faf7;
+}
+
+/* =========================
+   BADGES
+========================= */
+
+.report-type-badge{
+    background:#e7f5ed;
+    color:#0f7a43;
+    padding:8px 14px;
+    border-radius:30px;
+    font-size:12px;
+    font-weight:700;
+    display:inline-block;
+    text-transform:capitalize;
+}
+
+/* =========================
+   PDF BUTTON
+========================= */
+
+.pdf-btn{
+    background:#fff1f2;
+    color:#dc2626;
+    padding:10px 14px;
+    border-radius:10px;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:600;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    transition:0.3s;
+}
+
+.pdf-btn:hover{
+    background:#dc2626;
+    color:#fff;
+}
+
+/* =========================
+   ACTION BUTTONS
+========================= */
+
+.action-btn-group{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.table-btn{
+    border:none;
+    padding:10px 14px;
+    border-radius:10px;
+    font-size:13px;
+    font-weight:600;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    transition:0.3s;
+    cursor:pointer;
+}
+
+.download-btn{
+    background:#5e8b72;
+    color:#fff;
+}
+
+.download-btn:hover{
+    background:#416e54;
+}
+
+.deleteBtn{
+    background:#dc2626 !important;
     color:#fff !important;
 }
 
-/* =========================================
-   EMPTY BOX
-========================================= */
-.empty-reports{
-    padding:50px 20px;
-    text-align:center;
+.deleteBtn:hover{
+    background:#b91c1c !important;
+}
+
+/* =========================
+   DATATABLE DESIGN
+========================= */
+
+/* PAGINATION DESIGN */
+
+.dataTables_wrapper .dataTables_paginate{
+    margin-top:15px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button{
+    background:#e8f3ec !important;
+    color:#416e54 !important;
+    border:none !important;
+    border-radius:10px !important;
+    padding:7px 14px !important;
+    margin:0 4px !important;
+    font-weight:600;
+    transition:0.3s;
+}
+
+/* ACTIVE PAGE */
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current{
+    background:#416e54 !important;
+    color:#fff !important;
+    border:none !important;
+}
+
+/* HOVER */
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover{
+    background:#5d8a70 !important;
+    color:#fff !important;
+}
+
+/* REMOVE BLACK BORDER */
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:focus{
+    outline:none !important;
+    box-shadow:none !important;
+}
+
+
+/* TOP DATATABLE AREA */
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter{
+    margin-bottom:18px;
+}
+
+/* SHOW ENTRIES TEXT */
+
+.dataTables_wrapper .dataTables_length label{
+    font-size:15px;
+    font-weight:600;
+    color:#416e54;
+}
+
+/* DROPDOWN */
+
+.dataTables_wrapper .dataTables_length select{
+    border:1px solid #cfe0d7 !important;
+    border-radius:10px !important;
+    padding:8px 35px 8px 12px !important;
+    height:42px;
+    background:#f7fbf8 !important;
+    color:#416e54 !important;
+    font-weight:600;
+    outline:none !important;
+    box-shadow:none !important;
+}
+
+/* SEARCH LABEL */
+
+.dataTables_wrapper .dataTables_filter label{
+    font-size:15px;
+    font-weight:600;
+    color:#416e54;
+}
+
+/* SEARCH INPUT */
+
+.dataTables_wrapper .dataTables_filter input{
+    width:260px !important;
+    height:44px !important;
+    border:1px solid #cfe0d7 !important;
+    border-radius:12px !important;
+    padding:0 15px !important;
+    background:#f7fbf8 !important;
+    color:#333 !important;
+    font-size:14px !important;
+    outline:none !important;
+    box-shadow:none !important;
+    transition:0.3s;
+}
+
+/* SEARCH FOCUS */
+
+.dataTables_wrapper .dataTables_filter input:focus{
+    border-color:#416e54 !important;
+    background:#fff !important;
+    box-shadow:0 0 0 3px rgba(65,110,84,0.10) !important;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .dataTables_wrapper .dataTables_filter{
+        margin-top:15px;
+        text-align:left !important;
+    }
+
+    .dataTables_wrapper .dataTables_filter input{
+        width:100% !important;
+    }
+
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter{
+        width:100%;
+    }
+}
+
+/* =========================
+   EMPTY TEXT
+========================= */
+
+.no-file{
     color:#9ca3af;
+    font-size:13px;
+    font-weight:500;
 }
 
-.empty-reports svg{
-    margin-bottom:15px;
-}
+/* =========================
+   MOBILE
+========================= */
 
-/* =========================================
-   RESPONSIVE
-========================================= */
 @media(max-width:768px){
 
     .card{
-        padding:20px;
-        border-radius:20px;
+        padding:16px;
     }
 
-    .page-title{
-        font-size:28px;
-    }
-
-    .card-head{
+    .filter-bar{
         flex-direction:column;
-        align-items:flex-start;
+        align-items:stretch;
     }
 
+    .form-select{
+        width:100%;
+        min-width:100%;
+    }
+
+    .btn-primary,
     .card-action{
         width:100%;
-    }
-
-    .date-filter-box{
-        padding:18px;
-        gap:16px;
-    }
-
-    .filter-group{
-        width:100%;
-    }
-
-    .filter-actions{
-        width:100%;
-    }
-
-    .btn-filter{
-        width:100%;
+        justify-content:center;
     }
 
     .report-table thead th,
@@ -535,122 +587,124 @@ $showGlobalSearch = false;
         padding:14px 12px;
         font-size:13px;
     }
-}  
 
+    .table-btn{
+        width:100%;
+        justify-content:center;
+    }
 
-/* =========================================
-   MODAL
-========================================= */
-
-.custom-modal{
-    display:none;
-    position:fixed;
-    z-index:9999;
-    left:0;
-    top:0;
-    width:100%;
-    height:100%;
-    overflow:auto;
-    background:rgba(0,0,0,0.55);
-    backdrop-filter:blur(4px);
-    padding:30px;
-    animation:fadeIn .25s ease;
+    .action-btn-group{
+        flex-direction:column;
+    }
 }
 
-.custom-modal.active{
+
+
+/* DATE FILTER DESIGN */
+
+.date-filter-box{
     display:flex;
-    align-items:center;
-    justify-content:center;
+    align-items:end;
+    gap:18px;
+    background:#f7fbf8;
+    padding:18px;
+    border-radius:14px;
+    border:1px solid #dbe7df;
+    margin:18px 0 22px;
+    flex-wrap:wrap;
 }
 
-.custom-modal-content{
-    background:#ffffff;
-    width:100%;
-    max-width:700px;
-    border-radius:24px;
-    padding:35px;
-    position:relative;
-    box-shadow:0 25px 60px rgba(0,0,0,0.18);
-    animation:scaleIn .25s ease;
+.filter-item{
+    flex:1;
+    min-width:220px;
 }
 
-.modal-title{
-    font-size:28px;
-    font-weight:800;
-    color:#111827;
-    margin-bottom:20px;
-    padding-right:40px;
-}
-
-.modal-description{
-    font-size:15px;
-    line-height:1.8;
-    color:#4b5563;
-    max-height:65vh;
-    overflow-y:auto;
-    padding-right:10px;
-}
-
-.close-btn{
-    position:absolute;
-    top:18px;
-    right:22px;
-    font-size:34px;
+.filter-item label{
+    display:block;
+    font-size:12px;
     font-weight:700;
-    color:#6b7280;
+    color:#2d4f3d;
+    margin-bottom:7px;
+    letter-spacing:0.5px;
+}
+
+.date-input-box{
+    position:relative;
+}
+
+.date-input-box i{
+    position:absolute;
+    left:14px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#5e8b72;
+    font-size:14px;
+}
+
+.filter-input{
+    width:100%;
+    height:48px;
+    border:1px solid #cfe0d7;
+    border-radius:12px;
+    background:#fff;
+    padding:0 16px 0 42px;
+    font-size:14px;
+    color:#374151;
+    outline:none;
+    transition:0.3s;
+}
+
+.filter-input:focus{
+    border-color:#416e54;
+    box-shadow:0 0 0 3px rgba(65,110,84,0.10);
+}
+
+/* FILTER BUTTON */
+
+.filter-btn-box{
+    display:flex;
+    align-items:end;
+}
+
+.btn-filter{
+    height:48px;
+    padding:0 24px;
+    border:none;
+    border-radius:12px;
+    background:#416e54;
+    color:#fff;
+    font-size:14px;
+    font-weight:600;
     cursor:pointer;
-    transition:.3s ease;
+    transition:0.3s;
 }
 
-.close-btn:hover{
-    color:#dc2626;
-    transform:rotate(90deg);
-}
-
-/* ANIMATION */
-@keyframes fadeIn{
-    from{
-        opacity:0;
-    }
-    to{
-        opacity:1;
-    }
-}
-
-@keyframes scaleIn{
-    from{
-        transform:scale(.9);
-        opacity:0;
-    }
-    to{
-        transform:scale(1);
-        opacity:1;
-    }
+.btn-filter:hover{
+    background:#2d4f3d;
 }
 
 /* MOBILE */
+
 @media(max-width:768px){
 
-    .custom-modal{
-        padding:15px;
+    .date-filter-box{
+        flex-direction:column;
+        align-items:stretch;
     }
 
-    .custom-modal-content{
-        padding:24px;
-        border-radius:18px;
+    .filter-item{
+        width:100%;
     }
 
-    .modal-title{
-        font-size:22px;
-    }
-
-    .modal-description{
-        font-size:14px;
+    .btn-filter{
+        width:100%;
     }
 }
 
-
 </style>
+
+
+
 
 
   
