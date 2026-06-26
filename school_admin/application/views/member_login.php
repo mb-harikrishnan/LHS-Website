@@ -8,22 +8,22 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
+:root {
     --gold: #B8962E;
     --gold-light: #D4AF5A;
     --gold-pale: #F5EDD6;
-    --green-deep: #1B3A2D;
-    --green-mid: #2D5A40;
-    --green-soft: #4A7C59;
+    --green-deep: #2563EB;
+    --green-mid: #2563EB;
+    --green-soft: #2563EB;
     --green-pale: #EBF3EE;
     --cream: #FAFAF7;
     --white: #FFFFFF;
-    --text-dark: #1A2820;
-    --text-mid: #4A5C52;
+    --text-dark: #2563EB;
+    --text-mid: #2563EB;
     --text-light: #8A9E92;
     --border: #D8E8DC;
     --shadow: rgba(27, 58, 45, 0.08);
-  }
+}
 
   html, body {
     height: 100%;

@@ -253,7 +253,7 @@ border:1px solid #dbeafe;    margin-top:18px;
 }
 
 .form-select:focus{
-    border-color:#2563eb;
+    border-color:#1e3a8a ;
     outline:none;
     box-shadow:0 0 0 3px rgba(37,99,235,0.12);
 }
@@ -263,7 +263,7 @@ border:1px solid #dbeafe;    margin-top:18px;
 ========================= */
 
 .btn-primary{
-    background:#2563eb;
+    background:#1e3a8a ;
     border:none;
     color:#fff;
     padding:12px 22px;
@@ -290,7 +290,7 @@ border:1px solid #dbeafe;    margin-top:18px;
 
 
 .card-action{
-    background:#3b82f6;
+    background:#1E3A8A;
     color:#fff;
     border:none;
     padding:8px 14px;
@@ -301,8 +301,12 @@ border:1px solid #dbeafe;    margin-top:18px;
     transition:0.3s;
 }
 
+/* ADD BUTTON FULL GREEN HOVER */
 .card-action:hover{
-    background:#1e3a8a;
+    background:#2563eb;   /* blue */
+    color:#fff;
+    box-shadow:0 0 0 4px rgba(37, 99, 235, 0.18);
+    transform:translateY(-1px);
 }
 
 /* =========================
@@ -431,12 +435,13 @@ table.dataTable thead .sorting_desc:after{
 }
 
 .download-btn{
-    background:#2563eb;
+    background:#1e3a8a ;
     color:#fff;
 }
 
+
 .download-btn:hover{
-    background:#1e3a8a;
+    background:#2563eb;
 }
 
 .deleteBtn{
@@ -480,7 +485,7 @@ table.dataTable thead .sorting_desc:after{
 /* HOVER */
 
 .dataTables_wrapper .dataTables_paginate .paginate_button:hover{
-    background:#2563eb !important;
+    background:#1e3a8a  !important;
     color:#fff !important;
 }
 
@@ -548,7 +553,7 @@ table.dataTable thead .sorting_desc:after{
 /* SEARCH FOCUS */
 
 .dataTables_wrapper .dataTables_filter input:focus{
-    border-color:#2563eb !important;
+    border-color:#1e3a8a  !important;
     background:#fff !important;
     box-shadow:0 0 0 3px rgba(37,99,235,0.10) !important;
 }
@@ -626,6 +631,307 @@ table.dataTable thead .sorting_desc:after{
 
 </style>
 
+<style>
+      /* popup modal styles */
+
+
+    .image-modal {
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    padding-top: 60px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content-img {
+    display: block;
+    margin: auto;
+    max-width: 85%;
+    max-height: 85vh;
+    border-radius: 15px;
+    animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.close-modal {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    color: #ddd;
+}
+
+.gallery-img {
+    transition: 0.3s;
+}
+
+.gallery-img:hover {
+    transform:scale(1.05);
+}
+        .report-table-wrap{
+    width:100%;
+    overflow-x:auto;
+    margin-top:20px;
+}
+
+.report-table{
+    width:100%;
+    border-collapse:collapse;
+    background:#fff;
+}
+
+.report-table thead tr{
+    background:#1f4e3d;
+}
+
+.report-table thead th{
+    color:#fff;
+    padding:15px;
+    font-size:14px;
+    font-weight:600;
+    text-align:left;
+    border:none;
+}
+
+.report-table tbody td{
+    padding:14px;
+    border-bottom:1px solid #e5e5e5;
+    font-size:14px;
+    color:#444;
+    vertical-align:middle;
+}
+
+.report-table tbody tr:hover{
+    background:#f8fbf9;
+    transition:0.3s;
+}
+
+.report-type-badge{
+    background:#e7f7ef;
+    color:#1E3A8A;
+    padding:6px 12px;
+    border-radius:30px;
+    font-size:12px;
+    font-weight:600;
+    text-transform:capitalize;
+}
+
+.pdf-btn{
+    background:#ffe9e9;
+    color:#dc3545;
+    padding:8px 14px;
+    border-radius:6px;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:600;
+    display:inline-block;
+}
+
+.pdf-btn:hover{
+    background:#dc3545;
+    color:#fff;
+}
+
+.action-btn-group{
+    display:flex;
+    gap:10px;
+}
+
+.table-btn{
+    padding:8px 14px;
+    border-radius:6px;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.view-btn{
+    background:#0d6efd;
+    color:#fff;
+}
+
+.view-btn:hover{
+    background:#0b5ed7;
+}
+
+.download-btn{
+    background:#1E3A8A;
+    color:#fff;
+}
+
+.download-btn:hover{
+    background:#157347;
+}
+
+.no-file{
+    color:#999;
+    font-size:13px;
+}
+
+.no-data-box{
+    padding:30px;
+    text-align:center;
+    color:#999;
+    font-size:15px;
+}
+
+.filter-form{
+    margin-top:20px;
+}
+
+.date-filter-box{
+    background:#ffffff;
+    border:1px solid #e5e7eb;
+    border-radius:16px;
+    padding:20px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    align-items:end;
+    box-shadow:0 4px 15px rgba(0,0,0,0.04);
+}
+
+.filter-group{
+    flex:1;
+    min-width:220px;
+}
+
+.filter-group label{
+    display:block;
+    margin-bottom:8px;
+    font-size:14px;
+    font-weight:600;
+    color:#1f2937;
+}
+
+.input-wrapper{
+    position:relative;
+}
+
+.input-wrapper i{
+    position:absolute;
+    left:14px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#6b7280;
+    font-size:14px;
+}
+
+.filter-input{
+    width:100%;
+    height:48px;
+    border:1px solid #d1d5db;
+    border-radius:12px;
+    padding:0 14px 0 42px;
+    font-size:14px;
+    background:#f9fafb;
+    transition:all 0.3s ease;
+    outline:none;
+}
+
+.filter-input:focus{
+    border-color:#1E3A8A;
+    background:#fff;
+    box-shadow:0 0 0 4px rgba(30, 58, 138, 0.15);
+}
+
+.filter-actions{
+    display:flex;
+    gap:12px;
+    align-items:center;
+}
+
+/* FILTER BUTTON HOVER GREEN */
+
+.btn-filter{
+    height:48px;
+    padding:0 22px;
+    border:none;
+    border-radius:12px;
+    background:#1E3A8A;
+    color:#fff;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+/* FILTER BUTTON HOVER */
+.btn-filter:hover{
+    background:#2563eb;   /* blue */
+    color:#fff;
+    transform:translateY(-1px);
+    box-shadow:0 8px 18px rgba(37, 99, 235, 0.25);
+}
+
+
+.btn-reset{
+    height:48px;
+    padding:0 20px;
+    border-radius:12px;
+    background:#f3f4f6;
+    color:#374151;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    transition:0.3s;
+}
+
+.btn-reset:hover{
+    background:#374151;
+}
+
+@media(max-width:768px){
+
+    .date-filter-box{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .filter-group{
+        width:100%;
+    }
+
+    .filter-actions{
+        width:100%;
+    }
+
+    .btn-filter,
+    .btn-reset{
+        width:100%;
+        justify-content:center;
+    }
+}
+      </style>
 
   
 <!-- jQuery -->

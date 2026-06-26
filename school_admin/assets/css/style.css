@@ -10,15 +10,15 @@
   --gold-pale:#FFF8E1;
 
   /* BLUE THEME */
-  --green:#1E3A8A;        /* Main Blue */
-  --green-mid:#2563EB;    /* Bright Blue */
-  --green-soft:#60A5FA;   /* Soft Blue */
+  --green:#1e3a8a ;        /* Main Blue */
+  --green-mid:#1e3a8a ;    /* Bright Blue */
+  --green-soft:#1e3a8a ;   /* Soft Blue */
   --green-pale:#EFF6FF;   /* Pale Blue */
 
-  --navy:#0F172A;
+  --navy:#1e3a8a ;
   --sage:#93C5FD;
 
-  --text:#0F172A;
+  --text:#1e3a8a ;
   --text-mid:#334155;
   --text-light:#64748B;
 
