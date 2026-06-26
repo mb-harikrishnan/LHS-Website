@@ -191,11 +191,10 @@ $showGlobalSearch = false;
     grid-template-columns: 1fr auto;
     gap:20px;
     align-items:end;
-    background:#f8faf9;
+     background:#f8fbff;
     padding:20px;
     border-radius:14px;
-    border:1px solid #e4ece7;
-    margin-top:18px;
+border:1px solid #dbeafe;    margin-top:18px;
     margin-bottom:18px;
 }
 
@@ -236,7 +235,7 @@ $showGlobalSearch = false;
     display:block;
     font-size:13px;
     font-weight:700;
-    color:#416e54;
+    color:#1e3a8a;
     margin-bottom:8px;
     letter-spacing:0.3px;
 }
@@ -254,9 +253,9 @@ $showGlobalSearch = false;
 }
 
 .form-select:focus{
-    border-color:#416e54;
+    border-color:#2563eb;
     outline:none;
-    box-shadow:0 0 0 3px rgba(65,110,84,0.12);
+    box-shadow:0 0 0 3px rgba(37,99,235,0.12);
 }
 
 /* =========================
@@ -264,7 +263,7 @@ $showGlobalSearch = false;
 ========================= */
 
 .btn-primary{
-    background:#416e54;
+    background:#2563eb;
     border:none;
     color:#fff;
     padding:12px 22px;
@@ -278,7 +277,7 @@ $showGlobalSearch = false;
 
 
 .btn-primary:hover{
-    background:#2f5440;
+    background:#1e40af;
     transform:translateY(-1px);
 }
 
@@ -291,7 +290,7 @@ $showGlobalSearch = false;
 
 
 .card-action{
-   background:#5e8b72;
+    background:#3b82f6;
     color:#fff;
     border:none;
     padding:8px 14px;
@@ -303,7 +302,7 @@ $showGlobalSearch = false;
 }
 
 .card-action:hover{
-    background:#416e54;
+    background:#1e3a8a;
 }
 
 /* =========================
@@ -313,7 +312,7 @@ $showGlobalSearch = false;
 
 .report-table thead tr,
 .report-table thead th{
-    background:#416e54 !important;
+    background:#1e3a8a !important;
     color:#ffffff !important;
 }
 
@@ -366,7 +365,7 @@ table.dataTable thead .sorting_desc:after{
 }
 
 .report-table tbody tr:hover td{
-    background:#f5faf7;
+    background:#eff6ff;
 }
 
 /* =========================
@@ -374,8 +373,8 @@ table.dataTable thead .sorting_desc:after{
 ========================= */
 
 .report-type-badge{
-    background:#e7f5ed;
-    color:#0f7a43;
+    background:#dbeafe;
+    color:#1d4ed8;
     padding:8px 14px;
     border-radius:30px;
     font-size:12px;
@@ -432,12 +431,12 @@ table.dataTable thead .sorting_desc:after{
 }
 
 .download-btn{
-    background:#5e8b72;
+    background:#2563eb;
     color:#fff;
 }
 
 .download-btn:hover{
-    background:#416e54;
+    background:#1e3a8a;
 }
 
 .deleteBtn{
@@ -460,8 +459,8 @@ table.dataTable thead .sorting_desc:after{
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button{
-    background:#e8f3ec !important;
-    color:#416e54 !important;
+    background:#dbeafe !important;
+    color:#1e3a8a !important;
     border:none !important;
     border-radius:10px !important;
     padding:7px 14px !important;
@@ -473,7 +472,7 @@ table.dataTable thead .sorting_desc:after{
 /* ACTIVE PAGE */
 
 .dataTables_wrapper .dataTables_paginate .paginate_button.current{
-    background:#416e54 !important;
+    background:#1e3a8a !important;
     color:#fff !important;
     border:none !important;
 }
@@ -481,7 +480,7 @@ table.dataTable thead .sorting_desc:after{
 /* HOVER */
 
 .dataTables_wrapper .dataTables_paginate .paginate_button:hover{
-    background:#5d8a70 !important;
+    background:#2563eb !important;
     color:#fff !important;
 }
 
@@ -505,18 +504,18 @@ table.dataTable thead .sorting_desc:after{
 .dataTables_wrapper .dataTables_length label{
     font-size:15px;
     font-weight:600;
-    color:#416e54;
+    color:#1e3a8a;
 }
 
 /* DROPDOWN */
 
 .dataTables_wrapper .dataTables_length select{
-    border:1px solid #cfe0d7 !important;
+    border:1px solid #bfdbfe !important;
     border-radius:10px !important;
     padding:8px 35px 8px 12px !important;
     height:42px;
-    background:#f7fbf8 !important;
-    color:#416e54 !important;
+    background:#eff6ff !important;
+    color:#1e3a8a !important;
     font-weight:600;
     outline:none !important;
     box-shadow:none !important;
@@ -535,10 +534,10 @@ table.dataTable thead .sorting_desc:after{
 .dataTables_wrapper .dataTables_filter input{
     width:260px !important;
     height:44px !important;
-    border:1px solid #cfe0d7 !important;
+    border:1px solid #bfdbfe !important;
     border-radius:12px !important;
     padding:0 15px !important;
-    background:#f7fbf8 !important;
+    background:#eff6ff !important;
     color:#333 !important;
     font-size:14px !important;
     outline:none !important;
@@ -549,9 +548,9 @@ table.dataTable thead .sorting_desc:after{
 /* SEARCH FOCUS */
 
 .dataTables_wrapper .dataTables_filter input:focus{
-    border-color:#416e54 !important;
+    border-color:#2563eb !important;
     background:#fff !important;
-    box-shadow:0 0 0 3px rgba(65,110,84,0.10) !important;
+    box-shadow:0 0 0 3px rgba(37,99,235,0.10) !important;
 }
 
 /* MOBILE */

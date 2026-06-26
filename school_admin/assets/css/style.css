@@ -1,15 +1,36 @@
+/*  */
 
-/* â•â•â• DESIGN TOKENS â•â•â• */
 :root{
-  --cream:#F9F6F0;--cream2:#F2EDE4;--white:#FFFFFF;
-  --gold:#B8962E;--gold-light:#D4AF5A;--gold-pale:#FBF5E6;
-  --green:#1B3A2D;--green-mid:#2D5A40;--green-soft:#4A7C59;--green-pale:#EDF4EF;
-  --navy:#1a2744;--sage:#8FAF97;
-  --text:#1A2820;--text-mid:#4A5C52;--text-light:#8A9E92;
-  --border:#DDE8DF;--sidebar-w:272px;
-  --shadow:0 2px 16px rgba(27,58,45,0.08);
-  --shadow-lg:0 8px 40px rgba(27,58,45,0.14);
+  --cream:#F4F7FB;
+  --cream2:#EAF0F8;
+  --white:#FFFFFF;
+
+  --gold:#D4A017;
+  --gold-light:#F4C542;
+  --gold-pale:#FFF8E1;
+
+  /* BLUE THEME */
+  --green:#1E3A8A;        /* Main Blue */
+  --green-mid:#2563EB;    /* Bright Blue */
+  --green-soft:#60A5FA;   /* Soft Blue */
+  --green-pale:#EFF6FF;   /* Pale Blue */
+
+  --navy:#0F172A;
+  --sage:#93C5FD;
+
+  --text:#0F172A;
+  --text-mid:#334155;
+  --text-light:#64748B;
+
+  --border:#D6E4F0;
+
+  --sidebar-w:272px;
+
+  --shadow:0 2px 16px rgba(37,99,235,0.10);
+  --shadow-lg:0 8px 40px rgba(37,99,235,0.18);
+
   --radius:14px;
+
   --bg:var(--cream);
   --card-bg:var(--white);
   --topbar-bg:var(--white);

@@ -124,78 +124,37 @@ $showGlobalSearch = false;
 
 <style>
 /* =========================
-   PAGE HEADER
-========================= */
-.page-header{
-    margin-bottom: 28px;
-}
-
-.page-eyebrow{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-size:13px;
-    font-weight:600;
-    color:#16a34a;
-    text-transform:uppercase;
-    letter-spacing:.08em;
-    margin-bottom:10px;
-}
-
-.eyebrow-pulse{
-    width:10px;
-    height:10px;
-    border-radius:50%;
-    background:#22c55e;
-    animation:pulse 1.8s infinite;
-}
-
-@keyframes pulse{
-    0%{transform:scale(.9);opacity:.7;}
-    70%{transform:scale(1.4);opacity:0;}
-    100%{transform:scale(.9);opacity:0;}
-}
-
-.page-title{
-    font-size:34px;
-    font-weight:800;
-    color:#111827;
-    margin:0;
-}
-
-.page-sub{
-    color:#6b7280;
-    margin-top:8px;
-    font-size:15px;
-}
-
-/* =========================
    CARD
 ========================= */
 .card{
     background:#fff;
-    border-radius:24px;
-    padding:35px;
-    box-shadow:0 10px 40px rgba(0,0,0,0.06);
-    border:1px solid #eef2f7;
+    border-radius:20px;
+    padding:24px;
+    box-shadow:0 6px 24px rgba(0,0,0,0.05);
+    border:1px solid #edf2f7;
+    overflow:hidden;
 }
 
+/* =========================
+   CARD HEADER
+========================= */
 .card-head{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:35px;
-    flex-wrap:wrap;
     gap:15px;
+    margin-bottom:24px;
+    padding-bottom:18px;
+    border-bottom:1px solid #f1f5f9;
 }
 
 .card-title{
     display:flex;
     align-items:center;
-    gap:12px;
-    font-size:20px;
+    gap:10px;
+    font-size:18px;
     font-weight:700;
-    color:#111827;
+    color:#1f2937;
 }
 
 /* =========================
@@ -203,20 +162,22 @@ $showGlobalSearch = false;
 ========================= */
 .card-action{
     border:none;
-    outline:none;
-    background:linear-gradient(135deg,#16a34a,#22c55e);
+    background:linear-gradient(135deg,#2f855a,#38a169);
     color:#fff;
-    padding:12px 22px;
-    border-radius:12px;
+    padding:10px 18px;
+    border-radius:10px;
+    font-size:14px;
     font-weight:600;
     cursor:pointer;
-    transition:.3s ease;
-    box-shadow:0 8px 20px rgba(34,197,94,.25);
+    transition:.3s;
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
 .card-action:hover{
-    transform:translateY(-2px);
-    box-shadow:0 12px 25px rgba(34,197,94,.35);
+    transform:translateY(-1px);
+    box-shadow:0 8px 18px rgba(56,161,105,.25);
 }
 
 /* =========================
@@ -225,38 +186,44 @@ $showGlobalSearch = false;
 .upload-form-grid{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:22px;
+    gap:20px;
+    margin-bottom:20px;
 }
 
 /* =========================
    FORM GROUP
 ========================= */
+.form-group-modern{
+    width:100%;
+}
+
 .form-group-modern label{
     display:block;
-    margin-bottom:10px;
+    margin-bottom:8px;
     font-size:14px;
-    font-weight:700;
+    font-weight:600;
     color:#374151;
 }
 
 /* =========================
-   SELECT
+   SELECT BOX
 ========================= */
 .modern-select{
     width:100%;
-    padding:14px 16px;
-    border-radius:14px;
+    height:48px;
+    padding:0 14px;
+    border-radius:12px;
     border:1px solid #d1d5db;
-    background:#f9fafb;
-    font-size:15px;
-    transition:.3s ease;
+    background:#fff;
+    font-size:14px;
+    color:#111827;
     outline:none;
+    transition:.3s;
 }
 
 .modern-select:focus{
-    border-color:#22c55e;
-    background:#fff;
-    box-shadow:0 0 0 4px rgba(34,197,94,.12);
+    border-color:#38a169;
+    box-shadow:0 0 0 3px rgba(56,161,105,.12);
 }
 
 /* =========================
@@ -264,18 +231,17 @@ $showGlobalSearch = false;
 ========================= */
 .upload-box{
     position:relative;
-    border:2px dashed #22c55e;
-    border-radius:24px;
-    padding:45px 25px;
+    border:2px dashed #38a169;
+    border-radius:18px;
+    padding:35px 20px;
     text-align:center;
-    background:linear-gradient(to bottom,#f0fdf4,#ffffff);
-    transition:.3s ease;
-    overflow:hidden;
+    background:#f8fffb;
+    transition:.3s;
 }
 
 .upload-box:hover{
-    transform:translateY(-2px);
-    box-shadow:0 15px 35px rgba(34,197,94,.12);
+    background:#f0fff4;
+    border-color:#2f855a;
 }
 
 .upload-box input[type="file"]{
@@ -288,100 +254,96 @@ $showGlobalSearch = false;
 }
 
 .upload-icon{
-    width:85px;
-    height:85px;
+    width:70px;
+    height:70px;
     border-radius:50%;
     background:#dcfce7;
     display:flex;
     align-items:center;
     justify-content:center;
-    margin:0 auto 18px;
-    font-size:34px;
-    color:#16a34a;
+    margin:0 auto 14px;
+    font-size:28px;
+    color:#15803d;
 }
 
 .upload-title{
-    font-size:20px;
+    font-size:18px;
     font-weight:700;
     color:#111827;
-    margin-bottom:8px;
+    margin-bottom:6px;
 }
 
 .upload-sub{
+    font-size:13px;
     color:#6b7280;
-    font-size:14px;
 }
 
 /* =========================
    FILE PREVIEW
 ========================= */
 .file-preview{
-    margin-top:28px;
+    margin-top:20px;
     display:none;
     align-items:center;
-    gap:16px;
+    gap:14px;
     background:#fff;
     border:1px solid #dcfce7;
-    padding:16px;
-    border-radius:16px;
-    text-align:left;
-    box-shadow:0 6px 18px rgba(0,0,0,0.04);
+    padding:14px;
+    border-radius:14px;
 }
 
 .preview-icon{
-    width:52px;
-    height:52px;
+    width:48px;
+    height:48px;
     border-radius:12px;
     background:#fee2e2;
     display:flex;
     align-items:center;
     justify-content:center;
     color:#dc2626;
-    font-size:24px;
-    flex-shrink:0;
+    font-size:22px;
 }
 
 .preview-details{
+    flex:1;
     overflow:hidden;
 }
 
 .preview-name{
+    font-size:14px;
     font-weight:700;
     color:#111827;
-    font-size:15px;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
 }
 
 .preview-size{
+    font-size:12px;
     color:#6b7280;
-    font-size:13px;
-    margin-top:4px;
+    margin-top:3px;
 }
 
 /* =========================
    SUBMIT BUTTON
 ========================= */
 .submit-btn-modern{
-    margin-top:32px;
     width:100%;
     border:none;
-    outline:none;
-    background:linear-gradient(135deg,#15803d,#22c55e);
+    background:linear-gradient(135deg,#2f855a,#38a169);
     color:#fff;
-    padding:16px;
-    border-radius:16px;
-    font-size:16px;
+    padding:14px;
+    border-radius:14px;
+    font-size:15px;
     font-weight:700;
+    margin-top:24px;
     cursor:pointer;
-    transition:.3s ease;
-    box-shadow:0 12px 28px rgba(34,197,94,.25);
+    transition:.3s;
 }
 
 .submit-btn-modern:hover{
-    transform:translateY(-2px);
-    box-shadow:0 16px 34px rgba(34,197,94,.35);
+    transform:translateY(-1px);
+    box-shadow:0 10px 24px rgba(56,161,105,.25);
 }
 
 /* =========================
@@ -390,11 +352,8 @@ $showGlobalSearch = false;
 @media(max-width:768px){
 
     .card{
-        padding:22px;
-    }
-
-    .page-title{
-        font-size:26px;
+        padding:18px;
+        border-radius:16px;
     }
 
     .card-head{
@@ -404,6 +363,15 @@ $showGlobalSearch = false;
 
     .card-action{
         width:100%;
+        justify-content:center;
+    }
+
+    .upload-box{
+        padding:28px 15px;
+    }
+
+    .upload-title{
+        font-size:16px;
     }
 }
 </style>
