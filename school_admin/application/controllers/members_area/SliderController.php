@@ -169,4 +169,142 @@ class SliderController extends CI_Controller {
 
 
 
+    public function edit_slider($id)
+{
+    $data['slider'] = $this->db
+        ->where('n_slno', $id)
+        ->get('school_sliders')
+        ->row();
+
+        $this->load->view('members_area/header');
+        $this->load->view('members_area/edit_slider', $data);
+        $this->load->view('members_area/footer');
+
+}
+
+
+// public function update_slider()
+// {
+//     $id = $this->input->post('id');
+
+//     $data = array(
+//         'c_title'       => $this->input->post('title'),
+//         'c_description' => $this->input->post('description')
+//     );
+
+//     $this->db->where('n_slno', $id);
+//     $update = $this->db->update('school_sliders', $data);
+
+//     if($update){
+//         redirect('slider_list');
+//     }
+// }
+
+
+public function update_slider()
+{
+    $id = $this->input->post('id');
+
+    $updateData = array();
+
+    // TITLE
+    if($this->input->post('title') != ''){
+        $updateData['c_title'] = $this->input->post('title');
+    }
+
+    // DESCRIPTION
+    if($this->input->post('description') != ''){
+        $updateData['c_description'] = $this->input->post('description');
+    }
+
+    // UPLOAD TYPE
+    if($this->input->post('upload_type') != ''){
+        $upload_type = $this->input->post('upload_type');
+
+        $updateData['c_upload_type'] = $upload_type;
+
+        // =====================
+        // LINK
+        // =====================
+
+        if($upload_type == 'link'){
+
+            if($this->input->post('external_link') != ''){
+
+                $updateData['c_file'] = $this->input->post('external_link');
+
+            }
+
+        }
+
+        // =====================
+        // IMAGE
+        // =====================
+
+        if($upload_type == 'image'){
+
+            if(!empty($_FILES['news_image']['name'])){
+
+                $config['upload_path']   = '../assets/images/gallery/';
+                $config['allowed_types'] = 'jpg|jpeg|png|webp';
+
+                $this->load->library('upload', $config);
+
+                if($this->upload->do_upload('news_image')){
+
+                    $uploadData = $this->upload->data();
+
+                    $updateData['c_file'] = $uploadData['file_name'];
+
+                } else {
+
+                    echo $this->upload->display_errors();
+                    exit;
+                }
+            }
+        }
+
+        // =====================
+        // VIDEO
+        // =====================
+
+        if($upload_type == 'video'){
+
+            if(!empty($_FILES['news_video']['name'])){
+
+                $config['upload_path']   = '../assets/images/gallery/';
+                $config['allowed_types'] = 'webm|mp4';
+
+                $this->upload->initialize($config);
+
+                if($this->upload->do_upload('news_video')){
+
+                    $uploadData = $this->upload->data();
+
+                    $updateData['c_file'] = $uploadData['file_name'];
+
+                } else {
+
+                    echo $this->upload->display_errors();
+                    exit;
+                }
+            }
+        }
+    }
+
+    // UPDATE
+    $this->db->where('n_slno', $id);
+
+    $update = $this->db->update('school_sliders', $updateData);
+
+    if($update){
+
+        redirect('slider_list');
+
+    } else {
+
+        echo "Update Failed";
+    }
+}
+
 }

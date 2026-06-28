@@ -79,6 +79,48 @@ class NewsController extends CI_Controller {
     }
 
 
+    
+public function edit_news($id)
+{
+    $data['news'] = $this->db
+        ->where('n_slno', $id)
+        ->get('school_news')
+        ->row();
+
+    $this->load->view('members_area/header');
+    $this->load->view('members_area/edit_news', $data);
+    $this->load->view('members_area/footer');
+}
+
+
+public function update_news()
+{
+    $id = $this->input->post('id');
+
+    $data = array(
+        'c_title'       => $this->input->post('title'),
+        'c_news' => $this->input->post('description')
+    );
+
+    $this->db->where('n_slno', $id);
+    $this->db->update('school_news', $data);
+
+    $this->session->set_flashdata('success', 'News Updated Successfully');
+
+    redirect('school_news');
+}
+
+
+public function change_news_status($id, $status)
+{
+    $this->db->where('n_slno', $id);
+    $this->db->update('school_news', array(
+        'c_status' => $status
+    ));
+
+    redirect($_SERVER['HTTP_REFERER']);
+}
+
 
 
 

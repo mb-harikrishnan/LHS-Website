@@ -9,6 +9,8 @@ $showGlobalSearch = false;
 
 ?>
 
+
+
      
       <!-- Reports Table Card -->
       <div class="card">
@@ -18,62 +20,64 @@ $showGlobalSearch = false;
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>
             </svg>
-            Upload Vacancy
+            Upload News
           </div>
           <button class="card-action" 
-              onclick="window.location.href='<?php echo base_url('vaccancy_list'); ?>'">
+              onclick="window.location.href='<?php echo base_url('school_news'); ?>'">
           <i class="fa fa-upload"></i> List 
           </button>
         </div>
 
-<form id="newsform"
-                        method="post"
-                        action="<?php echo base_url('insert_vacancy'); ?>">
-
-                        <!-- Title -->
-                        <div class="news-form-group">
-
-                            <label>
-                                Title
-                            </label>
-
-                            <input type="text"
-                                name="title"
-                                id="title"
-                                class="news-input"
-                                placeholder="Enter News Title">
-
-                        </div>
-
-                        <!-- Description -->
-                        <div class="news-form-group">
-
-                            <label>
-                                Description
-                            </label>
-
-                            <textarea name="description"
-                                id="description"
-                                class="news-textarea"
-                                placeholder="Enter News Description"></textarea>
-
-                        </div>
-
-                        <!-- Buttons -->
-                        <div class="news-btn-group">
-
-                            <button type="submit" class="submit-btn">
-                                <i class="fa fa-save"></i> Submit
-                            </button>
-
-                     
-
-                        </div>
-
-                    </form>
 
 
-            
+
+
+
+                   <form id="newsform"
+      method="post"
+      action="<?php echo base_url('update_news'); ?>">
+
+    <!-- Hidden ID -->
+    <input type="hidden"
+           name="id"
+           value="<?php echo $news->n_slno; ?>">
+
+    <!-- Title -->
+    <div class="news-form-group">
+
+        <label>News Title</label>
+
+        <input type="text"
+               name="title"
+               id="title"
+               class="news-input"
+               value="<?php echo $news->c_title; ?>"
+               placeholder="Enter News Title">
+
+    </div>
+
+    <!-- Description -->
+    <div class="news-form-group">
+
+        <label>Description</label>
+
+        <textarea name="description"
+                  id="description"
+                  class="news-textarea"
+                  placeholder="Enter News Description"><?php echo $news->c_news; ?></textarea>
+
+    </div>
+
+    <!-- Button -->
+    <div class="news-btn-group">
+
+        <button type="submit" class="submit-btn">
+            <i class="fa fa-save"></i> Update
+        </button>
+
+    </div>
+
+</form>            
                
             
 
@@ -84,7 +88,10 @@ $showGlobalSearch = false;
        
       </div>
 
-    <style>
+     
+
+<style>
+
 
 /* =========================
    INPUT FIELD DESIGN
@@ -130,10 +137,10 @@ $showGlobalSearch = false;
 .news-input:focus,
 .news-textarea:focus{
     background:#ffffff;
-    border-color:#2563eb;
+    border-color:#22c55e;
     box-shadow:
-        0 0 0 4px rgba(37,99,235,.12),
-        0 10px 25px rgba(37,99,235,.08);
+        0 0 0 4px rgba(34,197,94,.12),
+        0 10px 25px rgba(34,197,94,.08);
     transform:translateY(-1px);
 }
 
@@ -154,7 +161,7 @@ $showGlobalSearch = false;
 .submit-btn{
     border:none;
     outline:none;
-    background:linear-gradient(135deg,#1e3a8a,#2563eb);
+    background:linear-gradient(135deg,#16a34a,#22c55e);
     color:#fff;
     padding:15px 34px;
     border-radius:18px;
@@ -163,7 +170,7 @@ $showGlobalSearch = false;
     letter-spacing:.3px;
     cursor:pointer;
     transition:all .3s ease;
-    box-shadow:0 12px 25px rgba(37,99,235,.25);
+    box-shadow:0 12px 25px rgba(34,197,94,.25);
 }
 
 .submit-btn i{
@@ -173,14 +180,13 @@ $showGlobalSearch = false;
 /* Hover */
 .submit-btn:hover{
     transform:translateY(-3px);
-    box-shadow:0 18px 35px rgba(37,99,235,.35);
+    box-shadow:0 18px 35px rgba(34,197,94,.35);
 }
 
 /* Click Effect */
 .submit-btn:active{
     transform:scale(.98);
 }
-
 /* =========================
    PAGE HEADER
 ========================= */
@@ -194,7 +200,7 @@ $showGlobalSearch = false;
     gap:10px;
     font-size:13px;
     font-weight:600;
-    color:#1e3a8a;
+    color:#16a34a;
     text-transform:uppercase;
     letter-spacing:.08em;
     margin-bottom:10px;
@@ -204,7 +210,7 @@ $showGlobalSearch = false;
     width:10px;
     height:10px;
     border-radius:50%;
-    background:#2563eb;
+    background:#22c55e;
     animation:pulse 1.8s infinite;
 }
 
@@ -262,19 +268,19 @@ $showGlobalSearch = false;
 .card-action{
     border:none;
     outline:none;
-    background:linear-gradient(135deg,#1e3a8a,#2563eb);
+    background:linear-gradient(135deg,#16a34a,#22c55e);
     color:#fff;
     padding:12px 22px;
     border-radius:12px;
     font-weight:600;
     cursor:pointer;
     transition:.3s ease;
-    box-shadow:0 8px 20px rgba(37,99,235,.25);
+    box-shadow:0 8px 20px rgba(34,197,94,.25);
 }
 
 .card-action:hover{
     transform:translateY(-2px);
-    box-shadow:0 12px 25px rgba(37,99,235,.35);
+    box-shadow:0 12px 25px rgba(34,197,94,.35);
 }
 
 /* =========================
@@ -312,9 +318,9 @@ $showGlobalSearch = false;
 }
 
 .modern-select:focus{
-    border-color:#2563eb;
+    border-color:#22c55e;
     background:#fff;
-    box-shadow:0 0 0 4px rgba(37,99,235,.12);
+    box-shadow:0 0 0 4px rgba(34,197,94,.12);
 }
 
 /* =========================
@@ -325,7 +331,7 @@ $showGlobalSearch = false;
     width:100%;
     border:none;
     outline:none;
-    background:linear-gradient(135deg,#1e3a8a,#2563eb);
+    background:linear-gradient(135deg,#15803d,#22c55e);
     color:#fff;
     padding:16px;
     border-radius:16px;
@@ -333,12 +339,12 @@ $showGlobalSearch = false;
     font-weight:700;
     cursor:pointer;
     transition:.3s ease;
-    box-shadow:0 12px 28px rgba(37,99,235,.25);
+    box-shadow:0 12px 28px rgba(34,197,94,.25);
 }
 
 .submit-btn-modern:hover{
     transform:translateY(-2px);
-    box-shadow:0 16px 34px rgba(37,99,235,.35);
+    box-shadow:0 16px 34px rgba(34,197,94,.35);
 }
 
 /* =========================
@@ -364,6 +370,8 @@ $showGlobalSearch = false;
     }
 }
 </style>
+
+
 <script>
 document.getElementById('documentFile').addEventListener('change', function(e){
 

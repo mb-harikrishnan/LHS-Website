@@ -36,7 +36,7 @@ $initials = strtoupper(substr($firstName, 0, 2));
 <meta name="description" content="Radha Madhav Growth premium business dashboard for team management, income tracking, and growth analytics.">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="<?php echo base_url()?>assets/css/style.css">
 <?php if (!empty($pageStylesheets)) { foreach ($pageStylesheets as $stylesheet) { ?>
 <link rel="stylesheet" href="<?php echo htmlspecialchars($stylesheet); ?>">
 <?php } } ?>
@@ -107,12 +107,12 @@ $initials = strtoupper(substr($firstName, 0, 2));
 
       <div class="nav-item" onclick="toggleNav(this)">
         <div class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
             <circle cx="9" cy="7" r="4"/>
             <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
             <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-          </svg>
+          </svg> -->
         </div>
         <span class="nav-label">Mandatory Disclosure</span>
         <span class="nav-arrow">
@@ -129,13 +129,13 @@ $initials = strtoupper(substr($firstName, 0, 2));
         onclick="window.location.href='<?php echo base_url('school_news'); ?>'">
 
         <div class="nav-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+            <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
                 stroke-width="2" stroke-linecap="round">
 
                 <line x1="12" y1="1" x2="12" y2="23"/>
                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
 
-            </svg>
+            </svg> -->
         </div>
 
         <span class="nav-label">School News</span>
@@ -146,13 +146,13 @@ $initials = strtoupper(substr($firstName, 0, 2));
         onclick="window.location.href='<?php echo base_url('gallery'); ?>'">
 
         <div class="nav-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+            <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
                 stroke-width="2" stroke-linecap="round">
 
                 <line x1="12" y1="1" x2="12" y2="23"/>
                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
 
-            </svg>
+            </svg> -->
         </div>
 
         <span class="nav-label">Gallery</span>
@@ -163,12 +163,12 @@ $initials = strtoupper(substr($firstName, 0, 2));
 
       <div class="nav-item" onclick="toggleNav(this)">
         <div class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
             <circle cx="9" cy="7" r="4"/>
             <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
             <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-          </svg>
+          </svg> -->
         </div>
         <span class="nav-label">Co Curricular Activities</span>
         <span class="nav-arrow">
@@ -186,12 +186,12 @@ $initials = strtoupper(substr($firstName, 0, 2));
     
       <div class="nav-item" onclick="toggleNav(this)">
         <div class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
             <circle cx="9" cy="7" r="4"/>
             <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
             <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-          </svg>
+          </svg> -->
         </div>
         <span class="nav-label">Vacancy</span>
         <span class="nav-arrow">
@@ -207,13 +207,13 @@ $initials = strtoupper(substr($firstName, 0, 2));
         onclick="window.location.href='<?php echo base_url('questionpaper_list'); ?>'">
 
         <div class="nav-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+            <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
                 stroke-width="2" stroke-linecap="round">
 
                 <line x1="12" y1="1" x2="12" y2="23"/>
                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
 
-            </svg>
+            </svg> -->
         </div>
 
         <span class="nav-label">Add Downloads</span>
@@ -224,13 +224,13 @@ $initials = strtoupper(substr($firstName, 0, 2));
         onclick="window.location.href='<?php echo base_url('slider_list'); ?>'">
 
         <div class="nav-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+            <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
                 stroke-width="2" stroke-linecap="round">
 
                 <line x1="12" y1="1" x2="12" y2="23"/>
                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
 
-            </svg>
+            </svg> -->
         </div>
 
         <span class="nav-label">Add Homepage Slider</span>

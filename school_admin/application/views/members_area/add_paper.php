@@ -147,11 +147,11 @@ $showGlobalSearch = false;
        
       </div>
 
-     
-<style>
-/* =========================
+    
+      <style>
+/* =========================================
    PAGE HEADER
-========================= */
+========================================= */
 .page-header{
     margin-bottom:30px;
 }
@@ -162,7 +162,7 @@ $showGlobalSearch = false;
     gap:10px;
     font-size:13px;
     font-weight:700;
-    color:#16a34a;
+    color:#1e3a8a;
     text-transform:uppercase;
     letter-spacing:.08em;
     margin-bottom:10px;
@@ -172,14 +172,23 @@ $showGlobalSearch = false;
     width:10px;
     height:10px;
     border-radius:50%;
-    background:#22c55e;
+    background:#2563eb;
     animation:pulse 1.8s infinite;
 }
 
 @keyframes pulse{
-    0%{transform:scale(.9);opacity:.7;}
-    70%{transform:scale(1.5);opacity:0;}
-    100%{transform:scale(.9);opacity:0;}
+    0%{
+        transform:scale(.9);
+        opacity:.7;
+    }
+    70%{
+        transform:scale(1.4);
+        opacity:0;
+    }
+    100%{
+        transform:scale(.9);
+        opacity:0;
+    }
 }
 
 .page-title{
@@ -191,61 +200,64 @@ $showGlobalSearch = false;
 
 .page-sub{
     color:#6b7280;
-    margin-top:6px;
+    margin-top:8px;
     font-size:15px;
 }
 
-/* =========================
+/* =========================================
    CARD
-========================= */
+========================================= */
 .card{
-    background:#fff;
-    border-radius:28px;
+    background:#ffffff;
+    border-radius:26px;
     padding:35px;
-    box-shadow:0 12px 40px rgba(15,23,42,.08);
+    box-shadow:0 10px 35px rgba(0,0,0,0.06);
     border:1px solid #eef2f7;
 }
 
-/* =========================
-   CARD HEAD
-========================= */
 .card-head{
     display:flex;
-    justify-content:space-between;
     align-items:center;
-    margin-bottom:35px;
+    justify-content:space-between;
+    gap:20px;
     flex-wrap:wrap;
-    gap:15px;
+    margin-bottom:35px;
 }
 
 .card-title{
     display:flex;
     align-items:center;
     gap:12px;
-    font-size:22px;
+    font-size:21px;
     font-weight:700;
     color:#111827;
 }
 
+/* =========================================
+   ACTION BUTTON
+========================================= */
 .card-action{
     border:none;
-    background:linear-gradient(135deg,#16a34a,#22c55e);
+    outline:none;
+    background:linear-gradient(135deg,#1e3a8a,#2563eb);
     color:#fff;
     padding:12px 22px;
     border-radius:14px;
+    font-size:14px;
     font-weight:600;
     cursor:pointer;
     transition:.3s ease;
-    box-shadow:0 10px 24px rgba(34,197,94,.25);
+    box-shadow:0 10px 22px rgba(37,99,235,.22);
 }
 
 .card-action:hover{
     transform:translateY(-2px);
+    box-shadow:0 14px 28px rgba(37,99,235,.32);
 }
 
-/* =========================
+/* =========================================
    FORM
-========================= */
+========================================= */
 #newsform{
     width:100%;
 }
@@ -257,183 +269,129 @@ $showGlobalSearch = false;
 .news-form-group label{
     display:block;
     margin-bottom:12px;
-    font-size:15px;
+    font-size:14px;
     font-weight:700;
     color:#374151;
 }
 
-/* =========================
-   SELECT DESIGN
-========================= */
+/* =========================================
+   SELECT BOX
+========================================= */
 .news-select{
     width:100%;
-    height:56px;
+    padding:15px 18px;
     border-radius:16px;
     border:1px solid #d1d5db;
-    padding:0 18px;
-    font-size:15px;
     background:#f9fafb;
+    font-size:15px;
     color:#111827;
-    outline:none;
     transition:.3s ease;
+    outline:none;
 }
 
 .news-select:focus{
-    border-color:#22c55e;
+    border-color:#2563eb;
     background:#fff;
-    box-shadow:0 0 0 4px rgba(34,197,94,.12);
+    box-shadow:0 0 0 4px rgba(37,99,235,.12);
 }
 
-/* =========================
+/* =========================================
    UPLOAD AREA
-========================= */
+========================================= */
 .upload-area{
     position:relative;
-    border:2px dashed #22c55e;
+    border:2px dashed #2563eb;
     border-radius:24px;
-    background:linear-gradient(to bottom,#f0fdf4,#ffffff);
-    padding:45px 20px;
+    background:linear-gradient(to bottom,#eff6ff,#ffffff);
+    padding:45px 25px;
     text-align:center;
-    transition:.3s ease;
-    overflow:hidden;
     cursor:pointer;
+    transition:.35s ease;
+    overflow:hidden;
 }
 
 .upload-area:hover{
     transform:translateY(-2px);
-    box-shadow:0 15px 35px rgba(34,197,94,.15);
+    box-shadow:0 18px 35px rgba(37,99,235,.12);
+}
+
+.upload-area.dragover{
+    background:#dbeafe;
+    border-color:#1e40af;
+}
+
+.upload-content{
+    pointer-events:none;
+}
+
+.upload-icon{
+    width:85px;
+    height:85px;
+    border-radius:50%;
+    background:#dbeafe;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 20px;
+    font-size:34px;
+    color:#1e3a8a;
 }
 
 .upload-content h4{
-    margin-top:18px;
-    margin-bottom:10px;
+    margin:0 0 8px;
     font-size:22px;
     font-weight:700;
     color:#111827;
 }
 
 .upload-content p{
+    margin:0 0 20px;
     color:#6b7280;
-    margin-bottom:20px;
     font-size:14px;
-}
-
-.upload-icon{
-    width:90px;
-    height:90px;
-    margin:auto;
-    border-radius:50%;
-    background:#dcfce7;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:38px;
-    color:#16a34a;
 }
 
 .browse-btn{
     border:none;
-    background:#16a34a;
+    background:linear-gradient(135deg,#1e3a8a,#2563eb);
     color:#fff;
-    padding:12px 24px;
-    border-radius:14px;
+    padding:12px 22px;
+    border-radius:12px;
+    font-size:14px;
     font-weight:600;
     cursor:pointer;
-    transition:.3s ease;
-}
-
-.browse-btn:hover{
-    background:#15803d;
-}
-
-/* =========================
-   PDF PREVIEW
-========================= */
-.image-preview{
-    position:relative;
-    background:#fff;
-    border-radius:20px;
-    border:1px solid #dcfce7;
-    box-shadow:0 8px 25px rgba(0,0,0,.05);
-    overflow:hidden;
-}
-
-#pdfName{
-    color:#111827;
-    font-size:16px;
-    word-break:break-word;
-}
-
-.remove-image{
-    position:absolute;
-    top:12px;
-    right:12px;
-    width:38px;
-    height:38px;
-    border:none;
-    border-radius:50%;
-    background:#ef4444;
-    color:#fff;
-    cursor:pointer;
-    transition:.3s ease;
-}
-
-.remove-image:hover{
-    transform:scale(1.08);
-}
-
-/* =========================
-   BUTTONS
-========================= */
-.news-btn-group{
-    margin-top:35px;
+    box-shadow:0 8px 18px rgba(37,99,235,.2);
 }
 
 .submit-btn{
-    width:100%;
-    height:58px;
     border:none;
-    border-radius:18px;
-    background:linear-gradient(135deg,#15803d,#22c55e);
+    outline:none;
+    background:linear-gradient(135deg,#1e3a8a,#2563eb);
     color:#fff;
-    font-size:17px;
+    padding:14px 26px;
+    border-radius:14px;
+    font-size:15px;
     font-weight:700;
     cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
     transition:.3s ease;
-    box-shadow:0 14px 30px rgba(34,197,94,.25);
+    box-shadow:0 10px 22px rgba(37,99,235,.22);
 }
+
 
 .submit-btn:hover{
     transform:translateY(-2px);
-    box-shadow:0 18px 34px rgba(34,197,94,.35);
+    box-shadow:0 15px 30px rgba(37,99,235,.35);
+    background:linear-gradient(135deg,#1e40af,#3b82f6);
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
-@media(max-width:768px){
+.submit-btn:active{
+    transform:scale(.98);
+}
 
-    .card{
-        padding:22px;
-        border-radius:22px;
-    }
-
-    .page-title{
-        font-size:26px;
-    }
-
-    .card-head{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .card-action{
-        width:100%;
-    }
-
-    .upload-content h4{
-        font-size:18px;
-    }
+.submit-btn i{
+    font-size:14px;
 }
 </style>
 

@@ -75,6 +75,11 @@ $route['add_news']   = 'members_area/NewsController/add_news';
 $route['insert_school_news']   = 'members_area/NewsController/insert_school_news';
 $route['delete_news']   = 'members_area/NewsController/delete_news';
 
+$route['edit_news/(:num)'] = 'members_area/NewsController/edit_news/$1';
+$route['update_news'] = 'members_area/NewsController/update_news';
+$route['change_news_status/(:num)/(:any)'] = 'members_area/NewsController/change_news_status/$1/$2';
+
+
 ///////////////////   galleeryyyy ///////////////////////////////////
 
 
@@ -112,6 +117,8 @@ $route['add_slider']   = 'members_area/SliderController/add_slider';
 $route['insert_slider']   = 'members_area/SliderController/insert_slider';
 $route['delete_slider']   = 'members_area/SliderController/delete_slider';
 
+$route['edit_slider/(:num)'] = 'members_area/SliderController/edit_slider/$1';
+$route['update_slider'] = 'members_area/SliderController/update_slider';
 
 
 /////////////////////    co curricular activities   //////////////////////

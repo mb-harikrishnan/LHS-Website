@@ -47,8 +47,11 @@ $showGlobalSearch = false;
                 <th>#</th>
                 <th>Date</th>
                 <th>Type</th>
+                <th>title</th>
+                <th>Descrition</th>
                 <th>Video</th>
-                <th>Action</th>
+                <th>Delete</th>
+                <th>Edit</th>
             </tr>
             </thead>
 
@@ -73,7 +76,17 @@ $showGlobalSearch = false;
                         <!-- TYPE -->
                         <td>
                             <span class="report-type-badge">
+                                <?php echo ucfirst(str_replace('_', ' ', $row->c_upload_type)); ?>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="report-type-badge">
                                 <?php echo ucfirst(str_replace('_', ' ', $row->c_title)); ?>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="report-type-badge">
+                                <?php echo ucfirst(str_replace('_', ' ', $row->c_description)); ?>
                             </span>
                         </td>
 
@@ -118,6 +131,19 @@ $showGlobalSearch = false;
 
                         </td>
 
+                                <td>
+
+                                    <button type="button"
+                                            class="table-btn edit-btn"
+                                            onclick="window.location.href='<?php echo base_url('edit_slider/'.$row->n_slno); ?>'">
+
+                                        <i class="fa fa-edit"></i> Edit
+
+                                    </button>
+
+                                </td>
+
+
                     </tr>
 
                 <?php } ?>
@@ -137,6 +163,15 @@ $showGlobalSearch = false;
 
 
 <style>
+
+    .edit-btn{
+    background:#2563eb;
+    color:#fff;
+}
+
+.edit-btn:hover{
+    background:#1d4ed8;
+}
 
 .card{
     background:#ffffff;

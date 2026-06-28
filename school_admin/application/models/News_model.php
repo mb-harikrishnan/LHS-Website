@@ -9,7 +9,7 @@ public function get_all_news()
 {
    
 
-    $sql="SELECT * FROM school_news WHERE c_status='Y'  ORDER BY n_slno DESC";
+    $sql="SELECT * FROM school_news WHERE c_status IN ('Y','N')  ORDER BY n_slno DESC";
     $query = $this->db->query($sql);
 
     return $query->result();

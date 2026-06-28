@@ -84,6 +84,8 @@ $showGlobalSearch = false;
                         <th>Date</th>
                         <th>Title</th>
                         <th>News</th>
+                        <th>Delete</th>
+                        <th>Edit</th>
                         <th>Action</th>
                   </tr>
               </thead>
@@ -118,6 +120,49 @@ $showGlobalSearch = false;
                     <i class="fa fa-trash"></i> Delete
                 </button>
             </td>
+
+
+        <td>
+
+            <button type="button"
+                    class="table-btn edit-btn"
+                    onclick="window.location.href='<?php echo base_url('edit_news/'.$row->n_slno); ?>'">
+
+                <i class="fa fa-edit"></i> Edit
+
+            </button>
+
+        </td>
+
+
+
+<td>
+
+    <?php if($row->c_status == 'Y') { ?>
+
+        <button type="button"
+                class="table-btn"
+                style="background:#16a34a;color:#fff;"
+                onclick="window.location.href='<?php echo base_url('change_news_status/'.$row->n_slno.'/N'); ?>'">
+
+            Active
+
+        </button>
+
+    <?php } else { ?>
+
+        <button type="button"
+                class="table-btn"
+                style="background:#dc2626;color:#fff;"
+                onclick="window.location.href='<?php echo base_url('change_news_status/'.$row->n_slno.'/Y'); ?>'">
+
+            Inactive
+
+        </button>
+
+    <?php } ?>
+
+</td>
 
         </tr>
 

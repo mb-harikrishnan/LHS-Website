@@ -17,7 +17,7 @@
   </main><!-- /main -->
 </div><!-- /layout -->
 
-<script src="assets/js/main.js"></script>
+<script src="<?php echo base_url()?>assets/js/main.js"></script>
 <?php if (!empty($pageScripts)) { foreach ($pageScripts as $script) { ?>
 <script src="<?php echo htmlspecialchars($script); ?>"></script>
 <?php } } ?>

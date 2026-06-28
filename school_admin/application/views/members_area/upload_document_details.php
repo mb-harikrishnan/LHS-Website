@@ -122,8 +122,9 @@ $showGlobalSearch = false;
 
      
 
+
 <style>
-/* =========================
+    /* =========================
    CARD
 ========================= */
 .card{
@@ -162,7 +163,7 @@ $showGlobalSearch = false;
 ========================= */
 .card-action{
     border:none;
-    background:linear-gradient(135deg,#2f855a,#38a169);
+    background:linear-gradient(135deg,#1e3a8a,#2563eb);
     color:#fff;
     padding:10px 18px;
     border-radius:10px;
@@ -177,7 +178,7 @@ $showGlobalSearch = false;
 
 .card-action:hover{
     transform:translateY(-1px);
-    box-shadow:0 8px 18px rgba(56,161,105,.25);
+    box-shadow:0 8px 18px rgba(30,58,138,.25);
 }
 
 /* =========================
@@ -222,8 +223,8 @@ $showGlobalSearch = false;
 }
 
 .modern-select:focus{
-    border-color:#38a169;
-    box-shadow:0 0 0 3px rgba(56,161,105,.12);
+    border-color:#2563eb;
+    box-shadow:0 0 0 3px rgba(30,58,138,.12);
 }
 
 /* =========================
@@ -231,17 +232,19 @@ $showGlobalSearch = false;
 ========================= */
 .upload-box{
     position:relative;
-    border:2px dashed #38a169;
+    border:2px dashed #1e3a8a;
     border-radius:18px;
     padding:35px 20px;
     text-align:center;
-    background:#f8fffb;
+    background:#eff6ff;
     transition:.3s;
 }
 
 .upload-box:hover{
-    background:#f0fff4;
+    background:#dbeafe;
     border-color:#2f855a;
+        color:#1e40af;
+
 }
 
 .upload-box input[type="file"]{
@@ -330,7 +333,7 @@ $showGlobalSearch = false;
 .submit-btn-modern{
     width:100%;
     border:none;
-    background:linear-gradient(135deg,#2f855a,#38a169);
+    background:linear-gradient(135deg,#1e3a8a,#2563eb);
     color:#fff;
     padding:14px;
     border-radius:14px;
@@ -343,7 +346,7 @@ $showGlobalSearch = false;
 
 .submit-btn-modern:hover{
     transform:translateY(-1px);
-    box-shadow:0 10px 24px rgba(56,161,105,.25);
+    box-shadow:0 10px 24px rgba(30,58,138,.25);
 }
 
 /* =========================

@@ -31,7 +31,7 @@ $showGlobalSearch = false;
 <form id="newsform"
       method="post"
       enctype="multipart/form-data"
-      action="<?php echo base_url('insert_slider'); ?>">
+      action="<?php echo base_url('update_slider'); ?>">
 
     <div class="form-grid">
 
@@ -43,8 +43,14 @@ $showGlobalSearch = false;
                    name="title"
                    id="title"
                    class="news-input"
-                   placeholder="Enter title">
+                   placeholder="Enter title"
+                   value="<?php echo $slider->c_title; ?>"
+                   >
         </div>
+
+        <input type="hidden"
+       name="id"
+       value="<?php echo $slider->n_slno; ?>">
 
         <!-- DESCRIPTION -->
         <div class="news-form-group full-width">
@@ -53,7 +59,7 @@ $showGlobalSearch = false;
             <textarea name="description"
                       id="description"
                       class="news-textarea"
-                      placeholder="Enter description"></textarea>
+                      placeholder="Enter description"><?php echo $slider->c_description; ?></textarea>
         </div>
 
         <!-- UPLOAD TYPE -->

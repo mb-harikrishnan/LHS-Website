@@ -10,20 +10,6 @@ $showGlobalSearch = false;
 ?>
 
 
-    
-    <!-- PAGE CONTENT -->
-      <div class="page-header">
-        <div class="page-eyebrow">
-          <div class="eyebrow-pulse"></div>
-          Uploads
-        </div>
-        <h1 class="page-title">Upload Images
-          <!-- <em>Reports</em> -->
-        </h1>
-        <p class="page-sub"></p>
-      </div>
-
-     
       <!-- Reports Table Card -->
       <div class="card">
         <div class="card-head">
@@ -166,7 +152,7 @@ $showGlobalSearch = false;
        
       </div>
 
-     <style>
+      <style>
 /* =========================================
    PAGE HEADER
 ========================================= */
@@ -180,7 +166,7 @@ $showGlobalSearch = false;
     gap:10px;
     font-size:13px;
     font-weight:700;
-    color:#16a34a;
+    color:#1e3a8a;
     text-transform:uppercase;
     letter-spacing:.08em;
     margin-bottom:10px;
@@ -190,7 +176,7 @@ $showGlobalSearch = false;
     width:10px;
     height:10px;
     border-radius:50%;
-    background:#22c55e;
+    background:#2563eb;
     animation:pulse 1.8s infinite;
 }
 
@@ -257,7 +243,7 @@ $showGlobalSearch = false;
 .card-action{
     border:none;
     outline:none;
-    background:linear-gradient(135deg,#15803d,#22c55e);
+    background:linear-gradient(135deg,#1e3a8a,#2563eb);
     color:#fff;
     padding:12px 22px;
     border-radius:14px;
@@ -265,12 +251,12 @@ $showGlobalSearch = false;
     font-weight:600;
     cursor:pointer;
     transition:.3s ease;
-    box-shadow:0 10px 22px rgba(34,197,94,.22);
+    box-shadow:0 10px 22px rgba(37,99,235,.22);
 }
 
 .card-action:hover{
     transform:translateY(-2px);
-    box-shadow:0 14px 28px rgba(34,197,94,.32);
+    box-shadow:0 14px 28px rgba(37,99,235,.32);
 }
 
 /* =========================================
@@ -308,9 +294,9 @@ $showGlobalSearch = false;
 }
 
 .news-select:focus{
-    border-color:#22c55e;
+    border-color:#2563eb;
     background:#fff;
-    box-shadow:0 0 0 4px rgba(34,197,94,.12);
+    box-shadow:0 0 0 4px rgba(37,99,235,.12);
 }
 
 /* =========================================
@@ -318,9 +304,9 @@ $showGlobalSearch = false;
 ========================================= */
 .upload-area{
     position:relative;
-    border:2px dashed #22c55e;
+    border:2px dashed #2563eb;
     border-radius:24px;
-    background:linear-gradient(to bottom,#f0fdf4,#ffffff);
+    background:linear-gradient(to bottom,#eff6ff,#ffffff);
     padding:45px 25px;
     text-align:center;
     cursor:pointer;
@@ -330,12 +316,12 @@ $showGlobalSearch = false;
 
 .upload-area:hover{
     transform:translateY(-2px);
-    box-shadow:0 18px 35px rgba(34,197,94,.12);
+    box-shadow:0 18px 35px rgba(37,99,235,.12);
 }
 
 .upload-area.dragover{
-    background:#dcfce7;
-    border-color:#16a34a;
+    background:#dbeafe;
+    border-color:#1e40af;
 }
 
 .upload-content{
@@ -346,13 +332,13 @@ $showGlobalSearch = false;
     width:85px;
     height:85px;
     border-radius:50%;
-    background:#dcfce7;
+    background:#dbeafe;
     display:flex;
     align-items:center;
     justify-content:center;
     margin:0 auto 20px;
     font-size:34px;
-    color:#16a34a;
+    color:#1e3a8a;
 }
 
 .upload-content h4{
@@ -370,120 +356,48 @@ $showGlobalSearch = false;
 
 .browse-btn{
     border:none;
-    background:linear-gradient(135deg,#16a34a,#22c55e);
+    background:linear-gradient(135deg,#1e3a8a,#2563eb);
     color:#fff;
     padding:12px 22px;
     border-radius:12px;
     font-size:14px;
     font-weight:600;
     cursor:pointer;
-    box-shadow:0 8px 18px rgba(34,197,94,.2);
-}
-
-/* =========================================
-   IMAGE PREVIEW
-========================================= */
-.image-preview{
-    position:relative;
-    margin-top:20px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
-.image-preview img{
-    width:100%;
-    max-width:420px;
-    max-height:320px;
-    object-fit:cover;
-    border-radius:18px;
-    border:1px solid #d1fae5;
-    box-shadow:0 12px 25px rgba(0,0,0,0.08);
-}
-
-.remove-image{
-    position:absolute;
-    top:-12px;
-    right:-12px;
-    width:36px;
-    height:36px;
-    border:none;
-    border-radius:50%;
-    background:#ef4444;
-    color:#fff;
-    cursor:pointer;
-    font-size:14px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    box-shadow:0 8px 20px rgba(239,68,68,.3);
-}
-
-/* =========================================
-   BUTTON GROUP
-========================================= */
-.news-btn-group{
-    margin-top:35px;
+    box-shadow:0 8px 18px rgba(37,99,235,.2);
 }
 
 .submit-btn{
-    width:100%;
     border:none;
     outline:none;
-    background:linear-gradient(135deg,#15803d,#22c55e);
+    background:linear-gradient(135deg,#1e3a8a,#2563eb);
     color:#fff;
-    padding:16px;
-    border-radius:16px;
-    font-size:16px;
+    padding:14px 26px;
+    border-radius:14px;
+    font-size:15px;
     font-weight:700;
     cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
     transition:.3s ease;
-    box-shadow:0 14px 28px rgba(34,197,94,.25);
+    box-shadow:0 10px 22px rgba(37,99,235,.22);
 }
+
 
 .submit-btn:hover{
     transform:translateY(-2px);
-    box-shadow:0 18px 34px rgba(34,197,94,.35);
+    box-shadow:0 15px 30px rgba(37,99,235,.35);
+    background:linear-gradient(135deg,#1e40af,#3b82f6);
 }
 
-/* =========================================
-   RESPONSIVE
-========================================= */
-@media(max-width:768px){
-
-    .card{
-        padding:22px;
-        border-radius:20px;
-    }
-
-    .page-title{
-        font-size:28px;
-    }
-
-    .card-head{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .card-action{
-        width:100%;
-    }
-
-    .upload-area{
-        padding:35px 18px;
-    }
-
-    .upload-content h4{
-        font-size:18px;
-    }
-
-    .submit-btn{
-        font-size:15px;
-    }
+.submit-btn:active{
+    transform:scale(.98);
 }
 
+.submit-btn i{
+    font-size:14px;
+}
 </style>
-
 
 <!-- SELECT2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
