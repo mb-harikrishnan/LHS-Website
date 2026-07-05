@@ -136,6 +136,15 @@ $route['check_news_type']   = 'members_area/GalleryController/check_news_type';
 
 
 
+////////////////////////   EMPLOYEE ADDING  //////////////////////////////////////
+
+
+$route['employee_list']   = 'members_area/EmployeeController/employee_list';
+$route['add_employee']   = 'members_area/EmployeeController/add_employee';
+$route['insert_employee']   = 'members_area/EmployeeController/insert_employee';
+$route['delete_employee']   = 'members_area/EmployeeController/delete_employee';
+
+
 
 
 

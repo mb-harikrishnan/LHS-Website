@@ -296,6 +296,16 @@ $initials = strtoupper(substr($firstName, 0, 2));
 
     
 
+      <div class="nav-item<?php echo $activePage === 'change-password' ? ' active' : ''; ?>" onclick="window.location='<?php echo base_url('employee_list') ; ?>'">
+        <div class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+        <span class="nav-label">Employee List</span>
+      </div>
+
       <div class="nav-item<?php echo $activePage === 'change-password' ? ' active' : ''; ?>" onclick="window.location='<?php echo base_url('change_password') ; ?>'">
         <div class="nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
