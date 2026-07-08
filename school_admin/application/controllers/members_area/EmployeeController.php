@@ -46,7 +46,7 @@ class EmployeeController extends CI_Controller {
 
         );
 
-        $result = $this->db->insert('employeemaster', $data);
+        $result = $this->db->insert('employee_master', $data);
 
         if ($result)
         {

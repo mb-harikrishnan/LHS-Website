@@ -21,18 +21,16 @@ $showGlobalSearch = false;
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>
             </svg>
-            Employee List
+            Divition List
             <!-- <span class="card-badge" id="tableBadge">0 records</span> -->
           </div>
           <button class="card-action" 
-              onclick="window.location.href='<?php echo base_url('add_employee'); ?>'">
-          <i class="fa fa-upload"></i> Add Employee
+              onclick="window.location.href='<?php echo base_url('class_divition'); ?>'">
+          <i class="fa fa-upload"></i> Add Division
           </button>
         </div>
 
         <!-- Date Filter -->
-        
-        <p class="report-meta" style="padding:12px 24px 0" id="filterMeta">Showing all reports</p>
 
        <div class="report-table-wrap" id="reportTableWrap">
 
@@ -41,91 +39,54 @@ $showGlobalSearch = false;
         <thead>
             <tr>
                 <th>#SL</th>
-                <th>Date</th>
-                <th>Name</th>
-                <th>Password</th>
-                <th>Mobile</th>
-                <th>Designation</th>
                 <th>Class</th>
-                <th>Division</th>
-                <th>Action</th>
+                <th>Divition</th>
+                <th>Edit</th>
+                <th>Delete</th>
             </tr>
         </thead>
 
-        <tbody>
+    <tbody>
 
-            <?php 
-            $count = 1;
+<?php
+$count = 1;
 
-            foreach ($details as $row){ 
+foreach ($details as $row)
+{
+?>
 
-                $emClass = $row->emClass;
-                $select = "SELECT cmName FROM class_master WHERE cmId = '$emClass'";
-                $classResult = $this->db->query($select);
-                $className = $classResult->row()->cmName ?? '';
+<tr>
+    <td><?php echo $count; ?></td>
 
-                $emDiv = $row->emDiv;
-                $selectDiv = "SELECT dmName FROM division_master WHERE dmId = '$emDiv'";
-                $divResult = $this->db->query($selectDiv);
-                $divName = $divResult->row()->dmName ?? '';
-            ?>
+    <td><?php echo $row->cmName; ?></td>
 
+    <td><?php echo $row->divisions; ?></td>
 
-              
+    <td>
+        <a href="<?php echo base_url('edit_class_division/'.$row->cmId); ?>" class="view-btn">
+            <i class="fa fa-edit"></i> Edit
+        </a>
+    </td>
 
-            <tr>
+    <td>
+        <button
+            type="button"
+            class="deleteBtn"
+            data-id="<?php echo $row->cmId; ?>">
+            <i class="fa fa-trash"></i> Delete
+        </button>
+    </td>
+</tr>
 
-                <td><?php echo $count; ?></td>
+<?php
+$count++;
+}
+?>
 
-                <td>
-                    <?php echo date('d-m-Y', strtotime($row->emTS)); ?>
-                </td>
-
-                <td>
-                    <?php echo $row->emName;  ?>
-                </td>
-                <td>
-                    <?php echo $row->emPassword;  ?>
-                </td>
-                <td>
-                    <?php echo $row->emPhoneNo;  ?>
-                </td>
-
-                <td>
-                    <?php echo $row->emDesigId;  ?>
-                </td>
-                <td>
-                    <?php echo $className;  ?>
-                </td>
-                <td>
-                    <?php echo $divName;  ?>
-                </td>
-
-                <td>
-                    <button class="deleteBtn"
-                            data-id="<?php echo $row->emId; ?>">
-                        <i class="fa fa-trash"></i> Delete
-                    </button>
-                </td>
-
-            </tr>
-
-            <?php 
-            $count++; 
-            } 
-            ?>
-
-        </tbody>
+</tbody>
 
     </table>
 
-
-         
-
-
-</div>   
-
-      </div>
 
      
 
@@ -404,6 +365,71 @@ $showGlobalSearch = false;
     color:#fff !important;
 }
 
+/* =========================================
+   MODAL
+========================================= */
+
+.custom-modal{
+    display:none;
+    position:fixed;
+    z-index:9999;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.65);
+    backdrop-filter:blur(3px);
+    padding:20px;
+}
+
+.custom-modal.active{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.custom-modal-content{
+    background:#fff;
+    width:100%;
+    max-width:650px;
+    border-radius:18px;
+    padding:28px;
+    position:relative;
+    animation:modalFade 0.3s ease;
+}
+
+@keyframes modalFade{
+    from{
+        transform:translateY(20px);
+        opacity:0;
+    }
+    to{
+        transform:translateY(0);
+        opacity:1;
+    }
+}
+
+.close-btn{
+    position:absolute;
+    right:18px;
+    top:12px;
+    font-size:28px;
+    cursor:pointer;
+    color:#64748b;
+}
+
+.modal-title{
+    font-size:22px;
+    font-weight:700;
+    color:#1E3A8A;
+    margin-bottom:15px;
+}
+
+.modal-description{
+    font-size:15px;
+    line-height:1.8;
+    color:#374151;
+}
 
 /* =========================================
    MOBILE
@@ -534,7 +560,7 @@ $(document).on('click', '.deleteBtn', function (e) {
 
             $.ajax({
 
-                url: "<?php echo base_url('delete_employee'); ?>",
+                url: "<?php echo base_url('delete_divition'); ?>",
                 type: "POST",
                 data: {id:id},
 
@@ -587,38 +613,3 @@ $(document).on('click', '.deleteBtn', function (e) {
 
 </script>
 
-
-
-<script>
-
-function openModal(id)
-{
-    document.getElementById('modal_' + id).classList.add('active');
-
-    document.body.style.overflow = 'hidden';
-}
-
-function closeModal(id)
-{
-    document.getElementById('modal_' + id).classList.remove('active');
-
-    document.body.style.overflow = 'auto';
-}
-
-/* CLOSE WHEN CLICK OUTSIDE */
-window.onclick = function(event)
-{
-    let modals = document.getElementsByClassName('custom-modal');
-
-    for(let i = 0; i < modals.length; i++)
-    {
-        if(event.target === modals[i])
-        {
-            modals[i].classList.remove('active');
-
-            document.body.style.overflow = 'auto';
-        }
-    }
-}
-
-</script>

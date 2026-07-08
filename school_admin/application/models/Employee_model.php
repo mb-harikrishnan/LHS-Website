@@ -8,7 +8,7 @@ public function employee_list()
 {
   
 
-    $sql="SELECT * FROM employeemaster WHERE emActive=1 ";
+    $sql="SELECT * FROM employee_master WHERE emActive=1 ";
     $query = $this->db->query($sql);
 
     return $query->result();
@@ -23,7 +23,7 @@ public function employee_list()
     {
         $this->db->where('emId', $id);
 
-        return $this->db->update('employeemaster', array(
+        return $this->db->update('employee_master', array(
             'emActive' => '0'
         ));
     }

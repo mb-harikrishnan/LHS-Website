@@ -145,6 +145,27 @@ $route['insert_employee']   = 'members_area/EmployeeController/insert_employee';
 $route['delete_employee']   = 'members_area/EmployeeController/delete_employee';
 
 
+/////////////////////////   CLASS AND DIVITION /////////////////////////////
+
+
+$route['class_divition']   = 'members_area/ClassController/class_divition';
+$route['insert_class_division']   = 'members_area/ClassController/insert_class_division';
+$route['class_divition_list']   = 'members_area/ClassController/class_divition_list';
+$route['edit_class_division/(:num)'] = 'members_area/ClassController/edit_class_division/$1';
+$route['update_class_division']   = 'members_area/ClassController/update_class_division';
+$route['delete_divition']   = 'members_area/ClassController/delete_divition';
+
+
+
+//////////////////   SUBJECT MASTER  //////////////////////////
+
+
+$route['add_subject']   = 'members_area/SubjectController/add_subject';
+
+
+
+
+
 
 
 
