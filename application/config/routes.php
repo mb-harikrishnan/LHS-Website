@@ -56,13 +56,20 @@ $route['rules_and_regulations'] = 'welcome/rules_and_regulations';
 $route['gallery'] = 'welcome/gallery';
 $route['house_system'] = 'welcome/house_system';
 $route['co_curricular_activities'] = 'welcome/co_curricular_activities';
+$route['list_all_activities/(:any)'] = 'welcome/list_all_activities/$1';
+
 $route['sports_and_games'] = 'welcome/sports_and_games';
 $route['clubs'] = 'welcome/clubs';
 // $route['band_page'] = 'welcome/band_page';
 // $route['study_tour'] = 'welcome/study_tour';
 // $route['annual_day'] = 'welcome/annual_day';
 $route['news'] = 'welcome/news';
+
 $route['vaccancy'] = 'welcome/vaccancy';
+$route['apply_job/(:any)'] = 'welcome/apply_job/$1';
+$route['submit_job_application'] = 'welcome/submit_job_application';
+
+
 $route['downloads'] = 'welcome/downloads';
 $route['about_us'] = 'welcome/about_us';
 $route['principals_message'] = 'welcome/principals_message';
@@ -91,6 +98,8 @@ $route['apply_job'] = 'welcome/apply_job';
 
 
 $route['contact'] = 'welcome/contact';
+$route['submit_contact'] = 'welcome/submit_contact';
+
 $route['testimonials'] = 'welcome/testimonials';
 $route['teachers'] = 'welcome/teachers';
 $route['pricing'] = 'welcome/pricing';

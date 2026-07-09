@@ -60,185 +60,683 @@
     </div>
 
     <div class="row">
+      <?php foreach($all_images as $value){ ?>
 
       <!-- Activity Box -->
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/library.png'); ?>" class="img-responsive" alt="Library">
-          <h4>Library</h4>
+          
+      <?php 
+       if ($value->c_type == 'Library') 
+        {
+            
+        $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>        
+        <h4>Library</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/extraactivities.jpg'); ?>" class="img-responsive" alt="Extra Curricular Activities">
-          <h4>Extra Curricular Activities</h4>
+        <?php 
+       if ($value->c_type == 'Extra_Curricular_Activities') 
+        {
+            
+            $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>     
+                <h4>Extra Curricular Activities</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/outdoor.jpg'); ?>" class="img-responsive" alt="Sports">
-          <h4>Sports (Indoor & Outdoor)</h4>
+<?php 
+       if ($value->c_type == 'Sports') 
+        {
+            
+      $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>  
+                     <h4>Sports (Indoor & Outdoor)</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/vollyball.jpg'); ?>" class="img-responsive" alt="Volley Ball">
-          <h4>Volley Ball</h4>
+<?php 
+       if ($value->c_type == 'Volley_Ball') 
+        {
+            
+       $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>  
+                      <h4>Volley Ball</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/basketball.avif'); ?>" class="img-responsive" alt="Basket Ball">
-          <h4>Basket Ball</h4>
+<?php 
+       if ($value->c_type == 'Basket_Ball') 
+        {
+       $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>    
+                     <h4>Basket Ball</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/football.jpg'); ?>" class="img-responsive" alt="Foot Ball">
-          <h4>Foot Ball</h4>
+<?php 
+       if ($value->c_type == 'Foot_Ball') 
+        {
+            
+         $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>  
+                     <h4>Foot Ball</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/cricket.jpg'); ?>" class="img-responsive" alt="Cricket">
-          <h4>Cricket</h4>
+<?php 
+       if ($value->c_type == 'Cricket') 
+        {
+      $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>   
+                     <h4>Cricket</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/kho.jpg'); ?>" class="img-responsive" alt="Kho Kho">
-          <h4>Kho-Kho</h4>
+<?php 
+       if ($value->c_type == 'Kho-Kho') 
+        {
+            
+     $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>      
+                <h4>Kho-Kho</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/badminton.jpg'); ?>" class="img-responsive" alt="Badminton">
-          <h4>Badminton</h4>
+<?php 
+       if ($value->c_type == 'Badminton') 
+        {
+            
+       $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>         
+               <h4>Badminton</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/rollboll.jpg'); ?>" class="img-responsive" alt="Roll Ball">
-          <h4>Roll Ball</h4>
+<?php 
+       if ($value->c_type == 'Roll_Ball') 
+        {
+            
+       $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>  
+                     <h4>Roll Ball</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/group_dance.webp'); ?>" class="img-responsive" alt="Dance">
-          <h4>Dance</h4>
+<?php 
+       if ($value->c_type == 'Dance') 
+        {
+            
+           $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>   
+                   <h4>Dance</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/music.webp'); ?>" class="img-responsive" alt="Music">
-          <h4>Music</h4>
+<?php 
+       if ($value->c_type == 'Music') 
+        {
+            
+       $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>  
+                        <h4>Music</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/yoga.jpeg'); ?>" class="img-responsive" alt="Yoga">
-          <h4>Yoga</h4>
+<?php 
+       if ($value->c_type == 'Yoga') 
+        {
+        $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>  
+                      <h4>Yoga</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/karatte.jpg'); ?>" class="img-responsive" alt="Karate">
-          <h4>Karate</h4>
+<?php 
+       if ($value->c_type == 'Karate') 
+        {
+            
+        $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>  
+                      <h4>Karate</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/chess.jpg'); ?>" class="img-responsive" alt="Chess">
-          <h4>Chess</h4>
+<?php 
+       if ($value->c_type == 'Chess') 
+        {
+            
+        $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>       
+               <h4>Chess</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/drawing.jpg'); ?>" class="img-responsive" alt="Drawing">
-          <h4>Drawing</h4>
+<?php 
+       if ($value->c_type == 'Drawing') 
+        {
+            
+     $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>  
+               <h4>Drawing</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/painting.jpg'); ?>" class="img-responsive" alt="Painting">
-          <h4>Painting</h4>
+<?php 
+       if ($value->c_type == 'Painting') 
+        {
+            
+     $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>      
+                  <h4>Painting</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/skating.webp'); ?>" class="img-responsive" alt="Roller Skating">
-          <h4>Roller Skating</h4>
+<?php 
+       if ($value->c_type == 'Roller_Skating') 
+        {
+         $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>  
+                  <h4>Roller Skating</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/transportation.jpg'); ?>" class="img-responsive" alt="Transportation">
-          <h4>Transportation Facility</h4>
+<?php 
+       if ($value->c_type == 'Transportation_Facility') 
+        {
+            
+          $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>  
+                  <h4>Transportation Facility</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/tour.webp '); ?>" class="img-responsive" alt="Educational Tours">
-          <h4>Educational Tours / Excursions</h4>
+<?php 
+       if ($value->c_type == 'Educational_Tours_Excursions') 
+        {
+             $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>  
+                  <h4>Educational Tours / Excursions</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/computerlab.jpg'); ?>" class="img-responsive" alt="Computer Labs">
-          <h4>Computer Labs</h4>
+<?php 
+       if ($value->c_type == 'Computer_Labs') 
+        {
+            
+         $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>  
+                  <h4>Computer Labs</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/sciencelab.png'); ?>" class="img-responsive" alt="Science Labs">
-          <h4>Science Labs</h4>
+<?php 
+       if ($value->c_type == 'Science_Labs') 
+        {
+            
+           $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>     
+                  <h4>Science Labs</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/smart_class.png'); ?>" class="img-responsive" alt="Smart Class">
-          <h4>Smart Class Facilities</h4>
+<?php 
+       if ($value->c_type == 'Smart_Class_Facilities') 
+        {
+            
+             $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>  
+                  <h4>Smart Class Facilities</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/stationary.avif'); ?>" class="img-responsive" alt="Stationary">
-          <h4>Stationary to Students</h4>
+<?php 
+       if ($value->c_type == 'Stationary_to_Students') 
+        {
+            
+               $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>      
+                  <h4>Stationary to Students</h4>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="activity_box">
-          <img src="<?php echo base_url('assets/images/main_image/specialclass.png'); ?>" class="img-responsive" alt="Special Classes">
-          <h4>Special Classes for Low Achievers</h4>
+       <?php 
+       if ($value->c_type == 'Low_Achievers') 
+        {
+            
+                $img_path = base_url('assets/images/gallery/' . $value->c_images);
+          ?>
+                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
+
+                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+                  </a>  
+      
+          
+        <?php } else { 
+            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
+            ?>
+
+
+            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
+    
+            
+        <?php } ?>  
+          
+                  <h4>Special Classes for Low Achievers</h4>
         </div>
       </div>
 
 
-
+     <?php }?>
     </div>
   </div>
 </section>

@@ -1,6 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+
+define('JS_PATH', 'assets/js/');
+define('CSS_PATH', 'assets/css/');
+
+
 /*
 |--------------------------------------------------------------------------
 | File and Directory Modes

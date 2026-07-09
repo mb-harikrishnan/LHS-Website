@@ -1,0 +1,439 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Document_Controller extends CI_Controller {
+
+    public function __construct()
+	{
+		parent::__construct();
+		$this->load->model('Document_model');
+	}
+
+
+    public function general_information()
+    {
+
+       $type = $this->input->post('type');
+
+        $information['information'] = $this->Document_model->fetch_general_information($type);
+
+        $this->load->view('members_area/header');
+        $this->load->view('members_area/general_information' , $information );
+        $this->load->view('members_area/footer');
+    }
+   
+    public function delete_general_information()
+    {
+        $id = $this->input->post('id');
+
+        $result = $this->Document_model->delete_general_information($id);
+
+        if($result)
+        {
+            echo 1;
+        }
+        else
+        {
+            echo 0;
+        }
+    }
+
+
+
+
+    public function upload_document()
+    {
+
+
+        $this->load->view('members_area/header');
+        $this->load->view('members_area/upload_document');
+        $this->load->view('members_area/footer');
+
+    }
+
+
+    public function add_document()
+{
+    if ($this->input->post()) {
+
+        $document_type  = $this->input->post('document_type');
+        $document_title = $this->input->post('document_title');
+
+        // Upload Configuration
+        $config['upload_path']   ='../assets/uploads/documents';
+
+        $config['allowed_types'] = 'pdf';
+        $config['max_size']      = 10240; // 10MB
+        $config['encrypt_name']  = TRUE;
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('document_file')) {
+
+            $this->session->set_flashdata(
+                'error',
+                $this->upload->display_errors()
+            );
+
+        } else {
+
+            $upload_data = $this->upload->data();
+
+            $insert_array = array(
+                'c_type'  => $document_type,
+                'c_document'  => $upload_data['file_name'],
+                'd_date'     => date('Y-m-d'),
+                'c_status'  =>'Y'
+            );
+
+            $result = $this->Document_model->insert_document($insert_array);
+
+            if ($result) {
+
+                $this->session->set_flashdata(
+                    'success',
+                    'Document Uploaded Successfully'
+                );
+
+                redirect('upload_document');
+
+            } else {
+
+                $this->session->set_flashdata(
+                    'error',
+                    'Something went wrong'
+                );
+            }
+            redirect('upload_document');
+        }
+    }
+
+   
+}
+
+
+/*** school documents */
+
+
+ public function result_and_staff_list()
+    {
+
+       $type = $this->input->post('type');
+
+        $information['information'] = $this->Document_model->fetch_result_and_staff_list($type);
+
+        $this->load->view('members_area/header');
+        $this->load->view('members_area/result_and_staff_list' , $information );
+        $this->load->view('members_area/footer');
+    }
+   
+    public function delete_details()
+    {
+        $id = $this->input->post('id');
+
+        $result = $this->Document_model->delete_details($id);
+
+        if($result)
+        {
+            echo 1;
+        }
+        else
+        {
+            echo 0;
+        }
+    }
+
+
+
+
+    public function upload_document_details()
+    {
+
+
+        $this->load->view('members_area/header');
+        $this->load->view('members_area/upload_document_details');
+        $this->load->view('members_area/footer');
+
+    }
+
+
+    public function add_document_details()
+{
+    if ($this->input->post()) {
+
+        $document_type  = $this->input->post('document_type');
+
+        // Upload Configuration
+        $config['upload_path']   ='../assets/uploads/documents/';
+
+        $config['allowed_types'] = 'pdf';
+        $config['max_size']      = 10240; // 10MB
+        $config['encrypt_name']  = TRUE;
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('document_file')) {
+
+            $this->session->set_flashdata(
+                'error',
+                $this->upload->display_errors()
+            );
+
+        } else {
+
+            $upload_data = $this->upload->data();
+
+            $insert_array = array(
+                'c_type'  => $document_type,
+                'c_document'  => $upload_data['file_name'],
+                'd_date'     => date('Y-m-d'),
+                'c_status'  =>'Y'
+            );
+
+
+           
+
+            $result = $this->Document_model->insert_document_details($insert_array);
+
+            if ($result) {
+
+                $this->session->set_flashdata(
+                    'success',
+                    'Document Uploaded Successfully'
+                );
+
+                redirect('upload_document_details');
+
+            } else {
+
+                $this->session->set_flashdata(
+                    'error',
+                    'Something went wrong'
+                );
+            }
+            redirect('upload_document_details');
+        }
+    
+    }
+}
+
+/*** infrastructure videos */
+
+
+ public function infrastructure()
+    {
+
+       $type = $this->input->post('type');
+
+        $information['information'] = $this->Document_model->fetch_infrastructure_videos($type);
+
+        $this->load->view('members_area/header');
+        $this->load->view('members_area/infrastructure' , $information );
+        $this->load->view('members_area/footer');
+    }
+   
+    public function delete_video()
+    {
+        $id = $this->input->post('id');
+
+        $result = $this->Document_model->delete_videos($id);
+
+        if($result)
+        {
+            echo 1;
+        }
+        else
+        {
+            echo 0;
+        }
+    }
+
+
+
+
+    public function upload_video()
+    {
+
+
+        $this->load->view('members_area/header');
+        $this->load->view('members_area/upload_video');
+        $this->load->view('members_area/footer');
+
+    }
+
+
+    public function add_video()
+{
+   
+       if (!empty($_FILES['document_file']['name'])) {
+
+            
+
+            // Upload Configuration
+            $config['upload_path']   ='../assets/uploads/videos/';
+
+            $config['allowed_types'] = 'mp4|avi|mov|wmv|flv|mkv';
+            $config['max_size']      = 1048576; // 1gb
+            $config['encrypt_name']  = TRUE;
+
+            $this->load->library('upload', $config);
+
+            if (!$this->upload->do_upload('document_file')) {
+                print_r($this->upload->display_errors());
+
+                $this->session->set_flashdata(
+                    'error',
+                    $this->upload->display_errors()
+                );
+        
+            } else {
+
+                $upload_data = $this->upload->data();
+            }
+        }
+
+        if($upload_data) {
+
+          $file = $upload_data['file_name'];
+            
+        }else{
+               $file='';
+        }
+        if($this->input->post('video_link') != '')
+            {
+                $link = $this->input->post('video_link');
+            }else{
+                $link = '';
+            }
+
+            $document_type  = $this->input->post('document_type');
+
+            $insert_array = array(
+                'c_type'  => $document_type,
+                'c_videos'  =>$file,
+                'd_date'     => date('Y-m-d'),
+                'c_status'  =>'Y',
+                'links' => $link
+            );
+
+
+           
+
+            $result = $this->Document_model->insert_infrastructure_videos($insert_array);
+
+            if ($result) {
+
+                $this->session->set_flashdata(
+                    'success',
+                    'Video Uploaded Successfully'
+                );
+
+                redirect('upload_video');
+
+            } else {
+
+                $this->session->set_flashdata(
+                    'error',
+                    'Something went wrong'
+                );
+            }
+            redirect('upload_video');
+        
+    
+    
+}
+
+
+
+
+
+
+public function check_document_exist()
+{
+    $document_type = $this->input->post('document_type');
+
+    $check = $this->db
+        ->where('c_type', $document_type)
+        ->where('c_status', 'Y')
+        ->get('document_master')
+        ->row();
+
+    if ($check) {
+
+        echo json_encode([
+            'status' => 'exists'
+        ]);
+
+    } else {
+
+        echo json_encode([
+            'status' => 'not_exists'
+        ]);
+    }
+}
+
+public function check_result_exist()
+{
+    $document_type = $this->input->post('document_type');
+
+    $check = $this->db
+        ->where('c_type', $document_type)
+        ->where('c_status', 'Y')
+        ->get('result_and_staff_list')
+        ->row();
+
+    if ($check) {
+
+        echo json_encode([
+            'status' => 'exists'
+        ]);
+
+    } else {
+
+        echo json_encode([
+            'status' => 'not_exists'
+        ]);
+    }
+}
+public function check_video_exist()
+{
+    $document_type = $this->input->post('document_type');
+
+    $check = $this->db
+        ->where('c_type', $document_type)
+        ->where('c_status', 'Y')
+        ->get('infrastructure_videos')
+        ->row();
+
+    if ($check) {
+
+        echo json_encode([
+            'status' => 'exists'
+        ]);
+
+    } else {
+
+        echo json_encode([
+            'status' => 'not_exists'
+        ]);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}

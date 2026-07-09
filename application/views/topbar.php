@@ -1,4 +1,6 @@
-<div class="topbar">
+
+
+<!-- <div class="topbar">
   <div class="container">
     <div class="row">
       <div class="col-md-12">
@@ -15,4 +17,46 @@
       </div>
     </div>
   </div>
+</div> -->
+
+<!-- 
+<div class="topbar">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="news-scroll">
+          <marquee behavior="scroll" direction="left" scrollamount="5">
+
+            <?php
+            $sql = "SELECT c_news FROM school_news WHERE c_status='Y'";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+
+            foreach($result as $row)
+            {
+                echo $row->c_news . " &nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp; ";
+            }
+            ?>
+
+          </marquee>
+        </div>
+
+      </div>
+    </div>
+  </div>
 </div>
+
+
+<style>
+  .topbar{
+    background:#ffb400;
+    padding:10px 0;
+}
+
+.news-scroll{
+    color:#fff;
+    font-size:15px;
+    font-weight:600;
+}
+</style> -->

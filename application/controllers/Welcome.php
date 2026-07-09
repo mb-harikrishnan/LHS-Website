@@ -9,6 +9,7 @@ class Welcome extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->model('Welcome_model');
+		$this->load->library('session');
 	}
 
 	public function index()
@@ -54,16 +55,37 @@ class Welcome extends CI_Controller
 	}
 	public function co_curricular_activities()
 	{
+		$data['all_images'] = $this->Welcome_model->fetch_all_co_images();
 		$this->load->view('topbar');
 		$this->load->view('header');
-		$this->load->view('co_curricular_activities');
+		$this->load->view('co_curricular_activities',$data);
 		$this->load->view('footer');
+	}
+
+	public function list_all_activities($type = '')
+	{
+		$data['type'] = $type;
+
+		$sql = "SELECT * 
+				FROM all_activities 
+				WHERE c_type = '$type' 
+				AND c_status = 'Y'";
+
+		$query = $this->db->query($sql);
+		$data['gallery'] = $query->result();
+		$this->load->view('topbar');
+		$this->load->view('header');
+		$this->load->view('list_all_activities', $data);
+		$this->load->view('footer');
+
 	}
 	public function sports_and_games()
 	{
+		$data['all_images'] = $this->Welcome_model->fetch_all_co_images();
+
 		$this->load->view('topbar');
 		$this->load->view('header');
-		$this->load->view('sports_and_games');
+		$this->load->view('sports_and_games',$data);
 		$this->load->view('footer');
 	}
 	public function clubs()
@@ -256,6 +278,31 @@ class Welcome extends CI_Controller
 		$this->load->view('footer');
 	}
 
+
+	public function submit_contact()
+	{
+		$data = array(
+			'c_name'       => $this->input->post('name'),
+			'c_email'      => $this->input->post('email'),
+			'n_mobile'     => $this->input->post('mobile'),
+			'c_comment'    => $this->input->post('message'),
+			'd_date'   => date('Y-m-d'),
+			'c_status' =>'Y'
+		);
+
+		$insert = $this->db->insert('contact_us', $data);
+
+		if($insert)
+		{
+			echo json_encode(array('status' => 1));
+		}
+		else
+		{
+			echo json_encode(array('status' => 0));
+		}
+		exit;
+	}
+
 	public function testimonials()
 	{
 		$this->load->view('topbar');
@@ -286,4 +333,128 @@ class Welcome extends CI_Controller
 		$this->load->view('home_page');
 		$this->load->view('footer');
 	}
+<<<<<<< HEAD
+=======
+	public function apply_job($id)
+	{
+		$data['job'] = $this->db
+		->where('n_slno', $id)
+		->get('school_vacancy')
+		->row();
+
+		if(empty($data['job']))
+		{
+			show_404();
+		}
+         $this->load->view('topbar');
+		 $this->load->view('header');
+	     $this->load->view('apply_job', $data);
+	   	 $this->load->view('footer');
+
+	
+
+	}
+
+
+
+
+
+public function submit_job_application()
+{
+
+    header('Content-Type: application/json');
+
+    $name       = $this->input->post('name');
+    $mobile     = $this->input->post('mobile');
+    $email      = $this->input->post('email');
+    $vacancy_id = $this->input->post('vacancy_id');
+
+    $resume = '';
+
+    // FILE UPLOAD
+    if(isset($_FILES['resume']) && $_FILES['resume']['name'] != '')
+    {
+
+        $config['upload_path']   = './assets/images/resumes';
+        $config['allowed_types'] = 'pdf|doc|docx';
+        $config['encrypt_name']  = TRUE;
+
+        $this->load->library('upload', $config);
+
+        if($this->upload->do_upload('resume'))
+        {
+
+            $uploadData = $this->upload->data();
+
+            $resume = $uploadData['file_name'];
+
+        }
+        else
+        {
+
+            echo json_encode([
+                'status'  => 'error',
+                'message' => strip_tags($this->upload->display_errors())
+            ]);
+
+            exit;
+        }
+    }
+
+	  $insertData = [
+
+        'n_job_id' => $vacancy_id,
+        'c_name'       => $name,
+        'n_mobile'     => $mobile,
+        'c_email'      => $email,
+        'c_resume'     => $resume,
+		'd_date'      => date('Y-m-d'),
+		'c_status'   => 'Y'
+
+    ];
+
+    $insert = $this->db->insert('job_applications', $insertData);
+
+    if($insert)
+    {
+
+        echo json_encode([
+            'status'  => 'success',
+            'message' => 'Application submitted successfully'
+        ]);
+
+    }
+    else
+    {
+
+        echo json_encode([
+            'status'  => 'error',
+            'message' => 'Database insertion failed'
+        ]);
+
+    }
+
+    exit;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> main
 }

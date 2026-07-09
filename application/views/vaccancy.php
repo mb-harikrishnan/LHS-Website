@@ -76,49 +76,42 @@
 
 
         <div class="row">
+<div class="vacancy_wrapper">
 
-          <?php foreach($all_vacancy as $value){ ?>
+<?php foreach($all_vacancy as $value){ ?>
 
-            <div class="col-md-6 col-sm-12">
-              
-              <div class="job_card">
+<div class="vacancy_card">
 
-                <div class="job_top">
-                  <span class="job_date">
-                    <i class="fa fa-calendar"></i>
-                    Posted On :
-                    <?php echo date('d M Y', strtotime($value->d_date)); ?>
-                  </span>
-                </div>
+    <div class="vacancy_content">
 
-                <h3 class="job_title">
-                  <?php echo $value->c_title; ?>
-                </h3>
+        <span class="vacancy_tag">
+            We're Hiring
+        </span>
 
-                <p class="job_description">
-                  <?php echo nl2br($value->c_description) ; ?>
-                </p>
+        <h4 class="vacancy_title">
+            <?php echo $value->c_title; ?>
+        </h4>
 
-              <div class="job_btn_area">
-  
-                <button type="button"
-                        class="apply_btn"
-                        data-toggle="modal"
-                        data-target="#applyJobModal"
-                        onclick="setJobId('<?php echo $value->n_slno; ?>')">
+        <p class="vacancy_description">
+            <?php echo nl2br($value->c_description); ?>
+        </p>
 
-                    Apply Now
+        <div class="vacancy_footer">
 
-                </button>
+            <a href="<?php echo base_url('apply_job/'.$value->n_slno); ?>" class="apply_btn">
+                Apply Now
+            </a>
 
-              </div>
+        </div>
 
-              </div>
+    </div>
 
-            </div>
+</div>
 
-          <?php } ?>
+<?php } ?>
 
+</div>
+</div>
         </div>
 
         <?php }?>
@@ -132,349 +125,123 @@
 
 
 
-<!-- APPLY JOB MODAL -->
-<div class="modal fade" id="applyJobModal" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-lg" role="document">
-    
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <h3 class="modal-title">Job Application Form</h3>
-
-        <button type="button" class="close" data-dismiss="modal">
-          &times;
-        </button>
-      </div>
-
-      <div class="modal-body">
-
-        <form method="post"
-              action="<?php echo base_url('submit_job_application'); ?>"
-              enctype="multipart/form-data">
-
-          <input type="hidden" name="job_id" id="job_id">
-
-          <div class="row">
-
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>Full Name</label>
-                <input type="text" name="full_name" class="form-control" required>
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>Date of Birth</label>
-                <input type="date" name="dob" class="form-control" required>
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>Gender</label>
-                <select name="gender" class="form-control" required>
-                  <option value="">Select</option>
-                  <option>Male</option>
-                  <option>Female</option>
-                  <option>Other</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>Marital Status</label>
-                <select name="marital_status" class="form-control">
-                  <option value="">Select</option>
-                  <option>Single</option>
-                  <option>Married</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>Mobile Number</label>
-                <input type="text" name="mobile" class="form-control" required>
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" name="email" class="form-control" required>
-              </div>
-            </div>
-
-            <div class="col-md-12">
-              <div class="form-group">
-                <label>Address</label>
-                <textarea name="address" class="form-control"></textarea>
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>City</label>
-                <input type="text" name="city" class="form-control">
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>State</label>
-                <input type="text" name="state" class="form-control">
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>Expected Salary</label>
-                <input type="text" name="expected_salary" class="form-control">
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>Joining Availability</label>
-                <input type="text" name="joining_availability" class="form-control">
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>Total Experience</label>
-                <input type="text" name="total_experience" class="form-control">
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>Previous School Name</label>
-                <input type="text" name="previous_school" class="form-control">
-              </div>
-            </div>
-
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>Resume / CV</label>
-                <input type="file" name="resume" class="form-control">
-              </div>
-            </div>
-
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>Educational Certificates</label>
-                <input type="file" name="education_certificate" class="form-control">
-              </div>
-            </div>
-
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>Experience Certificate</label>
-                <input type="file" name="experience_certificate" class="form-control">
-              </div>
-            </div>
-
-          </div>
-
-          <div class="text-center">
-            <button type="submit" class="apply_btn">
-              Submit Application
-            </button>
-          </div>
-
-        </form>
-
-      </div>
-
-    </div>
-
-  </div>
-</div>
-
-
 <style>
-  .vacancy_box {
-    background: #fff;
-    padding: 50px 30px;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-    max-width: 700px;
-    margin: auto;
-  }
-
-  .vacancy_icon {
-    font-size: 60px;
-    color: #0654c2;
-    margin-bottom: 20px;
-  }
-
-  .vacancy_box h2 {
-    font-size: 40px;
-    font-weight: 700;
-    color: #222;
-    margin-bottom: 10px;
-  }
-
-  .tagline {
-    color: #666;
-    font-size: 18px;
-    margin-bottom: 30px;
-  }
-
-  .vacancy_content {
-    background: #f8f8f8;
-    padding: 25px;
-    border-radius: 10px;
-  }
-
-  .vacancy_content h4 {
-    color: #333;
-    font-weight: 600;
-    margin-bottom: 15px;
-  }
-
-  .vacancy_content p {
-    color: #777;
-    font-size: 16px;
-    line-height: 28px;
-  }
-
-
-
-  /* else case design */
-
-.job_card {
-  background: #fff;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-  margin-bottom: 30px;
-  transition: 0.3s;
-  text-align: center;
-
-  /* REMOVE FIXED HEIGHT ISSUE */
-  height: auto;
-
-  /* LONG TEXT BREAK */
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
+/* MAIN SECTION */
+#vacancy{
+    background:#f4f7fc;
 }
 
-.job_card:hover {
-  transform: translateY(-5px);
+/* WRAPPER */
+.vacancy_wrapper{
+    width:100%;
 }
 
-.job_top {
-  margin-bottom: 15px;
+/* CARD */
+.vacancy_card{
+    background:#fff;
+    border-radius:22px;
+    padding:45px;
+    margin-bottom:35px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+    transition:0.3s ease;
+    border-left:6px solid #0654c2;
 }
 
-.job_date {
-  display: inline-block;
-  background: #f2f6ff;
-  color: #0654c2;
-  padding: 8px 15px;
-  border-radius: 30px;
-  font-size: 14px;
-  font-weight: 600;
+.vacancy_card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 15px 40px rgba(0,0,0,0.12);
 }
 
-/* .job_title {
-  font-size: 32px;
-  font-weight: 700;
-  color: #222;
-  margin-bottom: 15px; */
-
-  /* BREAK LONG WORDS */
-  /* overflow-wrap: break-word;
-  word-break: break-word;
-} */
-
-
-  .job_title {
-  font-size: 32px;
-  font-weight: 700;
-  color: #0654c2; /* TITLE COLOR */
-  margin-bottom: 15px;
-
-  overflow-wrap: break-word;
-  word-break: break-word;
+/* TAG */
+.vacancy_tag{
+    display:inline-block;
+    background:#eaf2ff;
+    color:#0654c2;
+    padding:8px 20px;
+    border-radius:30px;
+    font-size:14px;
+    font-weight:600;
+    margin-bottom:22px;
 }
 
-.job_description {
-  color: #666;
-  font-size: 16px;
-  line-height: 30px;
-  margin-bottom: 25px;
-
-  /* IMPORTANT */
-  white-space: normal;
-  overflow-wrap: break-word;
-  word-break: break-word;
+/* TITLE */
+.vacancy_title{
+    font-size:38px;
+    font-weight:800;
+    color:#111;
+    margin-bottom:20px;
+    line-height:52px;
+    word-break:break-word;
 }
 
-.job_btn_area {
-  margin-top: 20px;
+/* DESCRIPTION */
+.vacancy_description{
+    font-size:17px;
+    line-height:32px;
+    color:#555;
+    margin-bottom:35px;
+
+    white-space:normal;
+    word-wrap:break-word;
+    overflow-wrap:break-word;
 }
 
-.apply_btn {
-  background: #0654c2;
-  color: #fff !important;
-  padding: 12px 30px;
-  border-radius: 30px;
-  text-decoration: none;
-  font-weight: 600;
-  display: inline-block;
-  transition: 0.3s;
+/* FOOTER */
+.vacancy_footer{
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
 }
 
-.apply_btn:hover {
-  background: #043d8c;
+/* APPLY BUTTON */
+.apply_btn{
+    background:#0654c2;
+    color:#fff !important;
+    padding:15px 35px;
+    border-radius:10px;
+    text-decoration:none;
+    font-size:16px;
+    font-weight:600;
+    transition:0.3s ease;
+    display:inline-block;
 }
 
-
-/* modal design */
-
-
-.modal-header {
-  background: #0654c2;
-  color: #fff;
+.apply_btn:hover{
+    background:#043b89;
+    transform:scale(1.03);
 }
 
-.modal-title {
-  color: #fff;
-  font-weight: 700;
+/* MOBILE */
+@media(max-width:768px){
+
+    .vacancy_card{
+        padding:28px;
+    }
+
+    .vacancy_title{
+        font-size:28px;
+        line-height:40px;
+    }
+
+    .vacancy_description{
+        font-size:15px;
+        line-height:28px;
+    }
+
+    .apply_btn{
+        width:100%;
+        text-align:center;
+    }
 }
 
-.close {
-  color: #fff !important;
-  opacity: 1;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-control {
-  height: 45px;
-  border-radius: 8px;
-  box-shadow: none;
-}
-
-textarea.form-control {
-  height: 100px;
-}
 
 </style>
 
-<script src="<?php echo base_url('assets/js/jquery-2.2.3.js'); ?>"></script>
-<script src="<?php echo base_url('assets/js/bootstrap.min.js'); ?>"></script>
-<script>
-  function setJobId(id)
-  {
-      document.getElementById('job_id').value = id;
-  }
-</script>
+    <!-- Scripts -->
+    <script src="<?php echo JS_PATH ?>jquery-3.6.0.min.js"></script>
+    <script src="<?php echo JS_PATH ?>jquery.validate.min.js"></script>
+    <script src="<?php echo JS_PATH ?>jquery.dataTables.min.js"></script>
+    <script src="<?php echo JS_PATH ?>dataTables.responsive.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
