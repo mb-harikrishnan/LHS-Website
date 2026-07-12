@@ -163,6 +163,22 @@ $route['delete_divition']   = 'members_area/ClassController/delete_divition';
 $route['add_subject']   = 'members_area/SubjectController/add_subject';
 
 
+$route['add_class']   = 'members_area/SubjectController/add_class';
+$route['check_class_name']   = 'members_area/SubjectController/check_class_name';
+$route['insert_class']   = 'members_area/SubjectController/insert_class';
+
+
+$route['add_division']   = 'members_area/SubjectController/add_division';
+$route['check_divition']   = 'members_area/SubjectController/check_divition';
+$route['insert_divition']   = 'members_area/SubjectController/insert_divition';
+
+
+
+$route['add_student']   = 'members_area/SubjectController/add_student';
+$route['check_admission_number']   = 'members_area/SubjectController/check_admission_number';
+$route['insert_student']   = 'members_area/SubjectController/insert_student';
+
+
 
 
 

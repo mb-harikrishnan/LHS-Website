@@ -333,8 +333,6 @@ class Welcome extends CI_Controller
 		$this->load->view('home_page');
 		$this->load->view('footer');
 	}
-<<<<<<< HEAD
-=======
 	public function apply_job($id)
 	{
 		$data['job'] = $this->db
@@ -456,5 +454,4 @@ public function submit_job_application()
 
 
 
->>>>>>> main
 }

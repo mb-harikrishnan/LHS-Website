@@ -30,6 +30,54 @@ class Subject_Model extends CI_Model
     $result = $query->result();
     return $result;
   }
+
+
+  
+
+  public function fetch_all_country()
+  {
+
+    $select = "SELECT name,country_id FROM country ";
+    $query = $this->db->query($select);
+    $result = $query->result();
+    return $result;
+
+  }
+  public function fetch_all_state()
+  {
+
+    $select = "SELECT code,name FROM country_states WHERE country_id=99 ";
+    $query = $this->db->query($select);
+    $result = $query->result();
+    return $result;
+
+  }
+
+
+
+
+public function fetch_all_division()
+{
+    $select = "SELECT * FROM division_master ";
+    $query = $this->db->query($select);
+    $result = $query->result();
+    return $result;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
   
 

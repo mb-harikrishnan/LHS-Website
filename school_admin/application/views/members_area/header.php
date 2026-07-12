@@ -345,10 +345,10 @@ $initials = strtoupper(substr($firstName, 0, 2));
           </span>
         </div>
         <div class="sub-nav" id="subnav-0">
-          <div class="sub-item active" onclick="window.location.href='#'">Class</div>
-          <div class="sub-item active" onclick="window.location.href='#'">Division</div>
+          <div class="sub-item active" onclick="window.location.href='<?php echo base_url('add_class') ; ?>'">Class</div>
+          <div class="sub-item active" onclick="window.location.href='<?php echo base_url('add_division') ; ?>'">Division</div>
           <div class="sub-item active" onclick="window.location.href='class_divition_list'">Class Division Allocation</div>
-          <div class="sub-item active" onclick="window.location.href='#'">Students</div>
+          <div class="sub-item active" onclick="window.location.href='<?php echo base_url('add_student') ; ?>'">Students</div>
 
         </div>
 
