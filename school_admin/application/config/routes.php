@@ -190,6 +190,7 @@ $route['save_exam_mark_details']   = 'members_area/SubjectController/save_exam_m
 
 
 $route['add_mark_entry']   = 'members_area/SubjectController/add_mark_entry';
+$route['getMarksEntry']   = 'members_area/SubjectController/getMarksEntry';
 
 
 

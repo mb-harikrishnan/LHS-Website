@@ -70,7 +70,42 @@ public function fetch_all_division()
 
 
 
+  public function fetch_all_exam()
+  {
 
+    $select = "SELECT * FROM exam_master ";
+    $query = $this->db->query($select);
+    $result = $query->result();
+    return $result;
+  }
+
+
+
+  public function getStudents($class,$division)
+{
+    return $this->db
+            ->where('smClass',$class)
+            ->where('smDiv',$division)
+            ->order_by('smName')
+            ->get('students_master')
+            ->result();
+}
+
+
+
+public function getExamSubjects($class,$exam)
+{
+    $sql = "SELECT smId,smName FROM exam_master a , exam_master_detail b , subject_master c 
+
+    WHERE a.emId=b.emdEmId AND b.emdSmId=c.smId AND emdCmId='$class' AND emdSmId ='$exam'
+    
+    
+     ";
+
+     $query = $this->db->query($sql);
+     $result = $query->result();
+     return $result;
+}
 
 
 

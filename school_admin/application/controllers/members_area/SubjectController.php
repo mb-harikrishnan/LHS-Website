@@ -553,10 +553,35 @@ public function save_exam_mark_details()
 
     public function add_mark_entry()
     {
+
+        $data['class'] = $this->Subject_Model->fetch_all_class();
+        $data['divition'] = $this->Subject_Model->fetch_all_division();
+        $data['exam'] = $this->Subject_Model->fetch_all_exam();
         $this->load->view('members_area/header');
-        $this->load->view('members_area/add_mark_entry');
+        $this->load->view('members_area/add_mark_entry',$data);
         $this->load->view('members_area/footer');
     }
+
+
+
+  public function getMarksEntry()
+{
+
+    $class_id    = $this->input->post('class_id');
+    $division_id = $this->input->post('division_id');
+    $exam_id     = $this->input->post('exam_id');
+
+    $students = $this->Subject_Model->getStudents($class_id,$division_id);
+
+    $subjects = $this->Subject_Model->getExamSubjects($class_id,$exam_id);
+
+    echo json_encode([
+        "status"=>"success",
+        "students"=>$students,
+        "subjects"=>$subjects
+    ]);
+
+}
 
 
 
