@@ -179,6 +179,19 @@ $route['check_admission_number']   = 'members_area/SubjectController/check_admis
 $route['insert_student']   = 'members_area/SubjectController/insert_student';
 
 
+$route['add_exam']   = 'members_area/SubjectController/add_exam';
+$route['check_exam_name']   = 'members_area/SubjectController/check_exam_name';
+$route['check_abbreviation']   = 'members_area/SubjectController/check_abbreviation';
+$route['insert_exam']   = 'members_area/SubjectController/insert_exam';
+
+
+
+$route['save_exam_mark_details']   = 'members_area/SubjectController/save_exam_mark_details';
+
+
+$route['add_mark_entry']   = 'members_area/SubjectController/add_mark_entry';
+
+
 
 
 

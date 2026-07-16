@@ -5,8 +5,6 @@ $activePage = 'reports';
 $showGlobalSearch = false;
 ?>
 
-<link rel="stylesheet" href="<?php echo base_url('assets/css/exam.css'); ?>">
-
 <div class="card cd-form-card">
   <div class="card-head">
     <div class="card-title">
@@ -55,6 +53,164 @@ $showGlobalSearch = false;
 
   </form>
 </div>
+
+<style>
+.cd-form-card .cd-group{
+    margin-bottom:24px;
+}
+.cd-form-card .cd-label{
+    display:block;
+    margin-bottom:10px;
+    font-size:14px;
+    font-weight:700;
+    color:#374151 !important;
+    letter-spacing:.3px;
+}
+.cd-form-card .cd-select{
+    width:100%;
+    height:52px;
+    border:1px solid #dbe4ee;
+    background:#f8fafc;
+    border-radius:14px;
+    padding:0 16px;
+    font-size:15px;
+    color:#111827;
+    outline:none;
+    transition:.3s ease;
+}
+.cd-form-card .cd-select:focus{
+    background:#fff;
+    border-color:#1e3a8a;
+    box-shadow:0 0 0 4px rgba(30,58,138,.12);
+}
+.cd-form-card .cd-division-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:10px;
+    border:1px solid #dbe4ee;
+    background:#f8fafc;
+    border-radius:14px;
+    padding:16px;
+}
+.cd-form-card .cd-chip{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:#fff;
+    border:1px solid #e5e9f0;
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:14px;
+    font-weight:500;
+    color:#374151 !important;
+    cursor:pointer;
+    transition:.2s ease;
+}
+.cd-form-card .cd-chip:hover{
+    border-color:#1e3a8a;
+}
+.cd-form-card .cd-chip input[type="checkbox"]{
+    width:16px;
+    height:16px;
+    accent-color:#1e3a8a;
+    cursor:pointer;
+    flex-shrink:0;
+}
+.cd-form-card .cd-chip:has(input:checked){
+    background:#eef2ff;
+    border-color:#1e3a8a;
+}
+.cd-form-card .cd-empty{
+    border:1px dashed #dbe4ee;
+    border-radius:14px;
+    padding:20px;
+    text-align:center;
+    font-size:14px;
+    color:#9ca3af;
+    background:#f8fafc;
+}
+.cd-form-card .cd-btn-row{
+    margin-top:10px;
+}
+.cd-form-card .cd-submit{
+    border:none;
+    outline:none;
+    background:linear-gradient(135deg,#1e3a8a,#2f4fb0);
+    color:#fff;
+    padding:15px 34px;
+    border-radius:14px;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.3s ease;
+    box-shadow:0 12px 25px rgba(30,58,138,.25);
+}
+.cd-form-card .cd-submit:hover{
+    transform:translateY(-3px);
+    box-shadow:0 18px 35px rgba(30,58,138,.35);
+}
+.cd-form-card .cd-submit:active{
+    transform:scale(.98);
+}
+.card{
+    background:#fff;
+    border-radius:24px;
+    padding:35px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.06);
+    border:1px solid #eef2f7;
+}
+.card-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:35px;
+    flex-wrap:wrap;
+    gap:15px;
+}
+.card-title{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:20px;
+    font-weight:700;
+    color:#111827;
+}
+.card-action{
+    border:none;
+    outline:none;
+    background:linear-gradient(135deg,#1e3a8a,#2f4fb0);
+    color:#fff;
+    padding:12px 22px;
+    border-radius:12px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s ease;
+    box-shadow:0 8px 20px rgba(30,58,138,.25);
+}
+.card-action:hover{
+    transform:translateY(-2px);
+    box-shadow:0 12px 25px rgba(30,58,138,.35);
+}
+@media(max-width:768px){
+    .card{ padding:22px; }
+    .card-head{ flex-direction:column; align-items:flex-start; }
+    .card-action{ width:100%; }
+}
+.cd-form-card label.error{
+    display:block;
+    margin-top:8px;
+    font-size:13px;
+    font-weight:600;
+    color:#dc2626;
+}
+.cd-form-card .cd-input-error{
+    border-color:#dc2626 !important;
+}
+.cd-form-card .cd-division-grid.cd-input-error{
+    border-color:#dc2626 !important;
+    box-shadow:0 0 0 4px rgba(220,38,38,.10);
+}
+</style>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>

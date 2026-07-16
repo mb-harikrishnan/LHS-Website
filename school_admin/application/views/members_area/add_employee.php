@@ -8,6 +8,8 @@ $showGlobalSearch = false;
 
 
 ?>
+<link rel="stylesheet" href="<?php echo base_url('assets/css/exam.css'); ?>">
+
 
      
       <!-- Reports Table Card -->
@@ -27,86 +29,91 @@ $showGlobalSearch = false;
         </div>
 
    <div class="employee-form-card">
-
-<form id="newsform"
-      method="post"
-      action="<?php echo base_url('insert_employee'); ?>">
+<form id="newsform" method="post" action="<?php echo base_url('insert_employee'); ?>">
 
     <div class="form-grid">
 
         <!-- Name -->
         <div class="news-form-group">
-            <label>Name</label>
+            <label>Name <span class="text-danger">*</span></label>
             <input type="text"
+                   id="name"
                    name="name"
-                   class="news-input"
+                   class="news-select"
                    placeholder="Enter Name">
         </div>
 
         <!-- Password -->
         <div class="news-form-group">
-            <label>Password</label>
+            <label>Password <span class="text-danger">*</span></label>
             <input type="password"
+                   id="password"
                    name="password"
-                   class="news-input"
+                   class="news-select"
                    placeholder="Enter Password">
         </div>
 
         <!-- Mobile -->
         <div class="news-form-group">
-            <label>Mobile</label>
+            <label>Mobile <span class="text-danger">*</span></label>
             <input type="text"
+                   id="mobile"
                    name="mobile"
-                   class="news-input"
+                   maxlength="10"
+                   class="news-select"
                    placeholder="Enter Mobile Number">
         </div>
 
         <!-- Designation -->
         <div class="news-form-group">
-            <label>Designation</label>
+            <label>Designation <span class="text-danger">*</span></label>
             <input type="text"
+                   id="designation"
                    name="designation"
-                   class="news-input"
+                   class="news-select"
                    placeholder="Enter Designation">
         </div>
 
-       <!-- Class -->
-<div class="news-form-group">
-    <label>Class</label>
+        <!-- Class -->
+        <div class="news-form-group">
+            <label>Class <span class="text-danger">*</span></label>
 
-    <select name="class_id" class="news-input select-search">
-        <option value="">Select Class</option>
+            <select id="class_id"
+                    name="class_id"
+                    class="news-select select-search">
+                <option value="">Select Class</option>
 
-        <?php 
-        $sql = "SELECT * FROM classmaster";
-        $class_master = $this->db->query($sql)->result();
+                <?php
+                $class_master = $this->db->query("SELECT * FROM class_master")->result();
 
-        foreach($class_master as $class){ ?>
-            <option value="<?php echo $class->cmId; ?>">
-                <?php echo $class->cmName; ?>
-            </option>
-        <?php } ?>
-    </select>
-</div>
+                foreach($class_master as $class){ ?>
+                    <option value="<?= $class->cmId; ?>">
+                        <?= $class->cmName; ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
 
-<!-- Division -->
-<div class="news-form-group">
-    <label>Division</label>
+        <!-- Division -->
+        <div class="news-form-group">
+            <label>Division <span class="text-danger">*</span></label>
 
-    <select name="division_id" class="news-input select-search">
-        <option value="">Select Division</option>
+            <select id="division_id"
+                    name="division_id"
+                    class="news-input select-search">
+                <option value="">Select Division</option>
 
-        <?php
-        $sql = "SELECT * FROM divisionmaster";
-        $division_master = $this->db->query($sql)->result();
+                <?php
+                $division_master = $this->db->query("SELECT * FROM division_master")->result();
 
-        foreach($division_master as $division){ ?>
-            <option value="<?php echo $division->dmId; ?>">
-                <?php echo $division->dmName; ?>
-            </option>
-        <?php } ?>
-    </select>
-</div>
+                foreach($division_master as $division){ ?>
+                    <option value="<?= $division->dmId; ?>">
+                        <?= $division->dmName; ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+
     </div>
 
     <div class="submit-section">
@@ -120,103 +127,6 @@ $showGlobalSearch = false;
 </div>
       </div>
       <!-- End Reports Table Card -->
-
-    <style>
-.employee-form-card{
-    background:#fff;
-    padding:35px;
-    border-radius:16px;
-}
-
-/* GRID */
-.form-grid{
-    display:grid;
-    grid-template-columns:repeat(2, 1fr);
-    gap:25px;
-}
-
-/* MOBILE */
-@media(max-width:768px){
-    .form-grid{
-        grid-template-columns:1fr;
-    }
-}
-
-/* LABEL */
-.news-form-group label{
-    display:block;
-    margin-bottom:8px;
-    font-size:14px;
-    font-weight:600;
-    color:#374151;
-}
-
-/* INPUT */
-.news-input{
-    width:100%;
-    height:52px;
-    border:1px solid #d1d5db;
-    border-radius:10px;
-    padding:0 16px;
-    font-size:15px;
-    background:#fff;
-    transition:0.3s;
-}
-
-/* FOCUS */
-.news-input:focus{
-    border-color:#2563eb;
-    box-shadow:0 0 0 3px rgba(37,99,235,0.10);
-    outline:none;
-}
-
-/* PLACEHOLDER */
-.news-input::placeholder{
-    color:#9ca3af;
-}
-
-/* SELECT */
-select.news-input{
-    appearance:none;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='gray' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5l6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat:no-repeat;
-    background-position:right 15px center;
-    background-size:14px;
-    padding-right:40px;
-}
-
-/* BUTTON AREA */
-.submit-section{
-    text-align:center;
-    margin-top:35px;
-}
-
-/* BUTTON */
-.submit-btn{
-    background:#2563eb;
-    color:#fff;
-    border:none;
-    padding:14px 50px;
-    border-radius:10px;
-    font-size:15px;
-    font-weight:600;
-    cursor:pointer;
-    transition:0.3s;
-}
-
-.submit-btn:hover{
-    background:#1d4ed8;
-    transform:translateY(-2px);
-}
-
-
-.validation-error{
-    color:#dc2626;
-    font-size:13px;
-    margin-top:5px;
-    display:block;
-}
-</style>
 
 <!-- jQuery -->
 
@@ -262,6 +172,8 @@ Swal.fire({
 
 $("#newsform").validate({
 
+    ignore: [],
+
     rules: {
 
         name: {
@@ -278,6 +190,18 @@ $("#newsform").validate({
             digits: true,
             minlength: 10,
             maxlength: 10
+        },
+
+        designation: {
+            required: true
+        },
+
+        class_id: {
+            required: true
+        },
+
+        division_id: {
+            required: true
         }
 
     },
@@ -285,76 +209,60 @@ $("#newsform").validate({
     messages: {
 
         name: {
-            required: "Please enter name"
+            required: "Please enter employee name"
         },
 
         password: {
             required: "Please enter password",
-            minlength: "Password must be minimum 6 characters"
+            minlength: "Password must contain at least 6 characters"
         },
 
         mobile: {
             required: "Please enter mobile number",
             digits: "Only numbers allowed",
-            minlength: "Mobile number must be 10 digits",
-            maxlength: "Mobile number must be 10 digits"
+            minlength: "Enter valid mobile number",
+            maxlength: "Enter valid mobile number"
+        },
+
+        designation: {
+            required: "Please enter designation"
+        },
+
+        class_id: {
+            required: "Please select class"
+        },
+
+        division_id: {
+            required: "Please select division"
         }
 
     },
 
-    errorElement: 'span',
+    errorElement: "span",
+    errorClass: "error",
 
-    errorPlacement: function(error, element) {
-        error.addClass('validation-error');
-        error.insertAfter(element);
+    errorPlacement: function (error, element) {
+
+        if (element.hasClass("select-search")) {
+            error.insertAfter(element.next(".select2"));
+        } else {
+            error.insertAfter(element);
+        }
+
     }
 
 });
 
 </script>
 
-<style>
 
-/* SELECT2 DESIGN */
-.select2-container{
-    width:100% !important;
-}
-
-.select2-container--default .select2-selection--single{
-    height:52px !important;
-    border:1px solid #d1d5db !important;
-    border-radius:10px !important;
-    padding:10px 16px !important;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__rendered{
-    line-height:30px !important;
-    padding-left:0 !important;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__arrow{
-    height:50px !important;
-    right:10px !important;
-}
-
-.select2-dropdown{
-    border-radius:10px !important;
-    border:1px solid #d1d5db !important;
-}
-
-.select2-search__field{
-    border:1px solid #d1d5db !important;
-    border-radius:6px !important;
-    padding:8px !important;
-}
-
-</style>
 
 <script>
 $(document).ready(function () {
 
     $('.select-search').select2({
-        placeholder: "Select Option",
+        width: '100%',
+        placeholder: 'Select Option',
         allowClear: true
     });
 

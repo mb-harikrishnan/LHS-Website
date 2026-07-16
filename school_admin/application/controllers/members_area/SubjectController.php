@@ -350,6 +350,226 @@ public function insert_student()
 
 
 
+   public function add_exam()
+    {
+        $this->load->view('members_area/header');
+        $this->load->view('members_area/add_exam');
+        $this->load->view('members_area/footer');
+    }
+
+
+public function check_exam_name()
+{
+    $exam_name = trim($this->input->post('exam_name'));
+
+    if ($exam_name == '') {
+        echo json_encode([
+            'status' => 'invalid',
+            'message' => 'Exam Name is required.'
+        ]);
+        return;
+    }
+
+    $search = strtolower(str_replace(' ', '', $exam_name));
+
+    $query = $this->db->query("
+        SELECT emId
+        FROM exam_master
+        WHERE REPLACE(LOWER(emDisplayName), ' ', '') = ?
+    ", array($search));
+
+    if ($query->num_rows() > 0) {
+        echo json_encode([
+            'status' => 'exists',
+            'message' => 'Exam Name already exists.'
+        ]);
+    } else {
+        echo json_encode([
+            'status' => 'success'
+        ]);
+    }
+}
+public function check_abbreviation()
+{
+    $abbreviation = trim($this->input->post('abbreviation'));
+
+    if ($abbreviation == '') {
+        echo json_encode([
+            'status' => 'invalid',
+            'message' => 'Abbreviation is required.'
+        ]);
+        return;
+    }
+
+    $search = strtolower(str_replace(' ', '', $abbreviation));
+
+    $query = $this->db->query(
+        "SELECT emId
+         FROM exam_master
+         WHERE REPLACE(LOWER(emName), ' ', '') = ?",
+        array($search)
+    );
+
+    if ($query->num_rows() > 0) {
+        echo json_encode([
+            'status' => 'exists',
+            'message' => 'Abbreviation already exists.'
+        ]);
+    } else {
+        echo json_encode([
+            'status' => 'success'
+        ]);
+    }
+}
+
+
+
+public function insert_exam()
+{
+    $exam_name    = trim($this->input->post('exam_name'));
+    $abbreviation = trim($this->input->post('abbreviation'));
+
+    // Validation
+    if ($exam_name == '' || $abbreviation == '') {
+        echo json_encode([
+            'status'  => 'error',
+            'message' => 'All fields are required.'
+        ]);
+        return;
+    }
+
+    // Check Exam Name (ignore spaces & case)
+    $exam = strtolower(str_replace(' ', '', $exam_name));
+
+    $checkExam = $this->db->query(
+        "SELECT emId
+         FROM exam_master
+         WHERE REPLACE(LOWER(emDisplayName),' ','') = ?",
+        array($exam)
+    );
+
+    if ($checkExam->num_rows() > 0) {
+        echo json_encode([
+            'status'  => 'error',
+            'message' => 'Exam Name already exists.'
+        ]);
+        return;
+    }
+
+    // Check Abbreviation (ignore spaces & case)
+    $abbr = strtolower(str_replace(' ', '', $abbreviation));
+
+    $checkAbbr = $this->db->query(
+        "SELECT emId
+         FROM exam_master
+         WHERE REPLACE(LOWER(emName),' ','') = ?",
+        array($abbr)
+    );
+
+    if ($checkAbbr->num_rows() > 0) {
+        echo json_encode([
+            'status'  => 'error',
+            'message' => 'Abbreviation already exists.'
+        ]);
+        return;
+    }
+
+    // Insert
+    $data = array(
+        'emDisplayName' => $exam_name,
+        'emName'        => $abbreviation,
+        'emActive'      => 1
+    );
+
+    if ($this->db->insert('exam_master', $data)) {
+
+        echo json_encode([
+            'status'  => 'success',
+            'message' => 'Exam added successfully.'
+        ]);
+
+    } else {
+
+        echo json_encode([
+            'status'  => 'error',
+            'message' => 'Failed to add exam.'
+        ]);
+
+    }
+}
+
+
+
+
+
+
+public function save_exam_mark_details()
+{
+    $classId = $this->input->post('cmId');
+    $examId  = $this->input->post('emId');
+    $subjects = $this->input->post('smId');
+    $marks = $this->input->post('marks');
+
+    foreach($subjects as $subject)
+    {
+        $check = $this->db
+                ->where('emdCmId',$classId)
+                ->where('emdEmId',$examId)
+                ->where('emdSmId',$subject)
+                ->get('exam_master_detail');
+
+        if($check->num_rows()>0)
+        {
+            echo json_encode([
+                "status"=>"error",
+                "message"=>"Selected Class, Exam and Subject already exists."
+            ]);
+            return;
+        }
+    }
+
+    foreach($subjects as $subject)
+    {
+        $this->db->insert('exam_master_detail',[
+            'emdCmId'=>$classId,
+            'emdEmId'=>$examId,
+            'emdSmId'=>$subject,
+            'emdMaxMark'=>$marks
+        ]);
+    }
+
+    echo json_encode([
+        "status"=>"success",
+        "message"=>"Exam details added successfully."
+    ]);
+}
+
+
+
+
+
+
+
+
+    public function add_mark_entry()
+    {
+        $this->load->view('members_area/header');
+        $this->load->view('members_area/add_mark_entry');
+        $this->load->view('members_area/footer');
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,0 +1,439 @@
+/* =========================================
+   REPORT PAGE — ADMIN MODULE
+   Theme tokens (override in your global CSS
+   if --green / other vars already exist)
+========================================= */
+:root{
+    --report-navy:#1E3A8A;
+    --report-navy-dark:#172554;
+    --report-blue:#2563eb;
+    --report-blue-dark:#1d4ed8;
+    --report-red:#dc2626;
+    --report-red-dark:#b91c1c;
+    --report-bg-soft:#f8fbff;
+    --report-border:#e5e7eb;
+    --report-border-soft:#dbeafe;
+    --report-text:#1e293b;
+    --report-text-muted:#64748b;
+    --report-text-body:#374151;
+    /* --green is defined globally in your main theme CSS — do not redeclare it here,
+       or it will override the color everywhere it's used, including the sidebar. */
+}
+
+/* =========================================
+   CARD
+========================================= */
+
+.card{
+    background:#fff;
+    border-radius:18px;
+    padding:24px;
+    border:1px solid var(--report-border);
+    box-shadow:0 4px 20px rgba(15,23,42,0.06);
+    overflow:hidden;
+}
+
+.card-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:18px;
+    flex-wrap:wrap;
+    padding-bottom:16px;
+    border-bottom:1px solid var(--report-border);
+}
+
+.card-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:18px;
+    font-weight:700;
+    color:var(--report-text);
+}
+
+.card-badge{
+    background:var(--report-border-soft);
+    color:var(--report-navy);
+    font-size:12px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:999px;
+    margin-left:4px;
+}
+
+.card-action{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--report-navy);
+    color:#fff;
+    border:none;
+    padding:11px 20px;
+    border-radius:12px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 2px 8px rgba(30,58,138,0.25);
+    transition:background .25s ease, transform .25s ease, box-shadow .25s ease;
+}
+
+.card-action:hover{
+    background:var(--report-navy-dark);
+    transform:translateY(-2px);
+    box-shadow:0 6px 16px rgba(30,58,138,0.3);
+}
+
+.card-action:active{
+    transform:translateY(0);
+}
+
+/* =========================================
+   META / FILTER SUMMARY LINE
+========================================= */
+
+.report-meta{
+    font-size:13px;
+    font-weight:600;
+    color:var(--report-text-muted);
+    letter-spacing:.02em;
+    margin:0 0 16px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.report-meta::before{
+    content:"";
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--green);
+    display:inline-block;
+}
+
+/* =========================================
+   FILTER (kept for pages that use it)
+========================================= */
+
+.date-filter-box{
+    background:var(--report-bg-soft);
+    border:1px solid var(--report-border-soft);
+    border-radius:16px;
+    padding:20px;
+    display:flex;
+    gap:18px;
+    align-items:end;
+    flex-wrap:wrap;
+    margin-bottom:15px;
+}
+
+.filter-item{
+    flex:1;
+    min-width:220px;
+}
+
+.filter-item label{
+    display:block;
+    margin-bottom:8px;
+    font-size:13px;
+    font-weight:700;
+    color:var(--report-navy);
+}
+
+.date-input-box{
+    position:relative;
+}
+
+.date-input-box i{
+    position:absolute;
+    left:14px;
+    top:50%;
+    transform:translateY(-50%);
+    color:var(--report-text-muted);
+}
+
+.filter-input{
+    width:100%;
+    height:48px;
+    border:1px solid #cbd5e1;
+    border-radius:12px;
+    padding:0 14px 0 42px;
+    background:#fff;
+    font-size:14px;
+    transition:.3s;
+    outline:none;
+}
+
+.filter-input:focus{
+    border-color:var(--report-navy);
+    box-shadow:0 0 0 4px rgba(30,58,138,0.12);
+}
+
+.filter-btn-box{
+    display:flex;
+    align-items:end;
+}
+
+.btn-filter{
+    height:48px;
+    padding:0 24px;
+    border:none;
+    border-radius:12px;
+    background:var(--report-navy);
+    color:#fff;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.btn-filter:hover{
+    background:var(--report-navy-dark);
+}
+
+/* =========================================
+   TABLE
+========================================= */
+
+.report-table-wrap{
+    width:100%;
+    overflow-x:auto;
+    margin-top:4px;
+    border-radius:14px;
+    border:1px solid var(--report-border);
+}
+
+.report-table{
+    width:100%;
+    border-collapse:collapse !important;
+}
+
+.report-table thead th{
+    background:linear-gradient(180deg, var(--report-navy) 0%, var(--report-navy-dark) 100%) !important;
+    color:#fff !important;
+    padding:16px;
+    font-size:12.5px;
+    font-weight:700;
+    border:none !important;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    white-space:nowrap;
+}
+
+.report-table tbody td{
+    padding:14px 16px;
+    border-bottom:1px solid var(--report-border);
+    font-size:14px;
+    color:var(--report-text-body);
+    vertical-align:middle;
+    background:#fff;
+}
+
+.report-table tbody tr:last-child td{
+    border-bottom:none;
+}
+
+.report-table tbody tr{
+    transition:background .2s ease;
+}
+
+.report-table tbody tr:nth-child(even) td{
+    background:#f9fafb;
+}
+
+.report-table tbody tr:hover td{
+    background:#eff6ff;
+}
+
+.report-table tbody td:first-child{
+    font-weight:600;
+    color:var(--report-text-muted);
+}
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.view-btn{
+    background:var(--report-blue);
+    color:#fff;
+    border:none;
+    padding:9px 16px;
+    border-radius:10px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.view-btn:hover{
+    background:var(--report-blue-dark);
+    transform:translateY(-1px);
+}
+
+.deleteBtn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:#fef2f2;
+    color:var(--report-red);
+    border:1px solid #fecaca;
+    padding:9px 16px;
+    border-radius:10px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.deleteBtn:hover{
+    background:var(--report-red);
+    color:#fff;
+    border-color:var(--report-red);
+    transform:translateY(-1px);
+    box-shadow:0 4px 10px rgba(220,38,38,0.25);
+}
+
+/* =========================================
+   DATATABLE OVERRIDES
+========================================= */
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter{
+    margin-bottom:18px;
+}
+
+.dataTables_wrapper .dataTables_length label,
+.dataTables_wrapper .dataTables_filter label{
+    font-size:14px;
+    font-weight:600;
+    color:var(--report-navy);
+}
+
+.dataTables_wrapper .dataTables_length select{
+    border:1px solid #cbd5e1 !important;
+    border-radius:10px !important;
+    padding:6px 10px !important;
+    outline:none !important;
+}
+
+.dataTables_wrapper .dataTables_filter input{
+    width:260px !important;
+    height:44px !important;
+    border:1px solid var(--report-border-soft) !important;
+    border-radius:12px !important;
+    padding:0 14px !important;
+    background:var(--report-bg-soft) !important;
+    outline:none !important;
+    transition:.3s;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus{
+    border-color:var(--report-navy) !important;
+    background:#fff !important;
+    box-shadow:0 0 0 4px rgba(30,58,138,0.12) !important;
+}
+
+.dataTables_wrapper .dataTables_info{
+    font-size:13px;
+    color:var(--report-text-muted);
+    padding-top:12px;
+}
+
+.dataTables_wrapper .dataTables_paginate{
+    margin-top:20px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button{
+    background:var(--report-border-soft) !important;
+    color:var(--report-navy) !important;
+    border:none !important;
+    border-radius:10px !important;
+    padding:7px 14px !important;
+    margin:0 4px !important;
+    font-weight:600;
+    transition:.2s;
+}
+
+/* Anchored to the table's wrapper ID (higher specificity than DataTables'
+   own built-in .current rule) so this always wins, regardless of whether
+   the DataTables <link> tag is placed before or after report.css. */
+#reportsDataTable_wrapper .dataTables_paginate .paginate_button.current,
+#reportsDataTable_wrapper .dataTables_paginate .paginate_button.current:hover{
+    background:var(--report-navy) !important;
+    color:#fff !important;
+    border:none !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled{
+    opacity:.4;
+}
+
+#reportsDataTable_wrapper .dataTables_paginate .paginate_button:not(.current):hover{
+    background:#c7dbfc !important;
+    color:var(--report-navy-dark) !important;
+}
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.report-table tbody td.dataTables_empty{
+    text-align:center;
+    padding:48px 16px;
+    color:var(--report-text-muted);
+    font-size:14px;
+    font-weight:500;
+    background:#fff;
+}
+
+/* =========================================
+   RESPONSIVE / MOBILE
+========================================= */
+
+@media(max-width:768px){
+
+    .card{
+        padding:16px;
+    }
+
+    .card-head{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .date-filter-box{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .filter-item{
+        width:100%;
+    }
+
+    .btn-filter,
+    .card-action{
+        width:100%;
+        justify-content:center;
+    }
+
+    .report-table thead th,
+    .report-table tbody td{
+        padding:12px;
+        font-size:13px;
+    }
+
+    .dataTables_wrapper .dataTables_filter{
+        margin-top:15px;
+        text-align:left !important;
+    }
+
+    .dataTables_wrapper .dataTables_filter input{
+        width:100% !important;
+    }
+}
