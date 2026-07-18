@@ -142,6 +142,61 @@ public function update_class_division()
         }
     }
 
+  public function delete_divition_table()
+    {
+        $id = $this->input->post('id');
+
+        $result = $this->Class_Model->delete_divition_table($id);
+
+        if($result)
+        {
+            echo 1;
+        }
+        else
+        {
+            echo 0;
+        }
+    }
+  public function delete_class()
+    {
+        $id = $this->input->post('id');
+
+        $result = $this->Class_Model->delete_class($id);
+
+        if($result)
+        {
+            echo 1;
+        }
+        else
+        {
+            echo 0;
+        }
+    }
+
+
+
+
+
+
+
+        public function class_list()
+    {
+      
+        $data['details'] = $this->Class_Model->fetch_class();
+        $this->load->view('members_area/header');
+        $this->load->view('members_area/class_list',$data);
+        $this->load->view('members_area/footer');
+    }
+
+        public function divition_list()
+    {
+      
+        $data['details'] = $this->Class_Model->fetch_divition();
+        $this->load->view('members_area/header');
+        $this->load->view('members_area/divition_list',$data);
+        $this->load->view('members_area/footer');
+    }
+
 
 
 

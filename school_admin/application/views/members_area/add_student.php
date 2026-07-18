@@ -18,7 +18,7 @@ $showGlobalSearch = false;
             Add Division
           </div>
           <button class="card-action" 
-              onclick="window.location.href='<?php echo base_url('divition_list'); ?>'">
+              onclick="window.location.href='<?php echo base_url('students_list'); ?>'">
           <i class="fa fa-upload"></i> List 
           </button>
         </div>

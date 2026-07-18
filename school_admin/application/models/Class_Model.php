@@ -21,6 +21,20 @@ public function fetch_all_divisions()
     $result = $query->result();
     return $result;
 }
+public function fetch_class()
+{
+    $select = "SELECT * FROM class_master ";
+    $query = $this->db->query($select);
+    $result = $query->result();
+    return $result;
+}
+public function fetch_divition()
+{
+    $select = "SELECT * FROM division_master ";
+    $query = $this->db->query($select);
+    $result = $query->result();
+    return $result;
+}
 
 
 
@@ -108,6 +122,17 @@ public function delete_divition($id)
 {
     $this->db->where('cdaCmId', $id);
     return $this->db->delete('class_division_allocation');
+}
+public function delete_divition_table($id)
+{
+    $this->db->where('dmId', $id);
+    return $this->db->delete('division_master');
+}
+
+public function delete_class($id)
+{
+    $this->db->where('cmId', $id);
+    return $this->db->delete('class_master');
 }
 
 

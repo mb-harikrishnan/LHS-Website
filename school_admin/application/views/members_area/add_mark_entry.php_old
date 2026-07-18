@@ -171,26 +171,13 @@ function loadMarksTable(class_id, division_id, exam_id)
 
         success:function(res){
 
-            $("#noStudentsMsg").hide();
-            $("#noSubjectsMsg").hide();
-            $("#marksTableWrapper").hide();
-
             if(res.status=="success")
             {
-                buildTable(res.students, res.subjects, res.marks);
-            }
-            else if(res.status=="no_students")
-            {
-                $("#noStudentsMsg").show();
-            }
-            else if(res.status=="no_subjects")
-            {
-                $("#noSubjectsMsg").show();
+                buildTable(res.students,res.subjects);
             }
             else
             {
-                // Fallback: still show something rather than silently doing nothing
-                $("#noStudentsMsg").text(res.message || "No data found for this selection.").show();
+                // Swal.fire("Info",res.message,"info");
             }
 
         }
@@ -200,15 +187,8 @@ function loadMarksTable(class_id, division_id, exam_id)
 }
 
 
-function buildTable(students, subjects, marks)
+function buildTable(students, subjects)
 {
-    marks = marks || [];
-
-    // Build a quick lookup: "studentId_subjectId" -> mark
-    let markMap = {};
-    $.each(marks, function(i, m){
-        markMap[m.student_id + "_" + m.subject_id] = m.mark;
-    });
 
     let head='';
 
@@ -217,7 +197,9 @@ function buildTable(students, subjects, marks)
     head += "<th>Student Name</th>";
 
     $.each(subjects,function(i,s){
+
         head += "<th>"+s.smName+"</th>";
+
     });
 
     $("#marksTableHead").html(head);
@@ -231,21 +213,16 @@ function buildTable(students, subjects, marks)
         body+="<td>"+(i+1)+"</td>";
         body+="<td>"+st.smAdmissionNo+"</td>";
         body+="<td class='student-name-cell'>"+st.smName+"</td>";
+$.each(subjects, function(j, sub){
 
-        $.each(subjects, function(j, sub){
+    body += "<td>";
+    body += "<input type='text' class='mark-input' " +
+            "data-row='"+i+"' " +
+            "data-col='"+j+"' " +
+            "name='marks["+st.smId+"]["+sub.smId+"]'>";
+    body += "</td>";
 
-            let key = st.smId + "_" + sub.smId;
-            let existingMark = markMap.hasOwnProperty(key) ? markMap[key] : "";
-
-            body += "<td>";
-            body += "<input type='text' class='mark-input' " +
-                    "data-row='"+i+"' " +
-                    "data-col='"+j+"' " +
-                    "name='marks["+st.smId+"]["+sub.smId+"]' " +
-                    "value='"+existingMark+"'>";
-            body += "</td>";
-
-        });
+});
 
         body+="</tr>";
 
@@ -304,66 +281,6 @@ function buildTable(students, subjects, marks)
             if(next.length) next.focus();
             break;
     }
-
-});
-</script>
-
-
-
-<script>
-    $(document).on("click", "#saveMarksBtn", function () {
-
-    let class_id = $("#class").val();
-    let division_id = $("#division").val();
-    let exam_id = $("#exam").val();
-
-    let marks = [];
-
-    $(".mark-input").each(function(){
-
-        let name = $(this).attr("name");           // marks[studentId][subjectId]
-        let match = name.match(/marks\[(\d+)\]\[(\d+)\]/);
-
-        if(!match) return;
-
-        let student_id = match[1];
-        let subject_id = match[2];
-        let mark = $(this).val();
-
-        if(mark === "") return; // skip empty, remove this if you want to save blanks too
-
-        marks.push({
-            student_id: student_id,
-            subject_id: subject_id,
-            mark: mark
-        });
-    });
-
-    if(marks.length === 0){
-        return; // no marks entered, nothing to save - no popup
-    }
-
-    $.ajax({
-        url: "<?php echo site_url('saveMarksEntry'); ?>",
-        type: "POST",
-        dataType: "json",
-        data:{
-            class_id: class_id,
-            division_id: division_id,
-            exam_id: exam_id,
-            marks: marks
-        },
-        success:function(res){
-            if(res.status == "success"){
-                Swal.fire("Saved", res.message, "success");
-            } else {
-                Swal.fire("Error", res.message, "error");
-            }
-        },
-        error:function(){
-            Swal.fire("Error","Something went wrong while saving","error");
-        }
-    });
 
 });
 </script>

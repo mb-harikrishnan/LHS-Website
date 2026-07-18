@@ -155,6 +155,13 @@ $route['edit_class_division/(:num)'] = 'members_area/ClassController/edit_class_
 $route['update_class_division']   = 'members_area/ClassController/update_class_division';
 $route['delete_divition']   = 'members_area/ClassController/delete_divition';
 
+$route['class_list']   = 'members_area/ClassController/class_list';
+$route['delete_class']   = 'members_area/ClassController/delete_class';
+
+$route['divition_list']   = 'members_area/ClassController/divition_list';
+$route['delete_divition_table']   = 'members_area/ClassController/delete_divition_table';
+
+
 
 
 //////////////////   SUBJECT MASTER  //////////////////////////
@@ -168,6 +175,8 @@ $route['check_class_name']   = 'members_area/SubjectController/check_class_name'
 $route['insert_class']   = 'members_area/SubjectController/insert_class';
 
 
+
+
 $route['add_division']   = 'members_area/SubjectController/add_division';
 $route['check_divition']   = 'members_area/SubjectController/check_divition';
 $route['insert_divition']   = 'members_area/SubjectController/insert_divition';
@@ -177,6 +186,9 @@ $route['insert_divition']   = 'members_area/SubjectController/insert_divition';
 $route['add_student']   = 'members_area/SubjectController/add_student';
 $route['check_admission_number']   = 'members_area/SubjectController/check_admission_number';
 $route['insert_student']   = 'members_area/SubjectController/insert_student';
+
+
+$route['students_list']   = 'members_area/SubjectController/students_list';
 
 
 $route['add_exam']   = 'members_area/SubjectController/add_exam';
@@ -191,11 +203,24 @@ $route['save_exam_mark_details']   = 'members_area/SubjectController/save_exam_m
 
 $route['add_mark_entry']   = 'members_area/SubjectController/add_mark_entry';
 $route['getMarksEntry']   = 'members_area/SubjectController/getMarksEntry';
+$route['saveMarksEntry']   = 'members_area/SubjectController/saveMarksEntry';
+$route['getExistingMarks']   = 'members_area/SubjectController/getExistingMarks';
+
+$route['edit_students/(:num)'] = 'members_area/SubjectController/edit_students/$1';
+
+
+$route['update_student'] = 'members_area/SubjectController/update_student';
+$route['check_admission_number_edit'] = 'members_area/SubjectController/check_admission_number_edit';
+$route['delete_students'] = 'members_area/SubjectController/delete_students';
 
 
 
+$route['exam_list'] = 'members_area/SubjectController/exam_list';
+$route['delete_exam'] = 'members_area/SubjectController/delete_exam';
 
 
+$route['allocation_list'] = 'members_area/SubjectController/allocation_list';
+$route['delete_allocation_list'] = 'members_area/SubjectController/delete_allocation_list';
 
 
 

@@ -564,23 +564,114 @@ public function save_exam_mark_details()
 
 
 
-  public function getMarksEntry()
-{
+//   public function getMarksEntry()
+// {
 
+//     $class_id    = $this->input->post('class_id');
+//     $division_id = $this->input->post('division_id');
+//     $exam_id     = $this->input->post('exam_id');
+
+//     $students = $this->Subject_Model->getStudents($class_id,$division_id);
+
+//     $subjects = $this->Subject_Model->getExamSubjects($class_id,$exam_id);
+
+//     echo json_encode([
+//         "status"=>"success",
+//         "students"=>$students,
+//         "subjects"=>$subjects
+//     ]);
+
+// }
+
+
+public function getMarksEntry()
+{
     $class_id    = $this->input->post('class_id');
     $division_id = $this->input->post('division_id');
     $exam_id     = $this->input->post('exam_id');
 
-    $students = $this->Subject_Model->getStudents($class_id,$division_id);
+    $students = $this->Subject_Model->getStudents($class_id, $division_id);
+    $subjects = $this->Subject_Model->getExamSubjects($class_id, $exam_id);
 
-    $subjects = $this->Subject_Model->getExamSubjects($class_id,$exam_id);
+    if (empty($students)) {
+        echo json_encode(['status' => 'info', 'message' => 'No students found for the selected Class / Division']);
+        return;
+    }
+
+    if (empty($subjects)) {
+        echo json_encode(['status' => 'info', 'message' => 'No subjects configured for the selected Class / Exam']);
+        return;
+    }
+
+    $marks = $this->Subject_Model->getExistingMarks($exam_id, $class_id, $division_id);
 
     echo json_encode([
-        "status"=>"success",
-        "students"=>$students,
-        "subjects"=>$subjects
+        'status'   => 'success',
+        'students' => $students,
+        'subjects' => $subjects,
+        'marks'    => $marks   // <-- new
     ]);
+}
 
+
+
+
+public function students_list()
+{
+
+    $data['details'] = $this->Subject_Model->fetch_all_student_details();
+   
+    $this->load->view('members_area/header');
+    $this->load->view('members_area/students_list',$data);
+    $this->load->view('members_area/footer');
+
+}
+
+
+public function edit_students($id)
+{
+    $data['students']  = $this->db->where('smId', $id)->get('students_master')->row();
+    $data['class']     = $this->db->get('class_master')->result();
+    $data['divition']  = $this->db->get('division_master')->result();
+    $data['country']   = $this->db->get('country')->result();
+    $data['state']     = $this->db->get('country_states')->result();
+
+    $this->load->view('members_area/header');
+    $this->load->view('members_area/edit_students', $data);
+    $this->load->view('members_area/footer');
+}
+
+
+public function update_student()
+{
+    $id = $this->input->post('smId');
+
+    $updateData = array(
+        'smAdmissionNo'   => $this->input->post('admission_no'),
+        'smAadharNo'      => $this->input->post('aadhar_no'),
+        'smName'   => $this->input->post('student_name'),
+        'smGender'         => $this->input->post('gender'),
+        'smDOB'            => $this->input->post('dob'),
+        'smMobile'         => $this->input->post('mobile'),
+        'smClass'          => $this->input->post('class'),
+        'smDiv'       => $this->input->post('division'),
+        'smReligion'       => $this->input->post('religion'),
+        'smCaste'          => $this->input->post('caste'),
+        'smMotherTongue'  => $this->input->post('mother_tongue'),
+        'smAddress'        => $this->input->post('address'),
+        'smCountry'        => $this->input->post('country'),
+        'smState'          => $this->input->post('state'),
+    );
+
+
+    $this->db->where('smId', $id);
+    $updated = $this->db->update('students_master', $updateData);
+
+    if ($updated) {
+        echo json_encode(array('status' => 1, 'message' => 'Student updated successfully.'));
+    } else {
+        echo json_encode(array('status' => 0, 'message' => 'Something went wrong. Please try again.'));
+    }
 }
 
 
@@ -589,8 +680,116 @@ public function save_exam_mark_details()
 
 
 
+public function check_admission_number_edit()
+{
+    $admission_no = $this->input->post('admission_no');
+    $smId         = $this->input->post('smId');
+
+    $this->db->where('smAdmissionNo', $admission_no);
+
+    // Exclude the current record so it doesn't flag its own admission number
+    if (!empty($smId)) {
+        $this->db->where('smId !=', $smId);
+    }
+
+    $exists = $this->db->get('students_master')->row();
+
+    // jQuery remote validation expects: true = valid, false = invalid
+    if ($exists) {
+        echo json_encode(false); // admission_no belongs to a DIFFERENT record → invalid
+    } else {
+        echo json_encode(true);  // no conflict → valid
+    }
+}
 
 
+
+
+  public function delete_students()
+    {
+        $id = $this->input->post('id');
+
+        $result = $this->Subject_Model->delete_students($id);
+
+        if($result)
+        {
+            echo 1;
+        }
+        else
+        {
+            echo 0;
+        }
+    }
+  public function delete_exam()
+    {
+        $id = $this->input->post('id');
+
+        $result = $this->Subject_Model->delete_exam($id);
+
+        if($result)
+        {
+            echo 1;
+        }
+        else
+        {
+            echo 0;
+        }
+    }
+
+
+
+
+
+
+
+
+    public function exam_list()
+    {
+
+
+        $data['details'] = $this->Subject_Model->fetch_all_exam();
+   
+        $this->load->view('members_area/header');
+        $this->load->view('members_area/exam_list',$data);
+        $this->load->view('members_area/footer');
+
+    }
+    public function allocation_list()
+    {
+
+
+        $data['details'] = $this->Subject_Model->fetch_all_allocation_list();
+   
+        $this->load->view('members_area/header');
+        $this->load->view('members_area/allocation_list',$data);
+        $this->load->view('members_area/footer');
+
+    }
+
+
+
+
+
+    public function saveMarksEntry()
+{
+    $class_id    = $this->input->post('class_id');
+    $division_id = $this->input->post('division_id');
+    $exam_id     = $this->input->post('exam_id');
+    $marks       = $this->input->post('marks'); // array of {student_id, subject_id, mark}
+
+    if (empty($class_id) || empty($division_id) || empty($exam_id) || empty($marks)) {
+        echo json_encode(['status' => 'error', 'message' => 'Missing required data']);
+        return;
+    }
+
+    $result = $this->Subject_Model->saveMarks($exam_id, $class_id, $division_id, $marks);
+
+    if ($result) {
+        echo json_encode(['status' => 'success', 'message' => 'Marks saved successfully']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Failed to save marks']);
+    }
+}
 
 
 
