@@ -807,6 +807,51 @@ public function check_admission_number_edit()
         $this->load->view('members_area/footer');
 
     }
+
+
+    public function edit_exam($id)
+{
+    $data['exam'] = $this->Subject_Model->get_exam_list($id);
+
+    $this->load->view('members_area/header');
+    $this->load->view('members_area/edit_exam',$data);
+    $this->load->view('members_area/footer');
+}
+
+
+
+public function update_exam()
+{
+    $id = $this->input->post('id');
+
+    $data = array(
+        'emDisplayName' => $this->input->post('exam_name'),
+        'emName'        => $this->input->post('abbreviation')
+    );
+
+    $this->db->where('emId',$id);
+
+    if($this->db->update('exam_master',$data))
+    {
+        echo json_encode([
+            'status'=>'success',
+            'message'=>'Exam updated successfully.'
+        ]);
+    }
+    else
+    {
+        echo json_encode([
+            'status'=>'error',
+            'message'=>'Update failed.'
+        ]);
+    }
+}
+
+
+
+
+
+
     public function allocation_list()
     {
 
@@ -868,6 +913,79 @@ public function edit_marks($studentId, $examId)
     $this->load->view('members_area/edit_marks', $data);
     $this->load->view('members_area/footer');
 }
+
+
+
+
+
+
+public function check_exam_name_edit()
+{
+$id = $this->input->post('id');
+$exam_name = $this->input->post('exam_name');
+
+$this->db->where('emDisplayName', $exam_name);
+$this->db->where('emId !=', $id);
+
+$result = $this->db->get('exam_master');
+
+if ($result->num_rows() > 0) {
+    echo json_encode(['status' => 'exists']);
+} else {
+    echo json_encode(['status' => 'available']);
+}
+}
+
+
+
+
+
+public function check_abbreviation_edit()
+{
+ $id = $this->input->post('id');
+$abbreviation = $this->input->post('abbreviation');
+
+$this->db->where('emName', $abbreviation);
+$this->db->where('emId !=', $id);
+
+$result = $this->db->get('exam_master');
+
+if ($result->num_rows() > 0) {
+    echo json_encode(['status' => 'exists']);
+} else {
+    echo json_encode(['status' => 'available']);
+}
+}
+
+
+
+
+public function edit_allocation($emId,$cmId)
+{
+ 
+
+    $data['allocation']=$this->Subject_Model->get_allocation_details($emId,$cmId);
+
+    $this->load->view('members_area/header');
+    $this->load->view('members_area/edit_allocation',$data);
+    $this->load->view('members_area/footer');
+}
+
+public function update_allocation($ids,$marks)
+{
+    for($i=0;$i<count($ids);$i++)
+    {
+        $this->db->where('emdId',$ids[$i]);
+
+        $this->db->update('exam_master_detail',[
+            'emdMaxMark'=>$marks[$i]
+        ]);
+    }
+
+    return true;
+}
+
+
 
 
 

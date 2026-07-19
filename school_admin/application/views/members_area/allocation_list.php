@@ -44,6 +44,7 @@
                         <th>Class</th>
                         <th>Exam</th>
                         <th>Subject</th>
+                        <th>Edit</th>
                         <th width="120">Action</th>
                     </tr>
                 </thead>
@@ -58,6 +59,12 @@
             <td><?php echo $row->cmName; ?></td>
             <td><?php echo $row->emDisplayName; ?></td>
             <td><?php echo $row->subjectsWithMarks; ?></td>
+            <td>
+                    <a href="<?php echo base_url('edit_allocation/'.$row->emdEmId.'/'.$row->emdCmId); ?>"
+                        class="btn btn-primary btn-sm">
+                            <i class="fa fa-edit"></i> Edit
+                        </a>
+            </td>
 
             <td>
                 <button class="deleteBtn"

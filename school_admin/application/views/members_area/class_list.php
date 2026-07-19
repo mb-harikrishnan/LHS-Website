@@ -33,6 +33,7 @@ $showGlobalSearch = false;
                 <tr>
                     <th>#SL</th>
                         <th>Name</th>
+                        <th>Edit</th>
                    
                     <th>Action</th>
                 </tr>
@@ -51,6 +52,14 @@ $showGlobalSearch = false;
                     <td><?php echo $row->cmName; ?></td>
                  
                     <td>
+
+                        <a href="<?php echo base_url('edit_class/'.$row->cmId); ?>" class="btn btn-primary btn-sm">
+                            <i class="fa fa-edit"></i> Edit
+                        </a>
+                    </td>
+                    <td>
+
+                    
                         <button class="deleteBtn" data-id="<?php echo $row->cmId; ?>">
                             <i class="fa fa-trash"></i> Delete
                         </button>

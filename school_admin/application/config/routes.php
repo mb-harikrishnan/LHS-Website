@@ -158,8 +158,14 @@ $route['delete_divition']   = 'members_area/ClassController/delete_divition';
 $route['class_list']   = 'members_area/ClassController/class_list';
 $route['delete_class']   = 'members_area/ClassController/delete_class';
 
+$route['edit_class/(:num)'] = 'members_area/ClassController/edit_class/$1';
+$route['update_class'] = 'members_area/ClassController/update_class';
+
 $route['divition_list']   = 'members_area/ClassController/divition_list';
 $route['delete_divition_table']   = 'members_area/ClassController/delete_divition_table';
+
+$route['edit_division/(:num)'] = 'members_area/ClassController/edit_division/$1';
+$route['update_divition'] = 'members_area/ClassController/update_divition';
 
 
 
@@ -224,12 +230,22 @@ $route['delete_students'] = 'members_area/SubjectController/delete_students';
 $route['exam_list'] = 'members_area/SubjectController/exam_list';
 $route['delete_exam'] = 'members_area/SubjectController/delete_exam';
 
+$route['edit_exam/(:num)'] = 'members_area/SubjectController/edit_exam/$1';
+$route['update_exam'] = 'members_area/SubjectController/update_exam';
+
+
+$route['check_abbreviation_edit'] = 'members_area/SubjectController/check_abbreviation_edit';
+$route['check_exam_name_edit'] = 'members_area/SubjectController/check_exam_name_edit';
+
+
 
 $route['allocation_list'] = 'members_area/SubjectController/allocation_list';
 $route['delete_allocation_list'] = 'members_area/SubjectController/delete_allocation_list';
 
 
+$route['edit_allocation/(:num)/(:num)'] = 'members_area/SubjectController/edit_allocation/$1/$2';
 
+$route['update_allocation'] = 'members_area/SubjectController/update_allocation';
 
 
 $route['404_override'] = '';

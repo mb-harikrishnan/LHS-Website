@@ -33,6 +33,7 @@ $showGlobalSearch = false;
                 <tr>
                     <th>#SL</th>
                         <th>Name</th>
+                        <th>Edit</th>
                    
                     <th>Action</th>
                 </tr>
@@ -49,6 +50,11 @@ $showGlobalSearch = false;
                 <tr>
                     <td><?php echo $count; ?></td>
                     <td><?php echo $row->dmName; ?></td>
+                    <td>
+                        <a href="<?php echo base_url('edit_division/'.$row->dmId); ?>" class="btn btn-primary btn-sm">
+                            <i class="fa fa-edit"></i> Edit
+                        </a>
+                    </td>
                  
                     <td>
                         <button class="deleteBtn" data-id="<?php echo $row->dmId; ?>">

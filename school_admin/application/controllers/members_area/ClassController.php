@@ -188,6 +188,61 @@ public function update_class_division()
         $this->load->view('members_area/footer');
     }
 
+
+    public function edit_class($id)
+{
+    $data['class'] = $this->db
+        ->where('cmId', $id)
+        ->get('class_master')
+        ->row();
+
+    if (!$data['class']) {
+        show_404();
+    }
+
+    $this->load->view('members_area/header');
+    $this->load->view('members_area/edit_class', $data);
+    $this->load->view('members_area/footer');
+}
+
+
+public function update_class()
+{
+    $id = $this->input->post('cmId');
+    $class_name = trim($this->input->post('class_name'));
+
+    $check = $this->db
+        ->where('cmName', $class_name)
+        ->where('cmId !=', $id)
+        ->get('class_master');
+
+    if ($check->num_rows() > 0) {
+
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Class already exists.'
+        ]);
+        return;
+    }
+
+    $this->db->where('cmId', $id);
+    $update = $this->db->update('class_master', [
+        'cmName' => $class_name
+    ]);
+
+    if ($update) {
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Class updated successfully.'
+        ]);
+    } else {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Update failed.'
+        ]);
+    }
+}
+
         public function divition_list()
     {
       
@@ -196,6 +251,56 @@ public function update_class_division()
         $this->load->view('members_area/divition_list',$data);
         $this->load->view('members_area/footer');
     }
+
+
+    public function edit_division($id)
+{
+    $data['division'] = $this->db
+            ->where('dmId', $id)
+            ->get('division_master')
+            ->row();
+
+    $this->load->view('members_area/header');
+    $this->load->view('members_area/edit_division', $data);
+    $this->load->view('members_area/footer');
+}
+
+public function update_divition()
+{
+    $id = $this->input->post('division_id');
+    $division_name = trim($this->input->post('division_name'));
+
+    $exists = $this->db
+            ->where('dmName', $division_name)
+            ->where('dmId !=', $id)
+            ->get('division_master')
+            ->num_rows();
+
+    if ($exists > 0) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Division already exists.'
+        ]);
+        return;
+    }
+
+    $this->db->where('dmId', $id);
+    $result = $this->db->update('division_master', [
+        'dmName' => $division_name
+    ]);
+
+    if ($result) {
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Division updated successfully.'
+        ]);
+    } else {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Update failed.'
+        ]);
+    }
+}
 
 
 

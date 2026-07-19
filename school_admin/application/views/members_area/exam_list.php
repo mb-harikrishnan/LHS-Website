@@ -43,6 +43,7 @@ $showGlobalSearch = false;
                     <th>#SL</th>
                     <th>Abbreviation</th>
                     <th>Name</th>
+                    <th>Edit</th>
                     <th width="120">Action</th>
                 </tr>
             </thead>
@@ -62,6 +63,13 @@ $showGlobalSearch = false;
                         <td><?php echo $row->emDisplayName; ?></td>
 
                         <td>
+                              <a href="<?php echo base_url('edit_exam/'.$row->emId); ?>"
+                                class="editBtn">
+                                    <i class="fa fa-edit"></i> Edit
+                                </a>
+                        </td>
+
+                        <td>
                             <button class="deleteBtn"
                                     data-id="<?php echo (int)$row->emId; ?>">
                                 <i class="fa fa-trash"></i> Delete
@@ -79,6 +87,22 @@ $showGlobalSearch = false;
 
 </div>
 
+      <style>
+        .editBtn{
+    display:inline-block;
+    padding:7px 12px;
+    background:#2563eb;
+    color:#fff;
+    border-radius:5px;
+    text-decoration:none;
+    margin-right:6px;
+}
+
+.editBtn:hover{
+    background:#1d4ed8;
+    color:#fff;
+}
+      </style>
 
 <!-- ==========================================================
     SCRIPTS

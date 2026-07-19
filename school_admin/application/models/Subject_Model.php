@@ -121,6 +121,15 @@ public function delete_exam($id)
   }
 
 
+  public function get_exam_list($id)
+{
+    return $this->db
+            ->where('emId',$id)
+            ->get('exam_master')
+            ->row();
+}
+
+
 
   public function getStudents($class,$division)
 {
@@ -475,6 +484,55 @@ public function save_marks($studentId, $examId, $marks)
 }
 
 
+
+
+
+
+
+public function get_allocation_details($emId,$cmId)
+{
+    $this->db->select('
+        exam_master_detail.emdId,
+        exam_master_detail.emdEmId,
+        exam_master_detail.emdCmId,
+        exam_master_detail.emdSmId,
+        exam_master_detail.emdMaxMark,
+        class_master.cmName,
+        exam_master.emDisplayName,
+        subject_master.smName
+    ');
+
+    $this->db->from('exam_master_detail');
+    $this->db->join('class_master','class_master.cmId=exam_master_detail.emdCmId');
+    $this->db->join('exam_master','exam_master.emId=exam_master_detail.emdEmId');
+    $this->db->join('subject_master','subject_master.smId=exam_master_detail.emdSmId');
+
+    $this->db->where('emdEmId',$emId);
+    $this->db->where('emdCmId',$cmId);
+
+    return $this->db->get()->result();
+}
+
+
+
+public function update_allocation($oldCmId,$oldEmId,$cmId,$emId,$subjects,$marks)
+{
+    $this->db->where('emdCmId',$oldCmId);
+    $this->db->where('emdEmId',$oldEmId);
+    $this->db->delete('exam_master_detail');
+
+    foreach($subjects as $subject)
+    {
+        $data = array(
+            'emdCmId'    => $cmId,
+            'emdEmId'    => $emId,
+            'emdSmId'    => $subject,
+            'emdMaxMark' => $marks
+        );
+
+        $this->db->insert('exam_master_detail',$data);
+    }
+}
 
 
 
