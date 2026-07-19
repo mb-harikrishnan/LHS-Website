@@ -371,7 +371,7 @@ $initials = strtoupper(substr($firstName, 0, 2));
         <div class="sub-nav" id="subnav-0">
           <div class="sub-item active" onclick="window.location.href='exam_list'">Exam Master</div>
           <div class="sub-item" onclick="window.location.href='allocation_list'">Exam Marks Allocation</div>
-          <div class="sub-item" onclick="window.location.href='add_mark_entry'">Exam Marks Entry</div>
+          <div class="sub-item" onclick="window.location.href='Marksentry_list'">Exam Marks Entry</div>
         </div>
 
 

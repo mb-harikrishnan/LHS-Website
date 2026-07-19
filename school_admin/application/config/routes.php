@@ -206,6 +206,12 @@ $route['getMarksEntry']   = 'members_area/SubjectController/getMarksEntry';
 $route['saveMarksEntry']   = 'members_area/SubjectController/saveMarksEntry';
 $route['getExistingMarks']   = 'members_area/SubjectController/getExistingMarks';
 
+$route['Marksentry_list']   = 'members_area/SubjectController/Marksentry_list';
+$route['edit_marks/(:num)/(:num)'] = 'members_area/SubjectController/edit_marks/$1/$2';
+$route['update_marks']             = 'members_area/SubjectController/update_marks';
+
+
+
 $route['edit_students/(:num)'] = 'members_area/SubjectController/edit_students/$1';
 
 

@@ -17,7 +17,13 @@ $showGlobalSearch = false;
             </svg>
             Enter Marks
         </div>
+
+          <button class="card-action"
+                onclick="window.location.href='<?php echo base_url('Marksentry_list'); ?>'">
+            <i class="fa fa-upload"></i>  Mark List
+        </button>
     </div>
+    
 
     <!-- ================= FILTERS: Class / Division / Exam =================
          Class list is already restricted server-side (controller index())

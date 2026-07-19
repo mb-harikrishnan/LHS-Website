@@ -304,6 +304,186 @@ public function getExistingMarks($exam_id, $class_id, $division_id)
 
 
 
+
+// public function fetch_all_marksentry_list()
+// {
+//     $sql = "SELECT *
+//      FROM exam_summary a , exam_detail b ,class_master c ,division_master d , subject_master e ,
+//         exam_master f , students_master g
+//             WHERE a.esId=b.edEsId  AND  c.cmId=a.esCmId AND d.dmId = a.esDmId  AND e.smId = a.esSmId  
+//             AND f.emId = esEmId AND g.smId = b.edSmId
+//     " ;
+
+//     $query = $this->db->query($sql);
+//     $result = $this->result();
+//     return $result ;
+
+
+
+// }
+
+
+// public function fetch_all_marksentry_list()
+// {
+//     $sql = "SELECT g.smId AS studentId, g.smName AS studentName,
+//                    c.cmName AS className, d.dmName AS divisionName,
+//                    e.smName AS subjectName, b.edMark AS marks
+//             FROM exam_summary a
+//             JOIN exam_detail b ON a.esId = b.edEsId
+//             JOIN class_master c ON c.cmId = a.esCmId
+//             JOIN division_master d ON d.dmId = a.esDmId
+//             JOIN subject_master e ON e.smId = a.esSmId
+//             JOIN exam_master f ON f.emId = a.esEmId
+//             JOIN students_master g ON g.smId = b.edSmId
+//             ORDER BY c.cmName, d.dmName, g.smName";
+
+//     $query = $this->db->query($sql);
+//     return $query->result();
+// }
+
+
+
+public function fetch_all_marksentry_list($classId = '', $divId = '', $examId = '')
+{
+    $sql = "SELECT g.smId AS studentId, g.smName AS studentName,
+                   c.cmId AS classId, c.cmName AS className,
+                   d.dmId AS divId, d.dmName AS divisionName,
+                   f.emId AS examId, f.emName AS examName,
+                   e.smName AS subjectName, b.edMark AS marks
+            FROM exam_summary a
+            JOIN exam_detail b ON a.esId = b.edEsId
+            JOIN class_master c ON c.cmId = a.esCmId
+            JOIN division_master d ON d.dmId = a.esDmId
+            JOIN subject_master e ON e.smId = a.esSmId
+            JOIN exam_master f ON f.emId = a.esEmId
+            JOIN students_master g ON g.smId = b.edSmId
+            WHERE 1=1";
+
+    // build filters conditionally, using query bindings to avoid SQL injection
+    $params = [];
+
+    if (!empty($classId)) {
+        $sql .= " AND c.cmId = ?";
+        $params[] = $classId;
+    }
+    if (!empty($divId)) {
+        $sql .= " AND d.dmId = ?";
+        $params[] = $divId;
+    }
+    if (!empty($examId)) {
+        $sql .= " AND f.emId = ?";
+        $params[] = $examId;
+    }
+
+    $sql .= " ORDER BY c.cmName, d.dmName, g.smName";
+
+    $query = $this->db->query($sql, $params);
+    return $query->result();
+}
+
+// for populating the dropdowns
+public function get_classes()
+{
+    return $this->db->get('class_master')->result();
+}
+
+public function get_divisions()
+{
+    return $this->db->get('division_master')->result();
+}
+
+public function get_exams()
+{
+    return $this->db->get('exam_master')->result();
+}
+
+
+
+
+
+
+
+
+
+
+// public function get_exam_subjects_with_marks($studentId, $examId)
+// {
+//     $this->db->select('es.esId, es.esSmId, sm.smName, ed.edMark, ed.edId')
+//              ->from('exam_summary es')
+//              ->join('subject_master sm', 'sm.smId = es.esSmId')
+//              ->join('exam_detail ed', 'ed.edEsId = es.esId AND ed.edSmId = ' . (int)$studentId, 'left')
+//              ->where('es.esEmId', $examId)
+//              ->order_by('sm.smName', 'ASC');
+
+//     return $this->db->get()->result();
+// }
+
+public function get_exam_subjects_with_marks($studentId, $examId)
+{
+    $this->db->select('es.esId, es.esSmId, sm.smName, ed.edMark, ed.edId')
+        ->from('exam_summary es')
+        ->join('subject_master sm', 'sm.smId = es.esSmId')
+        ->join('exam_detail ed',
+            'ed.edEsId = es.esId  AND ed.edSmId = ' . (int)$studentId,
+            'left')
+        ->where('es.esEmId', $examId)
+        ->order_by('sm.smName', 'ASC');
+
+    return $this->db->get()->result();
+}
+
+public function get_student($studentId)
+{
+    return $this->db->select('st.smId, st.smName, cm.cmName AS className, dm.dmName AS divName')
+        ->from('students_master st')
+        ->join('class_master cm', 'cm.cmId = st.smClass', 'left')
+        ->join('division_master dm', 'dm.dmId = st.smDiv', 'left')
+        ->where('st.smId', $studentId)
+        ->get()->row();
+}
+
+public function get_exam($examId)
+{
+    return $this->db->get_where('exam_master', ['emId' => $examId])->row();
+}
+
+public function save_marks($studentId, $examId, $marks)
+{
+    if (empty($marks)) return false;
+
+    foreach ($marks as $esId => $markValue) {
+        $existing = $this->db->get_where('exam_detail', [
+            'edEsId'      => $esId,
+            'edSmId' => $studentId
+        ])->row();
+
+        if ($existing) {
+            $this->db->where('edId', $existing->edId)
+                     ->update('exam_detail', ['edMark' => $markValue]);
+        } else {
+            $this->db->insert('exam_detail', [
+                'edEsId'      => $esId,
+                'edSmId'      => $this->db->select('esSmId')
+                                            ->get_where('exam_summary', ['esId' => $esId])
+                                            ->row()->esSmId,
+                'edSmId' => $studentId,
+                'edMark'      => $markValue
+            ]);
+        }
+    }
+    return true;
+}
+
+
+
+
+
+
+
+
+
+
+
   
 
 

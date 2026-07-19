@@ -626,6 +626,59 @@ public function students_list()
     $this->load->view('members_area/footer');
 
 }
+// public function Marksentry_list()
+// {
+
+//     $data['details'] = $this->Subject_Model->fetch_all_marksentry_list();
+   
+//     $this->load->view('members_area/header');
+//     $this->load->view('members_area/marksentry_list',$data);
+//     $this->load->view('members_area/footer');
+
+    
+
+// }
+
+public function Marksentry_list()
+{
+    // grab filter values from the form (GET is nice here since it keeps
+    // the filter shareable/bookmarkable via URL, but POST works too)
+    $classId = $this->input->get('class_id');
+    $divId   = $this->input->get('div_id');
+    $examId  = $this->input->get('exam_id');
+
+    $rows = $this->Subject_Model->fetch_all_marksentry_list($classId, $divId, $examId);
+
+    $pivot    = [];  // [studentId] => student info + marks per subject
+    $subjects = [];  // unique subject names across the filtered result
+
+    foreach ($rows as $row) {
+        $subjects[$row->subjectName] = true;
+
+        $pivot[$row->studentId]['name']     = $row->studentName;
+        $pivot[$row->studentId]['class']    = $row->className;
+        $pivot[$row->studentId]['division'] = $row->divisionName;
+        $pivot[$row->studentId]['exam']     = $row->examName;
+                $pivot[$row->studentId]['examId']   = $row->examId;   // <-- added
+
+        $pivot[$row->studentId]['marks'][$row->subjectName] = $row->marks;
+    }
+
+    $data['pivot']       = $pivot;
+    $data['subjectList'] = array_keys($subjects);
+
+    // dropdown data + keep selected values so the form stays "sticky"
+    $data['classes']       = $this->Subject_Model->get_classes();
+    $data['divisions']     = $this->Subject_Model->get_divisions();
+    $data['exams']         = $this->Subject_Model->get_exams();
+    $data['selectedClass'] = $classId;
+    $data['selectedDiv']   = $divId;
+    $data['selectedExam']  = $examId;
+
+    $this->load->view('members_area/header');
+    $this->load->view('members_area/marksentry_list', $data);
+    $this->load->view('members_area/footer');
+}
 
 
 public function edit_students($id)
@@ -790,6 +843,39 @@ public function check_admission_number_edit()
         echo json_encode(['status' => 'error', 'message' => 'Failed to save marks']);
     }
 }
+
+
+
+
+
+public function edit_marks($studentId, $examId)
+{
+    if ($this->input->method() === 'post') {
+        $marks = $this->input->post('marks'); // marks[esId] = value
+        $this->Subject_Model->save_marks($studentId, $examId, $marks);
+        $this->session->set_flashdata('success', 'Marks updated successfully');
+        redirect(base_url('Marksentry_list'));
+        return;
+    }
+
+    $data['student']   = $this->Subject_Model->get_student($studentId);
+    $data['exam']      = $this->Subject_Model->get_exam($examId);
+    $data['subjects']  = $this->Subject_Model->get_exam_subjects_with_marks($studentId, $examId);
+    $data['studentId'] = $studentId;
+    $data['examId']    = $examId;
+
+    $this->load->view('members_area/header');
+    $this->load->view('members_area/edit_marks', $data);
+    $this->load->view('members_area/footer');
+}
+
+
+
+
+
+
+
+
 
 
 
