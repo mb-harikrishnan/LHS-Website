@@ -641,44 +641,176 @@ public function students_list()
 
 public function Marksentry_list()
 {
-    // grab filter values from the form (GET is nice here since it keeps
-    // the filter shareable/bookmarkable via URL, but POST works too)
-    $classId = $this->input->get('class_id');
-    $divId   = $this->input->get('div_id');
-    $examId  = $this->input->get('exam_id');
+    $this->db->select('
+        exam_summary.esId,
+        exam_summary.esCmId,
+        exam_summary.esEmId,
+        exam_summary.esDmId,
+        exam_master.emName,
+        class_master.cmName,
+        division_master.dmName
+    ');
 
-    $rows = $this->Subject_Model->fetch_all_marksentry_list($classId, $divId, $examId);
+    $this->db->from('exam_summary');
 
-    $pivot    = [];  // [studentId] => student info + marks per subject
-    $subjects = [];  // unique subject names across the filtered result
+    $this->db->join('exam_master','exam_master.emId=exam_summary.esEmId');
+    $this->db->join('class_master','class_master.cmId=exam_summary.esCmId');
+    $this->db->join('division_master','division_master.dmId=exam_summary.esDmId');
 
-    foreach ($rows as $row) {
-        $subjects[$row->subjectName] = true;
+    $this->db->group_by(array(
+        'esEmId',
+        'esCmId',
+        'esDmId'
+    ));
 
-        $pivot[$row->studentId]['name']     = $row->studentName;
-        $pivot[$row->studentId]['class']    = $row->className;
-        $pivot[$row->studentId]['division'] = $row->divisionName;
-        $pivot[$row->studentId]['exam']     = $row->examName;
-                $pivot[$row->studentId]['examId']   = $row->examId;   // <-- added
+    $data['details']=$this->db->get()->result();
 
-        $pivot[$row->studentId]['marks'][$row->subjectName] = $row->marks;
-    }
-
-    $data['pivot']       = $pivot;
-    $data['subjectList'] = array_keys($subjects);
-
-    // dropdown data + keep selected values so the form stays "sticky"
-    $data['classes']       = $this->Subject_Model->get_classes();
-    $data['divisions']     = $this->Subject_Model->get_divisions();
-    $data['exams']         = $this->Subject_Model->get_exams();
-    $data['selectedClass'] = $classId;
-    $data['selectedDiv']   = $divId;
-    $data['selectedExam']  = $examId;
-
-    $this->load->view('members_area/header');
-    $this->load->view('members_area/marksentry_list', $data);
+        $this->load->view('members_area/header');
+    $this->load->view('members_area/marksentry_list',$data);
     $this->load->view('members_area/footer');
 }
+
+
+
+public function view_marks_students($exam,$class,$division)
+{
+   // Subjects
+$this->db->select("exam_summary.esSmId, subject_master.smName");
+$this->db->from("exam_summary");
+$this->db->join("subject_master","subject_master.smId = exam_summary.esSmId");
+$this->db->where("exam_summary.esEmId",$exam);
+$this->db->where("exam_summary.esCmId",$class);
+$this->db->where("exam_summary.esDmId",$division);
+$this->db->group_by("exam_summary.esSmId");
+
+$data['subjects'] = $this->db->get()->result();
+
+$this->db->reset_query();   // <-- Important
+
+
+// Students
+$this->db->distinct();
+$this->db->select("
+    students_master.smId,
+    students_master.smAdmissionNo,
+    students_master.smName
+");
+$this->db->from("exam_detail");
+$this->db->join("exam_summary","exam_summary.esId = exam_detail.edEsId");
+$this->db->join("students_master","students_master.smId = exam_detail.edSmId");
+$this->db->where("exam_summary.esEmId",$exam);
+$this->db->where("exam_summary.esCmId",$class);
+$this->db->where("exam_summary.esDmId",$division);
+
+$data['students'] = $this->db->get()->result();
+
+
+
+
+
+    // Marks
+    $this->db->select("
+        exam_detail.edSmId AS student_id,
+        exam_summary.esSmId AS subject_id,
+        exam_detail.edMark
+    ");
+
+    $this->db->from("exam_detail");
+    $this->db->join("exam_summary","exam_summary.esId=exam_detail.edEsId");
+
+    $this->db->where("exam_summary.esEmId",$exam);
+    $this->db->where("exam_summary.esCmId",$class);
+    $this->db->where("exam_summary.esDmId",$division);
+
+    $result=$this->db->get()->result();
+
+    $marks=[];
+
+    foreach($result as $row){
+        $marks[$row->student_id][$row->subject_id]=$row->edMark;
+    }
+
+
+        $data['exam']     = $exam;
+    $data['class']    = $class;
+    $data['division'] = $division;
+    $data['marks']=$marks;
+
+    $this->load->view('members_area/header');
+    $this->load->view('members_area/view_marks',$data);
+    $this->load->view('members_area/footer');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+public function updateMarks()
+{
+    if ($this->input->method() !== 'post') {
+        echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
+        return;
+    }
+
+    $exam     = $this->input->post('exam');
+    $class    = $this->input->post('class');
+    $division = $this->input->post('division');
+    $marks    = $this->input->post('marks'); // array of {student_id, subject_id, mark}
+
+    if (empty($marks) || !is_array($marks) || !$exam || !$class || !$division) {
+        echo json_encode(['status' => 'error', 'message' => 'Missing required data']);
+        return;
+    }
+
+    $result = $this->Subject_Model->updateMarks($exam, $class, $division, $marks);
+
+    if ($result) {
+        echo json_encode(['status' => 'success', 'message' => 'Marks updated successfully']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Failed to update marks']);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 public function edit_students($id)
@@ -970,28 +1102,32 @@ public function edit_allocation($emId,$cmId)
     $this->load->view('members_area/edit_allocation',$data);
     $this->load->view('members_area/footer');
 }
-
-public function update_allocation($ids,$marks)
+public function update_allocation()
 {
-    for($i=0;$i<count($ids);$i++)
-    {
-        $this->db->where('emdId',$ids[$i]);
+    $ids   = $this->input->post('emdId');
+    $marks = $this->input->post('marks');
 
-        $this->db->update('exam_master_detail',[
-            'emdMaxMark'=>$marks[$i]
+    if(empty($ids) || empty($marks))
+    {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Invalid Data'
+        ]);
+        return;
+    }
+
+    for($i = 0; $i < count($ids); $i++)
+    {
+        $this->db->where('emdId', $ids[$i]);
+        $this->db->update('exam_master_detail', [
+            'emdMaxMark' => $marks[$i]
         ]);
     }
 
-    return true;
+    echo json_encode([
+        'status' => 'success'
+    ]);
 }
-
-
-
-
-
-
-
-
 
 
 

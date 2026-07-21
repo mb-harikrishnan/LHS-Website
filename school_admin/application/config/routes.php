@@ -248,5 +248,11 @@ $route['edit_allocation/(:num)/(:num)'] = 'members_area/SubjectController/edit_a
 $route['update_allocation'] = 'members_area/SubjectController/update_allocation';
 
 
+$route['updateMarks'] = 'members_area/SubjectController/updateMarks';
+
+
+$route['view_marks_students/(:num)/(:num)/(:num)']='members_area/SubjectController/view_marks_students/$1/$2/$3';
+
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

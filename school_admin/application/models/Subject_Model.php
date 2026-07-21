@@ -537,8 +537,61 @@ public function update_allocation($oldCmId,$oldEmId,$cmId,$emId,$subjects,$marks
 
 
 
+public function updateMarks($exam, $class, $division, $marks)
+{
+    $this->db->trans_start();
 
+    foreach ($marks as $row) {
 
+        $studentId = $row['student_id']; // exam_detail.edSmId
+        $subjectId = $row['subject_id']; // exam_summary.esSmId
+        $markValue = $row['mark'];
+
+        if ($studentId === '' || $subjectId === '' || $markValue === '') {
+            continue;
+        }
+
+        // Find the exam_summary row (esId) for this exam + class + division + subject
+        $this->db->select('esId');
+        $this->db->from('exam_summary');
+        $this->db->where('esEmId', $exam);
+        $this->db->where('esCmId', $class);
+        $this->db->where('esDmId', $division);
+        $this->db->where('esSmId', $subjectId);
+        $summaryRow = $this->db->get()->row();
+
+        if (!$summaryRow) {
+            // No matching exam_summary row exists for this subject/exam/class/division combo
+            continue;
+        }
+
+        $esId = $summaryRow->esId;
+
+        // Check if exam_detail already has this student + esId
+        $existing = $this->db->get_where('exam_detail', [
+            'edSmId' => $studentId,
+            'edEsId' => $esId
+        ])->row();
+
+        if ($existing) {
+            $this->db->where('edSmId', $studentId);
+            $this->db->where('edEsId', $esId);
+            $this->db->update('exam_detail', [
+                'edMark' => $markValue
+            ]);
+        } else {
+            $this->db->insert('exam_detail', [
+                'edSmId' => $studentId,
+                'edEsId' => $esId,
+                'edMark' => $markValue
+            ]);
+        }
+    }
+
+    $this->db->trans_complete();
+
+    return $this->db->trans_status();
+}
 
 
 
