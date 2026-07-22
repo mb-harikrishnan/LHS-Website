@@ -6,6 +6,8 @@ $showGlobalSearch = false;
 ?>
 
 <link rel="stylesheet" href="<?php echo base_url('assets/css/exam.css'); ?>">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
       <!-- Reports Table Card -->
       <div class="card">
@@ -47,26 +49,36 @@ $examName  = $allocation[0]->emDisplayName;
            value="<?php echo $examName;?>"
            readonly>
 </div>
-
 <?php foreach($allocation as $row){ ?>
 
-<div class="news-form-group">
+<div class="allocation-card">
 
-    <label><?php echo $row->smName; ?></label>
+    <div class="subject-info">
+        <label class="subject-label">
+            <?php echo $row->smName; ?>
+        </label>
 
-    <input type="hidden"
-           name="emdId[]"
-           value="<?php echo $row->emdId; ?>">
+        <input type="hidden"
+               name="emdId[]"
+               value="<?php echo $row->emdId; ?>">
 
-    <input type="number"
-           name="marks[]"
-           class="news-select"
-           value="<?php echo $row->emdMaxMark; ?>">
+        <input
+            type="number"
+            class="marks-input"
+            name="marks[]"
+            value="<?php echo $row->emdMaxMark; ?>"
+            placeholder="Maximum Mark">
+    </div>
+
+    <button
+        type="button"
+        class="delete-row-btn"
+        data-emdid="<?php echo $row->emdId; ?>">
+<i class="fa-solid fa-trash"></i>    </button>
 
 </div>
 
 <?php } ?>
-
 <div class="news-btn-group">
     <button type="submit" class="submit-btn">
         Update
@@ -111,6 +123,81 @@ Swal.fire({
 
 
 <style>
+
+ .allocation-card{
+    display:flex;
+    align-items:flex-end;
+    gap:10px;
+
+    padding:10px;
+    margin-bottom:11px;
+
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    background:#fff;
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+
+.subject-info{
+    flex:1;
+}
+
+.subject-label{
+    display:block;
+    font-size:10px;
+    font-weight:600;
+    color:#374151;
+    margin-bottom:10px;
+    text-transform:uppercase;
+}
+
+/* Full width input like Exam field */
+.marks-input{
+    width:100%;
+    height:30px;
+
+    border:1px solid #d1d5db;
+    border-radius:10px;
+
+    padding:0 15px;
+    font-size:16px;
+    background:#fff;
+
+    transition:.3s;
+    box-sizing:border-box;
+}
+
+.marks-input:focus{
+    outline:none;
+    border-color:#2563eb;
+    box-shadow:0 0 0 3px rgba(37,99,235,.12);
+}
+
+.delete-row-btn{
+    width:50px;
+    height:30px;
+
+    border:none;
+    border-radius:10px;
+
+    background:#ef4444;
+    color:#fff;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+    transition:.3s;
+}
+
+.delete-row-btn i{
+    font-size:18px;
+}
+
+.delete-row-btn:hover{
+    background:#dc2626;
+}
     /* Multiple Select2 */
 .select2-container--default .select2-selection--multiple{
     min-height:40px !important;
@@ -192,5 +279,49 @@ Swal.fire({
 
     });
 
+});
+</script>
+
+
+<script>
+    $(document).on('click', '.delete-row-btn', function(){
+
+    var btn = $(this);
+    var emdId = btn.data('emdid');
+var row = btn.closest('.allocation-card');
+    Swal.fire({
+        icon: 'warning',
+        title: 'Delete this allocation?',
+        text: 'This cannot be undone.',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete',
+        confirmButtonColor: '#dc2626'
+    }).then(function(result){
+
+        if(!result.isConfirmed) return;
+
+        $.ajax({
+            url: "<?php echo base_url('delete_allocation'); ?>",
+            type: "POST",
+            data: { emdId: emdId },
+            dataType: "json",
+            success: function(res){
+                if(res.status == "success"){
+                    row.remove();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                } else {
+                    Swal.fire('Error', res.message, 'error');
+                }
+            },
+            error: function(){
+                Swal.fire('Error', 'Something went wrong', 'error');
+            }
+        });
+    });
 });
 </script>

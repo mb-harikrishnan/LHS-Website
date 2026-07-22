@@ -77,16 +77,11 @@ $showGlobalSearch = false;
         </div>
 
        <div class="news-form-group">
-        <label for="class_name">Exam Mark <span style="color:red"></span></label>
-
-        <input type="text"
-               id="marks"
-               name="marks"
-               class="news-select"
-               placeholder="Enter Exam Name">
-
-        <small id="class_error" style="color:red;display:none;"></small>
+    <label class="cd-label">Subject Marks</label>
+    <div id="subjectMarksContainer">
+        <small style="color:#6b7280;">Select subjects above to enter their marks.</small>
     </div>
+</div>
 
     <div class="news-btn-group">
         <button type="submit" class="submit-btn">
@@ -295,74 +290,56 @@ $(function(){
 
         submitHandler: function (form) {
 
-            $.ajax({
-
-                url: "<?php echo base_url('save_exam_mark_details'); ?>",
-
-                type: "POST",
-
-                data: $(form).serialize(),
-
-                dataType: "json",
-
-                beforeSend: function () {
-
-                    $(".submit-btn")
-                        .prop("disabled", true)
-                        .html('<i class="fa fa-spinner fa-spin"></i> Saving...');
-
-                },
-
-                success: function (response) {
-
-                    $(".submit-btn")
-                        .prop("disabled", false)
-                        .html('<i class="fa fa-save"></i> Submit');
-
-                    if (response.status == "success") {
-
-                        Swal.fire({
-                            icon: "success",
-                            title: "Success",
-                            text: response.message
-                        });
-
-                        form.reset();
-
-                        $('#cmId,#emId,#subjects')
-                            .val(null)
-                            .trigger('change');
-
-                    } else {
-
-                        Swal.fire({
-                            icon: "error",
-                            title: "Error",
-                            text: response.message
-                        });
-
-                    }
-
-                },
-
-                error: function () {
-
-                    $(".submit-btn")
-                        .prop("disabled", false)
-                        .html('<i class="fa fa-save"></i> Submit');
-
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error",
-                        text: "Something went wrong."
-                    });
-
-                }
-
-            });
-
-            return false;
+    // Manual validation: every selected subject needs a mark
+    var missing = false;
+    $('.subject-mark-input').each(function(){
+        var val = $(this).val();
+        if (val === '' || isNaN(val) || Number(val) <= 0) {
+            missing = true;
+            $(this).addClass('is-invalid');
+        } else {
+            $(this).removeClass('is-invalid');
         }
+    });
+
+    if ($('.subject-mark-input').length === 0) {
+        Swal.fire('Error', 'Please select at least one subject.', 'error');
+        return false;
+    }
+
+    if (missing) {
+        Swal.fire('Error', 'Please enter a valid mark for every selected subject.', 'error');
+        return false;
+    }
+
+    $.ajax({
+        url: "<?php echo base_url('save_exam_mark_details'); ?>",
+        type: "POST",
+        data: $(form).serialize(),
+        dataType: "json",
+        beforeSend: function () {
+            $(".submit-btn").prop("disabled", true).html('<i class="fa fa-spinner fa-spin"></i> Saving...');
+        },
+        success: function (response) {
+            $(".submit-btn").prop("disabled", false).html('<i class="fa fa-save"></i> Submit');
+
+            if (response.status == "success") {
+                Swal.fire({ icon: "success", title: "Success", text: response.message });
+                form.reset();
+                $('#cmId,#emId,#subjects').val(null).trigger('change');
+                $('#subjectMarksContainer').html('<small style="color:#6b7280;">Select subjects above to enter their marks.</small>');
+            } else {
+                Swal.fire({ icon: "error", title: "Error", text: response.message });
+            }
+        },
+        error: function () {
+            $(".submit-btn").prop("disabled", false).html('<i class="fa fa-save"></i> Submit');
+            Swal.fire({ icon: "error", title: "Error", text: "Something went wrong." });
+        }
+    });
+
+    return false;
+}
 
     });
 
@@ -375,9 +352,47 @@ $(function(){
         $(this).valid();
     });
 
-    $('#subjects').on('change', function () {
-        $(this).valid();
+ // Rebuild per-subject mark inputs whenever subject selection changes
+$('#subjects').on('change', function () {
+
+    var selected = $(this).select2('data'); // [{id, text}, ...]
+    var container = $('#subjectMarksContainer');
+
+    // Preserve any marks already typed, keyed by subject id
+    var existing = {};
+    container.find('.subject-mark-input').each(function(){
+        existing[$(this).data('smid')] = $(this).val();
     });
+
+    container.empty();
+
+    if (selected.length === 0) {
+        container.html('<small style="color:#6b7280;">Select subjects above to enter their marks.</small>');
+        return;
+    }
+
+    selected.forEach(function (subj) {
+
+        var prevVal = existing[subj.id] !== undefined ? existing[subj.id] : '';
+
+        var row = $(
+            '<div class="news-form-group subject-mark-row" style="display:flex;align-items:center;gap:10px;">' +
+                '<label style="min-width:140px;margin:0;">' + subj.text + '</label>' +
+                '<input type="number" ' +
+                       'name="marks[' + subj.id + ']" ' +
+                       'class="news-select subject-mark-input" ' +
+                       'data-smid="' + subj.id + '" ' +
+                       'placeholder="Enter mark" ' +
+                       'value="' + prevVal + '" ' +
+                       'min="1">' +
+            '</div>'
+        );
+
+        container.append(row);
+    });
+
+    $(this).valid(); // re-check subjects[] validity
+});
 
     // Remove error while typing
     $('#marks').on('keyup blur', function () {

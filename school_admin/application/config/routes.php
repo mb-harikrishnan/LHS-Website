@@ -246,6 +246,7 @@ $route['delete_allocation_list'] = 'members_area/SubjectController/delete_alloca
 $route['edit_allocation/(:num)/(:num)'] = 'members_area/SubjectController/edit_allocation/$1/$2';
 
 $route['update_allocation'] = 'members_area/SubjectController/update_allocation';
+$route['delete_allocation'] = 'members_area/SubjectController/delete_allocation';
 
 
 $route['updateMarks'] = 'members_area/SubjectController/updateMarks';

@@ -313,6 +313,23 @@ public function getExistingMarks($exam_id, $class_id, $division_id)
 
 
 
+public function getSubjectMaxMarks($exam_id, $class_id)
+{
+    $this->db->select('emdSmId, emdMaxMark');
+    $this->db->where('emdEmId', $exam_id);
+    $this->db->where('emdCmId', $class_id);
+
+    $result = $this->db->get('exam_master_detail')->result();
+
+    $maxMarks = [];
+    foreach ($result as $row) {
+        $maxMarks[$row->emdSmId] = $row->emdMaxMark;
+    }
+
+    return $maxMarks;
+}
+
+
 
 // public function fetch_all_marksentry_list()
 // {
@@ -591,6 +608,17 @@ public function updateMarks($exam, $class, $division, $marks)
     $this->db->trans_complete();
 
     return $this->db->trans_status();
+}
+
+
+
+
+public function delete_allocation_detail($emdId)
+{
+    $this->db->where('emdId', $emdId);
+    $this->db->delete('exam_master_detail');
+
+    return $this->db->affected_rows() > 0;
 }
 
 

@@ -128,6 +128,19 @@ $showGlobalSearch = false;
         border-color: var(--green, #16a34a);
         box-shadow: 0 0 0 2px rgba(22,163,74,0.15);
     }
+
+
+    .mark-error {
+    color: #d9534f;
+    font-size: 10.5px;
+    font-weight: 600;
+    margin-top: 3px;
+    line-height: 1.2;
+}
+#marksTable input.mark-input.input-error {
+    border-color: #d9534f !important;
+    box-shadow: 0 0 0 2px rgba(217,83,79,.15) !important;
+}
 </style>
 
 
@@ -183,7 +196,7 @@ function loadMarksTable(class_id, division_id, exam_id)
 
             if(res.status=="success")
             {
-                buildTable(res.students, res.subjects, res.marks);
+               buildTable(res.students, res.subjects, res.marks, res.maxMarks);
             }
             else if(res.status=="no_students")
             {
@@ -205,10 +218,10 @@ function loadMarksTable(class_id, division_id, exam_id)
 
 }
 
-
-function buildTable(students, subjects, marks)
+function buildTable(students, subjects, marks, maxMarks)
 {
     marks = marks || [];
+    maxMarks = maxMarks || {};
 
     // Build a quick lookup: "studentId_subjectId" -> mark
     let markMap = {};
@@ -223,7 +236,12 @@ function buildTable(students, subjects, marks)
     head += "<th>Student Name</th>";
 
     $.each(subjects,function(i,s){
-        head += "<th>"+s.smName+"</th>";
+        let max = maxMarks.hasOwnProperty(s.smId) ? maxMarks[s.smId] : null;
+        head += "<th>" + s.smName;
+        if (max !== null) {
+            head += "<br><small style='font-weight:500;'>(Max: " + max + ")</small>";
+        }
+        head += "</th>";
     });
 
     $("#marksTableHead").html(head);
@@ -242,13 +260,16 @@ function buildTable(students, subjects, marks)
 
             let key = st.smId + "_" + sub.smId;
             let existingMark = markMap.hasOwnProperty(key) ? markMap[key] : "";
+            let max = maxMarks.hasOwnProperty(sub.smId) ? maxMarks[sub.smId] : "";
 
             body += "<td>";
             body += "<input type='text' class='mark-input' " +
                     "data-row='"+i+"' " +
                     "data-col='"+j+"' " +
+                    "data-max='"+max+"' " +
                     "name='marks["+st.smId+"]["+sub.smId+"]' " +
                     "value='"+existingMark+"'>";
+            body += "<div class='mark-error' style='display:none;'></div>";
             body += "</td>";
 
         });
@@ -319,6 +340,19 @@ function buildTable(students, subjects, marks)
 <script>
     $(document).on("click", "#saveMarksBtn", function () {
 
+      // Validate all marks first
+    let hasError = false;
+    $(".mark-input").each(function () {
+        if (!validateMarkInput($(this))) {
+            hasError = true;
+        }
+    });
+
+    if (hasError) {
+        Swal.fire("Invalid Marks", "Please fix the highlighted marks before saving.", "warning");
+        return; // stop here
+    }
+
     let class_id = $("#class").val();
     let division_id = $("#division").val();
     let exam_id = $("#exam").val();
@@ -372,4 +406,45 @@ function buildTable(students, subjects, marks)
     });
 
 });
+</script>
+
+
+
+<script>
+    $(document).on('input', '.mark-input', function () {
+    validateMarkInput($(this));
+});
+
+function validateMarkInput($input) {
+    let val = $input.val().trim();
+    let max = parseFloat($input.data('max'));
+    let $error = $input.next('.mark-error');
+
+    $input.removeClass('input-error');
+    $error.hide().text('');
+
+    if (val === '') return true; // empty allowed
+
+    let num = parseFloat(val);
+
+    if (isNaN(num) || !/^\d+(\.\d+)?$/.test(val)) {
+        $input.addClass('input-error');
+        $error.text('Numbers only').show();
+        return false;
+    }
+
+    if (num < 0) {
+        $input.addClass('input-error');
+        $error.text('Invalid').show();
+        return false;
+    }
+
+    if (!isNaN(max) && num > max) {
+        $input.addClass('input-error');
+        $error.text('Max ' + max).show();
+        return false;
+    }
+
+    return true;
+}
 </script>

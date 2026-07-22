@@ -503,44 +503,105 @@ public function insert_exam()
 
 
 
+// public function save_exam_mark_details()
+// {
+//     $classId = $this->input->post('cmId');
+//     $examId  = $this->input->post('emId');
+//     $subjects = $this->input->post('smId');
+//     $marks = $this->input->post('marks');
+
+//     foreach($subjects as $subject)
+//     {
+//         $check = $this->db
+//                 ->where('emdCmId',$classId)
+//                 ->where('emdEmId',$examId)
+//                 ->where('emdSmId',$subject)
+//                 ->get('exam_master_detail');
+
+//         if($check->num_rows()>0)
+//         {
+//             echo json_encode([
+//                 "status"=>"error",
+//                 "message"=>"Selected Class, Exam and Subject already exists."
+//             ]);
+//             return;
+//         }
+//     }
+
+//     foreach($subjects as $subject)
+//     {
+//         $this->db->insert('exam_master_detail',[
+//             'emdCmId'=>$classId,
+//             'emdEmId'=>$examId,
+//             'emdSmId'=>$subject,
+//             'emdMaxMark'=>$marks
+//         ]);
+//     }
+
+//     echo json_encode([
+//         "status"=>"success",
+//         "message"=>"Exam details added successfully."
+//     ]);
+// }
+
+
+
 public function save_exam_mark_details()
 {
-    $classId = $this->input->post('cmId');
-    $examId  = $this->input->post('emId');
+    $classId  = $this->input->post('cmId');
+    $examId   = $this->input->post('emId');
     $subjects = $this->input->post('smId');
-    $marks = $this->input->post('marks');
+    $marks    = $this->input->post('marks'); // associative array: [subjectId => mark]
 
-    foreach($subjects as $subject)
-    {
-        $check = $this->db
-                ->where('emdCmId',$classId)
-                ->where('emdEmId',$examId)
-                ->where('emdSmId',$subject)
-                ->get('exam_master_detail');
+    if (empty($classId) || empty($examId) || empty($subjects) || empty($marks)) {
+        echo json_encode([
+            "status"  => "error",
+            "message" => "Invalid Data"
+        ]);
+        return;
+    }
 
-        if($check->num_rows()>0)
-        {
+    // Validate: every selected subject must have a valid mark
+    foreach ($subjects as $subject) {
+        if (!isset($marks[$subject]) || !is_numeric($marks[$subject]) || $marks[$subject] <= 0) {
             echo json_encode([
-                "status"=>"error",
-                "message"=>"Selected Class, Exam and Subject already exists."
+                "status"  => "error",
+                "message" => "Please provide a valid mark for every selected subject."
             ]);
             return;
         }
     }
 
-    foreach($subjects as $subject)
-    {
-        $this->db->insert('exam_master_detail',[
-            'emdCmId'=>$classId,
-            'emdEmId'=>$examId,
-            'emdSmId'=>$subject,
-            'emdMaxMark'=>$marks
+    // Check duplicates
+    foreach ($subjects as $subject) {
+        $check = $this->db
+                ->where('emdCmId', $classId)
+                ->where('emdEmId', $examId)
+                ->where('emdSmId', $subject)
+                ->get('exam_master_detail');
+
+        if ($check->num_rows() > 0) {
+            echo json_encode([
+                "status"  => "error",
+                "message" => "Selected Class, Exam and Subject already exists."
+            ]);
+            return;
+        }
+    }
+
+    // Insert with per-subject marks
+    foreach ($subjects as $subject) {
+        $this->db->insert('exam_master_detail', [
+            'emdCmId'    => $classId,
+            'emdEmId'    => $examId,
+            'emdSmId'    => $subject,
+            'emdMaxMark' => $marks[$subject]
         ]);
     }
 
     echo json_encode([
-        "status"=>"success",
-        "message"=>"Exam details added successfully."
+        "status"  => "success",
+        "message" => "Exam details added successfully."
     ]);
 }
 
@@ -564,24 +625,39 @@ public function save_exam_mark_details()
 
 
 
-//   public function getMarksEntry()
-// {
 
+
+
+// public function getMarksEntry()
+// {
 //     $class_id    = $this->input->post('class_id');
 //     $division_id = $this->input->post('division_id');
 //     $exam_id     = $this->input->post('exam_id');
 
-//     $students = $this->Subject_Model->getStudents($class_id,$division_id);
+//     $students = $this->Subject_Model->getStudents($class_id, $division_id);
+//     $subjects = $this->Subject_Model->getExamSubjects($class_id, $exam_id);
 
-//     $subjects = $this->Subject_Model->getExamSubjects($class_id,$exam_id);
+//     if (empty($students)) {
+//         echo json_encode(['status' => 'info', 'message' => 'No students found for the selected Class / Division']);
+//         return;
+//     }
+
+//     if (empty($subjects)) {
+//         echo json_encode(['status' => 'info', 'message' => 'No subjects configured for the selected Class / Exam']);
+//         return;
+//     }
+
+//     $marks = $this->Subject_Model->getExistingMarks($exam_id, $class_id, $division_id);
 
 //     echo json_encode([
-//         "status"=>"success",
-//         "students"=>$students,
-//         "subjects"=>$subjects
+//         'status'   => 'success',
+//         'students' => $students,
+//         'subjects' => $subjects,
+//         'marks'    => $marks   // <-- new
 //     ]);
-
 // }
+
+
 
 
 public function getMarksEntry()
@@ -603,13 +679,15 @@ public function getMarksEntry()
         return;
     }
 
-    $marks = $this->Subject_Model->getExistingMarks($exam_id, $class_id, $division_id);
+    $marks    = $this->Subject_Model->getExistingMarks($exam_id, $class_id, $division_id);
+    $maxMarks = $this->Subject_Model->getSubjectMaxMarks($exam_id, $class_id); // <-- new
 
     echo json_encode([
-        'status'   => 'success',
-        'students' => $students,
-        'subjects' => $subjects,
-        'marks'    => $marks   // <-- new
+        'status'    => 'success',
+        'students'  => $students,
+        'subjects'  => $subjects,
+        'marks'     => $marks,
+        'maxMarks'  => $maxMarks   // <-- new
     ]);
 }
 
@@ -626,18 +704,7 @@ public function students_list()
     $this->load->view('members_area/footer');
 
 }
-// public function Marksentry_list()
-// {
 
-//     $data['details'] = $this->Subject_Model->fetch_all_marksentry_list();
-   
-//     $this->load->view('members_area/header');
-//     $this->load->view('members_area/marksentry_list',$data);
-//     $this->load->view('members_area/footer');
-
-    
-
-// }
 
 public function Marksentry_list()
 {
@@ -672,76 +739,143 @@ public function Marksentry_list()
 
 
 
-public function view_marks_students($exam,$class,$division)
+// public function view_marks_students($exam,$class,$division)
+// {
+//    // Subjects
+// $this->db->select("exam_summary.esSmId, subject_master.smName");
+// $this->db->from("exam_summary");
+// $this->db->join("subject_master","subject_master.smId = exam_summary.esSmId");
+// $this->db->where("exam_summary.esEmId",$exam);
+// $this->db->where("exam_summary.esCmId",$class);
+// $this->db->where("exam_summary.esDmId",$division);
+// $this->db->group_by("exam_summary.esSmId");
+
+// $data['subjects'] = $this->db->get()->result();
+
+// $this->db->reset_query();   // <-- Important
+
+
+// // Students
+// $this->db->distinct();
+// $this->db->select("
+//     students_master.smId,
+//     students_master.smAdmissionNo,
+//     students_master.smName
+// ");
+// $this->db->from("exam_detail");
+// $this->db->join("exam_summary","exam_summary.esId = exam_detail.edEsId");
+// $this->db->join("students_master","students_master.smId = exam_detail.edSmId");
+// $this->db->where("exam_summary.esEmId",$exam);
+// $this->db->where("exam_summary.esCmId",$class);
+// $this->db->where("exam_summary.esDmId",$division);
+
+// $data['students'] = $this->db->get()->result();
+
+
+
+
+
+//     // Marks
+//     $this->db->select("
+//         exam_detail.edSmId AS student_id,
+//         exam_summary.esSmId AS subject_id,
+//         exam_detail.edMark
+//     ");
+
+//     $this->db->from("exam_detail");
+//     $this->db->join("exam_summary","exam_summary.esId=exam_detail.edEsId");
+
+//     $this->db->where("exam_summary.esEmId",$exam);
+//     $this->db->where("exam_summary.esCmId",$class);
+//     $this->db->where("exam_summary.esDmId",$division);
+
+//     $result=$this->db->get()->result();
+
+//     $marks=[];
+
+//     foreach($result as $row){
+//         $marks[$row->student_id][$row->subject_id]=$row->edMark;
+//     }
+
+
+//         $data['exam']     = $exam;
+//     $data['class']    = $class;
+//     $data['division'] = $division;
+//     $data['marks']=$marks;
+
+//     $this->load->view('members_area/header');
+//     $this->load->view('members_area/view_marks',$data);
+//     $this->load->view('members_area/footer');
+// }
+
+
+public function view_marks_students($exam, $class, $division)
 {
-   // Subjects
-$this->db->select("exam_summary.esSmId, subject_master.smName");
-$this->db->from("exam_summary");
-$this->db->join("subject_master","subject_master.smId = exam_summary.esSmId");
-$this->db->where("exam_summary.esEmId",$exam);
-$this->db->where("exam_summary.esCmId",$class);
-$this->db->where("exam_summary.esDmId",$division);
-$this->db->group_by("exam_summary.esSmId");
+    // Subjects
+    $this->db->select("exam_summary.esSmId, subject_master.smName");
+    $this->db->from("exam_summary");
+    $this->db->join("subject_master", "subject_master.smId = exam_summary.esSmId");
+    $this->db->where("exam_summary.esEmId", $exam);
+    $this->db->where("exam_summary.esCmId", $class);
+    $this->db->where("exam_summary.esDmId", $division);
+    $this->db->group_by("exam_summary.esSmId");
 
-$data['subjects'] = $this->db->get()->result();
+    $data['subjects'] = $this->db->get()->result();
+    $this->db->reset_query();
 
-$this->db->reset_query();   // <-- Important
+    // Max marks per subject (from exam_master_detail)
+    $this->db->select("emdSmId, emdMaxMark");
+    $this->db->from("exam_master_detail");
+    $this->db->where("emdEmId", $exam);
+    $this->db->where("emdCmId", $class);
 
+    $maxMarkResult = $this->db->get()->result();
+    $this->db->reset_query();
 
-// Students
-$this->db->distinct();
-$this->db->select("
-    students_master.smId,
-    students_master.smAdmissionNo,
-    students_master.smName
-");
-$this->db->from("exam_detail");
-$this->db->join("exam_summary","exam_summary.esId = exam_detail.edEsId");
-$this->db->join("students_master","students_master.smId = exam_detail.edSmId");
-$this->db->where("exam_summary.esEmId",$exam);
-$this->db->where("exam_summary.esCmId",$class);
-$this->db->where("exam_summary.esDmId",$division);
+    $maxMarks = [];
+    foreach ($maxMarkResult as $row) {
+        $maxMarks[$row->emdSmId] = $row->emdMaxMark;
+    }
+    $data['maxMarks'] = $maxMarks;
 
-$data['students'] = $this->db->get()->result();
+    // Students
+    $this->db->select("smId, smAdmissionNo, smName");
+    $this->db->from("students_master");
+    $this->db->where("smClass", $class);
+    $this->db->where("smDiv", $division);
+    $this->db->order_by("smName", "asc");
 
+    $data['students'] = $this->db->get()->result();
+    $this->db->reset_query();
 
-
-
-
-    // Marks
+    // Marks (existing ones only)
     $this->db->select("
         exam_detail.edSmId AS student_id,
         exam_summary.esSmId AS subject_id,
         exam_detail.edMark
     ");
-
     $this->db->from("exam_detail");
-    $this->db->join("exam_summary","exam_summary.esId=exam_detail.edEsId");
+    $this->db->join("exam_summary", "exam_summary.esId = exam_detail.edEsId");
+    $this->db->where("exam_summary.esEmId", $exam);
+    $this->db->where("exam_summary.esCmId", $class);
+    $this->db->where("exam_summary.esDmId", $division);
 
-    $this->db->where("exam_summary.esEmId",$exam);
-    $this->db->where("exam_summary.esCmId",$class);
-    $this->db->where("exam_summary.esDmId",$division);
+    $result = $this->db->get()->result();
 
-    $result=$this->db->get()->result();
-
-    $marks=[];
-
-    foreach($result as $row){
-        $marks[$row->student_id][$row->subject_id]=$row->edMark;
+    $marks = [];
+    foreach ($result as $row) {
+        $marks[$row->student_id][$row->subject_id] = $row->edMark;
     }
 
-
-        $data['exam']     = $exam;
+    $data['exam']     = $exam;
     $data['class']    = $class;
     $data['division'] = $division;
-    $data['marks']=$marks;
+    $data['marks']    = $marks;
 
     $this->load->view('members_area/header');
-    $this->load->view('members_area/view_marks',$data);
+    $this->load->view('members_area/view_marks', $data);
     $this->load->view('members_area/footer');
 }
-
-
 
 
 
@@ -1131,7 +1265,33 @@ public function update_allocation()
 
 
 
+public function delete_allocation()
+{
+    $emdId = $this->input->post('emdId');
 
+    if(empty($emdId) || !is_numeric($emdId))
+    {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Invalid Data'
+        ]);
+        return;
+    }
+
+    $deleted = $this->Subject_Model->delete_allocation_detail($emdId);
+
+    if($deleted)
+    {
+        echo json_encode(['status' => 'success']);
+    }
+    else
+    {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Record not found or already deleted'
+        ]);
+    }
+}
 
 
 

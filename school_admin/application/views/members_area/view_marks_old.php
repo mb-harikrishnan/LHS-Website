@@ -9,13 +9,12 @@ $showGlobalSearch = false;
 <link rel="stylesheet" href="<?php echo base_url('assets/css/report.css'); ?>">
 
 <style>
-/* ---------- Mark List Card (matches Marks Entry design) ---------- */
+/* ---------- Mark List Card ---------- */
 .card {
     background: #fff;
     border-radius: 14px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.06);
     padding: 24px 28px;
-    position: relative;
 }
 .card-head {
     display: flex;
@@ -35,6 +34,15 @@ $showGlobalSearch = false;
     color: #1e2a5e;
     font-size: 17px;
 }
+.card-badge {
+    background: #eef1f9;
+    color: #1e2a5e;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-left: 8px;
+}
 .card-action {
     background: #1e2a5e;
     color: #fff;
@@ -51,88 +59,58 @@ $showGlobalSearch = false;
 }
 .card-action:hover { background: #16204a; }
 
-/* Exam tag badge (e.g. "PA1") floating above the table, like the entry page */
-.exam-tag {
-    position: absolute;
-    top: -12px;
-    left: 24px;
-    background: #fff;
-    border: 1px solid #d3d8e4;
-    border-radius: 8px;
-    padding: 4px 14px;
-    font-weight: 700;
-    font-size: 13px;
-    color: #1e2a5e;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-
 .report-table-wrap {
     overflow-x: auto;
-    margin-top: 10px;
 }
 
 #marksTable {
     width: 100% !important;
-    border-collapse: collapse;
-}
-#marksTable th, #marksTable td {
-    border: 1px solid #ddd;
-    padding: 10px 12px;
-    text-align: center;
-    font-size: 13.5px;
 }
 #marksTable thead th {
-    background: #f4f4f4;
+    background: #f6f8fc;
     color: #1e2a5e;
-    font-weight: 700;
+    font-size: 12.5px;
     text-transform: uppercase;
-    letter-spacing: .03em;
+    letter-spacing: .04em;
+    padding: 12px 10px;
+    border-bottom: 2px solid #e2e6f0 !important;
     white-space: nowrap;
+}
+#marksTable tbody td {
+    padding: 10px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f0f2f7;
+    font-size: 14px;
+    color: #333;
 }
 #marksTable tbody tr:hover {
     background: #f9fafc;
 }
-
-/* SL column */
-#marksTable td.sl-cell {
+#marksTable tbody td:first-child {
     font-weight: 600;
-    color: #444;
+    color: #1e2a5e;
 }
 
-/* Admission No + Student Name styled like blue links, same as entry page */
-#marksTable td.admission-cell,
-#marksTable td.student-name-cell {
-    color: #1e5fbf;
-    font-weight: 600;
-    text-align: left;
-    white-space: nowrap;
-}
-
-/* Mark input boxes - plain bordered, like entry page */
 .mark-input {
-    width: 60px;
-    padding: 6px 8px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
+    width: 68px;
+    padding: 7px 8px;
+    border: 1px solid #d3d8e4;
+    border-radius: 8px;
     text-align: center;
-    font-size: 13.5px;
-    background: #fff;
-    color: #333;
+    font-size: 14px;
+    background: #f4f5f8;
+    color: #888;
     transition: all .15s ease;
-}
-.mark-input[readonly] {
-    background: #fff;
-    color: #333;
 }
 .mark-input.editing {
     background: #fff;
+    color: #1e2a5e;
     border-color: #1e2a5e;
-    box-shadow: 0 0 0 2px rgba(30,42,94,.12);
+    box-shadow: 0 0 0 3px rgba(30,42,94,.12);
     cursor: text;
 }
 .mark-input:focus {
     outline: none;
-    border-color: #1e2a5e;
 }
 
 .table-actions {
@@ -170,26 +148,10 @@ $showGlobalSearch = false;
 .dataTables_wrapper .dataTables_paginate .paginate_button {
     border-radius: 6px !important;
 }
-
-.mark-error {
-    color: #d9534f;
-    font-size: 10.5px;
-    font-weight: 600;
-    margin-top: 3px;
-    line-height: 1.2;
-}
-.mark-input.input-error {
-    border-color: #d9534f !important;
-    box-shadow: 0 0 0 2px rgba(217,83,79,.15) !important;
-}
 </style>
 
 <!-- Reports Table Card -->
 <div class="card">
-
-    <!-- <?php if (isset($exam) && !empty($exam)) { ?>
-        <div class="exam-tag"><?= is_object($exam) ? $exam->emName : $exam ?></div>
-    <?php } ?> -->
 
     <div class="card-head">
         <div class="card-title">
@@ -198,6 +160,7 @@ $showGlobalSearch = false;
                 <polyline points="14 2 14 8 20 8"/>
             </svg>
             Mark List
+            <span class="card-badge" id="tableBadge"><?= count($students) ?> records</span>
         </div>
 
         <button class="card-action" onclick="window.location.href='<?php echo base_url('Marksentry_list'); ?>'">
@@ -208,42 +171,33 @@ $showGlobalSearch = false;
     <div class="report-table-wrap" id="reportsDataTable">
         <table class="table" id="marksTable">
             <thead>
-    <tr>
-        <th>SL</th>
-        <th>Admission No</th>
-        <th>Student Name</th>
-        <?php foreach ($subjects as $sub) { ?>
-            <th>
-                <?= $sub->smName ?>
-                <br><small style="font-weight:500; text-transform:none;">
-                    (Max: <?= isset($maxMarks[$sub->esSmId]) ? $maxMarks[$sub->esSmId] : '-' ?>)
-                </small>
-            </th>
-        <?php } ?>
-    </tr>
-</thead>
-<tbody>
-    <?php $i = 1; foreach ($students as $stu) { ?>
-        <tr>
-            <td class="sl-cell"><?= $i++ ?></td>
-            <td class="admission-cell"><?= $stu->smAdmissionNo ?></td>
-            <td class="student-name-cell"><?= $stu->smName ?></td>
-            <?php foreach ($subjects as $sub) { ?>
-                <td>
-                    <input
-                        type="text"
-                        class="mark-input"
-                        readonly
-                        data-student="<?= $stu->smId ?>"
-                        data-subject="<?= $sub->esSmId ?>"
-                        data-max="<?= isset($maxMarks[$sub->esSmId]) ? $maxMarks[$sub->esSmId] : '' ?>"
-                        value="<?= isset($marks[$stu->smId][$sub->esSmId]) ? $marks[$stu->smId][$sub->esSmId] : '' ?>">
-                    <div class="mark-error" style="display:none;"></div>
-                </td>
-            <?php } ?>
-        </tr>
-    <?php } ?>
-</tbody>
+                <tr>
+                    <th>Admission No</th>
+                    <th>Student</th>
+                    <?php foreach ($subjects as $sub) { ?>
+                        <th><?= $sub->smName ?></th>
+                    <?php } ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($students as $stu) { ?>
+                    <tr>
+                        <td><?= $stu->smAdmissionNo ?></td>
+                        <td><?= $stu->smName ?></td>
+                        <?php foreach ($subjects as $sub) { ?>
+                            <td>
+                                <input
+    type="text"
+    class="mark-input"
+    readonly
+    data-student="<?= $stu->smId ?>"
+    data-subject="<?= $sub->esSmId ?>"
+    value="<?= isset($marks[$stu->smId][$sub->esSmId]) ? $marks[$stu->smId][$sub->esSmId] : '' ?>">
+                            </td>
+                        <?php } ?>
+                    </tr>
+                <?php } ?>
+            </tbody>
         </table>
 
         <div class="table-actions">
@@ -276,7 +230,7 @@ $(document).ready(function () {
         responsive: true,
         autoWidth: false,
         pageLength: 10,
-        order: [[0, 'asc']],
+        order: [[0, 'desc']],
         columnDefs: [
             { orderable: false, targets: '_all' }
         ],
@@ -300,19 +254,6 @@ $(document).ready(function () {
     // ---- UPDATE BUTTON ----
     $(document).on('click', '#updateBtn', function () {
 
-     // Validate all inputs first
-    let hasError = false;
-    $(".mark-input").each(function () {
-        if (!validateMarkInput($(this))) {
-            hasError = true;
-        }
-    });
-
-    if (hasError) {
-        Swal.fire("Invalid Marks", "Please fix the highlighted marks before updating.", "warning");
-        return; // stop here, don't send AJAX
-    }
-
         let marks = [];
 
         $(".mark-input").each(function () {
@@ -329,12 +270,12 @@ $(document).ready(function () {
             url: "<?php echo base_url('updateMarks') ?>",
             type: "POST",
             dataType: "json",
-            data: {
-                exam: <?= json_encode(isset($exam) ? $exam : null) ?>,
-                class: <?= json_encode(isset($class) ? $class : null) ?>,
-                division: <?= json_encode(isset($division) ? $division : null) ?>,
-                marks: marks
-            },
+   data: {
+    exam: <?= json_encode(isset($exam) ? $exam : null) ?>,
+    class: <?= json_encode(isset($class) ? $class : null) ?>,
+    division: <?= json_encode(isset($division) ? $division : null) ?>,
+    marks: marks
+},
             success: function (res) {
                 if (res.status == "success") {
                     $(".mark-input").prop("readonly", true).removeClass("editing");
@@ -355,92 +296,4 @@ $(document).ready(function () {
     });
 
 });
-</script>
-
-
-
-<!-- keyboard -->
-
-<script>
-$(document).on('keydown', '.mark-input', function (e) {
-
-    // Only work when inputs are editable
-    if ($(this).prop('readonly')) return;
-
-    var $inputs = $('.mark-input:visible');
-    var currentIndex = $inputs.index(this);
-
-    // Figure out how many columns (subjects) there are per row
-    var colCount = $('#marksTable thead th').length - 3; // minus SL, Admission No, Student Name
-
-    var targetIndex = null;
-
-    switch (e.key) {
-        case 'ArrowRight':
-            targetIndex = currentIndex + 1;
-            break;
-        case 'ArrowLeft':
-            targetIndex = currentIndex - 1;
-            break;
-        case 'ArrowDown':
-            targetIndex = currentIndex + colCount;
-            break;
-        case 'ArrowUp':
-            targetIndex = currentIndex - colCount;
-            break;
-        case 'Enter':
-            e.preventDefault(); // stop form submit / newline
-            targetIndex = currentIndex + 1; // move to next cell like Tab
-            break;
-        default:
-            return; // let all other keys behave normally
-    }
-
-    if (targetIndex !== null && targetIndex >= 0 && targetIndex < $inputs.length) {
-        e.preventDefault();
-        $inputs.eq(targetIndex).focus().select();
-    }
-});
-</script>
-
-
-<script>
-    // ---- MARK VALIDATION (max mark per subject) ----
-$(document).on('input', '.mark-input', function () {
-    validateMarkInput($(this));
-});
-
-function validateMarkInput($input) {
-    var val = $input.val().trim();
-    var max = parseFloat($input.data('max'));
-    var $error = $input.next('.mark-error');
-
-    // Clear previous state
-    $input.removeClass('input-error');
-    $error.hide().text('');
-
-    if (val === '') return true; // empty is allowed
-
-    var num = parseFloat(val);
-
-    if (isNaN(num) || !/^\d+(\.\d+)?$/.test(val)) {
-        $input.addClass('input-error');
-        $error.text('Numbers only').show();
-        return false;
-    }
-
-    if (!isNaN(max) && num > max) {
-        $input.addClass('input-error');
-        $error.text('Max ' + max).show();
-        return false;
-    }
-
-    if (num < 0) {
-        $input.addClass('input-error');
-        $error.text('Invalid').show();
-        return false;
-    }
-
-    return true;
-}
 </script>

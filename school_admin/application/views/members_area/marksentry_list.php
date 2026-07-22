@@ -59,7 +59,7 @@ foreach($details as $row){
 
 <td>
 
-<a class="btn btn-success btn-sm"
+<a class="btn btn-primary btn-sm"
 href="<?= base_url('view_marks_students/'.$row->esEmId.'/'.$row->esCmId.'/'.$row->esDmId);?>">
 
 View
