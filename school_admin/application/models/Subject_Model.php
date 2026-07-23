@@ -623,7 +623,29 @@ public function delete_allocation_detail($emdId)
 
 
 
-  
+  public function get_available_subjects($emId, $cmId)
+{
+    // Subjects already allocated for this class + exam
+    $this->db->select('emdSmId');
+    $this->db->from('exam_master_detail');
+    $this->db->where('emdEmId', $emId);
+    $this->db->where('emdCmId', $cmId);
+    $allocated = $this->db->get()->result();
+
+    $allocatedIds = array_map(function($row){ return $row->emdSmId; }, $allocated);
+
+    $this->db->select('smId, smName');
+    $this->db->from('subject_master');
+
+    // Keep this line only if subjects are scoped to a class in your schema.
+    // Remove it if subject_master lists all subjects regardless of class.
+
+    if (!empty($allocatedIds)) {
+        $this->db->where_not_in('smId', $allocatedIds);
+    }
+
+    return $this->db->get()->result();
+}
 
 
 }

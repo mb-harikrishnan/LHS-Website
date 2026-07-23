@@ -11,11 +11,10 @@ $showGlobalSearch = false;
 <style>
 /* ---------- Mark List Card (matches Marks Entry design) ---------- */
 .card {
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-    padding: 24px 28px;
-    position: relative;
+  padding:15px;
+    border-radius:10px;
+    box-shadow:none;
+    border:1px solid #ddd;
 }
 .card-head {
     display: flex;
@@ -66,14 +65,16 @@ $showGlobalSearch = false;
     box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
-.report-table-wrap {
-    overflow-x: auto;
-    margin-top: 10px;
+.report-table-wrap{
+    overflow-x:auto;
+    border:1px solid #d9d9d9;
+    border-radius:10px;
 }
-
-#marksTable {
-    width: 100% !important;
-    border-collapse: collapse;
+#marksTable{
+    width:100%;
+    border-collapse:collapse;
+    background:#fff;
+    font-size:15px;
 }
 #marksTable th, #marksTable td {
     border: 1px solid #ddd;
@@ -81,16 +82,40 @@ $showGlobalSearch = false;
     text-align: center;
     font-size: 13.5px;
 }
-#marksTable thead th {
-    background: #f4f4f4;
-    color: #1e2a5e;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .03em;
-    white-space: nowrap;
+#marksTable thead th{
+    background:#f4f4f4;
+    color:#23469d;
+    font-weight:700;
+    text-align:center;
+    border:1px solid #d8d8d8;
+    padding:10px 8px;
+    vertical-align:middle;
 }
+
+#marksTable thead th small{
+    display:block;
+    margin-top:3px;
+    color:#2d3d6e;
+    font-size:13px;
+    font-weight:600;
+}
+
 #marksTable tbody tr:hover {
-    background: #f9fafc;
+    background:#fafafa;
+}
+
+#marksTable tbody td{
+    border:1px solid #dcdcdc;
+    padding:8px;
+    text-align:center;
+    vertical-align:middle;
+    background:#fff;
+}
+
+.sl-cell{
+    width:45px;
+    color:#23469d;
+    font-weight:600;
 }
 
 /* SL column */
@@ -106,6 +131,51 @@ $showGlobalSearch = false;
     font-weight: 600;
     text-align: left;
     white-space: nowrap;
+}
+
+
+
+.admission-cell{
+    width:120px;
+    color:#23469d;
+    font-weight:600;
+    text-align:center !important;
+}
+
+.student-name-cell{
+    min-width:280px;
+    color:#23469d;
+    font-weight:600;
+    text-align:left !important;
+    padding-left:12px !important;
+}
+
+.mark-input{
+    width:70px;
+    height:32px;
+    border:1px solid #cfcfcf;
+    border-radius:6px;
+    text-align:center;
+    font-size:18px;
+    background:#fff;
+    box-sizing:border-box;
+}
+
+.mark-input:focus{
+    border-color:#23469d;
+    outline:none;
+    box-shadow:0 0 0 2px rgba(35,70,157,.15);
+}
+
+.mark-input[readonly]{
+    background:#fff;
+}
+
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate{
+    margin-top:12px;
 }
 
 /* Mark input boxes - plain bordered, like entry page */

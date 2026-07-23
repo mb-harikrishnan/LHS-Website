@@ -1231,31 +1231,105 @@ public function edit_allocation($emId,$cmId)
  
 
     $data['allocation']=$this->Subject_Model->get_allocation_details($emId,$cmId);
+        $data['subjects']   = $this->Subject_Model->get_available_subjects($emId,$cmId);
+
 
     $this->load->view('members_area/header');
     $this->load->view('members_area/edit_allocation',$data);
     $this->load->view('members_area/footer');
 }
+// public function update_allocation()
+// {
+//     $ids   = $this->input->post('emdId');
+//     $marks = $this->input->post('marks');
+
+//     if(empty($ids) || empty($marks))
+//     {
+//         echo json_encode([
+//             'status' => 'error',
+//             'message' => 'Invalid Data'
+//         ]);
+//         return;
+//     }
+
+//     for($i = 0; $i < count($ids); $i++)
+//     {
+//         $this->db->where('emdId', $ids[$i]);
+//         $this->db->update('exam_master_detail', [
+//             'emdMaxMark' => $marks[$i]
+//         ]);
+//     }
+
+//     echo json_encode([
+//         'status' => 'success'
+//     ]);
+// }
+
+
+
+
 public function update_allocation()
 {
-    $ids   = $this->input->post('emdId');
-    $marks = $this->input->post('marks');
+    $emId = $this->input->post('emId');
+    $cmId = $this->input->post('cmId');
 
-    if(empty($ids) || empty($marks))
-    {
+    $emdIds = $this->input->post('emdId'); // existing rows being edited
+    $marks  = $this->input->post('marks');
+
+    $newSmIds = $this->input->post('newSmId'); // subjects newly added on this page
+    $newMarks = $this->input->post('newMarks');
+
+    if (empty($emId) || empty($cmId)) {
         echo json_encode([
-            'status' => 'error',
+            'status'  => 'error',
             'message' => 'Invalid Data'
         ]);
         return;
     }
 
-    for($i = 0; $i < count($ids); $i++)
-    {
-        $this->db->where('emdId', $ids[$i]);
-        $this->db->update('exam_master_detail', [
-            'emdMaxMark' => $marks[$i]
-        ]);
+    // ---- Update existing allocation rows ----
+    if (!empty($emdIds) && !empty($marks)) {
+        for ($i = 0; $i < count($emdIds); $i++) {
+            if ($emdIds[$i] === '' || $marks[$i] === '' || $marks[$i] <= 0) {
+                continue;
+            }
+            $this->db->where('emdId', $emdIds[$i]);
+            $this->db->update('exam_master_detail', [
+                'emdMaxMark' => $marks[$i]
+            ]);
+        }
+    }
+
+    // ---- Insert newly added subjects ----
+    if (!empty($newSmIds) && !empty($newMarks)) {
+        for ($i = 0; $i < count($newSmIds); $i++) {
+
+            if ($newSmIds[$i] === '' || $newMarks[$i] === '' || $newMarks[$i] <= 0) {
+                continue;
+            }
+
+            // Guard against duplicates (e.g. double submit, or someone else
+            // already allocated this subject in the meantime)
+            $existing = $this->db->get_where('exam_master_detail', [
+                'emdEmId' => $emId,
+                'emdCmId' => $cmId,
+                'emdSmId' => $newSmIds[$i]
+            ])->row();
+
+            if ($existing) {
+                $this->db->where('emdId', $existing->emdId);
+                $this->db->update('exam_master_detail', [
+                    'emdMaxMark' => $newMarks[$i]
+                ]);
+            } else {
+                $this->db->insert('exam_master_detail', [
+                    'emdEmId'    => $emId,
+                    'emdCmId'    => $cmId,
+                    'emdSmId'    => $newSmIds[$i],
+                    'emdMaxMark' => $newMarks[$i]
+                ]);
+            }
+        }
     }
 
     echo json_encode([

@@ -24,6 +24,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
           <i class="fa fa-upload"></i> List 
           </button>
         </div>
+
 <form id="editForm">
 
 <?php
@@ -34,56 +35,65 @@ $examName  = $allocation[0]->emDisplayName;
 <input type="hidden" name="emId" value="<?php echo $allocation[0]->emdEmId;?>">
 <input type="hidden" name="cmId" value="<?php echo $allocation[0]->emdCmId;?>">
 
-<div class="news-form-group">
-    <label>Class</label>
-    <input type="text"
-           class="news-select"
-           value="<?php echo $className;?>"
-           readonly>
-</div>
-
-<div class="news-form-group">
-    <label>Exam</label>
-    <input type="text"
-           class="news-select"
-           value="<?php echo $examName;?>"
-           readonly>
-</div>
-<?php foreach($allocation as $row){ ?>
-
-<div class="allocation-card">
-
-    <div class="subject-info">
-        <label class="subject-label">
-            <?php echo $row->smName; ?>
-        </label>
-
-        <input type="hidden"
-               name="emdId[]"
-               value="<?php echo $row->emdId; ?>">
-
-        <input
-            type="number"
-            class="marks-input"
-            name="marks[]"
-            value="<?php echo $row->emdMaxMark; ?>"
-            placeholder="Maximum Mark">
+    <div class="news-form-group">
+        <label class="cd-label" for="cmIdDisplay">Select Class</label>
+        <select id="cmIdDisplay" class="news-select" disabled>
+            <option selected><?php echo $className; ?></option>
+        </select>
     </div>
 
-    <button
-        type="button"
-        class="delete-row-btn"
-        data-emdid="<?php echo $row->emdId; ?>">
-<i class="fa-solid fa-trash"></i>    </button>
+    <div class="news-form-group">
+        <label class="cd-label" for="emIdDisplay">Select Exam</label>
+        <select id="emIdDisplay" class="news-select" disabled>
+            <option selected><?php echo $examName; ?></option>
+        </select>
+    </div>
 
-</div>
+    <div class="news-form-group">
+        <label class="cd-label">Subject Marks</label>
+        <div id="subjectMarksContainer">
+            <?php foreach($allocation as $row){ ?>
+            <div class="subject-mark-row" data-emdid="<?php echo $row->emdId; ?>" style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
 
-<?php } ?>
-<div class="news-btn-group">
-    <button type="submit" class="submit-btn">
-        Update
-    </button>
-</div>
+                <label style="min-width:140px;margin:0;"><?php echo $row->smName; ?></label>
+
+                <input type="hidden" name="emdId[]" value="<?php echo $row->emdId; ?>">
+
+                <input
+                    type="number"
+                    class="news-select subject-mark-input"
+                    name="marks[]"
+                    value="<?php echo $row->emdMaxMark; ?>"
+                    placeholder="Maximum Mark"
+                    min="1">
+
+                <button type="button" class="delete-row-btn" data-emdid="<?php echo $row->emdId; ?>">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+
+            </div>
+            <?php } ?>
+        </div>
+    </div>
+
+    <div class="news-form-group">
+        <label class="cd-label" for="addSubjects">Add More Subjects</label>
+        <select name="addSubjects[]" id="addSubjects" class="news-select" multiple="multiple">
+            <?php if(!empty($subjects)){ foreach($subjects as $subject){
+                $subjectId   = isset($subject->smId) ? $subject->smId : (isset($subject->id) ? $subject->id : '');
+                $subjectName = isset($subject->smName) ? $subject->smName : (isset($subject->name) ? $subject->name : '');
+            ?>
+                <option value="<?php echo $subjectId; ?>"><?php echo $subjectName; ?></option>
+            <?php } } ?>
+        </select>
+        <div id="newSubjectMarksContainer" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="news-btn-group">
+        <button type="submit" class="submit-btn">
+            <i class="fa fa-save"></i> Update
+        </button>
+    </div>
 
 </form>
       </div>
@@ -121,84 +131,8 @@ Swal.fire({
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-
 <style>
-
- .allocation-card{
-    display:flex;
-    align-items:flex-end;
-    gap:10px;
-
-    padding:10px;
-    margin-bottom:11px;
-
-    border:1px solid #e5e7eb;
-    border-radius:12px;
-    background:#fff;
-    box-shadow:0 2px 8px rgba(0,0,0,.05);
-}
-
-.subject-info{
-    flex:1;
-}
-
-.subject-label{
-    display:block;
-    font-size:10px;
-    font-weight:600;
-    color:#374151;
-    margin-bottom:10px;
-    text-transform:uppercase;
-}
-
-/* Full width input like Exam field */
-.marks-input{
-    width:100%;
-    height:30px;
-
-    border:1px solid #d1d5db;
-    border-radius:10px;
-
-    padding:0 15px;
-    font-size:16px;
-    background:#fff;
-
-    transition:.3s;
-    box-sizing:border-box;
-}
-
-.marks-input:focus{
-    outline:none;
-    border-color:#2563eb;
-    box-shadow:0 0 0 3px rgba(37,99,235,.12);
-}
-
-.delete-row-btn{
-    width:50px;
-    height:30px;
-
-    border:none;
-    border-radius:10px;
-
-    background:#ef4444;
-    color:#fff;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    cursor:pointer;
-    transition:.3s;
-}
-
-.delete-row-btn i{
-    font-size:18px;
-}
-
-.delete-row-btn:hover{
-    background:#dc2626;
-}
-    /* Multiple Select2 */
+    /* Multiple Select2 (same theme as Add page) */
 .select2-container--default .select2-selection--multiple{
     min-height:40px !important;
     border:1px solid #d1d5db !important;
@@ -214,7 +148,6 @@ Swal.fire({
     box-shadow:0 0 0 3px rgba(37,99,235,.12);
 }
 
-/* Selected items */
 .select2-container--default .select2-selection--multiple .select2-selection__choice{
     background:#2563eb !important;
     border:none !important;
@@ -229,22 +162,124 @@ Swal.fire({
     margin-right:5px;
 }
 
-/* Search input */
 .select2-container--default .select2-search--inline .select2-search__field{
     margin-top:5px !important;
     font-size:14px;
 }
 
-/* Dropdown */
 .select2-dropdown{
     border-radius:8px;
     border:1px solid #d1d5db;
 }
+
+/* Delete button to match Add page's accent styling */
+.delete-row-btn{
+    width:44px;
+    height:40px;
+    flex-shrink:0;
+
+    border:none;
+    border-radius:8px;
+
+    background:#ef4444;
+    color:#fff;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+    transition:.3s;
+}
+
+.delete-row-btn i{
+    font-size:16px;
+}
+
+.delete-row-btn:hover{
+    background:#dc2626;
+}
 </style>
+
+<script>
+$(function(){
+
+    // Style the disabled class/exam fields like the Add page selects
+    $('#cmIdDisplay').select2({
+        width: '100%',
+        minimumResultsForSearch: -1
+    });
+
+    $('#emIdDisplay').select2({
+        width: '100%',
+        minimumResultsForSearch: -1
+    });
+
+    $('#addSubjects').select2({
+        width: '100%',
+        placeholder: 'Select subjects to add',
+        closeOnSelect: false
+    });
+
+    // Rebuild the "newly added" rows whenever the Add Subjects selection changes
+    $('#addSubjects').on('change', function () {
+
+        var selected = $(this).select2('data'); // [{id, text}, ...]
+        var container = $('#newSubjectMarksContainer');
+
+        // Preserve marks already typed for subjects still selected
+        var existing = {};
+        container.find('.new-subject-mark-input').each(function () {
+            existing[$(this).data('smid')] = $(this).val();
+        });
+
+        container.empty();
+
+        selected.forEach(function (subj) {
+
+            var prevVal = existing[subj.id] !== undefined ? existing[subj.id] : '';
+
+            var row = $(
+                '<div class="subject-mark-row" style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">' +
+                    '<label style="min-width:140px;margin:0;">' + subj.text + '</label>' +
+                    '<input type="hidden" name="newSmId[]" value="' + subj.id + '">' +
+                    '<input type="number" ' +
+                           'class="news-select new-subject-mark-input" ' +
+                           'name="newMarks[]" ' +
+                           'data-smid="' + subj.id + '" ' +
+                           'placeholder="Maximum Mark" ' +
+                           'value="' + prevVal + '" ' +
+                           'min="1">' +
+                '</div>'
+            );
+
+            container.append(row);
+        });
+    });
+
+});
+</script>
+
 <script>
     $("#editForm").submit(function(e){
 
     e.preventDefault();
+
+    var invalid = false;
+    $('.new-subject-mark-input').each(function(){
+        var val = $(this).val();
+        if (val === '' || isNaN(val) || Number(val) <= 0) {
+            invalid = true;
+            $(this).addClass('is-invalid');
+        } else {
+            $(this).removeClass('is-invalid');
+        }
+    });
+
+    if (invalid) {
+        Swal.fire('Error', 'Please enter a valid mark for every newly added subject.', 'error');
+        return;
+    }
 
     $.ajax({
 
@@ -256,7 +291,13 @@ Swal.fire({
 
         dataType:"json",
 
+        beforeSend: function () {
+            $(".submit-btn").prop("disabled", true).html('<i class="fa fa-spinner fa-spin"></i> Saving...');
+        },
+
         success:function(res){
+
+            $(".submit-btn").prop("disabled", false).html('<i class="fa fa-save"></i> Update');
 
             if(res.status=="success")
             {
@@ -275,6 +316,11 @@ Swal.fire({
                 Swal.fire('Error',res.message,'error');
             }
 
+        },
+
+        error: function(){
+            $(".submit-btn").prop("disabled", false).html('<i class="fa fa-save"></i> Update');
+            Swal.fire('Error', 'Something went wrong', 'error');
         }
 
     });
@@ -282,13 +328,13 @@ Swal.fire({
 });
 </script>
 
-
 <script>
     $(document).on('click', '.delete-row-btn', function(){
 
     var btn = $(this);
     var emdId = btn.data('emdid');
-var row = btn.closest('.allocation-card');
+    var row = btn.closest('.subject-mark-row');
+
     Swal.fire({
         icon: 'warning',
         title: 'Delete this allocation?',
