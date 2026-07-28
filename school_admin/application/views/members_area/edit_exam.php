@@ -54,6 +54,67 @@ $showGlobalSearch = false;
     <small id="abbreviation_error" style="color:red;display:none;"></small>
 </div>
 
+
+<!-- Term -->
+<div class="news-form-group">
+    <label>Term <span style="color:red">*</span></label>
+
+    <select name="term_id" id="term_id" class="news-select">
+        <option value="">-- Select Term --</option>
+
+        <?php foreach($term as $row){ ?>
+            <option value="<?= $row->tmId; ?>"
+                <?= ($row->tmId == $exam->emTmId) ? 'selected' : ''; ?>>
+                <?= $row->tmName; ?>
+            </option>
+        <?php } ?>
+
+    </select>
+
+    <small id="term_error" style="color:red;display:none;"></small>
+</div>
+
+<!-- Options -->
+<div class="news-form-group">
+    <label>Options</label>
+
+    <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:8px;">
+
+        <label>
+            <input type="checkbox"
+                   name="is_opened"
+                   value="1"
+                   <?= ($exam->emIsOpened == 1) ? 'checked' : ''; ?>>
+            Opened
+        </label>
+
+        <label>
+            <input type="checkbox"
+                   name="is_ongoing"
+                   value="1"
+                   <?= ($exam->emIsOngoing == 1) ? 'checked' : ''; ?>>
+            Ongoing
+        </label>
+
+        <label>
+            <input type="checkbox"
+                   name="is_id_grade"
+                   value="1"
+                   <?= ($exam->emIsGrade == 1) ? 'checked' : ''; ?>>
+            Grade
+        </label>
+
+        <label>
+            <input type="checkbox"
+                   name="active"
+                   value="1"
+                   <?= ($exam->emActive == 1) ? 'checked' : ''; ?>>
+            Active
+        </label>
+
+    </div>
+</div>
+
 <div class="news-btn-group">
 
 <button class="submit-btn">
@@ -173,60 +234,81 @@ $(document).ready(function () {
 
 
     // Update Form
-    $("#newsform").submit(function (e) {
+   $("#newsform").submit(function (e) {
 
-        e.preventDefault();
+    e.preventDefault();
 
-        if ($("#class_error").is(":visible") || $("#abbreviation_error").is(":visible")) {
-            return false;
-        }
+    var exam_name = $.trim($("#exam_name").val());
+    var abbreviation = $.trim($("#abbreviation").val());
+    var term_id = $("#term_id").val();
 
-        $.ajax({
+    $("#class_error").hide();
+    $("#abbreviation_error").hide();
+    $("#term_error").hide();
 
-            url: "<?php echo base_url('update_exam'); ?>",
-            type: "POST",
-            data: $(this).serialize(),
-            dataType: "json",
+    if (exam_name == "") {
+        $("#class_error").html("Exam Name is required.").show();
+        return false;
+    }
 
-            success: function (response) {
+    if (abbreviation == "") {
+        $("#abbreviation_error").html("Abbreviation is required.").show();
+        return false;
+    }
 
-                if (response.status == "success") {
+    if (term_id == "") {
+        $("#term_error").html("Please select a term.").show();
+        $("#term_id").focus();
+        return false;
+    }
 
-                    Swal.fire({
-                        icon: "success",
-                        title: "Success",
-                        text: response.message
-                    }).then(function () {
+    if ($("#class_error").is(":visible") ||
+        $("#abbreviation_error").is(":visible") ||
+        $("#term_error").is(":visible")) {
+        return false;
+    }
 
-                        window.location = "<?php echo base_url('exam_list'); ?>";
+    $.ajax({
+        url: "<?php echo base_url('update_exam'); ?>",
+        type: "POST",
+        data: $(this).serialize(),
+        dataType: "json",
+        success: function (response) {
 
-                    });
+            if (response.status == "success") {
 
-                } else {
+                Swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text: response.message
+                }).then(function () {
+                    window.location = "<?php echo base_url('exam_list'); ?>";
+                });
 
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error",
-                        text: response.message
-                    });
-
-                }
-
-            },
-
-            error: function () {
+            } else {
 
                 Swal.fire({
                     icon: "error",
-                    title: "Server Error",
-                    text: "Something went wrong."
+                    title: "Error",
+                    text: response.message
                 });
 
             }
 
-        });
+        },
+        error: function () {
 
+            Swal.fire({
+                icon: "error",
+                title: "Server Error",
+                text: "Something went wrong."
+            });
+
+        }
     });
+
+});
+
 
 });
 

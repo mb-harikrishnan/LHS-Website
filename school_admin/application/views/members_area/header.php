@@ -9,7 +9,7 @@ if (!isset($pageHeadScripts)) $pageHeadScripts = [];
 
 $userId    = $this->session->userdata('id');
 $firstName = $this->session->userdata('c_username');
-$initials ='Year';
+$initials =$this->session->userdata('c_username');
 
 
 $sql ="SELECT amYear FROM academic_master WHERE amIsCurrent = 1 ";
@@ -63,6 +63,20 @@ $res = $query->row()->amYear ?? '-';
       color: var(--gold, #d4af37);
       font-weight: 600;
     }
+
+
+ .tb-avatar {
+    width: 100px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #007bff;
+    color: #fff;
+    font-weight: bold;
+    font-size: 18px;
+    border-radius: 4px; /* Remove this or set to 0 for a perfect square */
+}
   </style>
 </head>
 

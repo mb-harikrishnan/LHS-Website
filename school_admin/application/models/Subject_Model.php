@@ -648,4 +648,41 @@ public function delete_allocation_detail($emdId)
 }
 
 
+
+public function fetch_term()
+{
+    $sql = "SELECT * FROM term_master ";
+    $query = $this->db->query($sql);
+    $res  =  $query->result();
+    return $res;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

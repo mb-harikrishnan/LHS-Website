@@ -352,8 +352,9 @@ public function insert_student()
 
    public function add_exam()
     {
+        $data['term'] = $this->Subject_Model->fetch_term();
         $this->load->view('members_area/header');
-        $this->load->view('members_area/add_exam');
+        $this->load->view('members_area/add_exam',$data);
         $this->load->view('members_area/footer');
     }
 
@@ -423,17 +424,22 @@ public function check_abbreviation()
 }
 
 
-
 public function insert_exam()
 {
-    $exam_name    = trim($this->input->post('exam_name'));
-    $abbreviation = trim($this->input->post('abbreviation'));
+    $exam_name     = trim($this->input->post('exam_name'));
+    $abbreviation  = trim($this->input->post('abbreviation'));
+    $term_id       = $this->input->post('term_id');
+
+    $is_opened     = $this->input->post('is_opened') ? 1 : 0;
+    $is_ongoing    = $this->input->post('is_ongoing') ? 1 : 0;
+    $is_grade      = $this->input->post('is_id_grade') ? 1 : 0;
+    $active        = $this->input->post('active') ? 1 : 0;
 
     // Validation
-    if ($exam_name == '' || $abbreviation == '') {
+    if ($exam_name == '' || $abbreviation == '' || $term_id == '') {
         echo json_encode([
             'status'  => 'error',
-            'message' => 'All fields are required.'
+            'message' => 'All required fields must be filled.'
         ]);
         return;
     }
@@ -478,7 +484,11 @@ public function insert_exam()
     $data = array(
         'emDisplayName' => $exam_name,
         'emName'        => $abbreviation,
-        'emActive'      => 1
+        'emtmId'          => $term_id,
+        'emIsOpened'        => $is_opened,
+        'emIsOngoing'     => $is_ongoing,
+        'emIsGrade'       => $is_grade,
+        'emActive'      => $active
     );
 
     if ($this->db->insert('exam_master', $data)) {
@@ -497,9 +507,6 @@ public function insert_exam()
 
     }
 }
-
-
-
 
 
 
@@ -1078,6 +1085,7 @@ public function check_admission_number_edit()
     public function edit_exam($id)
 {
     $data['exam'] = $this->Subject_Model->get_exam_list($id);
+    $data['term'] = $this->Subject_Model->fetch_term();
 
     $this->load->view('members_area/header');
     $this->load->view('members_area/edit_exam',$data);
@@ -1091,28 +1099,32 @@ public function update_exam()
     $id = $this->input->post('id');
 
     $data = array(
-        'emDisplayName' => $this->input->post('exam_name'),
-        'emName'        => $this->input->post('abbreviation')
+        'emDisplayName' => trim($this->input->post('exam_name')),
+        'emName'        => trim($this->input->post('abbreviation')),
+        'emTmId'          => $this->input->post('term_id'),
+        'emIsOpened'        => $this->input->post('is_opened') ? 1 : 0,
+        'emIsOngoing'     => $this->input->post('is_ongoing') ? 1 : 0,
+        'emIsGrade'       => $this->input->post('is_id_grade') ? 1 : 0,
+        'emActive'      => $this->input->post('active') ? 1 : 0
     );
 
-    $this->db->where('emId',$id);
+    $this->db->where('emId', $id);
 
-    if($this->db->update('exam_master',$data))
+    if ($this->db->update('exam_master', $data))
     {
         echo json_encode([
-            'status'=>'success',
-            'message'=>'Exam updated successfully.'
+            'status'  => 'success',
+            'message' => 'Exam updated successfully.'
         ]);
     }
     else
     {
         echo json_encode([
-            'status'=>'error',
-            'message'=>'Update failed.'
+            'status'  => 'error',
+            'message' => 'Update failed.'
         ]);
     }
 }
-
 
 
 

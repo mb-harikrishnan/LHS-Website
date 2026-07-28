@@ -26,28 +26,73 @@ $showGlobalSearch = false;
 
 <form id="newsform" method="post">
 
+    <!-- Exam Name -->
     <div class="news-form-group">
-        <label for="class_name">Exam Name <span style="color:red">*</span></label>
-
+        <label>Exam Name <span style="color:red">*</span></label>
         <input type="text"
                id="exam_name"
                name="exam_name"
                class="news-select"
                placeholder="Enter Exam Name">
-
         <small id="class_error" style="color:red;display:none;"></small>
     </div>
 
+    <!-- Abbreviation -->
     <div class="news-form-group">
-        <label for="class_name">Abbreviation Of  Exam <span style="color:red">*</span></label>
-
+        <label>Abbreviation Of Exam <span style="color:red">*</span></label>
         <input type="text"
                id="abbreviation"
                name="abbreviation"
                class="news-select"
                placeholder="Enter Abbreviation">
-
         <small id="abbreviation_error" style="color:red;display:none;"></small>
+    </div>
+
+    <!-- Term Dropdown -->
+    <div class="news-form-group">
+        <label>Term <span style="color:red">*</span></label>
+
+        <select name="term_id" id="term_id" class="news-select">
+            <option value="">-- Select Term --</option>
+            <?php foreach($term as $term){ ?>
+                <option value="<?= $term->tmId; ?>">
+                    <?= $term->tmName; ?>
+                </option>
+            <?php } ?>
+        </select>
+
+        <small id="term_error" style="color:red;display:none;"></small>
+    </div>
+
+    <!-- Status Checkboxes -->
+    <div class="news-form-group">
+        <label>Options</label>
+
+        <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:8px;">
+
+           <label>
+    <input type="checkbox" name="is_opened" value="1" checked>
+    Opened
+</label>
+
+<label>
+    <input type="checkbox" name="is_ongoing" value="1" checked>
+    Ongoing
+</label>
+
+<label>
+    <input type="checkbox" name="is_id_grade" value="1" checked>
+    Grade
+</label>
+
+<label>
+    <input type="checkbox" name="active" value="1" checked>
+    Active
+</label>
+
+    
+
+        </div>
     </div>
 
     <div class="news-btn-group">
@@ -56,7 +101,7 @@ $showGlobalSearch = false;
         </button>
     </div>
 
-</form>       
+</form>      
       </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -107,6 +152,12 @@ $(document).ready(function () {
         if (exam_name === "") {
             $("#class_error")
                 .html("Exam Name is required.")
+                .show();
+            return;
+        }
+        if (term_id === "") {
+            $("#class_error")
+                .html("Term  is required.")
                 .show();
             return;
         }
@@ -193,28 +244,35 @@ $("#abbreviation").on("keyup blur", function () {
 
         e.preventDefault();
 
-        var exam_name = $.trim($("#exam_name").val());
-        var abbreviation = $.trim($("#abbreviation").val());
+    var exam_name = $.trim($("#exam_name").val());
+    var abbreviation = $.trim($("#abbreviation").val());
+    var term_id = $("#term_id").val();
 
-        if (exam_name === "") {
-            $("#class_error")
-                .html("Exam Name is required.")
-                .show();
-            return false;
-        }
+    $("#class_error").hide();
+    $("#abbreviation_error").hide();
+    $("#term_error").hide();
 
-        if (abbreviation === "") {
-            Swal.fire({
-                icon: "warning",
-                title: "Validation",
-                text: "Abbreviation is required."
-            });
-            return false;
-        }
+    if (exam_name === "") {
+        $("#class_error").html("Exam Name is required.").show();
+        return false;
+    }
 
-        if ($("#class_error").is(":visible")) {
-            return false;
-        }
+    if (abbreviation === "") {
+        $("#abbreviation_error").html("Abbreviation is required.").show();
+        return false;
+    }
+
+    if (term_id === "") {
+        $("#term_error").html("Please select a term.").show();
+        $("#term_id").focus();
+        return false;
+    }
+
+    if ($("#class_error").is(":visible") ||
+        $("#abbreviation_error").is(":visible") ||
+        $("#term_error").is(":visible")) {
+        return false;
+    }
 
         $.ajax({
             url: "<?php echo base_url('insert_exam'); ?>",
@@ -258,6 +316,12 @@ $("#abbreviation").on("keyup blur", function () {
         });
 
     });
+
+    $("#term_id").change(function () {
+    if ($(this).val() != "") {
+        $("#term_error").hide();
+    }
+});
 
 });
 
