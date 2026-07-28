@@ -201,6 +201,7 @@ $route['add_exam']   = 'members_area/SubjectController/add_exam';
 $route['check_exam_name']   = 'members_area/SubjectController/check_exam_name';
 $route['check_abbreviation']   = 'members_area/SubjectController/check_abbreviation';
 $route['insert_exam']   = 'members_area/SubjectController/insert_exam';
+$route['update_exam_order']   = 'members_area/SubjectController/update_exam_order';
 
 
 

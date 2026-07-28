@@ -8,9 +8,6 @@ $showGlobalSearch = false;
 <!-- Report CSS -->
 <link rel="stylesheet" href="<?php echo base_url('assets/css/report.css'); ?>">
 
-<!-- DataTables CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
 
 
 <!-- ==========================================================
@@ -39,10 +36,11 @@ $showGlobalSearch = false;
                style="width:100%">
 
             <thead>
-                <tr>
+                <tr >
                     <th>#SL</th>
                     <th>Abbreviation</th>
                     <th>Name</th>
+                    <th>Display Order</th>
                     <th>Edit</th>
                     <th width="120">Action</th>
                 </tr>
@@ -54,13 +52,14 @@ $showGlobalSearch = false;
 
                 <?php foreach ($details as $row) { ?>
 
-                    <tr>
+                    <tr data-id="<?php echo $row->emId; ?>">
 
                         <td><?php echo $count++; ?></td>
 
                         <td><?php echo $row->emName; ?></td>
 
                         <td><?php echo $row->emDisplayName; ?></td>
+                        <td><?php echo $row->emDisplayOrder; ?></td>
 
                         <td>
                               <a href="<?php echo base_url('edit_exam/'.$row->emId); ?>"
@@ -107,12 +106,10 @@ $showGlobalSearch = false;
 <!-- ==========================================================
     SCRIPTS
 ========================================================== -->
-
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
+<script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
@@ -122,35 +119,7 @@ $(function () {
     /*------------------------------
       DataTable
     ------------------------------*/
-    $('#reportsDataTable').DataTable({
-
-        responsive: true,
-        autoWidth: false,
-        pageLength: 10,
-
-        order: [[0, 'desc']],
-
-        columnDefs: [
-            {
-                orderable: false,
-                targets: [3]   // Action column
-            }
-        ],
-
-        language: {
-            search: "",
-            searchPlaceholder: "Search exams...",
-            lengthMenu: "Show _MENU_ entries",
-            zeroRecords: "No records found",
-            info: "Showing _START_ to _END_ of _TOTAL_ records",
-            paginate: {
-                previous: "Prev",
-                next: "Next"
-            }
-        }
-
-    });
-
+   
 
     /*------------------------------
       Delete Record
@@ -236,4 +205,67 @@ $(function () {
 
 });
 
+</script>
+
+
+<script>
+    var table = $('#reportsDataTable').DataTable({
+    responsive: true,
+    autoWidth: false,
+    pageLength: 10,
+    ordering: false   // Disable DataTable sorting
+});
+
+$("#reportsDataTable tbody").sortable({
+
+    helper: function(e, tr) {
+        var originals = tr.children();
+        var helper = tr.clone();
+
+        helper.children().each(function(index) {
+            $(this).width(originals.eq(index).width());
+        });
+
+        return helper;
+    },
+
+    update: function(event, ui) {
+
+        var order = [];
+
+        $('#reportsDataTable tbody tr').each(function(index){
+
+            order.push({
+                id: $(this).data('id'),
+                displayOrder: index + 1
+            });
+
+        });
+
+        $.ajax({
+
+            url: "<?php echo base_url('update_exam_order'); ?>",
+            type: "POST",
+            data: {
+                order: order
+            },
+
+            success:function(){
+
+                Swal.fire({
+                    toast:true,
+                    icon:'success',
+                    title:'Order Updated',
+                    position:'top-end',
+                    timer:1500,
+                    showConfirmButton:false
+                });
+
+            }
+
+        });
+
+    }
+
+}).disableSelection();
 </script>

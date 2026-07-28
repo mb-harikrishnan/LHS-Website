@@ -1383,4 +1383,27 @@ public function delete_allocation()
 
 
 
+
+public function update_exam_order()
+{
+    $order = $this->input->post('order');
+
+    if (!empty($order))
+    {
+        foreach ($order as $row)
+        {
+            $this->db->where('emId', $row['id']);
+            $this->db->update('exam_master', [
+                'emDisplayOrder' => $row['displayOrder']
+            ]);
+        }
+    }
+
+    echo 1;
+}
+
+
+
+
+
 }
