@@ -196,7 +196,7 @@ function loadMarksTable(class_id, division_id, exam_id)
 
             if(res.status=="success")
             {
-               buildTable(res.students, res.subjects, res.marks, res.maxMarks);
+               buildTable(res.students, res.subjects, res.marks, res.maxMarks, res.isGrade);
             }
             else if(res.status=="no_students")
             {
@@ -218,7 +218,7 @@ function loadMarksTable(class_id, division_id, exam_id)
 
 }
 
-function buildTable(students, subjects, marks, maxMarks)
+function buildTable(students, subjects, marks, maxMarks,isGrade)
 {
     marks = marks || [];
     maxMarks = maxMarks || {};
@@ -263,12 +263,13 @@ function buildTable(students, subjects, marks, maxMarks)
             let max = maxMarks.hasOwnProperty(sub.smId) ? maxMarks[sub.smId] : "";
 
             body += "<td>";
-            body += "<input type='text' class='mark-input' " +
-                    "data-row='"+i+"' " +
-                    "data-col='"+j+"' " +
-                    "data-max='"+max+"' " +
-                    "name='marks["+st.smId+"]["+sub.smId+"]' " +
-                    "value='"+existingMark+"'>";
+          body += "<input type='text' class='mark-input' " +
+        "data-row='"+i+"' " +
+        "data-col='"+j+"' " +
+        "data-max='"+max+"' " +
+        "data-grade='"+isGrade+"' " +
+        "name='marks["+st.smId+"]["+sub.smId+"]' " +
+        "value='"+existingMark+"'>";
             body += "<div class='mark-error' style='display:none;'></div>";
             body += "</td>";
 
@@ -411,20 +412,48 @@ function buildTable(students, subjects, marks, maxMarks)
 
 
 <script>
-    $(document).on('input', '.mark-input', function () {
+   $(document).on('input', '.mark-input', function () {
+
+    let isGrade = parseInt($(this).data('grade'));
+
+    // For grade fields, strip out anything that isn't A-Z right away
+    // (handles paste, autofill, etc. — keypress only blocks direct typing)
+    if (isGrade == 1) {
+        let cleaned = $(this).val().replace(/[^a-zA-Z]/g, '').toUpperCase();
+        if (cleaned !== $(this).val()) {
+            $(this).val(cleaned);
+        }
+    }
+
     validateMarkInput($(this));
 });
 
 function validateMarkInput($input) {
-    let val = $input.val().trim();
+
+    let val = $input.val().trim().toUpperCase();
     let max = parseFloat($input.data('max'));
+    let isGrade = parseInt($input.data('grade'));
+
     let $error = $input.next('.mark-error');
 
     $input.removeClass('input-error');
     $error.hide().text('');
 
-    if (val === '') return true; // empty allowed
+    if (val == '') return true;
 
+    // Grade Entry — letters only, max is NEVER checked here
+    if (isGrade == 1) {
+        if (!/^[A-Z]$/.test(val)) {
+            $input.addClass('input-error');
+            $error.text('Enter A-Z').show();
+            return false;
+        }
+
+        $input.val(val);
+        return true; // <-- exits before any max logic, so max never applies
+    }
+
+    // Mark Entry — numbers only, max DOES apply
     let num = parseFloat(val);
 
     if (isNaN(num) || !/^\d+(\.\d+)?$/.test(val)) {
@@ -446,5 +475,28 @@ function validateMarkInput($input) {
     }
 
     return true;
-}
+}   
+</script>
+
+
+<script>
+    $(document).on("keypress", ".mark-input", function(e){
+
+    let isGrade = parseInt($(this).data("grade"));
+
+
+    if(isGrade == 1){
+        // Allow only letters A-Z
+        let ch = String.fromCharCode(e.which);
+        if(!/[a-zA-Z]/.test(ch)){
+            e.preventDefault();
+        }
+    }else{
+        // Allow only numbers and decimal
+        let ch = String.fromCharCode(e.which);
+        if(!/[0-9.]/.test(ch)){
+            e.preventDefault();
+        }
+    }
+});
 </script>

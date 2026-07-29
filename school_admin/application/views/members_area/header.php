@@ -254,6 +254,45 @@ $res = $query->row()->amYear ?? '-';
           <span class="nav-label">Add Homepage Slider</span>
         </div>
 
+
+        <div class="nav-item<?php echo $activePage === 'acdemics_list' ? ' active' : ''; ?>"
+          onclick="window.location.href='<?php echo base_url('accademic_list'); ?>'">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="3" width="18" height="14" rx="2" ry="2" />
+              <line x1="8" y1="21" x2="16" y2="21" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+            </svg>
+          </div>
+          <span class="nav-label">Accademic list</span>
+        </div>
+
+
+        <div class="nav-item<?php echo $activePage === 'term_list' ? ' active' : ''; ?>"
+          onclick="window.location.href='<?php echo base_url('term_list'); ?>'">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="3" width="18" height="14" rx="2" ry="2" />
+              <line x1="8" y1="21" x2="16" y2="21" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+            </svg>
+          </div>
+          <span class="nav-label">Term list</span>
+        </div>
+
+
+        <div class="nav-item<?php echo $activePage === 'user_role_list' ? ' active' : ''; ?>"
+          onclick="window.location.href='<?php echo base_url('user_role_list'); ?>'">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="3" width="18" height="14" rx="2" ry="2" />
+              <line x1="8" y1="21" x2="16" y2="21" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+            </svg>
+          </div>
+          <span class="nav-label">User Role list</span>
+        </div>
+
         <div class="sb-divider"></div>
         <div class="nav-section-label">TEACHERS ZONE</div>
 
@@ -323,7 +362,7 @@ $res = $query->row()->amYear ?? '-';
         <div class="sub-nav" id="subnav-exams">
           <div class="sub-item" data-url="exam_list" onclick="window.location.href='<?= base_url('exam_list') ?>'">Exam Master</div>
           <div class="sub-item" data-url="allocation_list" onclick="window.location.href='<?= base_url('allocation_list')?>'">Exam Marks Allocation</div>
-          <div class="sub-item" data-url="<?= base_url('Marksentry_list'); ?>" onclick="window.location.href='Marksentry_list'); ?>'">Exam Marks Entry</div>
+          <div class="sub-item" data-url="Marksentry_list" onclick="window.location.href='<?php echo base_url('Marksentry_list'); ?>'">Exam Marks Entry</div>
         </div>
 
         <!-- Change Password -->

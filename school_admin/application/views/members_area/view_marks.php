@@ -306,6 +306,7 @@ $showGlobalSearch = false;
                         readonly
                         data-student="<?= $stu->smId ?>"
                         data-subject="<?= $sub->esSmId ?>"
+                          data-grade="<?= $isGrade ?>"
                         data-max="<?= isset($maxMarks[$sub->esSmId]) ? $maxMarks[$sub->esSmId] : '' ?>"
                         value="<?= isset($marks[$stu->smId][$sub->esSmId]) ? $marks[$stu->smId][$sub->esSmId] : '' ?>">
                     <div class="mark-error" style="display:none;"></div>
@@ -473,24 +474,65 @@ $(document).on('keydown', '.mark-input', function (e) {
 });
 </script>
 
-
 <script>
-    // ---- MARK VALIDATION (max mark per subject) ----
+// ---- KEYPRESS: block invalid characters as the user types ----
+$(document).on('keypress', '.mark-input', function (e) {
+
+    var isGrade = parseInt($(this).data('grade'));
+    var ch = String.fromCharCode(e.which);
+
+    if (isGrade == 1) {
+        // Allow only letters A-Z
+        if (!/[a-zA-Z]/.test(ch)) {
+            e.preventDefault();
+        }
+    } else {
+        // Allow only numbers and decimal
+        if (!/[0-9.]/.test(ch)) {
+            e.preventDefault();
+        }
+    }
+});
+
+// ---- INPUT: clean pasted/autofilled values + live validate ----
 $(document).on('input', '.mark-input', function () {
+
+    var isGrade = parseInt($(this).data('grade'));
+
+    if (isGrade == 1) {
+        var cleaned = $(this).val().replace(/[^a-zA-Z]/g, '').toUpperCase();
+        if (cleaned !== $(this).val()) {
+            $(this).val(cleaned);
+        }
+    }
+
     validateMarkInput($(this));
 });
 
 function validateMarkInput($input) {
-    var val = $input.val().trim();
+
+    var val = $input.val().trim().toUpperCase();
     var max = parseFloat($input.data('max'));
+    var isGrade = parseInt($input.data('grade'));
     var $error = $input.next('.mark-error');
 
-    // Clear previous state
     $input.removeClass('input-error');
     $error.hide().text('');
 
     if (val === '') return true; // empty is allowed
 
+    // Grade entry — letters only, max never applies
+    if (isGrade == 1) {
+        if (!/^[A-Z]$/.test(val)) {
+            $input.addClass('input-error');
+            $error.text('Enter A-Z').show();
+            return false;
+        }
+        $input.val(val);
+        return true;
+    }
+
+    // Numeric entry — numbers only, max applies
     var num = parseFloat(val);
 
     if (isNaN(num) || !/^\d+(\.\d+)?$/.test(val)) {
@@ -499,15 +541,15 @@ function validateMarkInput($input) {
         return false;
     }
 
-    if (!isNaN(max) && num > max) {
-        $input.addClass('input-error');
-        $error.text('Max ' + max).show();
-        return false;
-    }
-
     if (num < 0) {
         $input.addClass('input-error');
         $error.text('Invalid').show();
+        return false;
+    }
+
+    if (!isNaN(max) && num > max) {
+        $input.addClass('input-error');
+        $error.text('Max ' + max).show();
         return false;
     }
 

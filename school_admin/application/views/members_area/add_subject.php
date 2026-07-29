@@ -127,47 +127,74 @@ Swal.fire({
 
 
 <style>
-    /* Multiple Select2 */
-.select2-container--default .select2-selection--multiple{
-    min-height:40px !important;
-    border:1px solid #d1d5db !important;
-    border-radius:8px !important;
-    background:#f9fafb !important;
-    padding:4px 10px !important;
-    display:flex !important;
-    align-items:center;
+/* ============================
+   Select2 Multi-select Styling
+   ============================ */
+
+/* Container */
+.select2-container--default .select2-selection--multiple {
+    display: flex !important;
+    align-items: center;
+    min-height: 40px !important;
+    padding: 4px 10px !important;
+    background: #f9fafb !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
 }
 
-.select2-container--default.select2-container--focus .select2-selection--multiple{
-    border-color:#2563eb !important;
-    box-shadow:0 0 0 3px rgba(37,99,235,.12);
+/* Focus state */
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
 }
 
-/* Selected items */
-.select2-container--default .select2-selection--multiple .select2-selection__choice{
-    background:#2563eb !important;
-    border:none !important;
-    color:#fff !important;
-    border-radius:5px !important;
-    padding:2px 8px !important;
-    margin-top:3px !important;
+/* Selected chip */
+/* Selected chip */
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px;
+    margin-top: 3px !important;
+    padding: 2px 8px !important;   /* no more left-padding hack needed */
+    color: #fff !important;
+    background: #2563eb !important;
+    border: none !important;
+    border-radius: 5px !important;
 }
 
-.select2-container--default .select2-selection__choice__remove{
-    color:#fff !important;
-    margin-right:5px;
+/* Remove (×) button */
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    all: unset !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    color: #fff !important;
+    cursor: pointer;
+    order: -1; /* keeps × on the left, before the text */
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+    color: #fde047 !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+    color: #fde047 !important;
 }
 
 /* Search input */
-.select2-container--default .select2-search--inline .select2-search__field{
-    margin-top:5px !important;
-    font-size:14px;
+.select2-container--default .select2-search--inline .select2-search__field {
+    margin-top: 5px !important;
+    font-size: 14px;
 }
 
 /* Dropdown */
-.select2-dropdown{
-    border-radius:8px;
-    border:1px solid #d1d5db;
+.select2-dropdown {
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
 }
 </style>
 

@@ -256,5 +256,32 @@ $route['updateMarks'] = 'members_area/SubjectController/updateMarks';
 $route['view_marks_students/(:num)/(:num)/(:num)']='members_area/SubjectController/view_marks_students/$1/$2/$3';
 
 
+
+/////////////////    accademics ////////////////
+
+$route['accademic_list'] = 'members_area/PermissionsController/accademic_list';
+$route['delete_accademic'] = 'members_area/PermissionsController/delete_accademic';
+$route['add_academic'] = 'members_area/PermissionsController/add_academic';
+$route['check_academic_year'] = 'members_area/PermissionsController/check_academic_year';
+$route['insert_academic'] = 'members_area/PermissionsController/insert_academic';
+
+/////////////////    TERM ////////////////
+
+$route['term_list'] = 'members_area/PermissionsController/term_list';
+$route['delete_term'] = 'members_area/PermissionsController/delete_term';
+$route['add_term'] = 'members_area/PermissionsController/add_term';
+$route['check_term'] = 'members_area/PermissionsController/check_term';
+$route['insert_term'] = 'members_area/PermissionsController/insert_term';
+
+/////////////////    User role List ////////////////
+
+$route['user_role_list'] = 'members_area/PermissionsController/user_role_list';
+$route['update_role_status'] = 'members_area/PermissionsController/update_role_status';
+$route['add_user_role'] = 'members_area/PermissionsController/add_user_role';
+$route['check_role'] = 'members_area/PermissionsController/check_role';
+$route['insert_role'] = 'members_area/PermissionsController/insert_role';
+
+
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

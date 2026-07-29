@@ -675,6 +675,9 @@ public function getMarksEntry()
 
     $students = $this->Subject_Model->getStudents($class_id, $division_id);
     $subjects = $this->Subject_Model->getExamSubjects($class_id, $exam_id);
+    $is_grade = $this->Subject_Model->fetch_grade($exam_id);
+
+
 
     if (empty($students)) {
         echo json_encode(['status' => 'info', 'message' => 'No students found for the selected Class / Division']);
@@ -694,7 +697,9 @@ public function getMarksEntry()
         'students'  => $students,
         'subjects'  => $subjects,
         'marks'     => $marks,
-        'maxMarks'  => $maxMarks   // <-- new
+        'maxMarks'  => $maxMarks ,
+        'isGrade'   => $is_grade
+
     ]);
 }
 
@@ -746,74 +751,91 @@ public function Marksentry_list()
 
 
 
-// public function view_marks_students($exam,$class,$division)
+
+
+
+// public function view_marks_students($exam, $class, $division)
 // {
-//    // Subjects
-// $this->db->select("exam_summary.esSmId, subject_master.smName");
-// $this->db->from("exam_summary");
-// $this->db->join("subject_master","subject_master.smId = exam_summary.esSmId");
-// $this->db->where("exam_summary.esEmId",$exam);
-// $this->db->where("exam_summary.esCmId",$class);
-// $this->db->where("exam_summary.esDmId",$division);
-// $this->db->group_by("exam_summary.esSmId");
+//     // Subjects
+//     $this->db->select("exam_summary.esSmId, subject_master.smName");
+//     $this->db->from("exam_summary");
+//     $this->db->join("subject_master", "subject_master.smId = exam_summary.esSmId");
+//     $this->db->where("exam_summary.esEmId", $exam);
+//     $this->db->where("exam_summary.esCmId", $class);
+//     $this->db->where("exam_summary.esDmId", $division);
+//     $this->db->group_by("exam_summary.esSmId");
 
-// $data['subjects'] = $this->db->get()->result();
+//     $data['subjects'] = $this->db->get()->result();
+//     $this->db->reset_query();
 
-// $this->db->reset_query();   // <-- Important
+//     // Max marks per subject (from exam_master_detail)
+//     $this->db->select("emdSmId, emdMaxMark");
+//     $this->db->from("exam_master_detail");
+//     $this->db->where("emdEmId", $exam);
+//     $this->db->where("emdCmId", $class);
 
+//     $maxMarkResult = $this->db->get()->result();
+//     $this->db->reset_query();
 
-// // Students
-// $this->db->distinct();
-// $this->db->select("
-//     students_master.smId,
-//     students_master.smAdmissionNo,
-//     students_master.smName
-// ");
-// $this->db->from("exam_detail");
-// $this->db->join("exam_summary","exam_summary.esId = exam_detail.edEsId");
-// $this->db->join("students_master","students_master.smId = exam_detail.edSmId");
-// $this->db->where("exam_summary.esEmId",$exam);
-// $this->db->where("exam_summary.esCmId",$class);
-// $this->db->where("exam_summary.esDmId",$division);
+//     $maxMarks = [];
+//     foreach ($maxMarkResult as $row) {
+//         $maxMarks[$row->emdSmId] = $row->emdMaxMark;
+//     }
+//     $data['maxMarks'] = $maxMarks;
 
-// $data['students'] = $this->db->get()->result();
+//     // Students
+//     $this->db->select("smId, smAdmissionNo, smName");
+//     $this->db->from("students_master");
+//     $this->db->where("smClass", $class);
+//     $this->db->where("smDiv", $division);
+//     $this->db->order_by("smName", "asc");
 
+//     $data['students'] = $this->db->get()->result();
+//     $this->db->reset_query();
 
-
-
-
-//     // Marks
+//     // Marks (existing ones only)
 //     $this->db->select("
 //         exam_detail.edSmId AS student_id,
 //         exam_summary.esSmId AS subject_id,
 //         exam_detail.edMark
 //     ");
-
 //     $this->db->from("exam_detail");
-//     $this->db->join("exam_summary","exam_summary.esId=exam_detail.edEsId");
+//     $this->db->join("exam_summary", "exam_summary.esId = exam_detail.edEsId");
+//     $this->db->where("exam_summary.esEmId", $exam);
+//     $this->db->where("exam_summary.esCmId", $class);
+//     $this->db->where("exam_summary.esDmId", $division);
 
-//     $this->db->where("exam_summary.esEmId",$exam);
-//     $this->db->where("exam_summary.esCmId",$class);
-//     $this->db->where("exam_summary.esDmId",$division);
+//     $result = $this->db->get()->result();
 
-//     $result=$this->db->get()->result();
-
-//     $marks=[];
-
-//     foreach($result as $row){
-//         $marks[$row->student_id][$row->subject_id]=$row->edMark;
+//     $marks = [];
+//     foreach ($result as $row) {
+//         $marks[$row->student_id][$row->subject_id] = $row->edMark;
 //     }
 
 
-//         $data['exam']     = $exam;
+
+//      $sql = "SELECT emIsGrade FROM exam_master WHERE emId = ?";
+//     $query = $this->db->query($sql, [$exam]);
+//     $results = $query->row();
+
+//     // Return a plain scalar 0 or 1, never the row object
+//     if ($results === null) {
+//        $grade = 0;
+//     }
+
+//     $grade =$results->emIsGrade;
+
+//     $data['exam']     = $exam;
 //     $data['class']    = $class;
 //     $data['division'] = $division;
-//     $data['marks']=$marks;
+//     $data['marks']    = $marks;
+//     $data['isGrade']  = $grade;
 
 //     $this->load->view('members_area/header');
-//     $this->load->view('members_area/view_marks',$data);
+//     $this->load->view('members_area/view_marks', $data);
 //     $this->load->view('members_area/footer');
 // }
+
 
 
 public function view_marks_students($exam, $class, $division)
@@ -874,19 +896,23 @@ public function view_marks_students($exam, $class, $division)
         $marks[$row->student_id][$row->subject_id] = $row->edMark;
     }
 
+    $sql = "SELECT emIsGrade FROM exam_master WHERE emId = ?";
+    $query = $this->db->query($sql, [$exam]);
+    $results = $query->row();
+
+    // Return a plain scalar 0 or 1, never the row object
+    $grade = ($results === null) ? 0 : (int) $results->emIsGrade;
+
     $data['exam']     = $exam;
     $data['class']    = $class;
     $data['division'] = $division;
     $data['marks']    = $marks;
+    $data['isGrade']  = $grade;
 
     $this->load->view('members_area/header');
     $this->load->view('members_area/view_marks', $data);
     $this->load->view('members_area/footer');
 }
-
-
-
-
 
 
 

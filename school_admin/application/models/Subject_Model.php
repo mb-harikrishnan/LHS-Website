@@ -17,7 +17,7 @@ class Subject_Model extends CI_Model
   public function fetch_all_exams()
   {
 
-    $select = "SELECT * FROM exam_master ";
+    $select = "SELECT * FROM exam_master  WHERE emActive = 1 AND emIsOpened = 1";
     $query = $this->db->query($select);
     $result = $query->result();
     return $result;
@@ -84,7 +84,7 @@ public function delete_exam($id)
   public function fetch_all_exam()
   {
 
-    $select = "SELECT * FROM exam_master ";
+    $select = "SELECT * FROM exam_master WHERE emActive=1 AND emIsOpened = 1 AND emIsOngoing =1 ";
     $query = $this->db->query($select);
     $result = $query->result();
     return $result;
@@ -155,6 +155,23 @@ public function getExamSubjects($class,$exam)
      $query = $this->db->query($sql);
      $result = $query->result();
      return $result;
+}
+
+
+
+public function fetch_grade($exam)
+{
+    // Use query bindings instead of string interpolation (SQL injection risk)
+    $sql = "SELECT emIsGrade FROM exam_master WHERE emId = ?";
+    $query = $this->db->query($sql, [$exam]);
+    $result = $query->row();
+
+    // Return a plain scalar 0 or 1, never the row object
+    if ($result === null) {
+        return 0;
+    }
+
+    return (int) $result->emIsGrade;
 }
 
 
