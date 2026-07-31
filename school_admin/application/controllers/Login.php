@@ -23,49 +23,102 @@ class Login extends CI_Controller {
 
 	public function member_login()
 	{
-		$this->load->view('member_login');
+    $data['user_roles'] = $this->login_db->fetch_roles();
+		$this->load->view('member_login',$data);
 	}
 
 
 
-    public function check_username()
+
+
+public function check_username()
+{
+    $username = $this->input->post('username');
+    $role_id  = $this->input->post('role_id');
+
+    $role = $this->db
+                ->select('role_name')
+                ->where('role_id', $role_id)
+                ->get('user_roles')
+                ->row();
+
+        $role_name = $role ? $role->role_name : '';
+
+    
+
+
+    if($role_name == 'Admin')
     {
-        $username = $this->input->post('username');
+       $table = 'admin_login';
+        $name = 'c_username';
+    }
+    elseif($role_name == 'Parent')
+    {
+      $table = 'parents_master';
+        $name = 'pmName';
+    }
+    elseif($role_name == 'Teacher')
+    {
+        $table = 'employee_master';
 
-        $check = $this->db
-                    ->where('c_username',$username)
-                    ->get('admin_login');
-
-        if($check->num_rows() > 0)
-        {
-            echo 'true';
-        }
-        else
-        {
-            echo 'false';
-        }
+        $name = 'emName';
     }
 
+    $check = $this->db
+                ->where($name, $username)   // confirm this column name exists in employee_master / parent_master too
+                ->get($table);
+             
 
-    public function check_password()
+    echo ($check->num_rows() > 0) ? 'true' : 'false';
+}
+
+public function check_password()
+{
+    $username = $this->input->post('username');
+    $password = $this->input->post('password');
+    $role_id  = $this->input->post('role_id');
+
+    
+    $role = $this->db
+                ->select('role_name')
+                ->where('role_id', $role_id)
+                ->get('user_roles')
+                ->row();
+
+        $role_name = $role ? $role->role_name : '';
+
+    
+
+
+    if($role_name == 'Admin')
     {
-        $username = $this->input->post('username');
-        $password = $this->input->post('password');
-
-        $check = $this->db
-                    ->where('c_username',$username)
-                    ->where('c_password',md5($password))
-                    ->get('admin_login');
-
-        if($check->num_rows() > 0)
-        {
-            echo 'true';
-        }
-        else
-        {
-            echo 'false';
-        }
+       $table = 'admin_login';
+        $name = 'c_username';
+        $pass = 'c_password';
     }
+    elseif($role_name == 'Parent')
+    {
+      $table = 'parents_master';
+        $name = 'pmName';
+        $pass = 'pmPassword';
+    }
+    elseif($role_name == 'Teacher')
+    {
+        $table = 'employee_master';
+
+        $name = 'emName';
+        $pass = 'emPassword';
+
+    }
+    $check = $this->db
+                ->where($name, $username)
+                ->where($pass, md5($password))
+                ->get($table);
+
+    echo ($check->num_rows() > 0) ? 'true' : 'false';
+}
+
+
 
 
 
@@ -105,10 +158,11 @@ class Login extends CI_Controller {
 		$login_flag=FALSE;
 		$login_active_flag=FALSE;
 		$username = $this->input->post('username');
+    $user_role_id = $this->input->post('role_id');
 		$login_time = "";
 		
 		//query the database
-		$result = $this->login_db->login_checking($username, $password);
+		$result = $this->login_db->login_checking($username, $password,$user_role_id);
 		
 		if($result)
 		{
@@ -126,7 +180,7 @@ class Login extends CI_Controller {
 		}
 		if($login_flag==TRUE)
 		{
-			$result = $this->login_db->login_validation_step2($username);
+			$result = $this->login_db->login_validation_step2($username,$user_role_id);
 			$id=0;
 			
 			if($result)

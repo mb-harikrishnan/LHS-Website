@@ -39,7 +39,7 @@ class EmployeeController extends CI_Controller {
             'emActive' => 'Y',
             'emTS' => date('Y-m-d'),
             'emName' => $this->input->post('name'),
-            'emPassword'  => $this->input->post('password'),
+            'emPassword'  => md5($this->input->post('password')),
             'emClass'  => $this->input->post('class_id'),
             'emDiv'  => $this->input->post('division_id'),
             'emPhoneNo'  => $this->input->post('mobile'),
@@ -50,6 +50,8 @@ class EmployeeController extends CI_Controller {
 
         if ($result)
         {
+           
+            
             $this->session->set_flashdata('success', ' added successfully');
         }
         else

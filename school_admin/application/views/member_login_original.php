@@ -1,17 +1,3 @@
-
-<?php
-// Build name => role_id map from the DB rows passed from the controller
-$role_map = array();
-foreach ($user_roles as $r) {
-    $role_map[strtolower(trim($r->role_name))] = $r->role_id;
-}
-
-$admin_id   = isset($role_map['admin'])   ? $role_map['admin']   : '';
-$teacher_id = isset($role_map['teacher']) ? $role_map['teacher'] : '';
-$parent_id  = isset($role_map['parent'])  ? $role_map['parent']  : '';
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -462,6 +448,27 @@ $parent_id  = isset($role_map['parent'])  ? $role_map['parent']  : '';
   .divider-line { flex: 1; height: 1px; background: var(--border); }
   .divider-text { font-size: 11px; color: var(--text-light); letter-spacing: 0.1em; }
 
+  /* GOOGLE BUTTON */
+  .btn-google {
+    width: 100%;
+    height: 48px;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-mid);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeUp 0.7s 0.4s ease both;
+  }
+  .btn-google:hover {
+    border-color: var(--green-soft);
+    box-shadow: 0 4px 16px var(--shadow);
+  }
+
   .signup-row {
     text-align: center;
     margin-top: 28px;
@@ -522,114 +529,6 @@ $parent_id  = isset($role_map['parent'])  ? $role_map['parent']  : '';
   .error{
     color:red;
   }
-
-  /* ── ROLE SELECT SCREEN ── */
-  .role-select {
-    width: 100%;
-    max-width: 380px;
-    animation: fadeUp 0.7s ease both;
-  }
-  .role-select .login-heading { margin-bottom: 8px; }
-  .role-select .login-sub { margin-bottom: 36px; }
-
-  .role-btn-group {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .role-btn {
-    width: 100%;
-    height: 64px;
-    background: var(--white);
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 0 20px;
-    cursor: pointer;
-    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s, background 0.2s;
-    font-family: 'DM Sans', sans-serif;
-    text-align: left;
-  }
-  .role-btn:hover {
-    border-color: var(--green-deep);
-    background: var(--green-pale);
-    box-shadow: 0 8px 24px var(--shadow);
-    transform: translateY(-2px);
-  }
-  .role-btn:active { transform: translateY(0); }
-
-  .role-icon {
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    background: var(--green-pale);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--green-deep);
-    flex-shrink: 0;
-    transition: background 0.2s, color 0.2s;
-  }
-  .role-btn:hover .role-icon {
-    background: var(--green-deep);
-    color: var(--white);
-  }
-
-  .role-text { display: flex; flex-direction: column; gap: 2px; }
-  .role-title {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-dark);
-  }
-  .role-desc {
-    font-size: 11.5px;
-    color: var(--text-light);
-  }
-
-  .role-chevron {
-    margin-left: auto;
-    color: var(--text-light);
-    display: flex;
-    transition: transform 0.2s, color 0.2s;
-  }
-  .role-btn:hover .role-chevron {
-    transform: translateX(4px);
-    color: var(--green-deep);
-  }
-
-  /* Back link on login form */
-  .back-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 20px;
-    font-size: 12.5px;
-    color: var(--text-light);
-    cursor: pointer;
-    width: fit-content;
-    transition: color 0.2s;
-  }
-  .back-row:hover { color: var(--green-deep); }
-
-  /* Selected role badge shown on the login form */
-  .role-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 14px;
-    border-radius: 999px;
-    background: var(--green-pale);
-    color: var(--green-deep);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-
-  .hidden { display: none !important; }
 </style>
 </head>
 <body>
@@ -648,8 +547,8 @@ $parent_id  = isset($role_map['parent'])  ? $role_map['parent']  : '';
 
     <div class="left-logo">
       <div class="logo-mark">
-        <img
-            src="<?php echo base_url('assets/logos/school_logo.png'); ?>"
+        <img 
+            src="<?php echo base_url('assets/logos/school_logo.png'); ?>" 
             alt="School Logo"
             class="school-logo"
         >
@@ -676,82 +575,9 @@ $parent_id  = isset($role_map['parent'])  ? $role_map['parent']  : '';
     <div class="corner-deco"></div>
     <div class="corner-deco-bl"></div>
 
-    <!-- ── ROLE SELECTION SCREEN (shown first) ── -->
-    <div class="role-select" id="roleSelect">
-
-      <div class="login-eyebrow">
-        <div class="eyebrow-line"></div>
-        <span class="eyebrow-text">Member Portal</span>
-      </div>
-
-      <h1 class="login-heading">Who's <span>Signing In?</span></h1>
-      <p class="login-sub">Choose your role to continue to the login page</p>
-
-      <div class="role-btn-group">
-
-        <!-- role id 1 = Admin (change to match your user_roles table) -->
-        <button type="button" class="role-btn" id="btnAdmin" data-role-id="<?php echo $admin_id; ?>" data-role-name="Admin">
-          <span class="role-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/>
-            </svg>
-          </span>
-          <span class="role-text">
-            <span class="role-title">Admin</span>
-            <span class="role-desc">Manage school operations</span>
-          </span>
-          <span class="role-chevron">
-            <svg width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg>
-          </span>
-        </button>
-
-        <!-- role id 2 = Teacher (change to match your user_roles table) -->
-        <button type="button" class="role-btn" id="btnTeacher" data-role-id="<?php echo $teacher_id; ?>" data-role-name="Teacher">
-          <span class="role-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-            </svg>
-          </span>
-          <span class="role-text">
-            <span class="role-title">Teacher</span>
-            <span class="role-desc">Classes, attendance & grades</span>
-          </span>
-          <span class="role-chevron">
-            <svg width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg>
-          </span>
-        </button>
-
-        <!-- role id 3 = Parent (change to match your user_roles table) -->
-        <button type="button" class="role-btn" id="btnParent" data-role-id="<?php echo $parent_id; ?>" data-role-name="Parent">
-          <span class="role-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-          </span>
-          <span class="role-text">
-            <span class="role-title">Parent</span>
-            <span class="role-desc">Track your child's growth</span>
-          </span>
-          <span class="role-chevron">
-            <svg width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg>
-          </span>
-        </button>
-
-      </div>
-
-    </div>
-
-    <!-- ── LOGIN FORM (hidden until a role is picked) ── -->
-    <form method="post" id="loginForm" class="hidden" action="<?php echo base_url('member_login_check') ;?>">
+    <form method="post" id="loginForm" action="<?php echo base_url('member_login_check') ;?>" >
 
       <div class="login-card">
-
-        <div class="back-row" id="backToRoles">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 2L4 6l4 4"/></svg>
-          Back
-        </div>
 
         <div class="login-eyebrow">
           <div class="eyebrow-line"></div>
@@ -759,14 +585,7 @@ $parent_id  = isset($role_map['parent'])  ? $role_map['parent']  : '';
         </div>
 
         <h1 class="login-heading">Welcome<br><span>Back</span></h1>
-
-        <!-- shows which role was picked -->
-        <div class="role-badge" id="roleBadge">Signing in as Admin</div>
-
         <p class="login-sub">Sign in to access your growth dashboard</p>
-
-        <!-- hidden field carrying the selected role_id from user_roles table -->
-        <input type="hidden" name="role_id" id="role_id" value="">
 
         <!-- USERNAME -->
         <div class="field-group">
@@ -824,6 +643,15 @@ $parent_id  = isset($role_map['parent'])  ? $role_map['parent']  : '';
           </div>
         </button>
 
+        <!-- DIVIDER -->
+        <div class="divider">
+          <div class="divider-line"></div>
+          <span class="divider-text">or continue with</span>
+          <div class="divider-line"></div>
+        </div>
+
+      
+
         <div class="signup-row">
           Don't have an account?<a href="<?php echo base_url('registration') ; ?>">Request Access</a>
         </div>
@@ -853,34 +681,6 @@ $parent_id  = isset($role_map['parent'])  ? $role_map['parent']  : '';
 
 
 <script>
-  // ── ROLE SELECTION LOGIC ──
-  const roleSelect = document.getElementById('roleSelect');
-  const loginForm = document.getElementById('loginForm');
-  const roleIdField = document.getElementById('role_id');
-  const roleBadge = document.getElementById('roleBadge');
-  const backToRoles = document.getElementById('backToRoles');
-
-  document.querySelectorAll('.role-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const roleId = btn.getAttribute('data-role-id');
-      const roleName = btn.getAttribute('data-role-name');
-
-      // pass the role_id into the hidden field
-      roleIdField.value = roleId;
-      roleBadge.textContent = 'Signing in as ' + roleName;
-
-      // swap screens
-      roleSelect.classList.add('hidden');
-      loginForm.classList.remove('hidden');
-    });
-  });
-
-  backToRoles.addEventListener('click', () => {
-    loginForm.classList.add('hidden');
-    roleSelect.classList.remove('hidden');
-    roleIdField.value = '';
-  });
-
   // Eye toggle
   const eyeToggle = document.getElementById('eyeToggle');
   const pwdInput = document.getElementById('password');
@@ -935,6 +735,7 @@ $parent_id  = isset($role_map['parent'])  ? $role_map['parent']  : '';
 
 
   <script>
+
 $("#loginForm").validate({
 
     rules:
@@ -952,10 +753,6 @@ $("#loginForm").validate({
                     username:function()
                     {
                         return $("#username").val();
-                    },
-                    role_id:function()
-                    {
-                        return $("#role_id").val();   // pulls the hidden field set when a role button was clicked
                     }
                 }
             }
@@ -975,13 +772,10 @@ $("#loginForm").validate({
                     {
                         return $("#username").val();
                     },
+
                     password:function()
                     {
                         return $("#password").val();
-                    },
-                    role_id:function()
-                    {
-                        return $("#role_id").val();
                     }
                 }
             }
@@ -995,6 +789,7 @@ $("#loginForm").validate({
             required:"Please enter username",
             remote:"Username does not exist"
         },
+
         password:
         {
             required:"Please enter password",
@@ -1005,6 +800,12 @@ $("#loginForm").validate({
 });
 
 </script>
+
+
+
+
+
+
 
 </body>
 </html>
