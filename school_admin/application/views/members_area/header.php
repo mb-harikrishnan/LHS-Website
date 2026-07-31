@@ -125,7 +125,7 @@ $res = $query->row()->amYear ?? '-';
         <div class="nav-section-label">PUBLIC ZONE</div>
 
         <!-- Dashboard -->
-        <div class="nav-item<?php echo $activePage === 'dashboard' ? ' active' : ''; ?>" onclick="window.location='index.php'">
+        <div class="nav-item<?php echo $activePage === 'dashboard' ? ' active' : ''; ?>" onclick="window.location='<?php echo base_url('index.php'); ?>'">
           <div class="nav-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
               <rect x="3" y="3" width="7" height="7" />
@@ -156,9 +156,9 @@ $res = $query->row()->amYear ?? '-';
           </span>
         </div>
         <div class="sub-nav" id="subnav-disclosure">
-          <div class="sub-item" data-url="general_information" onclick="window.location.href='general_information'">Document And Information</div>
-          <div class="sub-item" data-url="Result_and_Staff" onclick="window.location.href='Result_and_Staff'">Result & Staff</div>
-          <div class="sub-item" data-url="infrastructure" onclick="window.location.href='infrastructure'">Infrastructure video</div>
+          <div class="sub-item" data-url="<?php echo base_url('general_information'); ?>" onclick="window.location.href=this.dataset.url">Document And Information</div>
+          <div class="sub-item" data-url="<?php echo base_url('Result_and_Staff'); ?>" onclick="window.location.href=this.dataset.url">Result & Staff</div>
+          <div class="sub-item" data-url="<?php echo base_url('infrastructure'); ?>" onclick="window.location.href=this.dataset.url">Infrastructure video</div>
         </div>
 
         <!-- School News -->
@@ -202,8 +202,8 @@ $res = $query->row()->amYear ?? '-';
           </span>
         </div>
         <div class="sub-nav" id="subnav-cocurricular">
-          <div class="sub-item" data-url="co_curricular_list" onclick="window.location.href='co_curricular_list'">Co Curricular Activities Main List</div>
-          <div class="sub-item" data-url="activities_list" onclick="window.location.href='activities_list'">All Images</div>
+          <div class="sub-item" data-url="<?php echo base_url('co_curricular_list'); ?>" onclick="window.location.href=this.dataset.url">Co Curricular Activities Main List</div>
+          <div class="sub-item" data-url="<?php echo base_url('activities_list'); ?>" onclick="window.location.href=this.dataset.url">All Images</div>
         </div>
 
         <!-- Vacancy -->
@@ -224,8 +224,8 @@ $res = $query->row()->amYear ?? '-';
           </span>
         </div>
         <div class="sub-nav" id="subnav-vacancy">
-          <div class="sub-item" data-url="vaccancy_list" onclick="window.location.href='vaccancy_list'">Add Vacancy</div>
-          <div class="sub-item" data-url="apply_members" onclick="window.location.href='apply_members'">Applications</div>
+          <div class="sub-item" data-url="<?php echo base_url('vaccancy_list'); ?>" onclick="window.location.href=this.dataset.url">Add Vacancy</div>
+          <div class="sub-item" data-url="<?php echo base_url('apply_members'); ?>" onclick="window.location.href=this.dataset.url">Applications</div>
         </div>
 
         <!-- Add Downloads -->
@@ -338,10 +338,10 @@ $res = $query->row()->amYear ?? '-';
           </span>
         </div>
         <div class="sub-nav" id="subnav-students">
-          <div class="sub-item" data-url="<?php echo base_url('class_list'); ?>" onclick="window.location.href='<?php echo base_url('class_list'); ?>'">Class</div>
-          <div class="sub-item" data-url="<?php echo base_url('divition_list'); ?>" onclick="window.location.href='<?php echo base_url('divition_list'); ?>'">Division</div>
-          <div class="sub-item" data-url="class_divition_list" onclick="window.location.href='class_divition_list'">Class Division Allocation</div>
-          <div class="sub-item" data-url="<?php echo base_url('students_list'); ?>" onclick="window.location.href='<?= base_url('students_list'); ?>'">Students</div>
+          <div class="sub-item" data-url="<?php echo base_url('class_list'); ?>" onclick="window.location.href=this.dataset.url">Class</div>
+          <div class="sub-item" data-url="<?php echo base_url('divition_list'); ?>" onclick="window.location.href=this.dataset.url">Division</div>
+          <div class="sub-item" data-url="<?php echo base_url('class_divition_list'); ?>" onclick="window.location.href=this.dataset.url">Class Division Allocation</div>
+          <div class="sub-item" data-url="<?php echo base_url('students_list'); ?>" onclick="window.location.href=this.dataset.url">Students</div>
         </div>
 
         <!-- Exams -->
@@ -360,9 +360,9 @@ $res = $query->row()->amYear ?? '-';
           </span>
         </div>
         <div class="sub-nav" id="subnav-exams">
-          <div class="sub-item" data-url="exam_list" onclick="window.location.href='<?= base_url('exam_list') ?>'">Exam Master</div>
-          <div class="sub-item" data-url="allocation_list" onclick="window.location.href='<?= base_url('allocation_list')?>'">Exam Marks Allocation</div>
-          <div class="sub-item" data-url="Marksentry_list" onclick="window.location.href='<?php echo base_url('Marksentry_list'); ?>'">Exam Marks Entry</div>
+          <div class="sub-item" data-url="<?php echo base_url('exam_list'); ?>" onclick="window.location.href=this.dataset.url">Exam Master</div>
+          <div class="sub-item" data-url="<?php echo base_url('allocation_list'); ?>" onclick="window.location.href=this.dataset.url">Exam Marks Allocation</div>
+          <div class="sub-item" data-url="<?php echo base_url('Marksentry_list'); ?>" onclick="window.location.href=this.dataset.url">Exam Marks Entry</div>
         </div>
 
         <!-- Change Password -->
@@ -495,18 +495,34 @@ $res = $query->row()->amYear ?? '-';
    * If it matches: mark the sub-item active, open its submenu,
    * and mark the parent nav-item active + open (this fixes "submenu click
    * should activate the whole main menu").
+   *
+   * Robust against:
+   *  - relative vs absolute data-url values
+   *  - trailing slashes
+   *  - sub-routes like vaccancy_list/edit/5
+   *  - query strings / hashes in the current URL
    */
   function highlightActiveMenu() {
-    const currentPath = window.location.pathname.split('/').filter(Boolean).pop() || '';
-    const currentHref = window.location.href;
+    const currentPath = window.location.pathname.replace(/\/+$/, '');
 
     document.querySelectorAll('.sub-item').forEach(function (item) {
       const url = item.getAttribute('data-url');
       if (!url) return;
 
-      const urlTail = url.split('/').filter(Boolean).pop();
+      let urlPath;
+      try {
+        urlPath = new URL(url, window.location.origin).pathname.replace(/\/+$/, '');
+      } catch (e) {
+        urlPath = url.replace(/\/+$/, '');
+      }
+      if (!urlPath) return;
 
-      if (currentPath === urlTail || currentHref.indexOf(url) !== -1) {
+      const isMatch =
+        currentPath === urlPath ||
+        currentPath.endsWith(urlPath) ||
+        currentPath.startsWith(urlPath + '/');
+
+      if (isMatch) {
         item.classList.add('active');
 
         const subnav = item.closest('.sub-nav');
