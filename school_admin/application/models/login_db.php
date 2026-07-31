@@ -123,9 +123,11 @@ public function fetch_roles()
 
 		}
 
-		 $query = $this->db->query("SELECT $name as c_username,$id as sl_no,SYSDATE() currentdate 
-		 FROM $table  WHERE  $name='".$username."'");
-        
+		$query = $this->db->select("$name AS c_username, $id AS sl_no, SYSDATE() AS currentdate", false)
+                  ->from($table)
+                  ->where($name, $username)
+                  ->get();
+	
 		$query -> num_rows();
         
 		if($query -> num_rows() == 1)

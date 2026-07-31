@@ -182,7 +182,6 @@ public function check_password()
 		{
 			$result = $this->login_db->login_validation_step2($username,$user_role_id);
 			$id=0;
-			
 			if($result)
 			{
 
