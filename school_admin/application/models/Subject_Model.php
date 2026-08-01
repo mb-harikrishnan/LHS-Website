@@ -22,6 +22,15 @@ class Subject_Model extends CI_Model
     $result = $query->result();
     return $result;
   }
+
+
+  public function get_exam_details($emId)
+{
+    return $this->db
+        ->where('emId', $emId)
+        ->get('exam_master')
+        ->row();
+}
   public function fetch_all_subjects()
   {
 

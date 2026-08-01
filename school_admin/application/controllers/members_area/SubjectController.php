@@ -1280,7 +1280,8 @@ public function edit_allocation($emId,$cmId)
     $data['allocation']=$this->Subject_Model->get_allocation_details($emId,$cmId);
         $data['subjects']   = $this->Subject_Model->get_available_subjects($emId,$cmId);
 
-
+   $data['exam'] = $this->Subject_Model->get_exam_details($emId);
+   
     $this->load->view('members_area/header');
     $this->load->view('members_area/edit_allocation',$data);
     $this->load->view('members_area/footer');

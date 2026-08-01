@@ -3,6 +3,38 @@ $pageTitle = 'Reports';
 $breadcrumb = 'Reports';
 $activePage = 'reports';
 $showGlobalSearch = false;
+
+/*
+ * Robust "is this a grade exam" check.
+ * Previously the view read $exam->emIsGrade directly. If the controller
+ * ever forgot to pass $exam, this threw a PHP fatal ("trying to get
+ * property of non-object") which killed page rendering before the
+ * select2 <script> tags ran — which is why the dropdowns looked broken.
+ * Now we check $exam first, fall back to $allocation[0], and default to 0.
+ */
+$isGrade = 0;
+if (isset($exam) && isset($exam->emIsGrade) && $exam->emIsGrade == 1) {
+    $isGrade = 1;
+} elseif (isset($allocation[0]->emIsGrade) && $allocation[0]->emIsGrade == 1) {
+    $isGrade = 1;
+}
+
+/*
+ * Build a list of subject IDs already allocated so they can be excluded
+ * from the "Add More Subjects" list below. Without this, a user could
+ * re-select an already-added subject and create a duplicate mark row.
+ * Assumption: each $allocation row carries the subject id as emdSmId
+ * (matching the emdCmId / emdEmId naming pattern already in this file).
+ * If your row uses a different field name, change $row->emdSmId below.
+ */
+$alreadyAllocatedSubjectIds = [];
+if (!empty($allocation)) {
+    foreach ($allocation as $row) {
+        if (isset($row->emdSmId)) {
+            $alreadyAllocatedSubjectIds[] = $row->emdSmId;
+        }
+    }
+}
 ?>
 
 <link rel="stylesheet" href="<?php echo base_url('assets/css/exam.css'); ?>">
@@ -19,9 +51,9 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
             </svg>
             Edit Mark Allocation
           </div>
-          <button class="card-action" 
+          <button class="card-action"
               onclick="window.location.href='<?php echo base_url('allocation_list'); ?>'">
-          <i class="fa fa-upload"></i> List 
+          <i class="fa fa-upload"></i> List
           </button>
         </div>
 
@@ -63,9 +95,10 @@ $examName  = $allocation[0]->emDisplayName;
                     type="number"
                     class="news-select subject-mark-input"
                     name="marks[]"
-                    value="<?php echo $row->emdMaxMark; ?>"
+                    value="<?php echo $isGrade ? 100 : $row->emdMaxMark; ?>"
                     placeholder="Maximum Mark"
-                    min="1">
+                    min="1"
+                    <?php echo $isGrade ? 'readonly' : ''; ?>>
 
                 <button type="button" class="delete-row-btn" data-emdid="<?php echo $row->emdId; ?>">
                     <i class="fa-solid fa-trash"></i>
@@ -82,6 +115,12 @@ $examName  = $allocation[0]->emDisplayName;
             <?php if(!empty($subjects)){ foreach($subjects as $subject){
                 $subjectId   = isset($subject->smId) ? $subject->smId : (isset($subject->id) ? $subject->id : '');
                 $subjectName = isset($subject->smName) ? $subject->smName : (isset($subject->name) ? $subject->name : '');
+
+                // Skip subjects that already have an allocation row above,
+                // so they can't be picked twice.
+                if (in_array($subjectId, $alreadyAllocatedSubjectIds)) {
+                    continue;
+                }
             ?>
                 <option value="<?php echo $subjectId; ?>"><?php echo $subjectName; ?></option>
             <?php } } ?>
@@ -172,6 +211,22 @@ Swal.fire({
     border:1px solid #d1d5db;
 }
 
+/* Single-select (disabled) fields styled to match, since select2
+   doesn't always paint disabled selects consistently across browsers */
+.select2-container--default.select2-container--disabled .select2-selection--single{
+    background:#f3f4f6 !important;
+    border:1px solid #d1d5db !important;
+    border-radius:8px !important;
+    height:40px !important;
+    display:flex;
+    align-items:center;
+    cursor:not-allowed;
+}
+
+.select2-container--default.select2-container--disabled .select2-selection__arrow{
+    display:none;
+}
+
 /* Delete button to match Add page's accent styling */
 .delete-row-btn{
     width:44px;
@@ -202,6 +257,10 @@ Swal.fire({
 </style>
 
 <script>
+// Passed once from PHP so all JS logic below stays in sync with the
+// server-side $isGrade flag computed at the top of this file.
+var IS_GRADE_EXAM = <?php echo $isGrade ? 1 : 0; ?>;
+
 $(function(){
 
     // Style the disabled class/exam fields like the Add page selects
@@ -237,19 +296,25 @@ $(function(){
 
         selected.forEach(function (subj) {
 
-            var prevVal = existing[subj.id] !== undefined ? existing[subj.id] : '';
+            // Rule: grade exams always lock every mark to 100.
+            // Non-grade exams start blank and stay editable.
+            var prevVal = existing[subj.id] !== undefined
+                ? existing[subj.id]
+                : (IS_GRADE_EXAM ? 100 : '');
+
+            var readOnly = IS_GRADE_EXAM ? 'readonly' : '';
 
             var row = $(
                 '<div class="subject-mark-row" style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">' +
                     '<label style="min-width:140px;margin:0;">' + subj.text + '</label>' +
                     '<input type="hidden" name="newSmId[]" value="' + subj.id + '">' +
                     '<input type="number" ' +
-                           'class="news-select new-subject-mark-input" ' +
-                           'name="newMarks[]" ' +
-                           'data-smid="' + subj.id + '" ' +
-                           'placeholder="Maximum Mark" ' +
-                           'value="' + prevVal + '" ' +
-                           'min="1">' +
+                        'class="news-select new-subject-mark-input" ' +
+                        'name="newMarks[]" ' +
+                        'data-smid="' + subj.id + '" ' +
+                        'value="' + prevVal + '" ' +
+                        readOnly + ' ' +
+                        'min="1">' +
                 '</div>'
             );
 

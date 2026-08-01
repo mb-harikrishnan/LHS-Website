@@ -45,7 +45,12 @@ $showGlobalSearch = false;
           $examId = isset($exam->emId) ? $exam->emId : (isset($exam->examId) ? $exam->examId : (isset($exam->id) ? $exam->id : ''));
           $examName = isset($exam->emName) ? $exam->emName : (isset($exam->examName) ? $exam->examName : (isset($exam->name) ? $exam->name : ''));
         ?>
-          <option value="<?php echo $examId; ?>"><?php echo $examName; ?></option>
+          <!-- <option value="<?php echo $examId; ?>"><?php echo $examName; ?></option> -->
+           <option value="<?php echo $exam->emId; ?>"
+                    data-grade="<?php echo $exam->emIsGrade; ?>">
+                <?php echo $exam->emName; ?>
+            </option>
+
         <?php } } ?>
       </select>
         </div>
@@ -402,18 +407,40 @@ $('#subjects').on('change', function () {
 
         var prevVal = existing[subj.id] !== undefined ? existing[subj.id] : '';
 
+        var isGrade = $('#emId option:selected').data('grade');
+
+        var value = prevVal;
+        var readonly = '';
+
+        if (isGrade == 1) {
+            value = 100;
+            readonly = 'readonly';
+        }
+
         var row = $(
             '<div class="news-form-group subject-mark-row" style="display:flex;align-items:center;gap:10px;">' +
                 '<label style="min-width:140px;margin:0;">' + subj.text + '</label>' +
                 '<input type="number" ' +
-                       'name="marks[' + subj.id + ']" ' +
-                       'class="news-select subject-mark-input" ' +
-                       'data-smid="' + subj.id + '" ' +
-                       'placeholder="Enter mark" ' +
-                       'value="' + prevVal + '" ' +
-                       'min="1">' +
+                    'name="marks[' + subj.id + ']" ' +
+                    'class="news-select subject-mark-input" ' +
+                    'data-smid="' + subj.id + '" ' +
+                    'value="' + value + '" ' +
+                    readonly + ' min="1">' +
             '</div>'
         );
+
+        // var row = $(
+        //     '<div class="news-form-group subject-mark-row" style="display:flex;align-items:center;gap:10px;">' +
+        //         '<label style="min-width:140px;margin:0;">' + subj.text + '</label>' +
+        //         '<input type="number" ' +
+        //                'name="marks[' + subj.id + ']" ' +
+        //                'class="news-select subject-mark-input" ' +
+        //                'data-smid="' + subj.id + '" ' +
+        //                'placeholder="Enter mark" ' +
+        //                'value="' + prevVal + '" ' +
+        //                'min="1">' +
+        //     '</div>'
+        // );
 
         container.append(row);
     });
