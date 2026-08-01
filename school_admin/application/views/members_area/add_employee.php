@@ -130,6 +130,32 @@ $showGlobalSearch = false;
 
 <!-- jQuery -->
 
+
+<style>
+    /* Validation error text */
+label.error,
+span.error {
+    color: #dc2626;
+    font-size: 13px;
+    margin-top: 5px;
+    display: block;
+    font-weight: 500;
+}
+
+/* Red border for invalid fields */
+input.error,
+select.error,
+textarea.error {
+    border: 1px solid #dc2626 !important;
+}
+
+/* Select2 red border */
+.select2-container--default .select2-selection--single.error,
+.select2-container--default .select2-selection--single {
+    border-color: #dc2626;
+}
+</style>
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 
@@ -176,10 +202,21 @@ $("#newsform").validate({
 
     rules: {
 
-        name: {
-            required: true
+           name: {
+            required: true,
+            remote: {
+                url: "<?php echo base_url('check_name_exist'); ?>",
+                type: "post",
+                data: {
+                    name: function () {
+                        return $("#name").val();
+                    },
+                    employee_id: function () {
+                        return $("#employee_id").val(); // Hidden field for edit
+                    }
+                }
+            }
         },
-
         password: {
             required: true,
             minlength: 6
@@ -209,8 +246,11 @@ $("#newsform").validate({
     messages: {
 
         name: {
-            required: "Please enter employee name"
+            required: "Please enter name",
+            remote: "Name already exists"
         },
+
+        
 
         password: {
             required: "Please enter password",

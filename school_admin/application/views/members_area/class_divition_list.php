@@ -114,45 +114,28 @@ $count++;
 <!-- SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
 <script>
-
 $(document).ready(function () {
 
-    $('#reportsDataTable').DataTable({
+   $('#reportsDataTable').DataTable({
+    responsive: true,
+    pageLength: 10,
+    autoWidth: false,
 
-        responsive: true,
-        autoWidth: false,
-        pageLength: 10,
+    columnDefs: [
+        { orderable: false, targets: [2, 3] } // Edit and Action
+    ],
 
-        order: [[0, 'desc']],
-
-        columnDefs: [
-            {
-                orderable: false,
-                targets: [3,4]
-            }
-        ],
-
-        language: {
-            search: "",
-            searchPlaceholder: "Search reports...",
-            lengthMenu: "Show _MENU_ entries",
-            zeroRecords: "No reports found",
-            info: "Showing _START_ to _END_ of _TOTAL_ reports",
-            paginate: {
-                previous: "Prev",
-                next: "Next"
-            }
-        }
-
-    });
+    language: {
+        search: "_INPUT_",
+        searchPlaceholder: "Search reports...",
+        lengthMenu: "Show _MENU_ entries",
+    }
+});
 
 });
 
 </script>
-
-
 
 
 <script>

@@ -143,6 +143,10 @@ $route['employee_list']   = 'members_area/EmployeeController/employee_list';
 $route['add_employee']   = 'members_area/EmployeeController/add_employee';
 $route['insert_employee']   = 'members_area/EmployeeController/insert_employee';
 $route['delete_employee']   = 'members_area/EmployeeController/delete_employee';
+$route['check_name_exist']   = 'members_area/EmployeeController/check_name_exist';
+
+
+
 
 
 /////////////////////////   CLASS AND DIVITION /////////////////////////////

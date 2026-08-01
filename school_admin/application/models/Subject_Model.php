@@ -84,7 +84,7 @@ public function delete_exam($id)
   public function fetch_all_exam()
   {
 
-    $select = "SELECT * FROM exam_master WHERE emActive=1 AND emIsOpened = 1 AND emIsOngoing =1 ";
+    $select = "SELECT * FROM exam_master WHERE emActive=1 AND emIsOpened = 1 AND emIsOngoing =1  ORDER BY emDisplayOrder ASC";
     $query = $this->db->query($select);
     $result = $query->result();
     return $result;

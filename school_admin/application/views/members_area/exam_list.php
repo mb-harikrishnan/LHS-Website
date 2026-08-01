@@ -261,6 +261,10 @@ $("#reportsDataTable tbody").sortable({
                     showConfirmButton:false
                 });
 
+                 setTimeout(function () {
+                    location.reload();
+                }, 1200);
+
             }
 
         });

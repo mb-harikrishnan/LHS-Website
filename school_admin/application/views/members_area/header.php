@@ -9,12 +9,21 @@ if (!isset($pageHeadScripts)) $pageHeadScripts = [];
 
 $userId    = $this->session->userdata('id');
 $firstName = $this->session->userdata('c_username');
-$initials =$this->session->userdata('c_username');
+$initials ='AY';
 
 
 $sql ="SELECT amYear FROM academic_master WHERE amIsCurrent = 1 ";
 $query = $this->db->query($sql);
 $res = $query->row()->amYear ?? '-';
+
+$sql1 ="SELECT COUNT(*) as total FROM school_news WHERE c_status = 'Y' ";
+$query1 = $this->db->query($sql1);
+$count = $query1->row()->total ?? 0;
+
+$sql2 ="SELECT c_title,c_news,d_date FROM school_news WHERE c_status = 'Y' ";
+$query2 = $this->db->query($sql2);
+$result = $query2->result() ?? [];
+
 
 ?>
 <!DOCTYPE html>
@@ -66,7 +75,7 @@ $res = $query->row()->amYear ?? '-';
 
 
  .tb-avatar {
-    width: 100px;
+    width: 50px;
     height: 20px;
     display: flex;
     align-items: center;
@@ -115,7 +124,7 @@ $res = $query->row()->amYear ?? '-';
         </div>
         <div class="sb-user-info">
           <div class="sb-user-name"><?php echo $firstName; ?></div>
-          <div class="sb-user-id"><?php echo $this->session->userdata('c_username'); ?></div>
+          <!-- <div class="sb-user-id"><?php echo $this->session->userdata('c_username'); ?></div> -->
         </div>
         <div class="sb-badge">Active</div>
       </div>

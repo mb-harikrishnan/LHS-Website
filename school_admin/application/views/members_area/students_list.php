@@ -291,29 +291,27 @@ function lookupValue($db, $table, $idColumn, $id, $column, $fallback = '-')
      Page Script
 ============================================================= -->
 <script>
+
 $(document).ready(function () {
 
-    // ---- DataTable init ----
-    $('#reportsDataTable').DataTable({
-        responsive: true,
-        autoWidth: false,
-        pageLength: 10,
-        order: [[0, 'desc']],
-        columnDefs: [
-            { orderable: false, targets: [5, 6] } // Details / Action columns shouldn't be sortable
-        ],
-        language: {
-            search: "",
-            searchPlaceholder: "Search reports...",
-            lengthMenu: "Show _MENU_ entries",
-            zeroRecords: "No reports found",
-            info: "Showing _START_ to _END_ of _TOTAL_ reports",
-            paginate: {
-                previous: "Prev",
-                next: "Next"
-            }
-        }
-    });
+   $('#reportsDataTable').DataTable({
+    responsive: true,
+    pageLength: 10,
+    autoWidth: false,
+
+    columnDefs: [
+        { orderable: false, targets: [2, 3] } // Edit and Action
+    ],
+
+    language: {
+        search: "_INPUT_",
+        searchPlaceholder: "Search reports...",
+        lengthMenu: "Show _MENU_ entries",
+    }
+});
+
+
+
 
     // ---- Delete handler ----
     $(document).on('click', '.deleteBtn', function (e) {

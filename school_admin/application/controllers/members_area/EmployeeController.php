@@ -84,7 +84,26 @@ class EmployeeController extends CI_Controller {
 
 
 
+public function check_name_exist()
+{
+    $name = $this->input->post('name');
+    $employee_id = $this->input->post('employee_id');
 
+    $this->db->where('emName', $name);
+
+    // Ignore current record while editing
+    if (!empty($employee_id)) {
+        $this->db->where('emId !=', $employee_id);
+    }
+
+    $count = $this->db->count_all_results('employee_master');
+
+    if ($count > 0) {
+        echo "false"; // Name exists
+    } else {
+        echo "true";  // Name available
+    }
+}
 
 
 

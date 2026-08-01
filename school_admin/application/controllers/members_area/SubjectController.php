@@ -480,6 +480,14 @@ public function insert_exam()
         return;
     }
 
+  $sql = "SELECT MAX(emDisplayOrder) AS last_display_order
+        FROM exam_master";
+
+        $query = $this->db->query($sql);
+        $result = $query->row();
+
+        $lastDisplayOrder = $result->last_display_order;
+
     // Insert
     $data = array(
         'emDisplayName' => $exam_name,
@@ -488,7 +496,8 @@ public function insert_exam()
         'emIsOpened'        => $is_opened,
         'emIsOngoing'     => $is_ongoing,
         'emIsGrade'       => $is_grade,
-        'emActive'      => $active
+        'emActive'      => $active,
+        'emDisplayOrder' => $lastDisplayOrder + 1
     );
 
     if ($this->db->insert('exam_master', $data)) {
