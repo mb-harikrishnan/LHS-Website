@@ -121,4 +121,52 @@ public function get_menu_tree()
 
 
 
+// Get all menus for the parent dropdown
+public function get_all_menus_parent()
+{
+    $this->db->select('menu_id, parent_menu_id, menu_name, display_name');
+    $this->db->order_by('menu_name', 'ASC');
+    $query = $this->db->get('menus');
+    return $query->result();
+}
+
+// Get next display_order for a given parent (NULL = top-level)
+public function get_next_display_order($parent_menu_id = null)
+{
+    $this->db->select_max('display_order');
+    if (empty($parent_menu_id)) {
+        $this->db->where('parent_menu_id IS NULL');
+    } else {
+        $this->db->where('parent_menu_id', $parent_menu_id);
+    }
+    $query = $this->db->get('menus');
+    $row = $query->row();
+
+    return ($row && $row->display_order !== null) ? $row->display_order + 1 : 1;
+}
+
+// Insert new menu
+public function insert_menu($data)
+{
+    $this->db->insert('menus', $data);
+    return $this->db->insert_id();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

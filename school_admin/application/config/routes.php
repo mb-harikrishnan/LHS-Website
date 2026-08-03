@@ -289,10 +289,9 @@ $route['insert_role'] = 'members_area/PermissionsController/insert_role';
 /////////////////    Menu List ////////////////
 
 $route['menu_list'] = 'members_area/PermissionsController/menu_list';
-$route['update_menu_status'] = 'members_area/PermissionsController/update_menu_status';
+
 $route['add_menu'] = 'members_area/PermissionsController/add_menu';
-$route['check_menu'] = 'members_area/PermissionsController/check_menu';
-$route['insert_menu'] = 'members_area/PermissionsController/insert_menu';
+
 
 
 $route['add_menu_permission'] = 'members_area/PermissionsController/add_menu_permission';

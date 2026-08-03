@@ -468,6 +468,57 @@ public function insert_role()
 
 
 
+public function add_menu()
+{
+    $data['pageTitle']        = 'Add Menu';
+    $data['breadcrumb']       = 'Add Menu';
+    $data['activePage']       = 'add_menu';
+    $data['showGlobalSearch'] = false;
+
+    $data['menus'] = $this->Permissions_Model->get_all_menus_parent();
+
+    if ($this->input->post()) {
+        $this->form_validation->set_rules('menu_name', 'Menu Name', 'required|trim');
+        $this->form_validation->set_rules('display_name', 'Display Name', 'required|trim');
+        $this->form_validation->set_rules('menu_link', 'Menu Link', 'trim');
+        $this->form_validation->set_rules('parent_menu_id', 'Parent Menu', 'trim');
+
+        if ($this->form_validation->run() === TRUE) {
+
+            $parent_menu_id = $this->input->post('parent_menu_id');
+            $parent_menu_id = ($parent_menu_id === '' ) ? null : $parent_menu_id;
+
+            $next_order = $this->Permissions_Model->get_next_display_order($parent_menu_id);
+
+            $insert_data = array(
+                'parent_menu_id' => $parent_menu_id,
+                'menu_name'      => strtoupper(str_replace(' ', '_', $this->input->post('menu_name'))),
+                'display_name'   => $this->input->post('display_name'),
+                'menu_link'      => $this->input->post('menu_link') ?: null,
+                'display_order'  => $next_order,
+                'status'         => 1
+            );
+
+            $inserted_id = $this->Permissions_Model->insert_menu($insert_data);
+
+            if ($inserted_id) {
+                $this->session->set_flashdata('success', 'Menu added successfully.');
+            } else {
+                $this->session->set_flashdata('error', 'Failed to add menu.');
+            }
+
+            redirect('add_menu');
+        }
+    }
+
+    $this->load->view('members_area/header');
+    $this->load->view('members_area/add_menu', $data);
+    $this->load->view('members_area/footer');
+}
+
+
+
+
 
 
 
