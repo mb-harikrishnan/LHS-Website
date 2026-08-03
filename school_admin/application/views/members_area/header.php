@@ -302,6 +302,32 @@ $result = $query2->result() ?? [];
           <span class="nav-label">User Role list</span>
         </div>
 
+
+        <div class="nav-item<?php echo $activePage === 'menu_list' ? ' active' : ''; ?>"
+          onclick="window.location.href='<?php echo base_url('menu_list'); ?>'">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="3" width="18" height="14" rx="2" ry="2" />
+              <line x1="8" y1="21" x2="16" y2="21" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+            </svg>
+          </div>
+          <span class="nav-label">Menu list</span>
+        </div>
+
+
+        <div class="nav-item<?php echo $activePage === 'add_menu_permission' ? ' active' : ''; ?>"
+          onclick="window.location.href='<?php echo base_url('add_menu_permission'); ?>'">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="3" width="18" height="14" rx="2" ry="2" />
+              <line x1="8" y1="21" x2="16" y2="21" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+            </svg>
+          </div>
+          <span class="nav-label">Add Menu Permission</span>
+        </div>
+
         <div class="sb-divider"></div>
         <div class="nav-section-label">TEACHERS ZONE</div>
 

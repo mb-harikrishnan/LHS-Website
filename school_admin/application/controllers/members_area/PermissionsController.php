@@ -6,6 +6,7 @@ class PermissionsController extends CI_Controller {
     public function __construct()
 	{
 		parent::__construct();
+        $this->load->model('Permissions_Model');
 		
 	}
 
@@ -361,6 +362,104 @@ public function insert_role()
 
 
 
+ public function menu_list()
+{
+    $data['menu'] = $this->Permissions_Model->get_menu_tree();
+
+    $this->load->view('members_area/header');
+    $this->load->view('members_area/menu_list', $data);
+    $this->load->view('members_area/footer');
+
+}
+
+
+
+
+
+ public function add_menu_permission()
+    {
+        $data['pageTitle']        = 'Menu Permissions';
+        $data['breadcrumb']       = 'Menu Permissions';
+        $data['activePage']       = 'menu_permissions';
+        $data['showGlobalSearch'] = false;
+ 
+        $data['roles'] = $this->Permissions_Model->get_all_roles();
+        $data['menus'] = $this->build_menu_tree(
+            $this->Permissions_Model->get_all_menus()
+        );
+            $this->load->view('members_area/header');
+            $this->load->view('members_area/add_menu_permission', $data);
+            $this->load->view('members_area/footer');
+    }
+ 
+    // GET  menu_permissions/get_permissions/{role_id}
+    // Returns saved permissions for a role so the checkboxes can be pre-ticked
+    public function get_permissions($role_id = 0)
+    {
+        $role_id = (int) $role_id;
+        $permissions = $this->Permissions_Model->get_permissions_by_role($role_id);
+ 
+        $out = [];
+        foreach ($permissions as $menu_id => $p) {
+            $out[$menu_id] = [
+                'can_view'   => (int) $p->can_view,
+                'can_add'    => (int) $p->can_add,
+                'can_edit'   => (int) $p->can_edit,
+                'can_delete' => (int) $p->can_delete,
+            ];
+        }
+ 
+        $this->output
+             ->set_content_type('application/json')
+             ->set_output(json_encode(['status' => true, 'permissions' => $out]));
+    }
+ 
+    // POST menu_permissions/save
+    public function save()
+    {
+        $role_id     = (int) $this->input->post('role_id');
+        $permissions = $this->input->post('permissions'); // [menu_id => ['can_view'=>'1', ...]]
+ 
+        if (!$role_id) {
+            $this->output
+                 ->set_content_type('application/json')
+                 ->set_output(json_encode(['status' => false, 'message' => 'Please select a role.']));
+            return;
+        }
+ 
+        $ok = $this->Permissions_Model->save_permissions($role_id, (array) $permissions);
+ 
+        $this->output
+             ->set_content_type('application/json')
+             ->set_output(json_encode([
+                 'status'  => (bool) $ok,
+                 'message' => $ok ? 'Permissions saved successfully.' : 'Failed to save permissions.'
+             ]));
+    }
+ 
+    // Groups the flat menu list into parent -> children so the view can indent submenus
+    private function build_menu_tree($menus)
+    {
+        $tree     = [];
+        $children = [];
+ 
+        foreach ($menus as $menu) {
+            $menu->children = [];
+            if ($menu->parent_menu_id === null) {
+                $tree[$menu->menu_id] = $menu;
+            } else {
+                $children[$menu->parent_menu_id][] = $menu;
+            }
+        }
+ 
+        foreach ($tree as $menu_id => $menu) {
+            if (isset($children[$menu_id])) {
+                $tree[$menu_id]->children = $children[$menu_id];
+            }
+        }
+ 
+        return $tree;
+    }
 
 
 
