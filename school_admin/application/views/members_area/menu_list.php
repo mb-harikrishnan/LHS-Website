@@ -55,7 +55,7 @@ $showGlobalSearch = false;
                 <th>Order</th>
                 <th>Status</th>
                 <th>Edit</th>
-                <th>Delete</th>
+                <th>Action</th>
             </tr>
             </thead>
 
@@ -100,12 +100,29 @@ $showGlobalSearch = false;
                             </button>
                         </td>
 
-                        <td>
+                        <!-- <td>
                             <button type="button" class="table-btn delete-btn deleteBtn"
                                     data-id="<?php echo $parent->menu_id; ?>">
                                 <i class="fa fa-trash"></i>
                             </button>
-                        </td>
+                        </td> -->
+                   <td>
+    <?php if ($parent->status == 0) { ?>
+        <button type="button"
+                class="disable-btn toggleStatusBtn"
+                data-id="<?php echo $parent->menu_id; ?>"
+                data-status="0">
+            <i class="fa fa-ban"></i> Disable
+        </button>
+    <?php } else { ?>
+        <button type="button"
+                class="enable-btn toggleStatusBtn"
+                data-id="<?php echo $parent->menu_id; ?>"
+                data-status="1">
+            <i class="fa fa-check"></i> Enable
+        </button>
+    <?php } ?>
+</td>
 
                     </tr>
 
@@ -137,12 +154,23 @@ $showGlobalSearch = false;
                                     </button>
                                 </td>
 
-                                <td>
-                                    <button type="button" class="table-btn delete-btn deleteBtn"
-                                            data-id="<?php echo $child->menu_id; ?>">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </td>
+                              <td>
+    <?php if ($child->status == 0) { ?>
+        <button type="button"
+                class="disable-btn toggleStatusBtn"
+                data-id="<?php echo $child->menu_id; ?>"
+                data-status="0">
+            <i class="fa fa-ban"></i> Disable
+        </button>
+    <?php } else { ?>
+        <button type="button"
+                class="enable-btn toggleStatusBtn"
+                data-id="<?php echo $child->menu_id; ?>"
+                data-status="1">
+            <i class="fa fa-check"></i> Enable
+        </button>
+    <?php } ?>
+</td>
 
                             </tr>
                         <?php } ?>
@@ -159,6 +187,35 @@ $showGlobalSearch = false;
     </div>
 
 </div>
+
+
+<style>
+    .enable-btn {
+    background: #28a745;
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.disable-btn {
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.enable-btn:hover {
+    background: #218838;
+}
+
+.disable-btn:hover {
+    background: #c82333;
+}
+</style>
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -228,79 +285,51 @@ $('#menuSearchInput').on('keyup', function () {
 });
 </script>
 
-<!-- DELETE -->
+
+<!-- ENABLE / DISABLE TOGGLE -->
 <script>
-$(document).on('click', '.deleteBtn', function (e) {
+$(document).on('click', '.toggleStatusBtn', function () {
 
-    e.preventDefault();
-
-    let id  = $(this).data('id');
-    let row = $(this).closest('tr');
+    let btn        = $(this);
+    let menuId     = btn.data('id');
+    let currentStatus = btn.data('status'); // 0 = currently inactive, 1 = currently active
+    let newStatus  = currentStatus == 1 ? 0 : 1;
+    let actionText = newStatus == 1 ? 'enable' : 'disable';
 
     Swal.fire({
         title: 'Are you sure?',
-        text: 'You want to delete this record!',
+        text: `Do you want to ${actionText} this menu?`,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#dc2626',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Yes, Delete'
-    })
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#dc3545',
+        confirmButtonText: `Yes, ${actionText} it`
+    }).then((result) => {
 
-    .then((result) => {
+        if (!result.isConfirmed) return;
 
-        if (result.isConfirmed) {
-
-            $.ajax({
-
-                url: "<?php echo base_url('delete_menu'); ?>",
-                type: "POST",
-                data: { id: id },
-
-                success: function (response) {
-
-                    if ($.trim(response) == '1') {
-
-                        row.fadeOut(500, function () {
-                            $(this).remove();
-                        });
-
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'Deleted Successfully',
-                            showConfirmButton: false,
-                            timer: 2000
-                        });
-
-                    } else {
-
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Delete Failed'
-                        });
-
-                    }
-
-                },
-
-                error: function (xhr) {
-
-                    console.log(xhr.responseText);
-
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Server Error'
-                    });
-
-                }
-
-            });
-
-        }
-
+        $.ajax({
+            url: '<?php echo base_url("toggle_menu_status"); ?>',
+            type: 'POST',
+            data: {
+                menu_id: menuId,
+                status: newStatus
+            },
+            success: function (response) {
+                Swal.fire({
+                    title: 'Updated!',
+                    text: `Menu has been ${actionText}d.`,
+                    icon: 'success',
+                    timer: 1200,
+                    showConfirmButton: false
+                }).then(() => {
+                    location.reload();
+                });
+            },
+            error: function (xhr) {
+                Swal.fire('Error', 'Something went wrong while updating status.', 'error');
+            }
+        });
     });
-
 });
 </script>

@@ -156,9 +156,25 @@ public function insert_menu($data)
 
 
 
+public function get_menu_by_id($menu_id)
+{
+    return $this->db->where('menu_id', $menu_id)
+                     ->get('menus')
+                     ->row();
+}
 
+public function get_all_menus_s()
+{
+    return $this->db->order_by('display_order', 'ASC')
+                     ->get('menus')
+                     ->result();
+}
 
-
+public function update_menu($menu_id, $data)
+{
+    return $this->db->where('menu_id', $menu_id)
+                     ->update('menus', $data);
+}
 
 
 

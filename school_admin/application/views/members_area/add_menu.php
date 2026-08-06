@@ -30,7 +30,7 @@ $showGlobalSearch = false;
         <h5 class="mb-0 text-primary">
             <i class="fa fa-file-alt me-2"></i> Add Menu
         </h5>
-        <a href="<?= base_url('menus') ?>" class="text-primary">List</a>
+        <a href="<?= base_url('menu_list') ?>" class="text-primary">List</a>
     </div>
 
     <!-- Card Body -->

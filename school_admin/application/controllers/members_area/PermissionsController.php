@@ -432,7 +432,7 @@ public function insert_role()
         $this->output
              ->set_content_type('application/json')
              ->set_output(json_encode([
-                 'status'  => (bool) $ok,
+                'status'  => $ok ? 'success' : 'error',
                  'message' => $ok ? 'Permissions saved successfully.' : 'Failed to save permissions.'
              ]));
     }
@@ -522,15 +522,69 @@ public function add_menu()
 
 
 
+public function toggle_menu_status()
+{
+    $menu_id = $this->input->post('menu_id');
+    $status  = $this->input->post('status');
+
+    $this->db->where('menu_id', $menu_id)
+             ->update('menus', ['status' => $status]);
+
+    echo json_encode(['success' => true]);
+}
 
 
 
 
+public function edit_menu($menu_id = null)
+{
+    if (!$menu_id) {
+        redirect('menu_list');
+    }
 
+    // Handle form submission
+    if ($this->input->post()) {
 
+        $this->form_validation->set_rules('menu_name', 'Menu Name', 'required|trim');
+        $this->form_validation->set_rules('display_name', 'Display Name', 'required|trim');
 
+        if ($this->form_validation->run() === TRUE) {
 
+            $posted_id = $this->input->post('menu_id', true);
 
+            $data = [
+                'menu_name'      => $this->input->post('menu_name', true),
+                'display_name'   => $this->input->post('display_name', true),
+                'menu_link'      => $this->input->post('menu_link', true),
+                'parent_menu_id' => $this->input->post('parent_menu_id', true) ?: null,
+                'display_order'  => $this->input->post('display_order', true) ?: 0,
+            ];
+
+            $updated = $this->Permissions_Model->update_menu($posted_id, $data);
+
+            if ($updated) {
+                $this->session->set_flashdata('success', 'Menu updated successfully.');
+            } else {
+                $this->session->set_flashdata('error', 'Failed to update menu.');
+            }
+
+            redirect('menu_list');
+        }
+    }
+
+    // Load the menu being edited + full menu list for the parent dropdown
+    $data['menu']  = $this->Permissions_Model->get_menu_by_id($menu_id);
+    $data['menus'] = $this->Permissions_Model->get_all_menus_s(); // flat list, no children needed here
+
+    if (!$data['menu']) {
+        $this->session->set_flashdata('error', 'Menu not found.');
+        redirect('menu_list');
+    }
+
+    $this->load->view('members_area/header', $data);
+    $this->load->view('members_area/edit_menu', $data);
+    $this->load->view('members_area/footer');
+}
 
 
 

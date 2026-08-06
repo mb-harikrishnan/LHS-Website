@@ -117,7 +117,7 @@ $showGlobalSearch = false;
     </div>
   </form>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 (function () {
   var baseUrl   = '<?php echo base_url(); ?>';
@@ -174,28 +174,79 @@ $showGlobalSearch = false;
   });
 
   // Submit via AJAX
+  // form.addEventListener('submit', function (e) {
+  //   e.preventDefault();
+
+  //   if (!roleSelect.value) {
+  //     alert('Please select a role first.');
+  //     return;
+  //   }
+
+  //   var formData = new FormData(form);
+
+  //   fetch(baseUrl + 'save', {
+  //     method: 'POST',
+  //     body: formData
+  //   })
+  //     .then(function (res) { return res.json(); })
+  //     .then(function (data) {
+  //       alert(data.message);
+  //     })
+  //     .catch(function (err) {
+  //       console.error('Save failed:', err);
+  //       alert('Something went wrong while saving.');
+  //     });
+  // });
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
     if (!roleSelect.value) {
-      alert('Please select a role first.');
-      return;
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'warning',
+            title: 'Please select a role first.',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+        });
+        return;
     }
 
     var formData = new FormData(form);
 
     fetch(baseUrl + 'save', {
-      method: 'POST',
-      body: formData
+        method: 'POST',
+        body: formData
     })
-      .then(function (res) { return res.json(); })
-      .then(function (data) {
-        alert(data.message);
-      })
-      .catch(function (err) {
+    .then(function (res) {
+        return res.json();
+    })
+    .then(function (data) {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: data.status ,
+            title: data.message,
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+
+        });
+    })
+    .catch(function (err) {
         console.error('Save failed:', err);
-        alert('Something went wrong while saving.');
-      });
-  });
+
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Something went wrong while saving.',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+        });
+    });
+});
 })();
 </script>
