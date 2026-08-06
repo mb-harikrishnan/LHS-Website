@@ -7,6 +7,15 @@ class Document_Controller extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->model('Document_model');
+
+          if($this->session->userdata(SESSION_VARIABLE))		
+		{
+
+        }
+		else
+		{
+		    redirect('member_login', 'refresh');
+		}
 	}
 
 

@@ -39,10 +39,47 @@ class ChangePassword extends CI_Controller {
     {
         $currentPassword = md5($this->input->post('currentPassword'));
 
-        $user_id = $this->session->userdata('c_username');
+        $user_id = $this->session->userdata('id');
 
-        $this->db->where('PC_USERNAME', $user_id);
-        $query = $this->db->get('bc_login');
+
+        $user_role_id = $this->session->userdata('user_role_id');
+
+	$role = $this->db
+					->select('role_name')
+					->where('role_id', $user_role_id)
+					->get('user_roles')
+					->row();
+
+			$role_name = $role ? $role->role_name : '';
+
+		if($role_name == 'Admin')
+		{
+		    $table = 'admin_login';
+			$name = 'c_username';
+			$pass = 'c_password';
+			$id = 'sl_no';
+		}
+		elseif($role_name == 'Parent')
+		{
+		$table = 'parents_master';
+			$name = 'pmName';
+			$pass = 'pmPassword';
+			$id = 'pmId';
+
+		}
+		elseif($role_name == 'Teacher')
+		{
+			$table = 'employee_master';
+
+			$name = 'emName';
+			$pass = 'emPassword';
+			$id = 'emId';
+
+
+		}
+
+        $this->db->where($id, $user_id);
+        $query = $this->db->get($table);
 
         $row = $query->row();
 
@@ -50,7 +87,7 @@ class ChangePassword extends CI_Controller {
         {
 
            
-            $match = ($currentPassword == $row->C_PASSWORD);
+            $match = ($currentPassword == $row->$pass);
 
             if($match)
             {
@@ -85,7 +122,7 @@ class ChangePassword extends CI_Controller {
 		$currentdate = date("Y-m-d", $temp);
 		//----------------------------------------------//
 
-        $this->form_validation->set_rules('currentPassword','Current Password','required|callback_check_old_password');
+        $this->form_validation->set_rules('currentPassword','Current Password','required');
 
         $this->form_validation->set_rules('newPassword','New Password','required|min_length[8]');
 
@@ -101,17 +138,52 @@ class ChangePassword extends CI_Controller {
         else
         {
 
-            $user_id = $this->session->userdata('c_username');
+            $user_id = $this->session->userdata('id');
 
 
             $newPassword = md5($this->input->post('newPassword'));
 
+            $user_role_id = $this->session->userdata('user_role_id');
 
-            $this->db->where('PC_USERNAME', $user_id);
+	$role = $this->db
+					->select('role_name')
+					->where('role_id', $user_role_id)
+					->get('user_roles')
+					->row();
 
-            $update = $this->db->update('bc_login', array(
-                'C_PASSWORD' => $newPassword,
-                'd_last_password_change' => $currentdate
+			$role_name = $role ? $role->role_name : '';
+
+		if($role_name == 'Admin')
+		{
+		    $table = 'admin_login';
+			$name = 'c_username';
+			$pass = 'c_password';
+			$id = 'sl_no';
+		}
+		elseif($role_name == 'Parent')
+		{
+		$table = 'parents_master';
+			$name = 'pmName';
+			$pass = 'pmPassword';
+			$id = 'pmId';
+
+		}
+		elseif($role_name == 'Teacher')
+		{
+			$table = 'employee_master';
+
+			$name = 'emName';
+			$pass = 'emPassword';
+			$id = 'emId';
+
+
+		}
+
+
+            $this->db->where($id, $user_id);
+
+            $update = $this->db->update($table, array(
+                $pass => $newPassword,
             ));
 
             if($update)
@@ -149,50 +221,6 @@ class ChangePassword extends CI_Controller {
 
 
 
-public function check_old_password($currentPassword)
-{
-    $pass=md5($currentPassword);
-
-    $user_id = $this->session->userdata('c_username');
-
-    $this->db->where('PC_USERNAME', $user_id);
-
-    $query = $this->db->get('bc_login');
-
-    $row = $query->row();
-
-    if($row)
-    {
-
-        // NORMAL PASSWORD
-        if($pass == $row->C_PASSWORD)
-        {
-            return TRUE;
-        }
-        else
-        {
-
-            $this->form_validation->set_message(
-                'check_old_password',
-                'Current password is incorrect'
-            );
-
-            return FALSE;
-        }
-
-    }
-    else
-    {
-
-        $this->form_validation->set_message(
-            'check_old_password',
-            'User not found'
-        );
-
-        return FALSE;
-    }
-
-}
 
 
 

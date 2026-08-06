@@ -7,6 +7,15 @@ class NewsController extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->model('News_model');
+
+          if($this->session->userdata(SESSION_VARIABLE))		
+		{
+
+        }
+		else
+		{
+		    redirect('member_login', 'refresh');
+		}
 	}
 
 

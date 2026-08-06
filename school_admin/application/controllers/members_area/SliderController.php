@@ -7,6 +7,15 @@ class SliderController extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->model('Slider_model');
+
+          if($this->session->userdata(SESSION_VARIABLE))		
+		{
+
+        }
+		else
+		{
+		    redirect('member_login', 'refresh');
+		}
 	}
 
 

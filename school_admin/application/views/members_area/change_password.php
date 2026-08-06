@@ -5,13 +5,7 @@ $activePage = 'change-password';
 $showGlobalSearch = false;
 $pageScripts = ['assets/js/change-password.js'];
 
-$USERNAME = $this->session->userdata('c_username');
 
-$sql = "SELECT d_last_password_change FROM bc_login WHERE PC_USERNAME ='$USERNAME';" ;
-$query = $this->db->query($sql);
-$date = $query->row()->d_last_password_change;
-
-$daysAgo = floor((time() - strtotime($date)) / (60 * 60 * 24));
 
 ?>
 
@@ -21,41 +15,7 @@ $daysAgo = floor((time() - strtotime($date)) / (60 * 60 * 24));
 <div class="pw-page-wrap">
   <div class="pw-hero-grid">
 
-    <!-- Left: Security Panel -->
-    <div class="pw-hero-panel">
-      <div>
-        <div class="pw-shield">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            <polyline points="9 12 11 14 15 10"/>
-          </svg>
-        </div>
-        <h2 class="pw-hero-title">Protect Your <em>Growth</em> Portal</h2>
-        <p class="pw-hero-text">Your password is the first line of defense for your team data, income records, and member information.</p>
-        <ul class="pw-tips">
-          <li>
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-            Never share your password with team members or support staff
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-            Use a mix of letters, numbers, and special characters
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-            Avoid using personal info like birthdays or names
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-            Change your password every 90 days for best security
-          </li>
-        </ul>
-      </div>
-      <div class="pw-last-changed">
-        <strong>Last password change</strong>
-        <?php echo date('d F Y', strtotime($date)) . ' · ' . $daysAgo . ' days ago';?>
-      </div>
-    </div>
+
 
     <!-- Right: Form Card -->
     <div class="pw-form-card">
@@ -93,18 +53,7 @@ $daysAgo = floor((time() - strtotime($date)) / (60 * 60 * 24));
             </button>
             <?php echo form_error('newPassword','<span class="text-danger">','</span>'); ?>
           </div>
-          <div class="pw-strength">
-            <div class="pw-strength-label">
-              <span>Password strength</span>
-              <span id="strengthText"></span>
-            </div>
-            <div class="pw-strength-bar">
-              <div class="pw-strength-seg" id="seg1"></div>
-              <div class="pw-strength-seg" id="seg2"></div>
-              <div class="pw-strength-seg" id="seg3"></div>
-              <div class="pw-strength-seg" id="seg4"></div>
-            </div>
-          </div>
+          
         </div>
 
         <div class="pw-field">
@@ -121,32 +70,7 @@ $daysAgo = floor((time() - strtotime($date)) / (60 * 60 * 24));
 
         </div>
 
-        <div class="pw-checklist">
-          <div class="pw-check-item" id="chk-length">
-            <div class="pw-check-dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-            At least 8 characters
-          </div>
-          <div class="pw-check-item" id="chk-upper">
-            <div class="pw-check-dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-            One uppercase letter
-          </div>
-          <div class="pw-check-item" id="chk-lower">
-            <div class="pw-check-dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-            One lowercase letter
-          </div>
-          <div class="pw-check-item" id="chk-number">
-            <div class="pw-check-dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-            One number
-          </div>
-          <div class="pw-check-item" id="chk-special">
-            <div class="pw-check-dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-            One special character
-          </div>
-          <div class="pw-check-item" id="chk-match">
-            <div class="pw-check-dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-            Passwords match
-          </div>
-        </div>
+        
 
         <div class="pw-actions">
           <button type="button" class="btn btn-ghost" onclick="resetPasswordForm()">Cancel</button>
@@ -309,87 +233,11 @@ $(document).ready(function () {
 
     });
 
-    // CUSTOM PASSWORD RULE
-    $.validator.addMethod("pwcheck", function (value) {
-
-        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value);
-
-    });
+   
 
 });
 
 
-function checkPasswordStrength() {
-
-    let password = $("#newPassword").val();
-
-    let strength = 0;
-
-    // RESET
-    $(".pw-strength-seg")
-        .removeClass("weak medium strong");
-
-    $("#strengthText")
-        .removeClass("weak medium strong");
-
-    // CONDITIONS
-    if (password.length >= 8) {
-        strength++;
-    }
-
-    if (/[A-Z]/.test(password)) {
-        strength++;
-    }
-
-    if (/[a-z]/.test(password)) {
-        strength++;
-    }
-
-    if (/[0-9]/.test(password)) {
-        strength++;
-    }
-
-    if (/[@$!%*?&]/.test(password)) {
-        strength++;
-    }
-
-    // WEAK
-    if (strength <= 2) {
-
-        $("#strengthText")
-            .text("Weak")
-            .addClass("weak");
-
-        $("#seg1")
-            .addClass("weak");
-
-    }
-
-    // MEDIUM
-    else if (strength <= 4) {
-
-        $("#strengthText")
-            .text("Medium")
-            .addClass("medium");
-
-        $("#seg1, #seg2, #seg3")
-            .addClass("medium");
-
-    }
-
-    // STRONG
-    else {
-
-        $("#strengthText")
-            .text("Strong")
-            .addClass("strong");
-
-        $("#seg1, #seg2, #seg3, #seg4")
-            .addClass("strong");
-
-    }
-
-}
 
 // PASSWORD MATCH
 function checkPasswordMatch() {

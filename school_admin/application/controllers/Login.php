@@ -201,6 +201,7 @@ public function check_password()
                     'id' => $row->sl_no,
                     'c_username' => $row->c_username,
                     'login_time' => $row->currentdate,
+                    'user_role_id' => $user_role_id
                     );
 
 
