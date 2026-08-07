@@ -1,0 +1,523 @@
+/* =========================================================
+   LITTLE HEARTS SCHOOL — CLASSIC GLASS THEME
+   Load this AFTER style.css and font-awesome.min.css:
+   <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/glass-theme.css">
+
+   Palette: white + blue, with a hairline navy/gold rule for a
+   "classic school" feel (crest-like, not flashy). Everything is
+   glass (frosted, translucent, soft shadow) but restrained —
+   one card language reused everywhere so nothing looks templated.
+========================================================= */
+
+:root {
+  --navy:          #0a2540;
+  --primary:       #0654c2;
+  --primary-light: #2f7dff;
+  --gold:          #b8912f;      /* classic accent — used sparingly */
+  --ink:           #1b2430;
+  --muted:         #5c6b7a;
+  --paper:         #ffffff;
+
+  --glass-bg:        rgba(255, 255, 255, 0.62);
+  --glass-bg-strong: rgba(255, 255, 255, 0.86);
+  --glass-border:    rgba(255, 255, 255, 0.55);
+  --glass-shadow:       0 10px 30px rgba(10, 37, 64, 0.10);
+  --glass-shadow-hover: 0 20px 46px rgba(10, 37, 64, 0.18);
+
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --section-pad: 44px;
+  --gap: 26px;
+}
+
+* { box-sizing: border-box; }
+
+body { color: var(--ink); }
+
+/* ---------------------------------------------------------
+   Backdrop — a very quiet blue wash so glass has something
+   to sit on top of. Fixed so it doesn't repeat/jump on scroll.
+--------------------------------------------------------- */
+body {
+  background:
+    radial-gradient(1200px 500px at 10% -10%, rgba(6,84,194,.06), transparent 60%),
+    radial-gradient(900px 500px at 100% 10%, rgba(184,145,47,.05), transparent 55%),
+    #f5f8fc;
+  background-attachment: fixed;
+}
+
+/* ---------------------------------------------------------
+   Section rhythm — identical padding/background everywhere
+   so sections stop feeling stitched together.
+--------------------------------------------------------- */
+.home-page #about,
+.home-page #courses,
+.home-page #facts,
+.home-page #reviews,
+.home-page #pricing,
+.home-page #news {
+  padding: var(--section-pad) 0;
+}
+
+.home-page .padding {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.home-page .heading_space {
+  margin-bottom: 22px;
+}
+
+/* ---------------------------------------------------------
+   Headings — classic feel: serif display face for h2,
+   thin navy rule, small gold tick. Keep body copy on Roboto.
+--------------------------------------------------------- */
+.heading, .section-title h2, .main_title h2 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  font-size: 34px;
+  color: var(--navy);
+  letter-spacing: .2px;
+  border-bottom: none;
+}
+
+.heading_space { margin-bottom: 36px; }
+
+.divider-left, .divider-center {
+  position: relative;
+  width: 64px;
+  height: 3px;
+  margin-top: 12px;
+  border-radius: 2px;
+  background: var(--primary) !important;
+}
+.divider-center { margin-left: auto; margin-right: auto; }
+
+/* the classic "gold tick" — a small mark at the start of the rule */
+.divider-left::before, .divider-center::before {
+  content: "";
+  position: absolute;
+  left: 0; top: -2px;
+  width: 14px; height: 7px;
+  border-radius: 2px;
+  background: var(--gold);
+}
+.divider-center::before { left: 50%; transform: translateX(-25px); }
+
+/* ---------------------------------------------------------
+   ONE glass card system, reused by every card on the site.
+--------------------------------------------------------- */
+.feature-box,
+.pricing_item,
+.content_wrap,
+.stat-card,
+#course_slider .item,
+#review_slider .item {
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--radius-lg);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.feature-box:hover,
+.pricing_item:hover,
+.content_wrap:hover,
+.stat-card:hover,
+#course_slider .item:hover,
+#review_slider .item:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--glass-shadow-hover);
+}
+
+/* =========================================================
+   1) KEY FEATURES — true grid alignment + 11 distinct icons
+========================================================= */
+
+/* Force a clean 3-per-row layout using flexbox instead of grid.
+   Flex + justify-content:center means full rows fill edge-to-edge
+   (3 items at ~33% each = 100%), but a leftover final row (e.g.
+   card 11 of 11) automatically CENTERS instead of sitting flush
+   left with empty space next to it — this is what gives you
+   "row 1: 3, ... last row: 2, centered" for free, for any count. */
+.feature-row {
+  display: flex !important;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--gap);
+  width: 100%;
+  margin: 0 !important;
+  padding: 0;
+}
+.feature-row > [class*="col-"] {
+  flex: 0 0 calc((100% - 2 * var(--gap)) / 3);
+  max-width: calc((100% - 2 * var(--gap)) / 3);
+  width: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  float: none !important;
+  display: flex;
+}
+
+/* The card that went missing was almost certainly hidden by
+   WOW.js (the "wow fadeInUp" class already on these boxes) —
+   it sets an inline visibility/opacity of 0 until scroll-triggered,
+   and can get stuck hidden if the page reflows after it calculates
+   trigger offsets (exactly what our grid change does). We simply
+   force every feature card to always be visible, animation or not. */
+.feature-box {
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.feature-box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 300px;
+  padding: 32px 26px;
+  overflow: hidden;
+}
+
+.feature-number {
+  position: absolute;
+  top: 14px; right: 18px;
+  font-family: Georgia, serif;
+  font-size: 52px;
+  font-weight: 700;
+  color: rgba(10, 37, 64, .07);
+  line-height: 1;
+}
+
+/* The icon circle. Your original markup used custom "icon-xxx"
+   classes from a font that isn't reliably loading — every card
+   was falling back to the same star. Instead we hide whatever
+   is on the <i> entirely and paint a distinct Font Awesome glyph
+   per card, based on that card's position in the row. */
+.feature-icon {
+  width: 62px; height: 62px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 18px;
+  box-shadow: 0 10px 20px rgba(6, 84, 194, .25);
+}
+.feature-icon i { display: none; }
+.feature-icon::before {
+  font-family: "FontAwesome";
+  color: #fff;
+  font-size: 24px;
+}
+
+.feature-row > div:nth-child(1)  .feature-icon::before { content: "\f108"; } /* Key Features — desktop */
+.feature-row > div:nth-child(2)  .feature-icon::before { content: "\f005"; } /* Kid's Fest — star */
+.feature-row > div:nth-child(3)  .feature-icon::before { content: "\f1bb"; } /* Children's Park — tree */
+.feature-row > div:nth-child(4)  .feature-icon::before { content: "\f0a1"; } /* Morning Assemblies — bullhorn */
+.feature-row > div:nth-child(5)  .feature-icon::before { content: "\f19d"; } /* Faculty Excellence — grad cap */
+.feature-row > div:nth-child(6)  .feature-icon::before { content: "\f02d"; } /* Library — book */
+.feature-row > div:nth-child(7)  .feature-icon::before { content: "\f001"; } /* Extracurricular — music */
+.feature-row > div:nth-child(8)  .feature-icon::before { content: "\f132"; } /* Security — shield */
+.feature-row > div:nth-child(9)  .feature-icon::before { content: "\f0eb"; } /* Life Skills — lightbulb */
+.feature-row > div:nth-child(10) .feature-icon::before { content: "\f133"; } /* Engaging Events — calendar */
+.feature-row > div:nth-child(11) .feature-icon::before { content: "\f091"; } /* Graduation Ceremony — trophy */
+
+.feature-box h4 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+.feature-box p {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--muted);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+}
+
+@media (max-width: 900px) {
+  .feature-row > [class*="col-"] {
+    flex-basis: calc((100% - var(--gap)) / 2);
+    max-width: calc((100% - var(--gap)) / 2);
+  }
+}
+@media (max-width: 600px) {
+  .feature-row > [class*="col-"] {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+  .feature-box { height: auto; min-height: 240px; }
+}
+
+/* =========================================================
+   2) NEWS UPDATES cards
+========================================================= */
+.pricing {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--gap);
+}
+.pricing_item {
+  display: flex;
+  flex-direction: column;
+  height: 320px;
+  padding: 30px 26px;
+  text-align: center;
+  border-top: none;
+}
+.pricing_item::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 24px; right: 24px; height: 3px;
+  background: var(--primary);
+  border-radius: 0 0 3px 3px;
+}
+.pricing_item h3 {
+  font-family: Georgia, serif;
+  font-size: 19px;
+  color: var(--navy);
+  margin-bottom: 12px;
+}
+.pricing_sentence {
+  background: rgba(6, 84, 194, .06);
+  border: 1px dashed rgba(6, 84, 194, .3);
+  color: var(--primary);
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  flex: 1;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  animation: none !important; /* kill the blink — reads as broken, not urgent */
+}
+.pricing_list { margin: 14px 0 18px; }
+.pricing_item .btn_common { margin-top: auto; align-self: center; }
+
+/* =========================================================
+   3) IMPORTANT DETAILS cards
+========================================================= */
+.content_wrap { display: flex; flex-direction: column; height: 440px; overflow: hidden; }
+.content_wrap .image { flex: none; overflow: hidden; }
+.content_wrap .image img { height: 190px; object-fit: cover; }
+.news_box { display: flex; flex-direction: column; flex: 1; padding: 22px; }
+.news_box h4 a { font-family: Georgia, serif; font-size: 19px; color: var(--navy); }
+.news_box p {
+  color: var(--muted);
+  flex: 1;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+.news_box .readmore {
+  margin-top: auto;
+  align-self: flex-start;
+  padding: 10px 24px;
+  border-radius: 40px;
+  background: var(--primary);
+  color: #fff !important;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   4) ACTIVITIES CAROUSEL — fix the ghost/overlap flash
+   (this is what image 3 showed: two slides visible at once
+   with mismatched opacity before Owl finishes initializing)
+========================================================= */
+.owl-carousel { display: block; }
+.owl-carousel .owl-stage { display: flex; }
+.owl-carousel .owl-item {
+  opacity: 1 !important;
+  visibility: visible !important;
+  backface-visibility: hidden;
+}
+/* NOTE: we deliberately do NOT hide .owl-carousel:not(.owl-loaded).
+   That approach can permanently collapse a section to height:0 if
+   Owl's JS is slow, errors out, or never targets that carousel —
+   which is exactly what happened to "What People Say" and
+   "Important Details". Safer trade-off: allow a brief unstyled
+   flash on first paint rather than risk content disappearing. */
+
+#course_slider .item {
+  display: flex;
+  flex-direction: column;
+  height: 430px;
+  padding: 18px;
+}
+#course_slider .image { border-radius: 14px; overflow: hidden; flex: none; }
+#course_slider .image img { height: 185px; object-fit: cover; }
+#course_slider h3 { font-family: Georgia, serif; font-size: 18px; margin: 14px 0 8px; }
+#course_slider h3 a { color: var(--navy); }
+#course_slider p {
+  color: var(--muted);
+  flex: 1;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+#course_slider .btn_common { margin-top: auto; align-self: flex-start; }
+
+/* =========================================================
+   5) STATS
+========================================================= */
+.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+.stat-card { padding: 26px 16px; text-align: center; }
+.icon-box {
+  width: 60px; height: 60px; margin: 0 auto 12px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 24px;
+  box-shadow: 0 10px 20px rgba(6, 84, 194, .22);
+}
+.stat-card h3 { font-family: Georgia, serif; font-size: 28px; color: var(--navy); margin-bottom: 4px; }
+.stat-card p { color: var(--muted); font-size: 14px; margin: 0; }
+
+/* =========================================================
+   6) TESTIMONIALS — long letters were unreadable walls of text.
+   Clamp + a "read more" expand, quote mark for a classic feel.
+========================================================= */
+#review_slider .item { padding: 34px 40px; text-align: center; position: relative; }
+#review_slider .item::before {
+  content: "\f10d";
+  font-family: "FontAwesome";
+  position: absolute; top: 16px; left: 24px;
+  color: rgba(6, 84, 194, .18);
+  font-size: 26px;
+}
+.client_pic {
+  width: 96px; height: 96px; object-fit: cover; border-radius: 50%;
+  margin: 0 auto 14px; border: 4px solid rgba(6, 84, 194, .12);
+}
+#review_slider h4 { font-family: Georgia, serif; font-size: 21px; color: var(--navy); margin-bottom: 2px; }
+#review_slider .item p:nth-child(2) { color: var(--primary); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 16px; }
+#review_slider .item p:last-child {
+  font-size: 14.5px; line-height: 1.85; color: var(--muted);
+  max-width: 760px; margin: auto;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+}
+
+/* =========================================================
+   7) BUTTONS + OWL NAV
+========================================================= */
+.btn_common {
+  background: var(--primary);
+  color: #fff !important;
+  padding: 11px 28px;
+  border-radius: 40px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .3px;
+  box-shadow: 0 8px 18px rgba(6, 84, 194, .22);
+  transition: transform .25s ease, background .25s ease;
+}
+.btn_common:hover { transform: translateY(-2px); background: var(--navy); }
+
+.owl-carousel .owl-nav button,
+.owl-carousel .owl-nav .owl-prev,
+.owl-carousel .owl-nav .owl-next,
+.owl-theme .owl-nav [class*="owl-"] {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  border-radius: 50% !important;
+  background: var(--glass-bg-strong) !important;
+  backdrop-filter: blur(10px);
+  color: var(--primary) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+  cursor: pointer;
+  outline: none !important;
+}
+.owl-carousel .owl-nav button:hover,
+.owl-carousel .owl-nav .owl-prev:hover,
+.owl-carousel .owl-nav .owl-next:hover {
+  background: var(--primary) !important;
+  color: #fff !important;
+}
+/* the ‹ › glyphs inside the button must inherit, not stay grey */
+.owl-carousel .owl-nav button span,
+.owl-carousel .owl-nav .owl-prev span,
+.owl-carousel .owl-nav .owl-next span {
+  color: inherit !important;
+}
+
+.owl-dot span { background: rgba(6, 84, 194, .25) !important; }
+.owl-dot.active span { width: 26px; border-radius: 20px; background: var(--primary) !important; }
+
+/* =========================================================
+   8) ABOUT US
+========================================================= */
+.school-about-section p { font-size: 15.5px; line-height: 1.75; color: var(--muted); text-align: justify; }
+.school-image {
+  width: 100%;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
+}
+
+/* =========================================================
+   9) HERO — glass caption instead of flat drop-shadow text
+========================================================= */
+.hero-title {
+  display: inline-block;
+  padding: 16px 24px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.16);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,.3);
+  color: #fff;
+  font-family: Georgia, serif;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+@media (max-width: 768px) {
+  .hero-title { font-size: 25px; padding: 12px 16px; }
+}
+
+/* =========================================================
+   10) Slider height / spacing cleanup
+========================================================= */
+.rev_slider_wrapper, #rev_slider, .rev_slider, .rev_slider ul, .rev_slider ul li {
+  height: 100% !important; min-height: 380px !important;
+}
+.rev_slider_wrapper { margin: 0 !important; padding: 0 !important; overflow: hidden !important; }
+
+@media (max-width: 768px) {
+  :root { --section-pad: 32px; }
+  .home-page .padding {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  .rev_slider_wrapper, #rev_slider, .rev_slider, .rev_slider ul, .rev_slider ul li {
+    height: 340px !important; min-height: 340px !important;
+  }
+  .heading, .section-title h2 { font-size: 26px; }
+  .learning-wrapper { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr; }
+}

@@ -17,6 +17,7 @@
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/bootsnav.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/style.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/loader.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/glass-theme.css">
 
     <link rel="icon" href="<?php echo base_url(); ?>assets/images/favicon.png">
 
@@ -26,7 +27,7 @@
 <![endif]-->
 </head>
 
-<body>
+<body class="home-page">
     <a href="#" class="scrollToTop"><i class="fa fa-angle-up"></i></a>
     <!--Loader-->
     <div class="loader">
@@ -53,7 +54,6 @@
         <div id="rev_slider" class="rev_slider" data-version="5.0">
         <ul>
 
-<<<<<<< HEAD
                 <?php foreach ($slider as $value) { ?>
                     <li data-transition="fade">
                         <!-- MAIN IMAGE -->
@@ -179,7 +179,6 @@
 
 
                 <?php } ?>
-=======
 <?php foreach ($slider as $value) { ?>
 
 <li data-transition="fade">
@@ -283,7 +282,6 @@
         </h4>
 
     </div>
->>>>>>> main
 
 
 
@@ -1037,17 +1035,14 @@
             line-height: 1.6;
         }
 
-<<<<<<< HEAD
         .icon_box {
             min-height: 250px;
         }
-=======
 
         /* =========================================================
            LITTLE HEARTS SCHOOL — GLASSY THEME (consolidated rebuild)
            Single source of truth: no duplicate/overriding blocks.
         ========================================================= */
->>>>>>> main
 
         :root {
             --primary: #0654c2;
