@@ -42,29 +42,66 @@ $result = $query2->result() ?? [];
    ───────────────────────────────────────────── */
 $roleId = (int) $this->session->userdata('user_role_id');
 
-$sqlMenu = "SELECT DISTINCT m.menu_id, m.parent_menu_id, m.menu_name,
-                   m.display_name, m.menu_link, m.display_order, m.status
-            FROM menus m
-            INNER JOIN user_roles_menu_permissions p
-                    ON p.menu_id = m.menu_id
-                   AND p.role_id = " . $roleId . "
-                   AND p.can_view = 1
-            WHERE m.status = 1
+if ($roleId === 2) {
 
-            UNION
+    // Admin role: display all active menus
+    $sqlMenu = "
+        SELECT DISTINCT
+            m.menu_id,
+            m.parent_menu_id,
+            m.menu_name,
+            m.display_name,
+            m.menu_link,
+            m.display_order,
+            m.status
+        FROM menus m
+        WHERE m.status = 1
 
-            SELECT DISTINCT parent.menu_id, parent.parent_menu_id, parent.menu_name,
-                   parent.display_name, parent.menu_link, parent.display_order, parent.status
-            FROM menus parent
-            INNER JOIN menus child
-                    ON child.parent_menu_id = parent.menu_id
-            INNER JOIN user_roles_menu_permissions p
-                    ON p.menu_id = child.menu_id
-                   AND p.role_id = " . $roleId . "
-                   AND p.can_view = 1
-            WHERE parent.status = 1
+        ORDER BY m.display_order ASC
+    ";
 
-            ORDER BY display_order ASC";
+} else {
+
+    // Other roles: display only permitted menus + their parents
+    $sqlMenu = "
+        SELECT DISTINCT
+            m.menu_id,
+            m.parent_menu_id,
+            m.menu_name,
+            m.display_name,
+            m.menu_link,
+            m.display_order,
+            m.status
+        FROM menus m
+        INNER JOIN user_roles_menu_permissions p
+            ON p.menu_id = m.menu_id
+            AND p.role_id = {$roleId}
+            AND p.can_view = 1
+        WHERE m.status = 1
+
+        UNION
+
+        SELECT DISTINCT
+            parent.menu_id,
+            parent.parent_menu_id,
+            parent.menu_name,
+            parent.display_name,
+            parent.menu_link,
+            parent.display_order,
+            parent.status
+        FROM menus parent
+        INNER JOIN menus child
+            ON child.parent_menu_id = parent.menu_id
+        INNER JOIN user_roles_menu_permissions p
+            ON p.menu_id = child.menu_id
+            AND p.role_id = {$roleId}
+            AND p.can_view = 1
+        WHERE parent.status = 1
+
+        ORDER BY display_order ASC
+    ";
+}
+
 $queryMenu = $this->db->query($sqlMenu);
 $allMenus  = $queryMenu->result();
 
