@@ -198,7 +198,10 @@ $route['check_admission_number']   = 'members_area/SubjectController/check_admis
 $route['insert_student']   = 'members_area/SubjectController/insert_student';
 
 
-$route['students_list']   = 'members_area/SubjectController/students_list';
+// $route['students_list']   = 'members_area/SubjectController/students_list';
+
+$route['students_list'] = 'members_area/SubjectController/students_list';
+$route['students_list/(:num)'] = 'members_area/SubjectController/students_list/$1';
 
 
 $route['add_exam']   = 'members_area/SubjectController/add_exam';

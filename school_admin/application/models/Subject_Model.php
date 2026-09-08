@@ -185,18 +185,54 @@ public function fetch_grade($exam)
 
 
 
-public function fetch_all_student_details()
+// public function fetch_all_student_details()
+// {
+
+//   $sql = " SELECT smId,smAdmissionNo,smAadharNo,smName,smClass,smDiv,smGender,
+//                smMobile,smDOB,smAddress,smReligion,smCaste,smMotherTongue,
+//              smCountry,smState FROM students_master  " ;
+
+//              $query = $this->db->query($sql);
+//              $result = $query->result();
+
+//              return $result;
+
+
+// }
+
+
+public function fetch_all_student_details($limit, $start)
 {
+    $this->db->select('
+        smId,
+        smAdmissionNo,
+        smAadharNo,
+        smName,
+        smClass,
+        smDiv,
+        smGender,
+        smMobile,
+        smDOB,
+        smAddress,
+        smReligion,
+        smCaste,
+        smMotherTongue,
+        smCountry,
+        smState
+    ');
 
-  $sql = " SELECT smId,smAdmissionNo,smAadharNo,smName,smClass,smDiv,smGender,smMobile,smDOB,smAddress,smReligion,smCaste,smMotherTongue,
-             smCountry,smState FROM students_master  " ;
+    $this->db->from('students_master');
 
-             $query = $this->db->query($sql);
-             $result = $query->result();
+    $this->db->limit($limit, $start);
 
-             return $result;
+    // $this->db->order_by('smId', 'DESC');
 
+    return $this->db->get()->result();
+}
 
+public function get_students_count()
+{
+    return $this->db->count_all('students_master');
 }
 
 

@@ -68,8 +68,7 @@ function lookupValue($db, $table, $idColumn, $id, $column, $fallback = '-')
 
             <tbody>
                 <?php
-                $count = 1;
-
+$count = isset($start) ? $start + 1 : 1;
                 foreach ($details as $row) {
 
                     $res_class = lookupValue($this->db, 'class_master', 'cmId', $row->smClass, 'cmName');
@@ -205,6 +204,56 @@ function lookupValue($db, $table, $idColumn, $id, $column, $fallback = '-')
     font-size: 14px;
     word-break: break-word;
 }
+
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.custom-pagination {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.custom-pagination a,
+.custom-pagination span {
+    min-width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 12px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    color: #374151;
+    background: #ffffff;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    transition: 0.2s;
+}
+
+.custom-pagination a:hover {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+}
+
+.custom-pagination .active {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+    font-weight: 600;
+}
 </style>
 
 <div class="modal fade" id="studentDetailsModal" tabindex="-1" aria-labelledby="studentDetailsModalLabel" aria-hidden="true">
@@ -272,6 +321,10 @@ function lookupValue($db, $table, $idColumn, $id, $column, $fallback = '-')
   </div>
 </div>
 
+<div class="pagination-wrapper">
+    <?php echo $links; ?>
+</div>
+
 <!-- ============================================================
      Vendor Scripts
 ============================================================= -->
@@ -294,21 +347,21 @@ function lookupValue($db, $table, $idColumn, $id, $column, $fallback = '-')
 
 $(document).ready(function () {
 
-   $('#reportsDataTable').DataTable({
-    responsive: true,
-    pageLength: 10,
-    autoWidth: false,
+//    $('#reportsDataTable').DataTable({
+//     responsive: true,
+//     pageLength: 10,
+//     autoWidth: false,
 
-    columnDefs: [
-        { orderable: false, targets: [2, 3] } // Edit and Action
-    ],
+//     columnDefs: [
+//         { orderable: false, targets: [2, 3] } // Edit and Action
+//     ],
 
-    language: {
-        search: "_INPUT_",
-        searchPlaceholder: "Search reports...",
-        lengthMenu: "Show _MENU_ entries",
-    }
-});
+//     language: {
+//         search: "_INPUT_",
+//         searchPlaceholder: "Search reports...",
+//         lengthMenu: "Show _MENU_ entries",
+//     }
+// });
 
 
 

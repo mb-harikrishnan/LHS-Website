@@ -252,6 +252,22 @@ $showGlobalSearch = false;
     border-color: #d9534f !important;
     box-shadow: 0 0 0 2px rgba(217,83,79,.15) !important;
 }
+
+
+.exam-info {
+    display: flex;
+    gap: 30px;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+    font-size: 15px;
+}
+
+.exam-info strong {
+    color: var(--green);
+    margin-right: 5px;
+}
 </style>
 
 <!-- Reports Table Card -->
@@ -260,6 +276,24 @@ $showGlobalSearch = false;
     <!-- <?php if (isset($exam) && !empty($exam)) { ?>
         <div class="exam-tag"><?= is_object($exam) ? $exam->emName : $exam ?></div>
     <?php } ?> -->
+
+
+    <div class="exam-info">
+        <div>
+            <strong>Exam:</strong>
+            <?= isset($exam) ? (is_object($exam) ? $exam->emName : $exam) : '-' ?>
+        </div>
+
+        <div>
+            <strong>Class:</strong>
+            <?= isset($class) ? (is_object($class) ? $class->cmName : $class) : '-' ?>
+        </div>
+
+        <div>
+            <strong>Division:</strong>
+            <?= isset($division) ? (is_object($division) ? $division->dmName : $division) : '-' ?>
+        </div>
+    </div>
 
     <div class="card-head">
         <div class="card-title">
@@ -343,23 +377,23 @@ $showGlobalSearch = false;
 <script>
 $(document).ready(function () {
 
-    var table = $('#marksTable').DataTable({
-        responsive: true,
-        autoWidth: false,
-        pageLength: 10,
-        order: [[0, 'asc']],
-        columnDefs: [
-            { orderable: false, targets: '_all' }
-        ],
-        language: {
-            search: "",
-            searchPlaceholder: "Search reports...",
-            lengthMenu: "Show _MENU_ entries",
-            zeroRecords: "No reports found",
-            info: "Showing _START_ to _END_ of _TOTAL_ reports",
-            paginate: { previous: "Prev", next: "Next" }
-        }
-    });
+    // var table = $('#marksTable').DataTable({
+    //     responsive: true,
+    //     autoWidth: false,
+    //     pageLength: 10,
+    //     order: [[0, 'asc']],
+    //     columnDefs: [
+    //         { orderable: false, targets: '_all' }
+    //     ],
+    //     language: {
+    //         search: "",
+    //         searchPlaceholder: "Search reports...",
+    //         lengthMenu: "Show _MENU_ entries",
+    //         zeroRecords: "No reports found",
+    //         info: "Showing _START_ to _END_ of _TOTAL_ reports",
+    //         paginate: { previous: "Prev", next: "Next" }
+    //     }
+    // });
 
     // ---- EDIT BUTTON (event delegation — survives DataTables redraws) ----
     $(document).on('click', '#editBtn', function () {
