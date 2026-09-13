@@ -78,7 +78,7 @@ $showGlobalSearch = false;
 }
 #marksTable th, #marksTable td {
     border: 1px solid #ddd;
-    padding: 10px 12px;
+    padding: 4px 6px;
     text-align: center;
     font-size: 13.5px;
 }
@@ -151,8 +151,8 @@ $showGlobalSearch = false;
 }
 
 .mark-input{
-    width:70px;
-    height:32px;
+    width:55px;
+    height:26px;
     border:1px solid #cfcfcf;
     border-radius:6px;
     text-align:center;
@@ -307,6 +307,12 @@ $showGlobalSearch = false;
         <button class="card-action" onclick="window.location.href='<?php echo base_url('Marksentry_list'); ?>'">
             <i class="fa fa-upload"></i>  Mark List
         </button>
+
+
+         <div class="table-actions">
+            <!-- <button id="editBtn" class="btn" type="button">Edit</button> -->
+            <button id="updateBtn" class="btn" type="button" >Update</button>
+        </div>
     </div>
 
     <div class="report-table-wrap" id="reportsDataTable">
@@ -337,7 +343,7 @@ $showGlobalSearch = false;
                     <input
                         type="text"
                         class="mark-input"
-                        readonly
+                        
                         data-student="<?= $stu->smId ?>"
                         data-subject="<?= $sub->esSmId ?>"
                           data-grade="<?= $isGrade ?>"
@@ -351,10 +357,7 @@ $showGlobalSearch = false;
 </tbody>
         </table>
 
-        <div class="table-actions">
-            <button id="editBtn" class="btn" type="button">Edit</button>
-            <button id="updateBtn" class="btn" type="button" style="display:none;">Update</button>
-        </div>
+       
     </div>
 </div>
 
@@ -396,11 +399,11 @@ $(document).ready(function () {
     // });
 
     // ---- EDIT BUTTON (event delegation — survives DataTables redraws) ----
-    $(document).on('click', '#editBtn', function () {
-        $(".mark-input").prop("readonly", false).addClass("editing");
-        $("#editBtn").hide();
-        $("#updateBtn").show();
-    });
+    // $(document).on('click', '#editBtn', function () {
+    //     $(".mark-input").prop("readonly", false).addClass("editing");
+    //     $("#editBtn").hide();
+    //     $("#updateBtn").show();
+    // });
 
     // ---- UPDATE BUTTON ----
     $(document).on('click', '#updateBtn', function () {
@@ -442,9 +445,11 @@ $(document).ready(function () {
             },
             success: function (res) {
                 if (res.status == "success") {
-                    $(".mark-input").prop("readonly", true).removeClass("editing");
-                    $("#updateBtn").hide().prop("disabled", false).text("Update");
-                    $("#editBtn").show();
+                    // $(".mark-input").prop("readonly", true).removeClass("editing");
+                    // $("#updateBtn").hide().prop("disabled", false).text("Update");
+                    // $("#editBtn").show();
+
+                    $("#updateBtn").prop("disabled", false).text("Update");
 
                     Swal.fire("Success", "Marks Updated", "success");
                 } else {

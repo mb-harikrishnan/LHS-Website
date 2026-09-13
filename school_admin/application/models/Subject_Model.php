@@ -93,7 +93,8 @@ public function delete_exam($id)
   public function fetch_all_exam()
   {
 
-    $select = "SELECT * FROM exam_master WHERE emActive=1 AND emIsOpened = 1 AND emIsOngoing =1  ORDER BY emDisplayOrder ASC";
+    $select = "SELECT * FROM exam_master WHERE emActive=1 AND 
+    emIsOpened = 1 AND emIsOngoing =1  ORDER BY emDisplayOrder ASC";
     $query = $this->db->query($select);
     $result = $query->result();
     return $result;
@@ -201,38 +202,91 @@ public function fetch_grade($exam)
 // }
 
 
-public function fetch_all_student_details($limit, $start)
+// public function fetch_all_student_details($limit, $start)
+// {
+//     $this->db->select('
+//         smId,
+//         smAdmissionNo,
+//         smAadharNo,
+//         smName,
+//         smClass,
+//         smDiv,
+//         smGender,
+//         smMobile,
+//         smDOB,
+//         smAddress,
+//         smReligion,
+//         smCaste,
+//         smMotherTongue,
+//         smCountry,
+//         smState
+//     ');
+
+//     $this->db->from('students_master');
+
+//     $this->db->limit($limit, $start);
+
+//     // $this->db->order_by('smId', 'DESC');
+
+//     return $this->db->get()->result();
+// }
+
+// public function get_students_count()
+// {
+//     return $this->db->count_all('students_master');
+// }
+
+
+public function get_students_count($filters = array())
 {
-    $this->db->select('
-        smId,
-        smAdmissionNo,
-        smAadharNo,
-        smName,
-        smClass,
-        smDiv,
-        smGender,
-        smMobile,
-        smDOB,
-        smAddress,
-        smReligion,
-        smCaste,
-        smMotherTongue,
-        smCountry,
-        smState
-    ');
-
-    $this->db->from('students_master');
-
-    $this->db->limit($limit, $start);
-
-    // $this->db->order_by('smId', 'DESC');
-
-    return $this->db->get()->result();
+    $this->_apply_filters($filters);
+    return $this->db->count_all_results('students_master');
 }
 
-public function get_students_count()
+public function fetch_all_student_details($limit, $start, $filters = array()) 
+{ 
+    $this->db->select(' 
+        smId, smAdmissionNo, smAadharNo, smName, smClass, smDiv, 
+        smGender, smMobile, smDOB, smAddress, smReligion, smCaste, 
+        smMotherTongue, smCountry, smState 
+    '); 
+    
+    $this->db->from('students_master'); 
+ 
+    $this->_apply_filters($filters); 
+ 
+    // Class → Division → Girls (0) → Boys (1) → Name
+    $this->db->order_by('smClass', 'ASC'); 
+    $this->db->order_by('smDiv', 'ASC'); 
+    $this->db->order_by('smGender', 'ASC'); 
+    $this->db->order_by('smName', 'ASC'); 
+ 
+    $this->db->limit($limit, $start); 
+ 
+    return $this->db->get()->result(); 
+}
+
+public function get_all_classes()
 {
-    return $this->db->count_all('students_master');
+    return $this->db->order_by('cmName', 'ASC')->get('class_master')->result();
+}
+
+public function get_all_divisions()
+{
+    return $this->db->order_by('dmName', 'ASC')->get('division_master')->result();
+}
+
+private function _apply_filters($filters)
+{
+    if (!empty($filters['name'])) {
+        $this->db->like('smName', $filters['name']);
+    }
+    if (!empty($filters['class'])) {
+        $this->db->where('smClass', $filters['class']);
+    }
+    if (!empty($filters['division'])) {
+        $this->db->where('smDiv', $filters['division']);
+    }
 }
 
 

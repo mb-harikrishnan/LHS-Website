@@ -53,6 +53,7 @@ class EmployeeController extends CI_Controller {
             'emClass'  => $this->input->post('class_id'),
             'emDiv'  => $this->input->post('division_id'),
             'emPhoneNo'  => $this->input->post('mobile'),
+            'user_id'  => $this->input->post('role_id'),
 
         );
 
@@ -61,8 +62,26 @@ class EmployeeController extends CI_Controller {
         if ($result)
         {
            
-            
-            $this->session->set_flashdata('success', ' added successfully');
+            $employee_id = $this->db->insert_id();
+
+
+             $login_data = array(
+                    'employe_id'  => $employee_id,
+                    'user_id'  => $this->input->post('role_id'),
+                    'c_username' => $this->input->post('name'),
+                    'c_password' => md5($this->input->post('password'))
+                );
+
+             $login_result = $this->db->insert('admin_login', $login_data);
+             if($login_result)
+             {
+                 $this->session->set_flashdata('success', 'User added successfully');
+             }
+             else
+             {
+                 $this->session->set_flashdata('error', 'Failed to add login credentials');
+             }
+
         }
         else
         {

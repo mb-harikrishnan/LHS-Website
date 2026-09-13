@@ -23,8 +23,7 @@ class Login extends CI_Controller {
 
 	public function member_login()
 	{
-    $data['user_roles'] = $this->login_db->fetch_roles();
-		$this->load->view('member_login',$data);
+		$this->load->view('member_login');
 	}
 
 
@@ -34,39 +33,11 @@ class Login extends CI_Controller {
 public function check_username()
 {
     $username = $this->input->post('username');
-    $role_id  = $this->input->post('role_id');
 
-    $role = $this->db
-                ->select('role_name')
-                ->where('role_id', $role_id)
-                ->get('user_roles')
-                ->row();
-
-        $role_name = $role ? $role->role_name : '';
-
-    
-
-
-    if($role_name == 'Admin')
-    {
-       $table = 'admin_login';
-        $name = 'c_username';
-    }
-    elseif($role_name == 'Parent')
-    {
-      $table = 'parents_master';
-        $name = 'pmName';
-    }
-    elseif($role_name == 'Teacher')
-    {
-        $table = 'employee_master';
-
-        $name = 'emName';
-    }
-
+  
     $check = $this->db
-                ->where($name, $username)   // confirm this column name exists in employee_master / parent_master too
-                ->get($table);
+                ->where('c_username', $username)   // confirm this column name exists in employee_master / parent_master too
+                ->get('admin_login');
              
 
     echo ($check->num_rows() > 0) ? 'true' : 'false';
@@ -76,44 +47,12 @@ public function check_password()
 {
     $username = $this->input->post('username');
     $password = $this->input->post('password');
-    $role_id  = $this->input->post('role_id');
-
-    
-    $role = $this->db
-                ->select('role_name')
-                ->where('role_id', $role_id)
-                ->get('user_roles')
-                ->row();
-
-        $role_name = $role ? $role->role_name : '';
-
-    
 
 
-    if($role_name == 'Admin')
-    {
-       $table = 'admin_login';
-        $name = 'c_username';
-        $pass = 'c_password';
-    }
-    elseif($role_name == 'Parent')
-    {
-      $table = 'parents_master';
-        $name = 'pmName';
-        $pass = 'pmPassword';
-    }
-    elseif($role_name == 'Teacher')
-    {
-        $table = 'employee_master';
-
-        $name = 'emName';
-        $pass = 'emPassword';
-
-    }
     $check = $this->db
-                ->where($name, $username)
-                ->where($pass, md5($password))
-                ->get($table);
+                ->where('c_username', $username)
+                ->where('c_password', md5($password))
+                ->get('admin_login');
 
     echo ($check->num_rows() > 0) ? 'true' : 'false';
 }
@@ -158,11 +97,10 @@ public function check_password()
 		$login_flag=FALSE;
 		$login_active_flag=FALSE;
 		$username = $this->input->post('username');
-    $user_role_id = $this->input->post('role_id');
 		$login_time = "";
 		
 		//query the database
-		$result = $this->login_db->login_checking($username, $password,$user_role_id);
+		$result = $this->login_db->login_checking($username, $password);
 		
 		if($result)
 		{
@@ -180,7 +118,7 @@ public function check_password()
 		}
 		if($login_flag==TRUE)
 		{
-			$result = $this->login_db->login_validation_step2($username,$user_role_id);
+			$result = $this->login_db->login_validation_step2($username);
 			$id=0;
 			if($result)
 			{
@@ -193,15 +131,16 @@ public function check_password()
 			    $sess_array = array();
 			    foreach($result as $row)
                 {
-				  $login_time = $row->currentdate;
-				  $id=$row->n_slno;
+                  $login_time = $row->currentdate;
+                  $id=$row->n_slno;
+                  $user_id=$row->user_id;
 
 				 
                     $sess_array = array(
                     'id' => $row->sl_no,
                     'c_username' => $row->c_username,
                     'login_time' => $row->currentdate,
-                    'user_role_id' => $user_role_id
+                    'user_role_id' => $user_id
                     );
 
 

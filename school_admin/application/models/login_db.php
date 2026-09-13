@@ -23,46 +23,16 @@ public function fetch_roles()
 
 
 
-    function login_checking($username, $password,$user_role_id)
+    function login_checking($username, $password)
 	{
 
 
-		$role = $this->db
-					->select('role_name')
-					->where('role_id', $user_role_id)
-					->get('user_roles')
-					->row();
-
-			$role_name = $role ? $role->role_name : '';
-
-		
 
 
-		if($role_name == 'Admin')
-		{
-		    $table = 'admin_login';
-			$name = 'c_username';
-			$pass = 'c_password';
-		}
-		elseif($role_name == 'Parent')
-		{
-		$table = 'parents_master';
-			$name = 'pmName';
-			$pass = 'pmPassword';
-		}
-		elseif($role_name == 'Teacher')
-		{
-			$table = 'employee_master';
 
-			$name = 'emName';
-			$pass = 'emPassword';
-
-		}
-
-
-		$this -> db -> select($name,$pass);
-		$this -> db -> from($table);
-		 $where = "$name='".$username."' and $pass='".md5($password)."'  "; 
+		$this -> db -> select('c_username, c_password');
+		$this -> db -> from('admin_login');
+		 $where = "c_username='".$username."' and c_password='".md5($password)."'  "; 
 		 $this->db->where($where);
 		$this -> db -> limit(1);
 
@@ -82,50 +52,15 @@ public function fetch_roles()
 
 
 
-    function login_validation_step2($username,$user_role_id)
+    function login_validation_step2($username)
 	{
 
 
-	$role = $this->db
-					->select('role_name')
-					->where('role_id', $user_role_id)
-					->get('user_roles')
-					->row();
-
-			$role_name = $role ? $role->role_name : '';
-
-		
 
 
-		if($role_name == 'Admin')
-		{
-		    $table = 'admin_login';
-			$name = 'c_username';
-			$pass = 'c_password';
-			$id = 'sl_no';
-		}
-		elseif($role_name == 'Parent')
-		{
-		$table = 'parents_master';
-			$name = 'pmName';
-			$pass = 'pmPassword';
-			$id = 'pmId';
-
-		}
-		elseif($role_name == 'Teacher')
-		{
-			$table = 'employee_master';
-
-			$name = 'emName';
-			$pass = 'emPassword';
-			$id = 'emId';
-
-
-		}
-
-		$query = $this->db->select("$name AS c_username, $id AS sl_no, SYSDATE() AS currentdate", false)
-                  ->from($table)
-                  ->where($name, $username)
+		$query = $this->db->select("c_username AS c_username, user_id,sl_no AS sl_no, SYSDATE() AS currentdate", false)
+                  ->from('admin_login')
+                  ->where('c_username', $username)
                   ->get();
 	
 		$query -> num_rows();

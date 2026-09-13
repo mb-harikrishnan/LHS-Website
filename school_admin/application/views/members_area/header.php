@@ -220,18 +220,19 @@ if (!function_exists('isMenuActive')) {
     }
 
     .sb-section-label {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      color: rgba(255, 255, 255, 0.45);
-      padding: 18px 16px 8px;
-      margin: 0 8px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    }
-    .sb-section-label:first-of-type {
-      padding-top: 8px;
-    }
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: #ff4d4d;
+  text-align: left;
+  padding: 18px 0 8px 16px;   /* top right bottom left — no side margin */
+  margin: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.sb-section-label:first-of-type {
+  padding-top: 10px;
+}
   </style>
 </head>
 

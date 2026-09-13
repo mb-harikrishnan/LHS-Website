@@ -4,17 +4,6 @@ $breadcrumb   = 'Reports';
 $activePage   = 'reports';
 $showGlobalSearch = false;
 
-
-$sql = "SELECT * FROM class_master ORDER BY cmName ASC";
-$query= $this->db->query($sql);
-$res = $query->result();
-
-$sql1 = "SELECT * FROM division_master ORDER BY dmName ASC";
-$query1= $this->db->query($sql1);
-$res1 = $query1->result();
-
-
-
 /**
  * Helper: safely look up a single column from a table by id.
  * Uses query bindings (prevents SQL injection) and never calls
@@ -61,101 +50,6 @@ function lookupValue($db, $table, $idColumn, $id, $column, $fallback = '-')
         </button>
     </div>
 
-   <form method="get" action="<?php echo base_url('students_list'); ?>">
-
-    <div class="date-filter-box">
-
-        <!-- NAME -->
-        <div class="filter-item filter-field">
-            <label>NAME</label>
-
-            <div class="date-input-box">
-                <i class="fa fa-user"></i>
-
-                <input type="text"
-                       id="filterName"
-                       name="name"
-                       value="<?php echo isset($filters['name']) ? htmlspecialchars($filters['name']) : ''; ?>"
-                       placeholder="Search student name"
-                       class="filter-input">
-            </div>
-        </div>
-
-
-        <!-- CLASS -->
-        <div class="filter-item filter-field">
-            <label>CLASS</label>
-
-            <select id="filterClass"
-                    name="class"
-                    class="filter-input">
-                <option value="">All Classes</option>
-
-                <?php if (!empty($res)) { ?>
-                    <?php foreach ($res as $class) { ?>
-
-                        <option value="<?php echo htmlspecialchars($class->cmId); ?>"
-                            <?php echo (isset($filters['class']) && $filters['class'] == $class->cmId) ? 'selected' : ''; ?>>
-                            
-                            <?php echo htmlspecialchars($class->cmName); ?>
-
-                        </option>
-
-                    <?php } ?>
-                <?php } ?>
-
-            </select>
-        </div>
-
-
-        <!-- DIVISION -->
-        <div class="filter-item filter-field">
-            <label>DIVISION</label>
-
-            <select id="filterDivision"
-                    name="division"
-                    class="filter-input">
-
-                <option value="">All Divisions</option>
-
-                <?php if (!empty($res1)) { ?>
-                    <?php foreach ($res1 as $division) { ?>
-
-                        <option value="<?php echo htmlspecialchars($division->dmId); ?>"
-                            <?php echo (isset($filters['division']) && $filters['division'] == $division->dmId) ? 'selected' : ''; ?>>
-
-                            <?php echo htmlspecialchars($division->dmName); ?>
-
-                        </option>
-
-                    <?php } ?>
-                <?php } ?>
-
-            </select>
-        </div>
-
-
-        <!-- FILTER BUTTON -->
-        <div class="filter-btn-box">
-            <button type="submit" class="btn-filter">
-                <i class="fa fa-filter"></i> Filter
-            </button>
-        </div>
-
-
-        <!-- CLEAR -->
-        <div class="filter-btn-box">
-            <a href="<?php echo base_url('students_list'); ?>"
-               class="filter-clear-btn">
-                <i class="fa fa-times"></i> Clear
-            </a>
-        </div>
-
-    </div>
-
-</form>
-
-
     <div class="report-table-wrap" id="reportTableWrap">
         <table class="report-table display nowrap" id="reportsDataTable" style="width:100%">
 
@@ -188,11 +82,9 @@ $count = isset($start) ? $start + 1 : 1;
                         '2' => 'Other'
                     );
                     $genderLabel = isset($genderMap[$row->smGender]) ? $genderMap[$row->smGender] : '';
-
+                    
                     ?>
-                    <tr data-name="<?php echo htmlspecialchars(strtolower($row->smName ?? ''), ENT_QUOTES); ?>"
-                        data-class="<?php echo htmlspecialchars($res_class, ENT_QUOTES); ?>"
-                        data-division="<?php echo htmlspecialchars($res_div, ENT_QUOTES); ?>">
+                    <tr>
                         <td><?php echo $count; ?></td>
                         <td><?php echo htmlspecialchars($row->smAdmissionNo ?? '', ENT_QUOTES); ?></td>
                         <td><?php echo htmlspecialchars($row->smName ?? '', ENT_QUOTES); ?></td>
@@ -235,10 +127,6 @@ $count = isset($start) ? $start + 1 : 1;
             </tbody>
 
         </table>
-
-        <div class="no-results-msg" id="noResultsMsg" style="display:none; text-align:center; padding:24px; color:#6b7280;">
-            No matching students found on this page.
-        </div>
     </div>
 </div>
 
@@ -366,68 +254,6 @@ $count = isset($start) ? $start + 1 : 1;
     border-color: #2563eb;
     font-weight: 600;
 }
-
-/* Shared metrics for input, Select2 boxes, and the Clear button */
-.filter-input,
-.select2-container--default .select2-selection--single,
-.filter-clear-btn {
-    height: 42px;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 10px !important;
-    background: #fff;
-    box-shadow: 0 1px 2px rgba(0,0,0,.03);
-}
-
-.filter-input {
-    padding: 0 14px;
-    font-size: 14px;
-    color: #111827;
-}
-
-.select2-container--default .select2-selection--single {
-    display: flex;
-    align-items: center;
-    padding: 0 14px;
-}
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-    line-height: 40px;
-    padding: 0;
-    color: #111827;
-    font-size: 14px;
-}
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 40px;
-    right: 10px;
-}
-.select2-container--default.select2-container--focus .select2-selection--single,
-.filter-input:focus {
-    border-color: #2563eb !important;
-    outline: none;
-}
-
-.filter-clear-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 0 16px;
-    color: #6b7280;
-    font-size: 14px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: .15s;
-}
-.filter-clear-btn:hover {
-    background: #f3f4f6;
-    color: #374151;
-}
-
-.filter-field .select2-container {
-    width: 100% !important;
-}
-.filter-field {
-    min-width: 180px;
-}
 </style>
 
 <div class="modal fade" id="studentDetailsModal" tabindex="-1" aria-labelledby="studentDetailsModalLabel" aria-hidden="true">
@@ -514,35 +340,10 @@ $count = isset($start) ? $start + 1 : 1;
 <!-- Bootstrap JS bundle (includes Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Select2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
-
-<!-- Select2 JS (after jQuery, before your page script) -->
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
 <!-- ============================================================
      Page Script
 ============================================================= -->
 <script>
-
-    $(document).ready(function () {
-
-    $('#filterClass').select2({
-        placeholder: 'All Classes',
-        allowClear: true,
-        width: '160px',
-        dropdownAutoWidth: false
-    });
-
-    $('#filterDivision').select2({
-        placeholder: 'All Divisions',
-        allowClear: true,
-        width: '160px',
-        dropdownAutoWidth: false
-    });
-
-    // ... rest of your existing code (delete handler, modal handler, etc.)
-});
 
 $(document).ready(function () {
 
@@ -561,6 +362,7 @@ $(document).ready(function () {
 //         lengthMenu: "Show _MENU_ entries",
 //     }
 // });
+
 
 
 

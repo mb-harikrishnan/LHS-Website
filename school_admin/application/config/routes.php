@@ -12,6 +12,9 @@ $route['check_password'] = 'Login/check_password';
 $route['member_login_check'] = 'Login/member_login_check';
 
 
+
+
+
 ////////////////     DASHBOARD //////////////////////
 
 $route['dashboard']  ='members_area/Dashboard';

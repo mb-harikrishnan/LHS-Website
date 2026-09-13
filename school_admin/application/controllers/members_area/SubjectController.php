@@ -726,55 +726,116 @@ public function getMarksEntry()
 
 // }
 
+// public function students_list()
+// {
+//     $this->load->library('pagination');
+
+//     $per_page = 50;
+//     $total_rows = $this->Subject_Model->get_students_count();
+
+//     $config['base_url']    = base_url('students_list/');
+//     $config['total_rows']  = $total_rows;
+//     $config['per_page']    = $per_page;
+//     $config['uri_segment'] = 2; // students_list/<offset>
+
+//     // Wrap the whole thing so your .custom-pagination CSS applies
+//     $config['full_tag_open']  = '<div class="custom-pagination">';
+//     $config['full_tag_close'] = '</div>';
+
+//     $config['first_link']     = '&laquo; First';
+//     $config['first_tag_open'] = '<span>';
+//     $config['first_tag_close']= '</span>';
+
+//     $config['last_link']      = 'Last &raquo;';
+//     $config['last_tag_open']  = '<span>';
+//     $config['last_tag_close'] = '</span>';
+
+//     $config['next_link']      = '&raquo;';
+//     $config['next_tag_open']  = '<span>';
+//     $config['next_tag_close'] = '</span>';
+
+//     $config['prev_link']      = '&laquo;';
+//     $config['prev_tag_open']  = '<span>';
+//     $config['prev_tag_close'] = '</span>';
+
+//     $config['cur_tag_open']   = '<span class="active">';
+//     $config['cur_tag_close']  = '</span>';
+
+//     $config['num_tag_open']   = '<span>';
+//     $config['num_tag_close']  = '</span>';
+
+//     $config['num_links'] = 3; // how many number links either side of current page
+
+//     $this->pagination->initialize($config);
+
+//     $page = $this->uri->segment(2, 0);
+
+//     $data['details'] = $this->Subject_Model
+//                             ->fetch_all_student_details($per_page, $page);
+
+//     $data['links'] = $this->pagination->create_links();
+//     $data['start'] = $page;
+
+//     $this->load->view('members_area/header');
+//     $this->load->view('members_area/students_list', $data);
+//     $this->load->view('members_area/footer');
+// }
+
 public function students_list()
 {
     $this->load->library('pagination');
 
     $per_page = 50;
-    $total_rows = $this->Subject_Model->get_students_count();
+
+    $filters = array(
+        'name'     => $this->input->get('name'),
+        'class'    => $this->input->get('class'),
+        'division' => $this->input->get('division'),
+    );
+
+    $total_rows = $this->Subject_Model->get_students_count($filters);
 
     $config['base_url']    = base_url('students_list/');
     $config['total_rows']  = $total_rows;
     $config['per_page']    = $per_page;
-    $config['uri_segment'] = 2; // students_list/<offset>
+    $config['uri_segment'] = 2; // students_list/<offset>?name=...
 
-    // Wrap the whole thing so your .custom-pagination CSS applies
+    // Carry the current filters onto every page-number / next / prev link
+    $query_string = http_build_query(array_filter($filters));
+    $config['suffix'] = $query_string ? '?' . $query_string : '';
+
     $config['full_tag_open']  = '<div class="custom-pagination">';
     $config['full_tag_close'] = '</div>';
-
     $config['first_link']     = '&laquo; First';
     $config['first_tag_open'] = '<span>';
     $config['first_tag_close']= '</span>';
-
     $config['last_link']      = 'Last &raquo;';
     $config['last_tag_open']  = '<span>';
     $config['last_tag_close'] = '</span>';
-
     $config['next_link']      = '&raquo;';
     $config['next_tag_open']  = '<span>';
     $config['next_tag_close'] = '</span>';
-
     $config['prev_link']      = '&laquo;';
     $config['prev_tag_open']  = '<span>';
     $config['prev_tag_close'] = '</span>';
-
     $config['cur_tag_open']   = '<span class="active">';
     $config['cur_tag_close']  = '</span>';
-
     $config['num_tag_open']   = '<span>';
     $config['num_tag_close']  = '</span>';
-
-    $config['num_links'] = 3; // how many number links either side of current page
+    $config['num_links'] = 3;
 
     $this->pagination->initialize($config);
 
     $page = $this->uri->segment(2, 0);
 
     $data['details'] = $this->Subject_Model
-                            ->fetch_all_student_details($per_page, $page);
+                            ->fetch_all_student_details($per_page, $page, $filters);
 
-    $data['links'] = $this->pagination->create_links();
-    $data['start'] = $page;
+    $data['links']   = $this->pagination->create_links();
+    $data['start']   = $page;
+    $data['filters'] = $filters;   // needed by the view to re-select the form values
+    $data['res']     = $this->Subject_Model->get_all_classes();
+    $data['res1']    = $this->Subject_Model->get_all_divisions();
 
     $this->load->view('members_area/header');
     $this->load->view('members_area/students_list', $data);

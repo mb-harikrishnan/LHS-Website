@@ -114,6 +114,26 @@ $showGlobalSearch = false;
             </select>
         </div>
 
+
+        <div class="news-form-group">
+            <label>User Roles <span class="text-danger">*</span></label>
+
+            <select id="role_id"
+                    name="role_id"
+                    class="news-input select-search">
+                <option value="">Select Role</option>
+
+                <?php
+                $user_roles = $this->db->query("SELECT * FROM user_roles  WHERE status = 1")->result();
+
+                foreach($user_roles as $role){ ?>
+                    <option value="<?= $role->role_id; ?>">
+                        <?= $role->role_name; ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+
     </div>
 
     <div class="submit-section">
@@ -239,6 +259,9 @@ $("#newsform").validate({
 
         division_id: {
             required: true
+        },
+        role_id: {
+            required: true
         }
 
     },
@@ -274,6 +297,9 @@ $("#newsform").validate({
 
         division_id: {
             required: "Please select division"
+        },
+        role_id: {
+            required: "Please select role"
         }
 
     },
