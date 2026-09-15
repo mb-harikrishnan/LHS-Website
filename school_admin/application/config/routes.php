@@ -309,5 +309,13 @@ $route['add_menu_permission'] = 'members_area/PermissionsController/add_menu_per
 $route['get_permissions/(:num)'] = 'members_area/PermissionsController/get_permissions/$1';
 $route['save']                   = 'members_area/PermissionsController/save';
 
+
+
+$route['teacherdashboard'] = 'members_area/TeacherController/teacherdashboard';
+
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+
+
