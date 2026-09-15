@@ -35,8 +35,8 @@ $showGlobalSearch = false;
                         <th>exam </th>
                         <th>class</th>
                         <th>divition </th>
-                   
-                    <th>menu </th>
+                        <th>Edit </th>
+                        <th>Menu </th>
                 </tr>
             </thead>
 
@@ -66,6 +66,16 @@ Edit
 
 </a>
 
+</td>
+
+<td>
+    <button type="button" class="btn btn-primary btn-sm final-submit-btn"
+            data-em="<?= $row->esEmId; ?>"
+            data-cm="<?= $row->esCmId; ?>"
+            data-dm="<?= $row->esDmId; ?>"
+            onclick="checkAndFinalSubmit(this)">
+        Final Submit
+    </button>
 </td>
 
 </tr>
@@ -346,5 +356,48 @@ window.onclick = function (event) {
             document.body.style.overflow = 'auto';
         }
     }
+}
+</script>
+
+
+<script>
+    function checkAndFinalSubmit(btn) {
+    const emId = btn.dataset.em;
+    const cmId = btn.dataset.cm;
+    const dmId = btn.dataset.dm;
+
+    Swal.fire({
+        title: 'Checking...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    $.ajax({
+        url: '<?php echo base_url("check_marks_status"); ?>/' + emId + '/' + cmId + '/' + dmId,
+        method: 'GET',
+        dataType: 'json',
+        success: function (res) {
+            Swal.close();
+            if (res.complete === true) {
+                window.location.href = '<?php echo base_url("view_marks_all"); ?>/' + emId + '/' + cmId + '/' + dmId;
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Marks Incomplete',
+                    html: 'Please enter marks for <b>all students</b> before final submission.' +
+                          (res.missing ? '<br><br>Missing: ' + res.missing + ' student(s)' : ''),
+                    confirmButtonColor: '#203d8f'
+                });
+            }
+        },
+        error: function () {
+            Swal.close();
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Unable to check mark status. Please try again.'
+            });
+        }
+    });
 }
 </script>

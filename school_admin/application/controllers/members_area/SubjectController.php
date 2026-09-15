@@ -1041,6 +1041,84 @@ public function view_marks_students($exam, $class, $division)
 
 
 
+public function view_marks_all($exam, $class, $division)
+{
+    // Subjects
+    $this->db->select("exam_summary.esSmId, subject_master.smName");
+    $this->db->from("exam_summary");
+    $this->db->join("subject_master", "subject_master.smId = exam_summary.esSmId");
+    $this->db->where("exam_summary.esEmId", $exam);
+    $this->db->where("exam_summary.esCmId", $class);
+    $this->db->where("exam_summary.esDmId", $division);
+    $this->db->group_by("exam_summary.esSmId");
+
+    $data['subjects'] = $this->db->get()->result();
+    $this->db->reset_query();
+
+    // Max marks per subject (from exam_master_detail)
+    $this->db->select("emdSmId, emdMaxMark");
+    $this->db->from("exam_master_detail");
+    $this->db->where("emdEmId", $exam);
+    $this->db->where("emdCmId", $class);
+
+    $maxMarkResult = $this->db->get()->result();
+    $this->db->reset_query();
+
+    $maxMarks = [];
+    foreach ($maxMarkResult as $row) {
+        $maxMarks[$row->emdSmId] = $row->emdMaxMark;
+    }
+    $data['maxMarks'] = $maxMarks;
+
+    // Students
+    $this->db->select("smId, smAdmissionNo, smName");
+    $this->db->from("students_master");
+    $this->db->where("smClass", $class);
+    $this->db->where("smDiv", $division);
+    $this->db->order_by("smName", "asc");
+
+    $data['students'] = $this->db->get()->result();
+    $this->db->reset_query();
+
+    // Marks (existing ones only)
+    $this->db->select("
+        exam_detail.edSmId AS student_id,
+        exam_summary.esSmId AS subject_id,
+        exam_detail.edMark
+    ");
+    $this->db->from("exam_detail");
+    $this->db->join("exam_summary", "exam_summary.esId = exam_detail.edEsId");
+    $this->db->where("exam_summary.esEmId", $exam);
+    $this->db->where("exam_summary.esCmId", $class);
+    $this->db->where("exam_summary.esDmId", $division);
+
+    $result = $this->db->get()->result();
+
+    $marks = [];
+    foreach ($result as $row) {
+        $marks[$row->student_id][$row->subject_id] = $row->edMark;
+    }
+
+    $sql = "SELECT emIsGrade FROM exam_master WHERE emId = ?";
+    $query = $this->db->query($sql, [$exam]);
+    $results = $query->row();
+
+    // Return a plain scalar 0 or 1, never the row object
+    $grade = ($results === null) ? 0 : (int) $results->emIsGrade;
+
+    $data['exam']     = $exam;
+    $data['class']    = $class;
+    $data['division'] = $division;
+    $data['marks']    = $marks;
+    $data['isGrade']  = $grade;
+
+    $this->load->view('members_area/header');
+    $this->load->view('members_area/view_marks_all', $data);
+    $this->load->view('members_area/footer');
+}
+
+
+
 
 
 
@@ -1551,6 +1629,27 @@ public function update_exam_order()
     }
 
     echo 1;
+}
+
+
+
+
+public function check_marks_status($emId, $cmId, $dmId)
+{
+    // Total students in this class + division
+    $totalStudents = $this->Subject_Model->countStudents($cmId, $dmId);
+
+    // Students who already have a mark entry for this exam
+    $markedStudents = $this->Subject_Model->countMarkedStudents($emId, $cmId, $dmId);
+
+    $missing = $totalStudents - $markedStudents;
+
+    echo json_encode([
+        'complete'       => ($missing <= 0),
+        'total'          => $totalStudents,
+        'marked'         => $markedStudents,
+        'missing'        => $missing
+    ]);
 }
 
 

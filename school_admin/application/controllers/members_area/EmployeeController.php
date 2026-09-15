@@ -35,6 +35,26 @@ class EmployeeController extends CI_Controller {
     }
 
 
+    public function edit_employee($id)
+{
+    $data['employee'] = $this->db
+        ->where('emId', $id)
+        ->where('emActive', 1)
+        ->get('employee_master')
+        ->row();
+
+    if (!$data['employee']) {
+        show_404();
+    }
+    $this->load->view('members_area/header');
+
+    $this->load->view('members_area/edit_employee', $data);
+
+            $this->load->view('members_area/footer');
+
+}
+
+
     public function add_employee()
     {
         $this->load->view('members_area/header');

@@ -148,7 +148,7 @@ $route['insert_employee']   = 'members_area/EmployeeController/insert_employee';
 $route['delete_employee']   = 'members_area/EmployeeController/delete_employee';
 $route['check_name_exist']   = 'members_area/EmployeeController/check_name_exist';
 
-
+$route['edit_employee/(:num)'] = 'members_area/EmployeeController/edit_employee/$1';
 
 
 
@@ -222,6 +222,9 @@ $route['add_mark_entry']   = 'members_area/SubjectController/add_mark_entry';
 $route['getMarksEntry']   = 'members_area/SubjectController/getMarksEntry';
 $route['saveMarksEntry']   = 'members_area/SubjectController/saveMarksEntry';
 $route['getExistingMarks']   = 'members_area/SubjectController/getExistingMarks';
+
+$route['check_marks_status/(:num)/(:num)/(:num)']   = 'members_area/SubjectController/check_marks_status/$1/$2/$3';
+$route['view_marks_all/(:num)/(:num)/(:num)']   = 'members_area/SubjectController/view_marks_all/$1/$2/$3';
 
 $route['Marksentry_list']   = 'members_area/SubjectController/Marksentry_list';
 $route['edit_marks/(:num)/(:num)'] = 'members_area/SubjectController/edit_marks/$1/$2';

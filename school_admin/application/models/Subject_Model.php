@@ -777,7 +777,20 @@ public function fetch_term()
 
 
 
+public function countStudents($cmId, $dmId)
+{
+    return $this->db->where('smClass', $cmId)
+                     ->where('smDiv', $dmId)
+                     ->count_all_results('students_master');
+}
 
+public function countMarkedStudents($emId, $cmId, $dmId)
+{
+    return $this->db->where('esEmId', $emId)
+                     ->where('esCmId', $cmId)
+                     ->where('esDmId', $dmId)
+                     ->count_all_results('exam_summary');
+}
 
 
 

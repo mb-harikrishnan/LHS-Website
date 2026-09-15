@@ -39,7 +39,8 @@ $showGlobalSearch = false;
                     <th>Designation</th>
                     <th>Class</th>
                     <th>Division</th>
-                    <th>Action</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
                 </tr>
             </thead>
 
@@ -71,6 +72,14 @@ $showGlobalSearch = false;
                     <td><?php echo $row->emDesigId; ?></td>
                     <td><?php echo $className; ?></td>
                     <td><?php echo $divName; ?></td>
+
+
+                    <td>
+                        <a href="<?php echo base_url('edit_employee/' . $row->emId); ?>"
+                        class="edit-btn">
+                            <i class="fa fa-edit"></i> Edit
+                        </a>
+                    </td>
                     <td>
                         <button class="deleteBtn" data-id="<?php echo $row->emId; ?>">
                             <i class="fa fa-trash"></i> Delete
