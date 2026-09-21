@@ -316,6 +316,7 @@ $route['teacherdashboard'] = 'members_area/TeacherController/teacherdashboard';
 
 
 $route['parapattiiiiiiiii'] = 'members_area/TeacherController/pariiiiiiiiiiiiiiiiiii';
+$route['tehndi'] = 'members_area/TeacherController/pariiiiiiiiiiiiiiiiiii';
 
 
 $route['404_override'] = '';
