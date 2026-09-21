@@ -133,7 +133,7 @@ public function check_password()
                 {
                   $login_time = $row->currentdate;
                   $id=$row->n_slno;
-                  $user_id=$row->user_id;
+                  $user_id=$row->user_role_id;
 
 				 
                     $sess_array = array(
