@@ -783,14 +783,47 @@ public function getMarksEntry()
 
 public function students_list()
 {
+
     $this->load->library('pagination');
+
+ 
+   $user_role_id = $this->session->userdata('user_role_id');
+
+   if($user_role_id==1) {
+
+     
+        $class    = $this->input->get('class');
+        $division = $this->input->get('division');
+
+   }else{
+
+    $res = $this->db
+        ->select('emClass', 'emDiv')
+        ->where('user_id', $user_role_id)
+        ->get('employee_master')
+        ->row();
+
+    if (!$res) {
+        return 0;
+    }
+
+
+    $class = $res->emClass;
+    $division = $res->emDiv;
+
+   }
+
+
+   
+
+    
 
     $per_page = 50;
 
     $filters = array(
         'name'     => $this->input->get('name'),
-        'class'    => $this->input->get('class'),
-        'division' => $this->input->get('division'),
+        'class'    => $class,
+        'division' => $division
     );
 
     $total_rows = $this->Subject_Model->get_students_count($filters);

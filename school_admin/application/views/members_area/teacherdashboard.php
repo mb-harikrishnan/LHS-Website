@@ -14,10 +14,9 @@
     /* pulled from the portal's own chrome: navy sidebar, gold "active" badge */
     --navy:       #1e2a5c;
     --navy-tint:  #eef0f7;
-
-    --gold:       #b8860f;
-    --gold-fill:  #fbf1d9;
-    --gold-line:  #edd9a3;
+    --green:      #15803d;
+    --green-fill: #e6f6ec;
+    --green-line: #b7e2c5;
 
     --blue:       #1a56c4;
     --blue-fill:  #eaf1fc;
@@ -74,18 +73,18 @@
     margin-top: 2px;
   }
 
-  .exd-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--gold);
-    animation: exd-pulse 1.8s ease-in-out infinite;
-  }
+ .exd-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: exd-pulse 1.8s ease-in-out infinite;
+}
 
-  @keyframes exd-pulse {
-    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(184,134,15,.35); }
-    50%      { opacity: .55; box-shadow: 0 0 0 5px rgba(184,134,15,0); }
-  }
+@keyframes exd-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(21,128,61,.35); }
+  50%      { opacity: .55; box-shadow: 0 0 0 5px rgba(21,128,61,0); }
+}
 
   @media (prefers-reduced-motion: reduce) {
     .exd-dot { animation: none; }
@@ -166,7 +165,7 @@
     background: transparent;
   }
 
-  .exd-card.is-ongoing .exd-card-bar { background: var(--gold); }
+  .exd-card.is-ongoing .exd-card-bar { background: var(--green); }
   .exd-card.is-open .exd-card-bar    { background: var(--blue); }
 
   .exd-card-name {
@@ -201,9 +200,9 @@
   }
 
   .exd-status.is-ongoing {
-    background: var(--gold-fill);
-    color: var(--gold);
-    border: 1px solid var(--gold-line);
+    background: var(--green-fill);
+    color: var(--green);
+    border: 1px solid var(--green-line);
   }
 
   .exd-status.is-open {
@@ -254,7 +253,7 @@
   </div>
 
   <div class="exd-legend">
-    <span class="exd-legend-item"><span class="exd-legend-swatch" style="background:#b8860f;"></span>Ongoing</span>
+    <span class="exd-legend-item"><span class="exd-legend-swatch" style="background:#15803d;"></span>Ongoing</span>
     <span class="exd-legend-item"><span class="exd-legend-swatch" style="background:#1a56c4;"></span>Open</span>
     <span class="exd-legend-item"><span class="exd-legend-swatch" style="background:#c7c6c0;"></span>Not started</span>
   </div>
