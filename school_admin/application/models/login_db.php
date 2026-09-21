@@ -58,7 +58,7 @@ public function fetch_roles()
 
 
 
-		$query = $this->db->select("c_username AS c_username, user_id,sl_no AS sl_no, SYSDATE() AS currentdate", false)
+		$query = $this->db->select("c_username AS c_username, user_role_id,sl_no AS sl_no, SYSDATE() AS currentdate", false)
                   ->from('admin_login')
                   ->where('c_username', $username)
                   ->get();
