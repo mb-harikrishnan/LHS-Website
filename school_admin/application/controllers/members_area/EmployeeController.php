@@ -162,7 +162,51 @@ public function check_name_exist()
 
 
 
+public function update_employee()
+{
+    $employee_id = $this->input->post('employee_id');
+    $password    = $this->input->post('password');
 
+    // Get the existing record
+    $employee = $this->db
+        ->where('emId', $employee_id)
+        ->get('employee_master')
+        ->row();
+
+    if (!$employee) {
+        $this->session->set_flashdata('error', 'Employee not found');
+        redirect('employee_list');
+    }
+
+    // The edit form pre-fills the stored hash, so only hash again if the password was changed
+    if ($password === $employee->emPassword) {
+        $new_password = $employee->emPassword;
+    } else {
+        $new_password = md5($password);
+    }
+
+    $data = array(
+        'emTS'        => date('Y-m-d'),
+        'emName'      => $this->input->post('name'),
+        'emPassword'  => $new_password,
+        'emClass'     => $this->input->post('class_id'),
+        'emDiv'       => $this->input->post('division_id'),
+        'emPhoneNo'   => $this->input->post('mobile'),
+        'emDesigId'   => $this->input->post('designation'),
+        'user_id'     => $this->input->post('role_id'),
+    );
+
+    $this->db->where('emId', $employee_id);
+    $result = $this->db->update('employee_master', $data);
+
+    if ($result) {
+        $this->session->set_flashdata('success', 'Employee updated successfully');
+    } else {
+        $this->session->set_flashdata('error', 'Failed to update employee');
+    }
+
+    redirect('employee_list');
+}
 
 
 

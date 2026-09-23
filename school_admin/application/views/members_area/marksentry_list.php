@@ -3,6 +3,13 @@ $pageTitle = 'Reports';
 $breadcrumb = 'Reports';
 $activePage = 'reports';
 $showGlobalSearch = false;
+
+$user_role_id = $this->session->userdata('user_role_id');
+$is_admin     = ($user_role_id == 1);
+
+// Admin always allowed; other roles depend on DB value 1 / 0
+$can_add  = $is_admin || (!empty($perm['can_add'])  && (int)$perm['can_add']  === 1);
+$can_edit = $is_admin || (!empty($perm['can_edit']) && (int)$perm['can_edit'] === 1);
 ?>
 
 <!-- Report Page Styles -->
@@ -19,10 +26,12 @@ $showGlobalSearch = false;
             Mark List
             <!-- <span class="card-badge" id="tableBadge">0 records</span> -->
         </div>
-        <button class="card-action"
-                onclick="window.location.href='<?php echo base_url('add_mark_entry'); ?>'">
-            <i class="fa fa-upload"></i> Add Mark
-        </button>
+            <?php if ($can_add) { ?>
+                <button class="card-action"
+                        onclick="window.location.href='<?php echo base_url('add_mark_entry'); ?>'">
+                    <i class="fa fa-upload"></i> Add Mark
+                </button>
+            <?php } ?>
     </div>
 
 
@@ -35,8 +44,10 @@ $showGlobalSearch = false;
                         <th>exam </th>
                         <th>class</th>
                         <th>divition </th>
-                        <th>Edit </th>
-                        <th>Menu </th>
+                            <?php if ($can_edit) { ?>
+                                <th class="no-sort">Edit</th>
+                                <th class="no-sort">Menu</th>
+                            <?php } ?>
                 </tr>
             </thead>
 
@@ -57,7 +68,7 @@ foreach($details as $row){
 
 <td><?= $row->dmName; ?></td>
 
-<td>
+<!-- <td>
 
 <a class="btn btn-primary btn-sm"
 href="<?= base_url('view_marks_students/'.$row->esEmId.'/'.$row->esCmId.'/'.$row->esDmId);?>">
@@ -66,6 +77,25 @@ Edit
 
 </a>
 
+</td> -->
+
+<!-- <td>
+    <button type="button" class="btn btn-primary btn-sm final-submit-btn"
+            data-em="<?= $row->esEmId; ?>"
+            data-cm="<?= $row->esCmId; ?>"
+            data-dm="<?= $row->esDmId; ?>"
+            onclick="checkAndFinalSubmit(this)">
+        Final Submit
+    </button>
+</td> -->
+
+
+<?php if ($can_edit) { ?>
+<td>
+    <a class="btn btn-primary btn-sm"
+       href="<?= base_url('view_marks_students/'.$row->esEmId.'/'.$row->esCmId.'/'.$row->esDmId); ?>">
+        Edit
+    </a>
 </td>
 
 <td>
@@ -77,6 +107,7 @@ Edit
         Final Submit
     </button>
 </td>
+<?php } ?>
 
 </tr>
 

@@ -796,7 +796,7 @@ public function countMarkedStudents($emId, $cmId, $dmId)
 
 
 
-public function get_permissions($role_id)
+public function get_permissions($role_id,$students_menu_id)
 {
     // Admin (role 1) can do everything
     if ($role_id == 1) {
@@ -806,6 +806,7 @@ public function get_permissions($role_id)
     $row = $this->db
         ->select('can_view, can_add, can_edit, can_delete')
         ->where('role_id', $role_id)
+        ->where('menu_id', $students_menu_id)
         ->get('user_roles_menu_permissions')
         ->row_array();
 
@@ -821,7 +822,11 @@ public function get_permissions($role_id)
 
 
 
-
+public function get_menu_id_by_link($link)
+{
+    $row = $this->db->select('menu_id')->where('menu_link', $link)->get('menus')->row();
+    return $row ? (int) $row->menu_id : 0;
+}
 
 
 

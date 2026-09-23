@@ -148,6 +148,9 @@ $route['insert_employee']   = 'members_area/EmployeeController/insert_employee';
 $route['delete_employee']   = 'members_area/EmployeeController/delete_employee';
 $route['check_name_exist']   = 'members_area/EmployeeController/check_name_exist';
 
+
+$route['update_employee']   = 'members_area/EmployeeController/update_employee';
+
 $route['edit_employee/(:num)'] = 'members_area/EmployeeController/edit_employee/$1';
 
 

@@ -45,7 +45,7 @@ $result = $query2->result() ?? [];
    ───────────────────────────────────────────── */
 $roleId = (int) $this->session->userdata('user_role_id');
 
-if ($roleId === 2) {
+if ($roleId === 1) {
 
     // Admin role: display all active menus
     $sqlMenu = "

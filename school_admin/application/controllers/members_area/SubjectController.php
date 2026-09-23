@@ -725,7 +725,9 @@ public function students_list()
 
  
    $user_role_id = $this->session->userdata('user_role_id');
-       $perm = $this->Subject_Model->get_permissions($user_role_id);
+    $menu_id = $this->Subject_Model->get_menu_id_by_link('/students_list');
+
+       $perm = $this->Subject_Model->get_permissions($user_role_id, $menu_id);
 
          // No view permission -> show message and stop
     if (!$perm['can_view']) {
@@ -816,6 +818,7 @@ public function students_list()
     $data['filters'] = $filters;   // needed by the view to re-select the form values
     $data['res']     = $this->Subject_Model->get_all_classes();
     $data['res1']    = $this->Subject_Model->get_all_divisions();
+    $data['perm']    = $perm;
 
     $this->load->view('members_area/header');
     $this->load->view('members_area/students_list', $data);
@@ -867,19 +870,104 @@ public function students_list()
 // }
 
 
+// public function Marksentry_list()
+// {
+//     $user_role_id = $this->session->userdata('user_role_id');
+
+//      $menu_id = $this->Subject_Model->get_menu_id_by_link('/marksentry_list');
+//     $perm = $this->Subject_Model->get_permissions($user_role_id, $menu_id);
+
+//     // No view permission -> stop here
+//     if (!$perm['can_view']) {
+//         $this->load->view('members_area/header');
+//         $this->load->view('members_area/no_permission');
+//         $this->load->view('members_area/footer');
+//         return;
+//     }
+
+//     // ... your existing employee_master + exam_summary query ...
+
+//     $data['perm'] = $perm;   // <-- pass to the view
+
+
+
+//     // Get the logged-in employee's class and division
+//     $res = $this->db
+//         ->select('emClass, emDiv')
+//         ->where('user_id', $user_role_id)
+//         ->get('employee_master')
+//         ->row();
+
+//     // If no employee record is found, show an empty list
+//     if (!$res) {
+//         $data['details'] = array();
+//     } else {
+//         $this->db->select('
+//             exam_summary.esId,
+//             exam_summary.esCmId,
+//             exam_summary.esEmId,
+//             exam_summary.esDmId,
+//             exam_master.emName,
+//             class_master.cmName,
+//             division_master.dmName
+//         ');
+//         $this->db->from('exam_summary');
+
+//         $this->db->join('exam_master', 'exam_master.emId = exam_summary.esEmId');
+//         $this->db->join('class_master', 'class_master.cmId = exam_summary.esCmId');
+//         $this->db->join('division_master', 'division_master.dmId = exam_summary.esDmId');
+
+//         // Filter by the employee's class and division
+//         $this->db->where('exam_summary.esCmId', $res->emClass);
+//         $this->db->where('exam_summary.esDmId', $res->emDiv);
+
+//         $this->db->group_by(array(
+//             'exam_summary.esEmId',
+//             'exam_summary.esCmId',
+//             'exam_summary.esDmId'
+//         ));
+
+//         $data['details'] = $this->db->get()->result();
+//     }
+
+//     $this->load->view('members_area/header');
+//     $this->load->view('members_area/marksentry_list', $data);
+//     $this->load->view('members_area/footer');
+// }
+
+
 public function Marksentry_list()
 {
     $user_role_id = $this->session->userdata('user_role_id');
 
-    // Get the logged-in employee's class and division
-    $res = $this->db
-        ->select('emClass, emDiv')
-        ->where('user_id', $user_role_id)
-        ->get('employee_master')
-        ->row();
+    $menu_id = $this->Subject_Model->get_menu_id_by_link('/marksentry_list');
+    $perm    = $this->Subject_Model->get_permissions($user_role_id, $menu_id);
 
-    // If no employee record is found, show an empty list
-    if (!$res) {
+    // No view permission -> stop here
+    if (!$perm['can_view']) {
+        $this->load->view('members_area/header');
+        $this->load->view('members_area/no_permission');
+        $this->load->view('members_area/footer');
+        return;
+    }
+
+    $data = array();
+    $data['perm'] = $perm;
+
+    $is_admin = ($user_role_id == 1);
+    $res = null;
+
+    // Only non-admin users are tied to an employee record
+    if (!$is_admin) {
+        $res = $this->db
+            ->select('emClass, emDiv')
+            ->where('user_id', $user_role_id)
+            ->get('employee_master')
+            ->row();
+    }
+
+    // Non-admin with no employee record -> empty list
+    if (!$is_admin && !$res) {
         $data['details'] = array();
     } else {
         $this->db->select('
@@ -892,14 +980,15 @@ public function Marksentry_list()
             division_master.dmName
         ');
         $this->db->from('exam_summary');
-
         $this->db->join('exam_master', 'exam_master.emId = exam_summary.esEmId');
         $this->db->join('class_master', 'class_master.cmId = exam_summary.esCmId');
         $this->db->join('division_master', 'division_master.dmId = exam_summary.esDmId');
 
-        // Filter by the employee's class and division
-        $this->db->where('exam_summary.esCmId', $res->emClass);
-        $this->db->where('exam_summary.esDmId', $res->emDiv);
+        // Class/division filter applies only to non-admins
+        if (!$is_admin) {
+            $this->db->where('exam_summary.esCmId', $res->emClass);
+            $this->db->where('exam_summary.esDmId', $res->emDiv);
+        }
 
         $this->db->group_by(array(
             'exam_summary.esEmId',
