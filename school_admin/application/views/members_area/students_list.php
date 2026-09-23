@@ -13,6 +13,29 @@ $sql1 = "SELECT * FROM division_master ORDER BY dmName ASC";
 $query1= $this->db->query($sql1);
 $res1 = $query1->result();
 
+$user_role_id  = $this->session->userdata('user_role_id');
+$is_restricted = ($user_role_id != 1);
+
+$locked_class = '';
+$locked_div   = '';
+
+if ($is_restricted) {
+    $emp = $this->db
+        ->select('emClass, emDiv')
+        ->where('user_id', $user_role_id)
+        ->get('employee_master')
+        ->row();
+
+    if ($emp) {
+        $locked_class = $emp->emClass;
+        $locked_div   = $emp->emDiv;
+    }
+}
+
+// Value to preselect: locked value for non-admins, GET filter for admins
+$sel_class = $is_restricted ? $locked_class : (isset($filters['class']) ? $filters['class'] : '');
+$sel_div   = $is_restricted ? $locked_div   : (isset($filters['division']) ? $filters['division'] : '');
+
 
 
 /**
@@ -55,10 +78,22 @@ function lookupValue($db, $table, $idColumn, $id, $column, $fallback = '-')
             </svg>
             Student List
         </div>
-        <button class="card-action"
+        <!-- <button class="card-action"
                 onclick="window.location.href='<?php echo base_url('add_student'); ?>'">
             <i class="fa fa-upload"></i> Add Students
-        </button>
+        </button> -->
+
+        <?php if (!empty($perm['can_add'])) { ?>
+            <button class="card-action"
+                    onclick="window.location.href='<?php echo base_url('add_student'); ?>'">
+                <i class="fa fa-upload"></i> Add Students
+            </button>
+        <?php } else { ?>
+            <button class="card-action" disabled style="opacity:.5;cursor:not-allowed;"
+                    title="You don't have permission to add">
+                <i class="fa fa-upload"></i> Add Students
+            </button>
+        <?php } ?>
     </div>
 
    <form method="get" action="<?php echo base_url('students_list'); ?>">
@@ -81,58 +116,49 @@ function lookupValue($db, $table, $idColumn, $id, $column, $fallback = '-')
             </div>
         </div>
 
+<!-- CLASS -->
+<div class="filter-item filter-field">
+    <label>CLASS</label>
 
-        <!-- CLASS -->
-        <div class="filter-item filter-field">
-            <label>CLASS</label>
+    <select id="filterClass"
+            name="<?php echo $is_restricted ? '' : 'class'; ?>"
+            class="filter-input"
+            <?php echo $is_restricted ? 'disabled' : ''; ?>>
+        <option value="">All Classes</option>
+        <?php foreach ($res as $class) { ?>
+            <option value="<?php echo htmlspecialchars($class->cmId); ?>"
+                <?php echo ($sel_class == $class->cmId) ? 'selected' : ''; ?>>
+                <?php echo htmlspecialchars($class->cmName); ?>
+            </option>
+        <?php } ?>
+    </select>
 
-            <select id="filterClass"
-                    name="class"
-                    class="filter-input">
-                <option value="">All Classes</option>
+    <?php if ($is_restricted) { ?>
+        <input type="hidden" name="class" value="<?php echo htmlspecialchars($locked_class); ?>">
+    <?php } ?>
+</div>
 
-                <?php if (!empty($res)) { ?>
-                    <?php foreach ($res as $class) { ?>
+<!-- DIVISION -->
+<div class="filter-item filter-field">
+    <label>DIVISION</label>
 
-                        <option value="<?php echo htmlspecialchars($class->cmId); ?>"
-                            <?php echo (isset($filters['class']) && $filters['class'] == $class->cmId) ? 'selected' : ''; ?>>
-                            
-                            <?php echo htmlspecialchars($class->cmName); ?>
+    <select id="filterDivision"
+            name="<?php echo $is_restricted ? '' : 'division'; ?>"
+            class="filter-input"
+            <?php echo $is_restricted ? 'disabled' : ''; ?>>
+        <option value="">All Divisions</option>
+        <?php foreach ($res1 as $division) { ?>
+            <option value="<?php echo htmlspecialchars($division->dmId); ?>"
+                <?php echo ($sel_div == $division->dmId) ? 'selected' : ''; ?>>
+                <?php echo htmlspecialchars($division->dmName); ?>
+            </option>
+        <?php } ?>
+    </select>
 
-                        </option>
-
-                    <?php } ?>
-                <?php } ?>
-
-            </select>
-        </div>
-
-
-        <!-- DIVISION -->
-        <div class="filter-item filter-field">
-            <label>DIVISION</label>
-
-            <select id="filterDivision"
-                    name="division"
-                    class="filter-input">
-
-                <option value="">All Divisions</option>
-
-                <?php if (!empty($res1)) { ?>
-                    <?php foreach ($res1 as $division) { ?>
-
-                        <option value="<?php echo htmlspecialchars($division->dmId); ?>"
-                            <?php echo (isset($filters['division']) && $filters['division'] == $division->dmId) ? 'selected' : ''; ?>>
-
-                            <?php echo htmlspecialchars($division->dmName); ?>
-
-                        </option>
-
-                    <?php } ?>
-                <?php } ?>
-
-            </select>
-        </div>
+    <?php if ($is_restricted) { ?>
+        <input type="hidden" name="division" value="<?php echo htmlspecialchars($locked_div); ?>">
+    <?php } ?>
+</div>
 
 
         <!-- FILTER BUTTON -->
@@ -214,7 +240,7 @@ $count = isset($start) ? $start + 1 : 1;
                             </button>
                         </td>
 
-                        <td>    
+                        <!-- <td>    
                             <button type="button"
                                     class="table-btn edit-btn"
                                     onclick="window.location.href='<?php echo base_url('edit_students/'.$row->smId); ?>'">
@@ -226,7 +252,33 @@ $count = isset($start) ? $start + 1 : 1;
                             <button class="deleteBtn" data-id="<?php echo (int) $row->smId; ?>">
                                 <i class="fa fa-trash"></i> Delete
                             </button>
-                        </td>
+                        </td> -->
+
+                        <td>
+    <?php if (!empty($perm['can_edit'])) { ?>
+        <button type="button" class="table-btn edit-btn"
+                onclick="window.location.href='<?php echo base_url('edit_students/'.$row->smId); ?>'">
+            <i class="fa fa-edit"></i> Edit
+        </button>
+    <?php } else { ?>
+        <button type="button" class="table-btn edit-btn" disabled
+                style="opacity:.5;cursor:not-allowed;" title="No permission">
+            <i class="fa fa-edit"></i> Edit
+        </button>
+    <?php } ?>
+</td>
+
+<td>
+    <?php if (!empty($perm['can_delete'])) { ?>
+        <button class="deleteBtn" data-id="<?php echo (int) $row->smId; ?>">
+            <i class="fa fa-trash"></i> Delete
+        </button>
+    <?php } else { ?>
+        <button type="button" disabled style="opacity:.5;cursor:not-allowed;" title="No permission">
+            <i class="fa fa-trash"></i> Delete
+        </button>
+    <?php } ?>
+</td>
                     </tr>
                     <?php
                     $count++;

@@ -796,6 +796,31 @@ public function countMarkedStudents($emId, $cmId, $dmId)
 
 
 
+public function get_permissions($role_id)
+{
+    // Admin (role 1) can do everything
+    if ($role_id == 1) {
+        return array('can_view' => 1, 'can_add' => 1, 'can_edit' => 1, 'can_delete' => 1);
+    }
+
+    $row = $this->db
+        ->select('can_view, can_add, can_edit, can_delete')
+        ->where('role_id', $role_id)
+        ->get('user_roles_menu_permissions')
+        ->row_array();
+
+    // No row = no access
+    if (!$row) {
+        return array('can_view' => 0, 'can_add' => 0, 'can_edit' => 0, 'can_delete' => 0);
+    }
+
+    return array_map('intval', $row);
+}
+
+
+
+
+
 
 
 

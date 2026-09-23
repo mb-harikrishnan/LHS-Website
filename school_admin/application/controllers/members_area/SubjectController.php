@@ -715,71 +715,8 @@ public function getMarksEntry()
 
 
 
-// public function students_list()
-// {
 
-//     $data['details'] = $this->Subject_Model->fetch_all_student_details();
-   
-//     $this->load->view('members_area/header');
-//     $this->load->view('members_area/students_list',$data);
-//     $this->load->view('members_area/footer');
 
-// }
-
-// public function students_list()
-// {
-//     $this->load->library('pagination');
-
-//     $per_page = 50;
-//     $total_rows = $this->Subject_Model->get_students_count();
-
-//     $config['base_url']    = base_url('students_list/');
-//     $config['total_rows']  = $total_rows;
-//     $config['per_page']    = $per_page;
-//     $config['uri_segment'] = 2; // students_list/<offset>
-
-//     // Wrap the whole thing so your .custom-pagination CSS applies
-//     $config['full_tag_open']  = '<div class="custom-pagination">';
-//     $config['full_tag_close'] = '</div>';
-
-//     $config['first_link']     = '&laquo; First';
-//     $config['first_tag_open'] = '<span>';
-//     $config['first_tag_close']= '</span>';
-
-//     $config['last_link']      = 'Last &raquo;';
-//     $config['last_tag_open']  = '<span>';
-//     $config['last_tag_close'] = '</span>';
-
-//     $config['next_link']      = '&raquo;';
-//     $config['next_tag_open']  = '<span>';
-//     $config['next_tag_close'] = '</span>';
-
-//     $config['prev_link']      = '&laquo;';
-//     $config['prev_tag_open']  = '<span>';
-//     $config['prev_tag_close'] = '</span>';
-
-//     $config['cur_tag_open']   = '<span class="active">';
-//     $config['cur_tag_close']  = '</span>';
-
-//     $config['num_tag_open']   = '<span>';
-//     $config['num_tag_close']  = '</span>';
-
-//     $config['num_links'] = 3; // how many number links either side of current page
-
-//     $this->pagination->initialize($config);
-
-//     $page = $this->uri->segment(2, 0);
-
-//     $data['details'] = $this->Subject_Model
-//                             ->fetch_all_student_details($per_page, $page);
-
-//     $data['links'] = $this->pagination->create_links();
-//     $data['start'] = $page;
-
-//     $this->load->view('members_area/header');
-//     $this->load->view('members_area/students_list', $data);
-//     $this->load->view('members_area/footer');
-// }
 
 public function students_list()
 {
@@ -788,6 +725,16 @@ public function students_list()
 
  
    $user_role_id = $this->session->userdata('user_role_id');
+       $perm = $this->Subject_Model->get_permissions($user_role_id);
+
+         // No view permission -> show message and stop
+    if (!$perm['can_view']) {
+        $this->load->view('members_area/header');
+        $this->load->view('members_area/no_permission');
+        $this->load->view('members_area/footer');
+        return;
+    }
+
 
    if($user_role_id==1) {
 
@@ -798,7 +745,7 @@ public function students_list()
    }else{
 
     $res = $this->db
-        ->select('emClass', 'emDiv')
+        ->select('emClass, emDiv')
         ->where('user_id', $user_role_id)
         ->get('employee_master')
         ->row();
@@ -875,39 +822,98 @@ public function students_list()
     $this->load->view('members_area/footer');
 }
 
+// public function Marksentry_list()
+// {
+
+
+//      $user_role_id = $this->session->userdata('user_role_id');
+
+//     $res = $this->db
+//         ->select('emClass,emDiv')
+//         ->where('user_id', $user_role_id)
+//         ->get('employee_master')
+//         ->row();
+
+
+
+
+//     $this->db->select('
+//         exam_summary.esId,
+//         exam_summary.esCmId,
+//         exam_summary.esEmId,
+//         exam_summary.esDmId,
+//         exam_master.emName,
+//         class_master.cmName,
+//         division_master.dmName
+//     ');
+
+//     $this->db->from('exam_summary');
+
+//     $this->db->join('exam_master','exam_master.emId=exam_summary.esEmId');
+//     $this->db->join('class_master','class_master.cmId=exam_summary.esCmId');
+//     $this->db->join('division_master','division_master.dmId=exam_summary.esDmId');
+
+//     $this->db->group_by(array(
+//         'esEmId',
+//         'esCmId',
+//         'esDmId'
+//     ));
+
+//     $data['details']=$this->db->get()->result();
+
+//         $this->load->view('members_area/header');
+//     $this->load->view('members_area/marksentry_list',$data);
+//     $this->load->view('members_area/footer');
+// }
+
+
 public function Marksentry_list()
 {
-    $this->db->select('
-        exam_summary.esId,
-        exam_summary.esCmId,
-        exam_summary.esEmId,
-        exam_summary.esDmId,
-        exam_master.emName,
-        class_master.cmName,
-        division_master.dmName
-    ');
+    $user_role_id = $this->session->userdata('user_role_id');
 
-    $this->db->from('exam_summary');
+    // Get the logged-in employee's class and division
+    $res = $this->db
+        ->select('emClass, emDiv')
+        ->where('user_id', $user_role_id)
+        ->get('employee_master')
+        ->row();
 
-    $this->db->join('exam_master','exam_master.emId=exam_summary.esEmId');
-    $this->db->join('class_master','class_master.cmId=exam_summary.esCmId');
-    $this->db->join('division_master','division_master.dmId=exam_summary.esDmId');
+    // If no employee record is found, show an empty list
+    if (!$res) {
+        $data['details'] = array();
+    } else {
+        $this->db->select('
+            exam_summary.esId,
+            exam_summary.esCmId,
+            exam_summary.esEmId,
+            exam_summary.esDmId,
+            exam_master.emName,
+            class_master.cmName,
+            division_master.dmName
+        ');
+        $this->db->from('exam_summary');
 
-    $this->db->group_by(array(
-        'esEmId',
-        'esCmId',
-        'esDmId'
-    ));
+        $this->db->join('exam_master', 'exam_master.emId = exam_summary.esEmId');
+        $this->db->join('class_master', 'class_master.cmId = exam_summary.esCmId');
+        $this->db->join('division_master', 'division_master.dmId = exam_summary.esDmId');
 
-    $data['details']=$this->db->get()->result();
+        // Filter by the employee's class and division
+        $this->db->where('exam_summary.esCmId', $res->emClass);
+        $this->db->where('exam_summary.esDmId', $res->emDiv);
 
-        $this->load->view('members_area/header');
-    $this->load->view('members_area/marksentry_list',$data);
+        $this->db->group_by(array(
+            'exam_summary.esEmId',
+            'exam_summary.esCmId',
+            'exam_summary.esDmId'
+        ));
+
+        $data['details'] = $this->db->get()->result();
+    }
+
+    $this->load->view('members_area/header');
+    $this->load->view('members_area/marksentry_list', $data);
     $this->load->view('members_area/footer');
 }
-
-
-
 
 
 
