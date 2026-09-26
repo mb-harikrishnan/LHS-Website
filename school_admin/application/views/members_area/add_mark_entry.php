@@ -30,29 +30,31 @@ $showGlobalSearch = false;
          to the class(es) assigned to the logged-in employee. -->
     <div class="form-row">
 
-        <div class="news-form-group">
-            <label>Class</label>
-            <select id="class" class="news-select select2">
-                <option value="">Select Class</option>
-                <?php foreach ($class as $classvalue) { ?>
-                    <option value="<?php echo $classvalue->cmId; ?>">
-                        <?php echo $classvalue->cmName; ?>
-                    </option>
-                <?php } ?>
-            </select>
-        </div>
+       <div class="news-form-group">
+    <label>Class</label>
+    <select id="class" class="news-select select2" <?php echo $is_admin ? '' : 'disabled'; ?>>
+        <option value="">Select Class</option>
+        <?php foreach ($class as $classvalue) { ?>
+            <option value="<?php echo $classvalue->cmId; ?>"
+                <?php echo (!$is_admin) ? 'selected' : ''; ?>>
+                <?php echo $classvalue->cmName; ?>
+            </option>
+        <?php } ?>
+    </select>
+</div>
 
-        <div class="news-form-group">
-            <label>Division</label>
-            <select id="division" class="news-select select2">
-                <option value="">Select Division</option>
-                <?php foreach ($divition as $divitionvalue) { ?>
-                    <option value="<?php echo $divitionvalue->dmId; ?>">
-                        <?php echo $divitionvalue->dmName; ?>
-                    </option>
-                <?php } ?>
-            </select>
-        </div>
+<div class="news-form-group">
+    <label>Division</label>
+    <select id="division" class="news-select select2" <?php echo $is_admin ? '' : 'disabled'; ?>>
+        <option value="">Select Division</option>
+        <?php foreach ($divition as $divitionvalue) { ?>
+            <option value="<?php echo $divitionvalue->dmId; ?>"
+                <?php echo (!$is_admin) ? 'selected' : ''; ?>>
+                <?php echo $divitionvalue->dmName; ?>
+            </option>
+        <?php } ?>
+    </select>
+</div>
 
         <div class="news-form-group">
             <label>Exam</label>
@@ -151,22 +153,40 @@ $showGlobalSearch = false;
 
 
 
-    $(document).ready(function () {
+//     $(document).ready(function () {
 
-    $('.select2').select2();
+//     $('.select2').select2();
 
-    $("#class,#division,#exam").change(function () {
+//     $("#class,#division,#exam").change(function () {
 
-        let class_id = $("#class").val();
-        let division_id = $("#division").val();
-        let exam_id = $("#exam").val();
+//         let class_id = $("#class").val();
+//         let division_id = $("#division").val();
+//         let exam_id = $("#exam").val();
 
       
 
-        loadMarksTable(class_id, division_id, exam_id);
+//         loadMarksTable(class_id, division_id, exam_id);
 
+//     });
+
+// });
+
+
+$(document).ready(function () {
+    $('.select2').select2();
+
+    $("#class,#division,#exam").change(function () {
+        let class_id = $("#class").val();
+        let division_id = $("#division").val();
+        let exam_id = $("#exam").val();
+        loadMarksTable(class_id, division_id, exam_id);
     });
 
+    <?php if (!$is_admin): ?>
+    // Teacher's class/division are locked-in; kick off the table load immediately
+    // once they also pick an exam (exam select stays enabled for everyone).
+    $("#class").trigger("change"); // harmless if it does nothing yet without exam_id
+    <?php endif; ?>
 });
 
 

@@ -794,6 +794,41 @@ public function countMarkedStudents($emId, $cmId, $dmId)
 
 
 
+// Subject_Model
+public function get_assigned_class_div($user_role_id)
+{
+    $emp = $this->db
+        ->select('emClass, emDiv')
+        ->where('user_id', $user_role_id)
+        ->get('employee_master')
+        ->row();
+
+    if (!$emp) {
+        return null;
+    }
+
+    $class_row = $this->db
+        ->where('cmId', $emp->emClass)
+        ->get('class_master')
+        ->row();
+
+    $division_row = $this->db
+        ->where('dmId', $emp->emDiv)
+        ->get('division_master')
+        ->row();
+
+    if (!$class_row || !$division_row) {
+        return null;
+    }
+
+    return (object) [
+        'class_row'    => $class_row,
+        'division_row' => $division_row,
+    ];
+}
+
+
+
 
 
 public function get_permissions($role_id,$students_menu_id)

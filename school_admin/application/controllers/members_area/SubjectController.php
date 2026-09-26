@@ -628,16 +628,50 @@ public function save_exam_mark_details()
 
 
 
-    public function add_mark_entry()
-    {
+    // public function add_mark_entry()
+    // {
 
-        $data['class'] = $this->Subject_Model->fetch_all_class();
+    //     $data['class'] = $this->Subject_Model->fetch_all_class();
+    //     $data['divition'] = $this->Subject_Model->fetch_all_division();
+    //     $data['exam'] = $this->Subject_Model->fetch_all_exam();
+    //     $this->load->view('members_area/header');
+    //     $this->load->view('members_area/add_mark_entry',$data);
+    //     $this->load->view('members_area/footer');
+    // }
+
+
+    public function add_mark_entry()
+{
+    $user_role_id = $this->session->userdata('user_role_id');
+
+    if ($user_role_id == 1) {
+        // Admin — full selectable lists
+        $data['class']    = $this->Subject_Model->fetch_all_class();
         $data['divition'] = $this->Subject_Model->fetch_all_division();
-        $data['exam'] = $this->Subject_Model->fetch_all_exam();
-        $this->load->view('members_area/header');
-        $this->load->view('members_area/add_mark_entry',$data);
-        $this->load->view('members_area/footer');
+        $data['is_admin'] = true;
+
+    } else {
+        // Teacher — restricted to their own assigned class/division
+        $assigned = $this->Subject_Model->get_assigned_class_div($user_role_id);
+
+        if ($assigned) {
+            // Wrap single row as array so the existing foreach in the view still works
+            $data['class']    = [$assigned->class_row];
+            $data['divition'] = [$assigned->division_row];
+        } else {
+            $data['class']    = [];
+            $data['divition'] = [];
+        }
+
+        $data['is_admin'] = false;
     }
+
+    $data['exam'] = $this->Subject_Model->fetch_all_exam();
+
+    $this->load->view('members_area/header');
+    $this->load->view('members_area/add_mark_entry', $data);
+    $this->load->view('members_area/footer');
+}
 
 
 
