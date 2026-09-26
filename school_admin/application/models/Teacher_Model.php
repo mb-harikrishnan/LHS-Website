@@ -23,7 +23,7 @@ class Teacher_Model extends CI_Model
 
     $class = $res->emClass;
     $div   = $res->emDiv;
-
+ $this->db->distinct();
     $this->db->select('exam_master.*');   // add detail columns here if needed, e.g. exam_master_detail.emdCmId
     $this->db->from('exam_master');
     $this->db->join('exam_master_detail', 'exam_master_detail.emdEmId = exam_master.emId', 'inner');
