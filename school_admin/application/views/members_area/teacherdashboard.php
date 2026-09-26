@@ -211,11 +211,7 @@
     border: 1px solid var(--blue-line);
   } */
 
-    .exd-status.is-closed {
-  background: #f4f4f2;
-  color: var(--closed);
-  border: 1px solid var(--line);
-}
+ .exd-card.is-closed-status .exd-card-bar { background: var(--red); }
 
 .exd-status.is-notstarted {
   background: transparent;
@@ -246,6 +242,35 @@
     font-size: 14px;
     padding: 24px 0;
   }
+
+  .exd-wrap {
+  /* ...existing vars... */
+  --closed:      #8b8d95;   /* keep for "not started" */
+  --red:         #b91c1c;
+  --red-fill:    #fdecec;
+  --red-line:    #f3c6c6;
+}
+
+
+.exd-status.is-ongoing {
+  background: var(--green-fill);
+  color: var(--green);
+  border: 1px solid var(--green-line);
+}
+
+.exd-status.is-closed {
+  background: var(--red-fill);
+  color: var(--red);
+  border: 1px solid var(--red-line);
+}
+
+.exd-status.is-notstarted {
+  background: transparent;
+  color: var(--closed);
+  border: 1px solid var(--line);
+}
+
+
 </style>
 
 <div class="exd-wrap">
@@ -266,7 +291,7 @@
 
 <div class="exd-legend">
   <span class="exd-legend-item"><span class="exd-legend-swatch" style="background:#15803d;"></span>Ongoing</span>
-  <span class="exd-legend-item"><span class="exd-legend-swatch" style="background:#8b8d95;"></span>Closed</span>
+  <span class="exd-legend-item"><span class="exd-legend-swatch" style="background:#b91c1c;"></span>Closed</span>
   <span class="exd-legend-item"><span class="exd-legend-swatch" style="background:#c7c6c0;"></span>Not started</span>
 </div>
 

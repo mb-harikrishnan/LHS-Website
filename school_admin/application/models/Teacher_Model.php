@@ -46,7 +46,7 @@ class Teacher_Model extends CI_Model
     /**
      * Convenience count, e.g. for a "3 exams live now" summary chip.
      */
- public function count_ongoing_exams()
+public function count_ongoing_exams()
 {
     $user_role_id = $this->session->userdata('user_role_id');
 
@@ -59,15 +59,16 @@ class Teacher_Model extends CI_Model
     if (!$res) {
         return 0;
     }
+
+    $this->db->select('exam_master.emId', TRUE); // TRUE resets any prior select
     $this->db->distinct();
     $this->db->from('exam_master');
     $this->db->join('exam_master_detail', 'exam_master_detail.emdEmId = exam_master.emId', 'inner');
-    $this->db->where('exam_master.emActive', 1);
+    $this->db->where('exam_master.emActive', 1);       // <-- restored, must match get_dashboard_exams()
     $this->db->where('exam_master.emIsOngoing', 1);
     $this->db->where('exam_master_detail.emdCmId', $res->emClass);
 
     return $this->db->count_all_results();
 }
-
 
 }
