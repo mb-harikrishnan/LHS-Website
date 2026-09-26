@@ -166,7 +166,7 @@
   }
 
   .exd-card.is-ongoing .exd-card-bar { background: var(--green); }
-  .exd-card.is-open .exd-card-bar    { background: var(--blue); }
+  /* .exd-card.is-open .exd-card-bar    { background: var(--blue); } */
 
   .exd-card-name {
     font-weight: 600;
@@ -205,11 +205,23 @@
     border: 1px solid var(--green-line);
   }
 
-  .exd-status.is-open {
+  /* .exd-status.is-open {
     background: var(--blue-fill);
     color: var(--blue);
     border: 1px solid var(--blue-line);
-  }
+  } */
+
+    .exd-status.is-closed {
+  background: #f4f4f2;
+  color: var(--closed);
+  border: 1px solid var(--line);
+}
+
+.exd-status.is-notstarted {
+  background: transparent;
+  color: var(--closed);
+  border: 1px solid var(--line);
+}
 
   .exd-status.is-closed {
     background: transparent;
@@ -252,11 +264,11 @@
     <?php endif; ?>
   </div>
 
-  <div class="exd-legend">
-    <span class="exd-legend-item"><span class="exd-legend-swatch" style="background:#15803d;"></span>Ongoing</span>
-    <span class="exd-legend-item"><span class="exd-legend-swatch" style="background:#1a56c4;"></span>Open</span>
-    <span class="exd-legend-item"><span class="exd-legend-swatch" style="background:#c7c6c0;"></span>Not started</span>
-  </div>
+<div class="exd-legend">
+  <span class="exd-legend-item"><span class="exd-legend-swatch" style="background:#15803d;"></span>Ongoing</span>
+  <span class="exd-legend-item"><span class="exd-legend-swatch" style="background:#8b8d95;"></span>Closed</span>
+  <span class="exd-legend-item"><span class="exd-legend-swatch" style="background:#c7c6c0;"></span>Not started</span>
+</div>
 
   <?php if (empty($exam_groups)): ?>
 
@@ -280,37 +292,40 @@
         <div class="exd-grid">
           <?php foreach ($exams as $exam): ?>
             <?php
-              $is_ongoing = ($exam->emIsOngoing == 1);
-              $is_opened  = ($exam->emIsOpened == 1);
+                $is_ongoing = ($exam->emIsOngoing == 1);
+                $is_opened  = ($exam->emIsOpened == 1);
               $card_class = 'exd-card';
-              if ($is_ongoing) { $card_class .= ' is-ongoing'; }
-              elseif ($is_opened) { $card_class .= ' is-open'; }
+              if ($is_ongoing) {
+                  $card_class .= ' is-ongoing';
+              } elseif ($is_opened) {
+                  $card_class .= ' is-closed-status'; // opened but not ongoing anymore
+              }
             ?>
             <div class="<?php echo $card_class; ?>">
-              <span class="exd-card-bar"></span>
-              <p class="exd-card-name"><?php echo html_escape($exam->emDisplayName); ?></p>
-              <p class="exd-card-code"><?php echo html_escape($exam->emName); ?></p>
+  <span class="exd-card-bar"></span>
+  <p class="exd-card-name"><?php echo html_escape($exam->emDisplayName); ?></p>
+  <p class="exd-card-code"><?php echo html_escape($exam->emName); ?></p>
 
-              <div class="exd-status-row">
-                <?php if ($is_ongoing): ?>
-                  <span class="exd-status is-ongoing">
-                    <span class="exd-status-dot"></span> Ongoing
-                  </span>
-                <?php elseif ($is_opened): ?>
-                  <span class="exd-status is-open">
-                    <span class="exd-status-dot"></span> Open
-                  </span>
-                <?php else: ?>
-                  <span class="exd-status is-closed">
-                    <span class="exd-status-dot"></span> Not started
-                  </span>
-                <?php endif; ?>
+  <div class="exd-status-row">
+    <?php if ($is_ongoing): ?>
+      <span class="exd-status is-ongoing">
+        <span class="exd-status-dot"></span> Ongoing
+      </span>
+    <?php elseif ($is_opened): ?>
+      <span class="exd-status is-closed">
+        <span class="exd-status-dot"></span> Closed
+      </span>
+    <?php else: ?>
+      <span class="exd-status is-notstarted">
+        <span class="exd-status-dot"></span> Not started
+      </span>
+    <?php endif; ?>
 
-                <?php if ($exam->emIsGrade == 1): ?>
-                  <span class="exd-graded-tag">Grading enabled</span>
-                <?php endif; ?>
-              </div>
-            </div>
+    <?php if ($exam->emIsGrade == 1): ?>
+      <span class="exd-graded-tag">Grading enabled</span>
+    <?php endif; ?>
+  </div>
+</div>
           <?php endforeach; ?>
         </div>
       </div>

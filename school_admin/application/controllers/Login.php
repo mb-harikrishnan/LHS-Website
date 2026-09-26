@@ -78,8 +78,16 @@ public function check_password()
 		{
 
 
-          redirect('dashboard');
+        $user_role_id = $this->session->userdata('user_role_id');
 
+        if ($user_role_id == 1) // adjust "1" to whatever your admin role id actually is
+        {
+            redirect('dashboard');
+        }
+        else
+        {
+            redirect('teacherdashboard');
+        }
 
         }
 
