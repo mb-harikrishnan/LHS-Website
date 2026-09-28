@@ -1,0 +1,212 @@
+/* ═══════════════════════════════════════════════════════════════
+   LITTLE HEART SCHOOL — ADMIN DESIGN SYSTEM (theme.css)
+   Single source of truth for colors, typography, spacing,
+   radius, shadows and shared UI components.
+   Loaded FIRST in header.php so page CSS can override tokens.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Brand palette (School blue) ─────────────────────────── */
+  --brand-900: #16307A;
+  --brand-800: #1D3F9E;
+  --brand-700: #1E3A8A;   /* primary brand / sidebar / headings */
+  --brand-600: #2563EB;   /* primary action */
+  --brand-500: #3B82F6;
+  --brand-100: #DBEAFE;
+  --brand-50:  #EFF6FF;
+
+  --accent:        #D4A017;   /* gold — secondary brand accent */
+  --accent-light:  #F4C542;
+  --accent-pale:   #FFF8E1;
+
+  /* ── Semantic colors ─────────────────────────────────────── */
+  --success: #16A34A;  --success-soft: #E7F6EC;  --success-dark: #12833C;
+  --warning: #D97706;  --warning-soft: #FEF3C7;  --warning-dark: #B45309;
+  --danger:  #DC2626;  --danger-soft:  #FEE2E2;  --danger-dark:  #B91C1C;
+  --info:    #0284C7;  --info-soft:    #E0F2FE;  --info-dark:    #0369A1;
+
+  /* ── Surfaces & text ─────────────────────────────────────── */
+  --bg:          #F4F7FB;   /* app background */
+  --surface:     #FFFFFF;   /* cards */
+  --surface-2:   #F1F5F9;   /* subtle fill (table head, wells) */
+  --topbar-bg:   #FFFFFF;
+  --input-bg:    #FFFFFF;
+  --text:        #0F172A;
+  --text-mid:    #334155;
+  --text-light:  #64748B;
+  --border:      #E2E8F0;
+  --border-soft: #EDF2F7;
+
+  /* ── Typography ──────────────────────────────────────────── */
+  --font-body: 'Outfit', 'Segoe UI', system-ui, sans-serif;
+  --font-display: 'Outfit', 'Segoe UI', system-ui, sans-serif;
+
+  /* ── Radius scale ────────────────────────────────────────── */
+  --radius-sm: 8px;
+  --radius:    12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  /* ── Spacing scale (multiples of 4px) ────────────────────── */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px;
+
+  /* ── Shadows ─────────────────────────────────────────────── */
+  --shadow-sm: 0 1px 2px rgba(15,23,42,.05);
+  --shadow:    0 1px 3px rgba(15,23,42,.06), 0 4px 14px rgba(15,23,42,.05);
+  --shadow-lg: 0 10px 30px rgba(15,23,42,.12);
+
+  /* ── Layout ──────────────────────────────────────────────── */
+  --sidebar-w: 272px;
+
+  /* ── Back-compat aliases (old code keeps working) ────────── */
+  --cream:    var(--bg);
+  --cream2:   var(--surface-2);
+  --white:    var(--surface);
+  --green:      var(--brand-700);
+  --green-mid:  var(--brand-600);
+  --green-soft: var(--brand-600);
+  --green-pale: var(--brand-50);
+  --gold:       var(--accent);
+  --gold-light: var(--accent-light);
+  --gold-pale:  var(--accent-pale);
+  --navy:       var(--brand-700);
+  --sage:       #93C5FD;
+  --card-bg:    var(--surface);
+}
+
+/* ── Dark theme remap ───────────────────────────────────────── */
+[data-theme="dark"] {
+  --bg:        #0B1220;
+  --surface:   #121A2B;
+  --surface-2: #1A2438;
+  --topbar-bg: #101828;
+  --input-bg:  #16213A;
+  --text:      #E7EDF6;
+  --text-mid:  #B3C0D3;
+  --text-light:#7C8CA5;
+  --border:      #26334D;
+  --border-soft: #1F2A40;
+  --brand-50:    #18233B;
+  --brand-100:   #223255;
+  --accent-pale: #2A2312;
+  --success-soft: rgba(22,163,74,.15);
+  --warning-soft: rgba(217,119,6,.15);
+  --danger-soft:  rgba(220,38,38,.15);
+  --info-soft:    rgba(2,132,199,.15);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.35);
+  --shadow:    0 1px 3px rgba(0,0,0,.4), 0 4px 14px rgba(0,0,0,.35);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,.5);
+}
+
+/* ═══ Base ═══════════════════════════════════════════════════ */
+html, body {
+  height: 100%;
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ═══ Shared components ══════════════════════════════════════ */
+
+/* Buttons — one consistent system for every page */
+.btn-brand,
+.btn-brand-outline,
+.btn-soft,
+.btn-soft-danger,
+.btn-soft-success {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: .01em;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background .18s ease, border-color .18s ease, color .18s ease,
+              box-shadow .18s ease, transform .12s ease;
+}
+.btn-brand { background: var(--brand-600); color: #fff; box-shadow: var(--shadow-sm); }
+.btn-brand:hover { background: var(--brand-700); box-shadow: 0 4px 12px rgba(37,99,235,.25); transform: translateY(-1px); }
+.btn-brand:active { transform: translateY(0); }
+.btn-brand:disabled, .btn-brand[disabled] { opacity: .55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.btn-brand-outline { background: var(--surface); color: var(--brand-600); border-color: var(--border); }
+.btn-brand-outline:hover { background: var(--brand-50); border-color: var(--brand-600); color: var(--brand-700); }
+
+.btn-soft { background: var(--brand-50); color: var(--brand-700); }
+.btn-soft:hover { background: var(--brand-100); color: var(--brand-700); }
+
+.btn-soft-danger { background: var(--danger-soft); color: var(--danger); }
+.btn-soft-danger:hover { background: var(--danger); color: #fff; }
+
+.btn-soft-success { background: var(--success-soft); color: var(--success-dark); }
+.btn-soft-success:hover { background: var(--success); color: #fff; }
+
+/* Small table action buttons */
+.btn-brand.btn-sm, .btn-brand-outline.btn-sm,
+.btn-soft.btn-sm, .btn-soft-danger.btn-sm, .btn-soft-success.btn-sm {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 12.5px;
+  border-radius: 7px;
+  gap: 6px;
+}
+.btn-brand.btn-sm i, .btn-brand-outline.btn-sm i,
+.btn-soft.btn-sm i, .btn-soft-danger.btn-sm i { font-size: 12px; }
+
+/* Status badges */
+.badge-soft {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .03em;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+.badge-soft::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.badge-soft.success { background: var(--success-soft); color: var(--success-dark); }
+.badge-soft.warning { background: var(--warning-soft); color: var(--warning-dark); }
+.badge-soft.danger  { background: var(--danger-soft);  color: var(--danger); }
+.badge-soft.info    { background: var(--info-soft);    color: var(--info-dark); }
+.badge-soft.brand   { background: var(--brand-50);     color: var(--brand-700); }
+
+/* Alerts / inline notices */
+.alert-soft {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  border: 1px solid transparent;
+  margin-bottom: var(--sp-4);
+}
+.alert-soft.success { background: var(--success-soft); color: var(--success-dark); border-color: rgba(22,163,74,.25); }
+.alert-soft.danger  { background: var(--danger-soft);  color: var(--danger-dark);  border-color: rgba(220,38,38,.25); }
+.alert-soft.warning { background: var(--warning-soft); color: var(--warning-dark); border-color: rgba(217,119,6,.25); }
+.alert-soft.info    { background: var(--info-soft);    color: var(--info-dark);    border-color: rgba(2,132,199,.25); }
+
+/* Icons everywhere align with text */
+i.fa, i.fas, i.far, i.fab { vertical-align: middle; line-height: 1; }
+
+/* Focus ring used app-wide */
+:focus-visible { outline: 2px solid var(--brand-500); outline-offset: 2px; }
+input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible { outline: none; }
+
+/* Selection color */
+::selection { background: rgba(37,99,235,.18); }

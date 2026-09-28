@@ -1,0 +1,522 @@
+<?php
+$pageTitle = 'Reports';
+$breadcrumb = 'Reports';
+$activePage = 'reports';
+$showGlobalSearch = false;
+?>
+
+<link rel="stylesheet" href="<?php echo base_url('assets/css/exam.css'); ?>">
+
+<!-- Marks Entry Card -->
+<div class="card">
+    <div class="card-head">
+        <div class="card-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            Enter Marks
+        </div>
+
+          <button class="card-action"
+                onclick="window.location.href='<?php echo base_url('Marksentry_list'); ?>'">
+            <i class="fa fa-upload"></i>  Mark List
+        </button>
+    </div>
+    
+
+    <!-- ================= FILTERS: Class / Division / Exam =================
+         Class list is already restricted server-side (controller index())
+         to the class(es) assigned to the logged-in employee. -->
+    <div class="form-row">
+
+       <div class="news-form-group">
+    <label>Class</label>
+    <select id="class" class="news-select select2" <?php echo $is_admin ? '' : 'disabled'; ?>>
+        <option value="">Select Class</option>
+        <?php foreach ($class as $classvalue) { ?>
+            <option value="<?php echo $classvalue->cmId; ?>"
+                <?php echo (!$is_admin) ? 'selected' : ''; ?>>
+                <?php echo $classvalue->cmName; ?>
+            </option>
+        <?php } ?>
+    </select>
+</div>
+
+<div class="news-form-group">
+    <label>Division</label>
+    <select id="division" class="news-select select2" <?php echo $is_admin ? '' : 'disabled'; ?>>
+        <option value="">Select Division</option>
+        <?php foreach ($divition as $divitionvalue) { ?>
+            <option value="<?php echo $divitionvalue->dmId; ?>"
+                <?php echo (!$is_admin) ? 'selected' : ''; ?>>
+                <?php echo $divitionvalue->dmName; ?>
+            </option>
+        <?php } ?>
+    </select>
+</div>
+
+        <div class="news-form-group">
+            <label>Exam</label>
+            <select id="exam" class="news-select select2">
+                <option value="">Select Exam</option>
+                <?php foreach ($exam as $examvalue) { ?>
+                    <option value="<?php echo $examvalue->emId; ?>">
+                        <?php echo $examvalue->emName; ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+
+    </div>
+
+    <!-- ================= MARKS TABLE ================= -->
+    <div id="marksTableWrapper" style="margin-top:20px; overflow-x:auto; display:none;">
+        <table class="table" id="marksTable" style="width:100%; border-collapse:collapse;">
+            <thead>
+                <tr id="marksTableHead"></tr>
+            </thead>
+            <tbody id="marksTableBody">
+                <!-- rows injected by JS -->
+            </tbody>
+        </table>
+
+        <div class="news-btn-group" style="margin-top:16px;">
+            <button type="button" id="saveMarksBtn" class="submit-btn">
+                <i class="fa fa-save"></i> Save Marks
+            </button>
+        </div>
+    </div>
+
+    <div id="noStudentsMsg" style="margin-top:20px; display:none; color:#888;">
+        No students found for the selected Class / Division.
+    </div>
+
+    <div id="noSubjectsMsg" style="margin-top:20px; display:none; color:#888;">
+        No subjects configured for the selected Class / Exam.
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<style>
+    #marksTable th, #marksTable td {
+        border: 1px solid #ddd;
+        padding: 6px 8px;
+        text-align: center;
+        font-size: 13px;
+    }
+    #marksTable thead th {
+        background: #f4f4f4;
+        font-weight: 600;
+    }
+    #marksTable td.student-name-cell {
+        text-align: left;
+        white-space: nowrap;
+    }
+    #marksTable input.mark-input {
+        width: 55px;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 4px;
+    }
+    #marksTable input.mark-input:focus {
+        outline: none;
+        border-color: var(--green, #16a34a);
+        box-shadow: 0 0 0 2px rgba(22,163,74,0.15);
+    }
+
+
+    .mark-error {
+    color: #d9534f;
+    font-size: 10.5px;
+    font-weight: 600;
+    margin-top: 3px;
+    line-height: 1.2;
+}
+#marksTable input.mark-input.input-error {
+    border-color: #d9534f !important;
+    box-shadow: 0 0 0 2px rgba(217,83,79,.15) !important;
+}
+</style>
+
+
+
+
+
+<script>
+
+
+
+//     $(document).ready(function () {
+
+//     $('.select2').select2();
+
+//     $("#class,#division,#exam").change(function () {
+
+//         let class_id = $("#class").val();
+//         let division_id = $("#division").val();
+//         let exam_id = $("#exam").val();
+
+      
+
+//         loadMarksTable(class_id, division_id, exam_id);
+
+//     });
+
+// });
+
+
+$(document).ready(function () {
+    $('.select2').select2();
+
+    $("#class,#division,#exam").change(function () {
+        let class_id = $("#class").val();
+        let division_id = $("#division").val();
+        let exam_id = $("#exam").val();
+        loadMarksTable(class_id, division_id, exam_id);
+    });
+
+    <?php if (!$is_admin): ?>
+    // Teacher's class/division are locked-in; kick off the table load immediately
+    // once they also pick an exam (exam select stays enabled for everyone).
+    $("#class").trigger("change"); // harmless if it does nothing yet without exam_id
+    <?php endif; ?>
+});
+
+
+
+
+
+function loadMarksTable(class_id, division_id, exam_id)
+{
+
+    $.ajax({
+
+        url: "<?php echo site_url('getMarksEntry');?>",
+        type: "POST",
+        dataType: "json",
+
+        data:{
+            class_id:class_id,
+            division_id:division_id,
+            exam_id:exam_id
+        },
+
+        success:function(res){
+
+            $("#noStudentsMsg").hide();
+            $("#noSubjectsMsg").hide();
+            $("#marksTableWrapper").hide();
+
+            if(res.status=="success")
+            {
+               buildTable(res.students, res.subjects, res.marks, res.maxMarks, res.isGrade);
+            }
+            else if(res.status=="no_students")
+            {
+                $("#noStudentsMsg").show();
+            }
+            else if(res.status=="no_subjects")
+            {
+                $("#noSubjectsMsg").show();
+            }
+            else
+            {
+                // Fallback: still show something rather than silently doing nothing
+                $("#noStudentsMsg").text(res.message || "No data found for this selection.").show();
+            }
+
+        }
+
+    });
+
+}
+
+function buildTable(students, subjects, marks, maxMarks,isGrade)
+{
+    marks = marks || [];
+    maxMarks = maxMarks || {};
+
+    // Build a quick lookup: "studentId_subjectId" -> mark
+    let markMap = {};
+    $.each(marks, function(i, m){
+        markMap[m.student_id + "_" + m.subject_id] = m.mark;
+    });
+
+    let head='';
+
+    head += "<th>SL</th>";
+    head += "<th>Admission No</th>";
+    head += "<th>Student Name</th>";
+
+    $.each(subjects,function(i,s){
+        let max = maxMarks.hasOwnProperty(s.smId) ? maxMarks[s.smId] : null;
+        head += "<th>" + s.smName;
+        if (max !== null) {
+            head += "<br><small style='font-weight:500;'>(Max: " + max + ")</small>";
+        }
+        head += "</th>";
+    });
+
+    $("#marksTableHead").html(head);
+
+    let body='';
+
+    $.each(students,function(i,st){
+
+        body+="<tr>";
+
+        body+="<td>"+(i+1)+"</td>";
+        body+="<td>"+st.smAdmissionNo+"</td>";
+        body+="<td class='student-name-cell'>"+st.smName+"</td>";
+
+        $.each(subjects, function(j, sub){
+
+            let key = st.smId + "_" + sub.smId;
+            let existingMark = markMap.hasOwnProperty(key) ? markMap[key] : "";
+            let max = maxMarks.hasOwnProperty(sub.smId) ? maxMarks[sub.smId] : "";
+
+            body += "<td>";
+          body += "<input type='text' class='mark-input' " +
+        "data-row='"+i+"' " +
+        "data-col='"+j+"' " +
+        "data-max='"+max+"' " +
+        "data-grade='"+isGrade+"' " +
+        "name='marks["+st.smId+"]["+sub.smId+"]' " +
+        "value='"+existingMark+"'>";
+            body += "<div class='mark-error' style='display:none;'></div>";
+            body += "</td>";
+
+        });
+
+        body+="</tr>";
+
+    });
+
+    $("#marksTableBody").html(body);
+
+    $("#marksTableWrapper").show();
+
+}
+</script>
+
+
+<script>
+    $(document).on("keydown", ".mark-input", function(e){
+
+    let row = parseInt($(this).data("row"));
+    let col = parseInt($(this).data("col"));
+
+    let next;
+
+    switch(e.which){
+
+        // Enter
+        case 13:
+            e.preventDefault();
+            next = $(".mark-input[data-row='"+(row+1)+"'][data-col='"+col+"']");
+            if(next.length) next.focus();
+            break;
+
+        // Right Arrow
+        case 39:
+            e.preventDefault();
+            next = $(".mark-input[data-row='"+row+"'][data-col='"+(col+1)+"']");
+            if(next.length) next.focus();
+            break;
+
+        // Left Arrow
+        case 37:
+            e.preventDefault();
+            next = $(".mark-input[data-row='"+row+"'][data-col='"+(col-1)+"']");
+            if(next.length) next.focus();
+            break;
+
+        // Down Arrow
+        case 40:
+            e.preventDefault();
+            next = $(".mark-input[data-row='"+(row+1)+"'][data-col='"+col+"']");
+            if(next.length) next.focus();
+            break;
+
+        // Up Arrow
+        case 38:
+            e.preventDefault();
+            next = $(".mark-input[data-row='"+(row-1)+"'][data-col='"+col+"']");
+            if(next.length) next.focus();
+            break;
+    }
+
+});
+</script>
+
+
+
+<script>
+    $(document).on("click", "#saveMarksBtn", function () {
+
+      // Validate all marks first
+    let hasError = false;
+    $(".mark-input").each(function () {
+        if (!validateMarkInput($(this))) {
+            hasError = true;
+        }
+    });
+
+    if (hasError) {
+        Swal.fire("Invalid Marks", "Please fix the highlighted marks before saving.", "warning");
+        return; // stop here
+    }
+
+    let class_id = $("#class").val();
+    let division_id = $("#division").val();
+    let exam_id = $("#exam").val();
+
+    let marks = [];
+
+    $(".mark-input").each(function(){
+
+        let name = $(this).attr("name");           // marks[studentId][subjectId]
+        let match = name.match(/marks\[(\d+)\]\[(\d+)\]/);
+
+        if(!match) return;
+
+        let student_id = match[1];
+        let subject_id = match[2];
+        let mark = $(this).val();
+
+        if(mark === "") return; // skip empty, remove this if you want to save blanks too
+
+        marks.push({
+            student_id: student_id,
+            subject_id: subject_id,
+            mark: mark
+        });
+    });
+
+    if(marks.length === 0){
+        return; // no marks entered, nothing to save - no popup
+    }
+
+    $.ajax({
+        url: "<?php echo site_url('saveMarksEntry'); ?>",
+        type: "POST",
+        dataType: "json",
+        data:{
+            class_id: class_id,
+            division_id: division_id,
+            exam_id: exam_id,
+            marks: marks
+        },
+        success:function(res){
+            if(res.status == "success"){
+                Swal.fire("Saved", res.message, "success");
+            } else {
+                Swal.fire("Error", res.message, "error");
+            }
+        },
+        error:function(){
+            Swal.fire("Error","Something went wrong while saving","error");
+        }
+    });
+
+});
+</script>
+
+
+
+<script>
+   $(document).on('input', '.mark-input', function () {
+
+    let isGrade = parseInt($(this).data('grade'));
+
+    // For grade fields, strip out anything that isn't A-Z right away
+    // (handles paste, autofill, etc. — keypress only blocks direct typing)
+    if (isGrade == 1) {
+        let cleaned = $(this).val().replace(/[^a-zA-Z]/g, '').toUpperCase();
+        if (cleaned !== $(this).val()) {
+            $(this).val(cleaned);
+        }
+    }
+
+    validateMarkInput($(this));
+});
+
+function validateMarkInput($input) {
+
+    let val = $input.val().trim().toUpperCase();
+    let max = parseFloat($input.data('max'));
+    let isGrade = parseInt($input.data('grade'));
+
+    let $error = $input.next('.mark-error');
+
+    $input.removeClass('input-error');
+    $error.hide().text('');
+
+    if (val == '') return true;
+
+    // Grade Entry — letters only, max is NEVER checked here
+    if (isGrade == 1) {
+        if (!/^[A-Z]$/.test(val)) {
+            $input.addClass('input-error');
+            $error.text('Enter A-Z').show();
+            return false;
+        }
+
+        $input.val(val);
+        return true; // <-- exits before any max logic, so max never applies
+    }
+
+    // Mark Entry — numbers only, max DOES apply
+    let num = parseFloat(val);
+
+    if (isNaN(num) || !/^\d+(\.\d+)?$/.test(val)) {
+        $input.addClass('input-error');
+        $error.text('Numbers only').show();
+        return false;
+    }
+
+    if (num < 0) {
+        $input.addClass('input-error');
+        $error.text('Invalid').show();
+        return false;
+    }
+
+    if (!isNaN(max) && num > max) {
+        $input.addClass('input-error');
+        $error.text('Max ' + max).show();
+        return false;
+    }
+
+    return true;
+}   
+</script>
+
+
+<script>
+    $(document).on("keypress", ".mark-input", function(e){
+
+    let isGrade = parseInt($(this).data("grade"));
+
+
+    if(isGrade == 1){
+        // Allow only letters A-Z
+        let ch = String.fromCharCode(e.which);
+        if(!/[a-zA-Z]/.test(ch)){
+            e.preventDefault();
+        }
+    }else{
+        // Allow only numbers and decimal
+        let ch = String.fromCharCode(e.which);
+        if(!/[0-9.]/.test(ch)){
+            e.preventDefault();
+        }
+    }
+});
+</script>
