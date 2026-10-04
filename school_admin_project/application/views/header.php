@@ -377,7 +377,7 @@ $navHtml = renderSidebarNav($menuSections, $activePage);
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
             </button>
             <div class="profile-dropdown" id="profile-dropdown">
-              <a href="<?php echo base_url('profile'); ?>">My Profile</a>
+              <a href="<?php echo base_url('employee_list'); ?>">My Profile</a>
               <a href="<?php echo base_url('change_password'); ?>">Change Password</a>
               <hr>
               <a href="<?php echo base_url('logout'); ?>">Logout</a>
