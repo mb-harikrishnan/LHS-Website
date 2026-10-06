@@ -11,18 +11,36 @@ $route['login_submit'] = 'login/login_submit';
 $route['dashboard'] = 'DashboardController/dashboard';
 
 $route['general_information'] = 'MandatoryController/general_information';
+$route['delete_document'] = 'MandatoryController/delete_document';
+$route['upload_document'] = 'MandatoryController/upload_document';
+
+
 $route['Result_and_Staff'] = 'MandatoryController/Result_and_Staff';
+$route['delete_Result_and_Staff'] = 'MandatoryController/delete_Result_and_Staff';
+$route['upload_Result_and_Staff'] = 'MandatoryController/upload_Result_and_Staff';
+
+
 $route['infrastructure'] = 'MandatoryController/infrastructure';
+$route['delete_infrastructure'] = 'MandatoryController/delete_infrastructure';
+$route['upload_infrastructure'] = 'MandatoryController/upload_infrastructure';
 
-
+	
 
 $route['school_news'] = 'NewsController/school_news';
+$route['save_news'] = 'NewsController/school_news';
 
 
-$route['gallery'] = 'GalleryController/gallery';
-
+$route['gallery']                = 'GalleryController/gallery';
+$route['gallery_album/(:num)']   = 'GalleryController/gallery_album/$1';
+$route['save_gallery_images']    = 'GalleryController/save_gallery_images';
+$route['delete_gallery_image']   = 'GalleryController/delete_gallery_image';
 
 $route['co_curricular_list'] = 'CurricularController/co_curricular_list';
+$route['save_co_curricular'] = 'CurricularController/save_co_curricular';
+$route['delete_co_curricular'] = 'CurricularController/delete_co_curricular';
+
+
+
 $route['activities_list'] = 'CurricularController/activities_list';
 
 

@@ -1,187 +1,97 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
+/*
+ * Public URL of the folder where images are saved.
+ * Controller saves to '../assets/images/gallery/' (one level above this admin folder),
+ * so we take the parent of base_url(). Change it if your setup is different.
+ */
+$img_base = dirname(rtrim(base_url(), '/')) . '/assets/images/gallery/';
 
-      <!-- Page Content -->
-      <main class="page">
-        <!-- Page Header -->
-        <div class="page-header">
-          <div>
-            <h1 class="page-title">Photo & Event Gallery</h1>
-            <p class="page-sub">Campus events, cultural fests, tournaments and celebratory albums</p>
-          </div>
-          <div class="page-actions">
-            <button class="btn btn-primary" type="button" id="openAlbumModal"   >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-              Create Album
-            </button>
-          </div>
-        </div>
+$gradients = array(
+    'linear-gradient(135deg,#3b82f6,#1d4ed8)',
+    'linear-gradient(135deg,#059669,#047857)',
+    'linear-gradient(135deg,#d97706,#b45309)',
+    'linear-gradient(135deg,#7c3aed,#5b21b6)',
+    'linear-gradient(135deg,#64748b,#334155)'
+);
+?>
 
-        <!-- Gallery Grid -->
-        <div class="gallery-grid"  id="galleryGrid">
+<!-- Page Content -->
+<main class="page">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Photo &amp; Event Gallery</h1>
+      <p class="page-sub">Campus events, cultural fests, tournaments and celebratory albums</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-primary" type="button" id="openAlbumModal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        Add Images
+      </button>
+    </div>
+  </div>
+
+  <!-- Gallery Grid (one card per category) -->
+  <div class="gallery-grid" id="galleryGrid">
+    <?php if (!empty($albums)): ?>
+      <?php foreach ($albums as $i => $a): ?>
+        <?php
+          $has_cover = !empty($a->cover);
+          $thumb_style = $has_cover
+              ? "background-image:url('" . html_escape($img_base . $a->cover) . "')"
+              : 'background:' . $gradients[$i % count($gradients)];
+          $total = (int) $a->total;
+        ?>
+        <a class="gallery-card-link" href="<?= site_url('GalleryController/gallery_album/' . (int) $a->type_id) ?>">
           <div class="gallery-card">
-            <div class="gallery-thumb" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);">
-              Independence Day
-              <span>4 Photos</span>
+            <div class="gallery-thumb <?= $has_cover ? 'has-img' : '' ?>" style="<?= $thumb_style ?>">
+              <?= $has_cover ? '' : html_escape($a->name) ?>
+              <span><?= $total ?> <?= $total === 1 ? 'Photo' : 'Photos' ?></span>
             </div>
             <div class="gallery-info">
-              <h3>Independence Day 2025</h3>
-              <p>Flag hoisting, cultural programme and marching contingent.</p>
+              <h3><?= html_escape($a->name) ?></h3>
+              <p>
+                <?= $a->last_date
+                    ? 'Last updated ' . date('d M Y', strtotime($a->last_date))
+                    : 'No photos added yet' ?>
+              </p>
               <div class="gallery-meta">
-                <span class="badge badge-purple">Events</span>
-                <span class="badge badge-ok">Active</span>
+                <span class="badge badge-purple">Album</span>
+                <span class="badge <?= $total > 0 ? 'badge-ok' : 'badge-muted' ?>">
+                  <?= $total > 0 ? 'Active' : 'Empty' ?>
+                </span>
               </div>
             </div>
           </div>
-
-          <div class="gallery-card">
-            <div class="gallery-thumb" style="background:linear-gradient(135deg,#059669,#047857);">
-              Cricket Tournament
-              <span>3 Photos</span>
-            </div>
-            <div class="gallery-info">
-              <h3>Inter-School Cricket 2025</h3>
-              <p>Senior boys district championship trophy ceremony.</p>
-              <div class="gallery-meta">
-                <span class="badge badge-green">Sports</span>
-                <span class="badge badge-ok">Active</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="gallery-card">
-            <div class="gallery-thumb" style="background:linear-gradient(135deg,#d97706,#b45309);">
-              Art & Craft
-              <span>2 Photos</span>
-            </div>
-            <div class="gallery-info">
-              <h3>Art & Craft Workshop</h3>
-              <p>Weekend painting and sculpting workshop with guest artists.</p>
-              <div class="gallery-meta">
-                <span class="badge badge-amber">Academics</span>
-                <span class="badge badge-ok">Active</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="gallery-card">
-            <div class="gallery-thumb" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);">
-              Science Fair
-              <span>6 Photos</span>
-            </div>
-            <div class="gallery-info">
-              <h3>Annual Science Expo</h3>
-              <p>Robotics, solar energy models and working chemistry exhibits.</p>
-              <div class="gallery-meta">
-                <span class="badge badge-info">Academics</span>
-                <span class="badge badge-ok">Active</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="gallery-card">
-            <div class="gallery-thumb" style="background:linear-gradient(135deg,#64748b,#334155);">
-              Farewell Batch
-              <span>2 Photos</span>
-            </div>
-            <div class="gallery-info">
-              <h3>Grade 12 Farewell Party</h3>
-              <p>Memories and batch photographs from the outgoing batch.</p>
-              <div class="gallery-meta">
-                <span class="badge badge-gray">Events</span>
-                <span class="badge badge-muted">Archived</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
+        </a>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <p class="empty-note">No albums yet. Add event categories first, then upload images.</p>
+    <?php endif; ?>
+  </div>
+</main>
 
 
-      <style>
-        .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-    }
-    .gallery-card {
-      background: #ffffff;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: var(--shadow-soft);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-    .gallery-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lift);
-    }
-    .gallery-thumb {
-      height: 160px;
-      background: linear-gradient(135deg, var(--brand-500), var(--brand-700));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #ffffff;
-      font-weight: 700;
-      font-size: 16px;
-      position: relative;
-    }
-    .gallery-thumb span {
-      position: absolute;
-      bottom: 10px;
-      right: 12px;
-      background: rgba(0,0,0,0.4);
-      padding: 2px 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      backdrop-filter: blur(4px);
-    }
-    .gallery-info {
-      padding: 16px;
-    }
-    .gallery-info h3 {
-      font-size: 15px;
-      margin: 0 0 4px 0;
-      color: var(--slate-900);
-    }
-    .gallery-info p {
-      font-size: 12.5px;
-      color: var(--slate-500);
-      margin: 0 0 12px 0;
-    }
-    .gallery-meta {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid var(--slate-100);
-      padding-top: 10px;
-    }
-      </style>
-
-
-
-<!-- Create Album Modal -->
+<!-- Add Images Modal -->
 <div class="modal-overlay" id="albumModal" aria-hidden="true">
   <div class="modal" style="max-width:640px" role="dialog" aria-modal="true" aria-labelledby="albumModalTitle">
     <div class="modal-head">
-      <h2 id="albumModalTitle">Create Album</h2>
+      <h2 id="albumModalTitle">Add Images</h2>
       <button class="modal-close" type="button" data-close aria-label="Close">&times;</button>
     </div>
 
     <form id="albumForm" novalidate>
       <div class="modal-body">
-        <label class="field-label" for="aTitle">Album Title <span class="req">*</span></label>
-        <input id="aTitle" class="field-input" type="text" maxlength="80" placeholder="e.g. Independence Day 2026">
-
         <label class="field-label" for="aCategory">Category <span class="req">*</span></label>
         <select id="aCategory" class="field-input">
           <option value="">Select category</option>
-          <option value="events">Events</option>
-          <option value="sports">Sports</option>
-          <option value="academics">Academics</option>
+          <?php foreach ($types as $t): ?>
+            <option value="<?= (int) $t->slno ?>"><?= html_escape($t->name) ?></option>
+          <?php endforeach; ?>
         </select>
-
-        <label class="field-label" for="aDesc">Description</label>
-        <input id="aDesc" class="field-input" type="text" maxlength="140" placeholder="Short line about this album">
 
         <label class="field-label" for="aFiles">Images <span class="req">*</span></label>
         <label class="dropzone" id="aDrop" for="aFiles">
@@ -202,7 +112,7 @@
 
       <div class="modal-foot">
         <button type="button" class="btn" data-close>Cancel</button>
-        <button type="submit" class="btn btn-primary">Create Album</button>
+        <button type="submit" class="btn btn-primary" id="aSubmit">Upload</button>
       </div>
     </form>
   </div>
@@ -210,6 +120,23 @@
 
 
 <style>
+/* ---------- gallery grid ---------- */
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.gallery-card-link{text-decoration:none;color:inherit;display:block}
+.gallery-card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-soft);transition:transform .15s ease,box-shadow .15s ease}
+.gallery-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift)}
+.gallery-thumb{height:160px;background:linear-gradient(135deg,var(--brand-500),var(--brand-700));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px;position:relative;text-align:center;padding:0 12px}
+.gallery-thumb span{position:absolute;bottom:10px;right:12px;background:rgba(0,0,0,.4);padding:2px 8px;border-radius:6px;font-size:11px;backdrop-filter:blur(4px)}
+.gallery-thumb.has-img{background-size:cover;background-position:center}
+.gallery-thumb.has-img::before{content:"";position:absolute;inset:0;background:linear-gradient(transparent 50%,rgba(0,0,0,.45))}
+.gallery-thumb.has-img span{z-index:1}
+.gallery-info{padding:16px}
+.gallery-info h3{font-size:15px;margin:0 0 4px;color:var(--slate-900)}
+.gallery-info p{font-size:12.5px;color:var(--slate-500);margin:0 0 12px}
+.gallery-meta{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--slate-100);padding-top:10px}
+.empty-note{grid-column:1/-1;text-align:center;color:#64748b;padding:40px 0}
+
+/* ---------- modal ---------- */
 .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:1000}
 .modal-overlay.open{display:flex}
 .modal{background:#fff;border-radius:12px;width:100%;max-width:480px;max-height:92vh;overflow:auto;box-shadow:0 20px 50px rgba(0,0,0,.25)}
@@ -225,6 +152,7 @@
 .dropzone{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:22px 12px;border:2px dashed #cbd5e1;border-radius:10px;cursor:pointer;color:#64748b;transition:.15s}
 .dropzone:hover,.dropzone.drag{border-color:#2563eb;background:#eff6ff}
 .field-error{color:#dc2626;font-size:13px;margin:12px 0 0}
+.field-error.ok{color:#059669}
 
 /* previews */
 .prev-head{display:flex;justify-content:space-between;align-items:center;margin:14px 0 8px;font-size:13px;font-weight:600}
@@ -236,45 +164,36 @@
 .prev-x{position:absolute;top:5px;right:5px;width:22px;height:22px;border:0;border-radius:50%;background:rgba(15,23,42,.75);color:#fff;font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .prev-x:hover{background:#dc2626}
 .prev-name{position:absolute;left:0;right:0;bottom:0;padding:3px 6px;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.prev-cover{position:absolute;top:5px;left:5px;background:#2563eb;color:#fff;font-size:10px;font-weight:600;padding:1px 6px;border-radius:5px}
-
-/* album card with real image */
-.gallery-thumb.has-img{background-size:cover;background-position:center}
-.gallery-thumb.has-img::before{content:"";position:absolute;inset:0;background:linear-gradient(transparent 50%,rgba(0,0,0,.45))}
-.gallery-thumb.has-img span{z-index:1}
 </style>
 
 
 <script>
 (function () {
   const $ = id => document.getElementById(id);
-  const modal = $('albumModal'), form = $('albumForm'), grid = $('galleryGrid');
+  const modal = $('albumModal'), form = $('albumForm');
   const input = $('aFiles'), drop = $('aDrop'), preview = $('aPreview');
   const countRow = $('aCountRow'), countEl = $('aCount'), errorEl = $('aError');
+  const submitBtn = $('aSubmit');
 
   const MAX_SIZE = 5 * 1024 * 1024, MAX_FILES = 30;
   const OK_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-  const CATS = {
-    events:    { label: 'Events',    badge: 'badge-purple' },
-    sports:    { label: 'Sports',    badge: 'badge-green'  },
-    academics: { label: 'Academics', badge: 'badge-amber'  }
-  };
-  const GRADIENTS = [
-    'linear-gradient(135deg,#3b82f6,#1d4ed8)', 'linear-gradient(135deg,#059669,#047857)',
-    'linear-gradient(135deg,#d97706,#b45309)', 'linear-gradient(135deg,#7c3aed,#5b21b6)'
-  ];
+
+  // CSRF (CodeIgniter) - updated after every AJAX response
+  let csrfName = '<?= $this->security->get_csrf_token_name() ?>';
+  let csrfHash = '<?= $this->security->get_csrf_hash() ?>';
+  const UPLOAD_URL = '<?= site_url('GalleryController/save_gallery_images') ?>';
 
   let items = [];   // [{ id, file, url }]
   let uid = 0;
 
   const esc = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const showError = t => { errorEl.textContent = t; errorEl.hidden = false; };
+  const showError = t => { errorEl.classList.remove('ok'); errorEl.textContent = t; errorEl.hidden = false; };
+  const showOk    = t => { errorEl.classList.add('ok');    errorEl.textContent = t; errorEl.hidden = false; };
 
   function render() {
     preview.innerHTML = items.map((it, i) => `
       <div class="prev-item">
         <img src="${it.url}" alt="">
-        ${i === 0 ? '<span class="prev-cover">Cover</span>' : ''}
         <button type="button" class="prev-x" data-remove="${it.id}" title="Remove" aria-label="Remove image">&times;</button>
         <div class="prev-name">${esc(it.file.name)}</div>
       </div>`).join('');
@@ -286,38 +205,38 @@
     errorEl.hidden = true;
     const problems = [];
     for (const f of fileList) {
-      if (items.length >= MAX_FILES) { problems.push('Maximum ' + MAX_FILES + ' images per album.'); break; }
+      if (items.length >= MAX_FILES) { problems.push('Maximum ' + MAX_FILES + ' images at a time.'); break; }
       if (!OK_TYPES.includes(f.type)) { problems.push(f.name + ': only JPG, PNG or WEBP images are allowed.'); continue; }
       if (f.size > MAX_SIZE) { problems.push(f.name + ': larger than 5 MB.'); continue; }
-      if (items.some(x => x.file.name === f.name && x.file.size === f.size && x.file.lastModified === f.lastModified)) continue; // duplicate
+      if (items.some(x => x.file.name === f.name && x.file.size === f.size && x.file.lastModified === f.lastModified)) continue;
       items.push({ id: ++uid, file: f, url: URL.createObjectURL(f) });
     }
     render();
     if (problems.length) showError(problems.slice(0, 3).join(' ') + (problems.length > 3 ? ' (+' + (problems.length - 3) + ' more)' : ''));
   }
 
-  function clearItems(keepUrl) {
-    items.forEach(it => { if (it.url !== keepUrl) URL.revokeObjectURL(it.url); });
+  function clearItems() {
+    items.forEach(it => URL.revokeObjectURL(it.url));
     items = []; render();
   }
 
-  function open() { modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); $('aTitle').focus(); }
-  function close(keepUrl) {
+  function open() { modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); $('aCategory').focus(); }
+  function close() {
     modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true');
-    form.reset(); errorEl.hidden = true; clearItems(keepUrl);
+    form.reset(); errorEl.hidden = true; clearItems();
   }
 
   $('openAlbumModal').addEventListener('click', open);
   modal.addEventListener('click', e => { if (e.target === modal || e.target.closest('[data-close]')) close(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
 
-  // choose / drag-drop (multiple)
+  // choose / drag-drop
   input.addEventListener('change', () => { addFiles(input.files); input.value = ''; });
   ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('drag'); }));
   ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('drag'); }));
   drop.addEventListener('drop', e => addFiles(e.dataTransfer.files));
 
-  // X remove / remove all
+  // remove one / remove all
   preview.addEventListener('click', e => {
     const btn = e.target.closest('[data-remove]'); if (!btn) return;
     const id = Number(btn.dataset.remove);
@@ -329,43 +248,44 @@
   });
   $('aClear').addEventListener('click', () => { clearItems(); errorEl.hidden = true; });
 
-  // save
-  form.addEventListener('submit', e => {
+  // upload
+  form.addEventListener('submit', async e => {
     e.preventDefault();
-    const title = $('aTitle').value.trim(), cat = $('aCategory').value, desc = $('aDesc').value.trim();
-    if (!title) return showError('Please enter the album title.');
-    if (!cat) return showError('Please select a category.');
+    const type = $('aCategory').value;
+    if (!type) return showError('Please select a category.');
     if (!items.length) return showError('Please add at least one image.');
 
-    // TODO: send to your backend
-    // const data = new FormData();
-    // data.append('title', title); data.append('category', cat); data.append('description', desc);
-    // items.forEach(it => data.append('images[]', it.file));
-    // fetch('/api/albums', { method: 'POST', body: data })
+    const data = new FormData();
+    data.append('type', type);
+    data.append(csrfName, csrfHash);
+    items.forEach(it => data.append('images[]', it.file));
 
-    const coverUrl = items[0].url;           // keep this URL alive for the card
-    addCard({ title, cat, desc, coverUrl, count: items.length });
-    close(coverUrl);
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Uploading...';
+    errorEl.hidden = true;
+
+    try {
+      const res  = await fetch(UPLOAD_URL, {
+        method: 'POST',
+        body: data,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      });
+      const json = await res.json();
+      if (json.csrf) csrfHash = json.csrf;      // refresh token
+
+      if (json.status) {
+        showOk(json.msg);
+        setTimeout(() => window.location.reload(), 900);
+      } else {
+        showError(json.msg || 'Upload failed.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Upload';
+      }
+    } catch (err) {
+      showError('Something went wrong. Please try again.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Upload';
+    }
   });
-
-  function addCard({ title, cat, desc, coverUrl, count }) {
-    const c = CATS[cat];
-    const card = document.createElement('div');
-    card.className = 'gallery-card';
-    card.innerHTML = `
-      <div class="gallery-thumb has-img" style="background-image:url('${coverUrl}')">
-        <span>${count} ${count === 1 ? 'Photo' : 'Photos'}</span>
-      </div>
-      <div class="gallery-info">
-        <h3>${esc(title)}</h3>
-        <p>${esc(desc || 'New album')}</p>
-        <div class="gallery-meta">
-          <span class="badge ${c.badge}">${c.label}</span>
-          <span class="badge badge-ok">Active</span>
-        </div>
-      </div>`;
-    grid.prepend(card);   // newest first
-  }
 })();
 </script>
-

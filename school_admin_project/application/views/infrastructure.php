@@ -1,203 +1,121 @@
+<?php
+// Existing types = types that already have an active video (from controller)
+$existing_types = isset($existing_types) ? $existing_types : array();
+$all_taken = true;
+foreach ($doc_types as $k => $label) {
+    if (!in_array($k, $existing_types)) { $all_taken = false; break; }
+}
+$csrf_name = $this->security->get_csrf_token_name();
+$csrf_hash = $this->security->get_csrf_hash();
+?>
 
-      <!-- Page Content -->
-      <main class="page">
-        <!-- Page Header -->
-        <div class="page-header">
-          <div>
-            <h1 class="page-title">Infrastructure Video List</h1>
-            <p class="page-sub">Mandatory disclosures, CBSE affiliation documents and official declarations</p>
-          </div>
-          <div class="page-actions">
-            <button class="btn btn-primary" type="button" id="openVideoModal">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-              Upload Document
-            </button>
-          </div>
-        </div>
+<main class="page">
 
-        <!-- Table Card -->
-        <div class="card">
-          <div class="table-toolbar">
-            <div class="search-box">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-              <input type="text" placeholder="Search by document title or category…" aria-label="Search documents">
-            </div>
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Infrastructure Video List</h1>
+      <p class="page-sub">Upload and manage infrastructure videos</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-primary" type="button" id="openVideoModal" <?= $all_taken ? 'data-all-taken="1"' : '' ?>>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        Upload Video
+      </button>
+    </div>
+  </div>
 
-            <select class="filter-select" aria-label="Filter by category">
-              <option value="">All Categories</option>
-              <option value="affiliation">Affiliation</option>
-        
-            </select>
-          </div>
+  <!-- Table Card -->
+  <div class="card">
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Video</th>
+            <th style="width:120px;text-align:right;">Delete</th>
+          </tr>
+        </thead>
+        <tbody id="facilityBody">
+          <?php if (!empty($documents)): foreach ($documents as $d):
+            $label = isset($doc_types[$d->c_type]) ? $doc_types[$d->c_type] : $d->c_type;
+            $url   = base_url('assets/uploads/videos/' . $d->c_videos); // adjust to your public path
+          ?>
+            <tr>
+              <td><span class="badge badge-purple"><?= html_escape($label) ?></span></td>
 
-          <div class="table-wrap">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Document Title & Description</th>
-                  <th>Category</th>
-                  <th>File Name</th>
-                  <th>File Size</th>
-                  <th>Status</th>
-                  <th style="width:120px;text-align:right;">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="facilityBody">
-                <tr>
-                  <td>
-                    <strong>CBSE Affiliation Certificate</strong>
-                    <div style="font-size:12px;color:var(--slate-500);margin-top:2px;">Latest CBSE extension affiliation letter for academic year 2025–26.</div>
-                  </td>
-                  <td><span class="badge badge-info">Affiliation</span></td>
-                  <td><code style="font-size:12px;background:var(--slate-100);padding:2px 6px;border-radius:4px;">affiliation-2025.pdf</code></td>
-                  <td>1.8 MB</td>
-                  <td><span class="badge badge-ok">Active</span></td>
-                  <td>
-                    <div class="row-actions" style="justify-content:flex-end;">
-                      <button class="icon-btn" title="Download">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
-                      </button>
-                      <button class="icon-btn" title="Edit">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3Z"/></svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+              <td>
+                <div class="v-thumb" data-view
+                     data-url="<?= html_escape($url) ?>"
+                     data-title="<?= html_escape($label) ?>">
+                  <video src="<?= html_escape($url) ?>#t=0.5" preload="metadata" muted></video>
+                </div>
+              </td>
 
-                <tr>
-                  <td>
-                    <strong>Building Safety Certificate</strong>
-                    <div style="font-size:12px;color:var(--slate-500);margin-top:2px;">Structural safety certificate issued by municipal civil engineering authority.</div>
-                  </td>
-                  <td><span class="badge badge-purple">Infrastructure</span></td>
-                  <td><code style="font-size:12px;background:var(--slate-100);padding:2px 6px;border-radius:4px;">building-safety.pdf</code></td>
-                  <td>2.4 MB</td>
-                  <td><span class="badge badge-ok">Active</span></td>
-                  <td>
-                    <div class="row-actions" style="justify-content:flex-end;">
-                      <button class="icon-btn" title="Download">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
-                      </button>
-                      <button class="icon-btn" title="Edit">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3Z"/></svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+              <td>
+                <div class="row-actions" style="justify-content:flex-end;">
+                  <button type="button" class="icon-btn btn-delete" title="Delete"
+                          data-id="<?= (int)$d->n_slno ?>"
+                          data-title="<?= html_escape($label) ?>">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          <?php endforeach; else: ?>
+            <tr><td colspan="3" style="text-align:center;padding:24px;color:#64748b;">No videos uploaded yet.</td></tr>
+          <?php endif; ?>
+        </tbody>
+      </table>
+    </div>
 
-                <tr>
-                  <td>
-                    <strong>Teaching Staff Declaration</strong>
-                    <div style="font-size:12px;color:var(--slate-500);margin-top:2px;">Declaration of teaching staff credentials as per Section 23 of RTE Act.</div>
-                  </td>
-                  <td><span class="badge badge-amber">Staff</span></td>
-                  <td><code style="font-size:12px;background:var(--slate-100);padding:2px 6px;border-radius:4px;">staff-declaration.pdf</code></td>
-                  <td>640 KB</td>
-                  <td><span class="badge badge-muted">Inactive</span></td>
-                  <td>
-                    <div class="row-actions" style="justify-content:flex-end;">
-                      <button class="icon-btn" title="Download">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
-                      </button>
-                      <button class="icon-btn" title="Edit">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3Z"/></svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+    <div class="table-foot">
+      <span class="muted">Showing <?= count($documents) ?> video(s)</span>
+    </div>
+  </div>
+</main>
 
-                <tr>
-                  <td>
-                    <strong>Annual Academic Report 2024–25</strong>
-                    <div style="font-size:12px;color:var(--slate-500);margin-top:2px;">Board exam results summary and institutional performance highlights.</div>
-                  </td>
-                  <td><span class="badge badge-green">Academics</span></td>
-                  <td><code style="font-size:12px;background:var(--slate-100);padding:2px 6px;border-radius:4px;">annual-report-24-25.pdf</code></td>
-                  <td>5.1 MB</td>
-                  <td><span class="badge badge-ok">Active</span></td>
-                  <td>
-                    <div class="row-actions" style="justify-content:flex-end;">
-                      <button class="icon-btn" title="Download">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
-                      </button>
-                      <button class="icon-btn" title="Edit">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3Z"/></svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+<!-- Hidden delete form (submitted by SweetAlert confirm) -->
+<form id="deleteForm" method="post" action="<?= site_url('delete_infrastructure') ?>" style="display:none">
+  <input type="hidden" name="<?= $csrf_name ?>" value="<?= $csrf_hash ?>">
+  <input type="hidden" name="id" id="deleteId" value="">
+</form>
 
-                <tr>
-                  <td>
-                    <strong>Fee Structure 2025–26</strong>
-                    <div style="font-size:12px;color:var(--slate-500);margin-top:2px;">Approved fee schedule and payment terms for all classes.</div>
-                  </td>
-                  <td><span class="badge badge-info">Fees</span></td>
-                  <td><code style="font-size:12px;background:var(--slate-100);padding:2px 6px;border-radius:4px;">fee-structure-25-26.pdf</code></td>
-                  <td>820 KB</td>
-                  <td><span class="badge badge-ok">Active</span></td>
-                  <td>
-                    <div class="row-actions" style="justify-content:flex-end;">
-                      <button class="icon-btn" title="Download">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
-                      </button>
-                      <button class="icon-btn" title="Edit">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3Z"/></svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="table-foot">
-            <span class="muted">Showing 5 official documents</span>
-            <div class="pagination">
-              <button class="pg-btn" disabled>Prev</button>
-              <button class="pg-btn active">1</button>
-              <button class="pg-btn" disabled>Next</button>
-            </div>
-          </div>
-        </div>
-      </main>
-
-
-
-
-    <!-- ///////////////////////////////   MODAL  //////////////////////// -->
-<!-- Upload Video Modal -->
+<!-- ============ Upload Modal ============ -->
 <div class="modal-overlay" id="videoModal" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true">
     <div class="modal-head">
-      <h2>Add Facility Video</h2>
+      <h2>Add Infrastructure Video</h2>
       <button class="modal-close" type="button" data-close aria-label="Close">&times;</button>
     </div>
-    <form id="videoForm" novalidate>
-      <div class="modal-body">
-        <label class="field-label" for="vTitle">Facility Name <span class="req">*</span></label>
-        <input id="vTitle" class="field-input" type="text" placeholder="e.g. Science Laboratories">
 
-        <label class="field-label" for="vCategory">Category <span class="req">*</span></label>
-        <select id="vCategory" class="field-input">
-          <option value="">Select category</option>
-          <option>Academics</option>
-          <option>Sports</option>
-          <option>Infrastructure</option>
-          <option>Activities</option>
+    <form id="videoForm" method="post" action="<?= site_url('upload_infrastructure') ?>" enctype="multipart/form-data" novalidate>
+      <input type="hidden" name="<?= $csrf_name ?>" value="<?= $csrf_hash ?>">
+
+      <div class="modal-body">
+        <label class="field-label" for="vCategory">Type <span class="req">*</span></label>
+        <select id="vCategory" name="document_type" class="field-input">
+          <option value="">Select type</option>
+          <?php foreach ($doc_types as $key => $label):
+            $taken = in_array($key, $existing_types); ?>
+            <option value="<?= html_escape($key) ?>" <?= $taken ? 'disabled' : '' ?>>
+              <?= html_escape($label) ?><?= $taken ? ' (already uploaded)' : '' ?>
+            </option>
+          <?php endforeach; ?>
         </select>
 
         <label class="field-label" for="vFile">Video <span class="req">*</span></label>
         <label class="dropzone" id="vDrop" for="vFile">
           <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="14" height="14" rx="2"/><path d="m22 8-6 4 6 4V8Z"/></svg>
           <span id="vDropText"><strong>Click to choose</strong> or drag a video here</span>
-          <small>MP4, WEBM, MOV, MKV, AVI, etc. (max 200 MB). Images, PDF and DOCX are not allowed.</small>
+          <small>MP4, AVI, MOV, WMV, FLV, MKV (max 200 MB).</small>
         </label>
-        <input type="file" id="vFile" accept="video/*" hidden>
+        <input type="file" id="vFile" name="document_file" accept="video/*" hidden>
 
         <video id="vPreview" controls style="display:none;width:100%;margin-top:12px;border-radius:8px;background:#000"></video>
         <p class="field-error" id="vError" hidden></p>
       </div>
+
       <div class="modal-foot">
         <button type="button" class="btn" data-close>Cancel</button>
         <button type="submit" class="btn btn-primary">Save Video</button>
@@ -206,7 +124,7 @@
   </div>
 </div>
 
-<!-- View (Player) Modal -->
+<!-- ============ Player Modal ============ -->
 <div class="modal-overlay" id="viewModal" aria-hidden="true">
   <div class="modal" style="max-width:820px" role="dialog" aria-modal="true">
     <div class="modal-head">
@@ -215,10 +133,10 @@
     </div>
     <div class="modal-body">
       <video id="viewPlayer" controls style="width:100%;max-height:70vh;border-radius:8px;background:#000"></video>
-      <p id="viewMeta" style="margin:10px 0 0;color:#64748b;font-size:13px"></p>
     </div>
   </div>
 </div>
+
 <style>
 .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:1000}
 .modal-overlay.open{display:flex}
@@ -236,12 +154,13 @@
 .dropzone.has-file{border-style:solid;border-color:#16a34a;background:#f0fdf4;color:#166534}
 .field-error{color:#dc2626;font-size:13px;margin:12px 0 0}
 
-/* list thumbnail */
-.fac-cell{display:flex;align-items:center;gap:14px}
-.v-thumb{position:relative;width:120px;height:68px;border-radius:8px;overflow:hidden;background:#000;flex:none;cursor:pointer}
+.v-thumb{position:relative;width:120px;height:68px;border-radius:8px;overflow:hidden;background:#000;cursor:pointer}
 .v-thumb video{width:100%;height:100%;object-fit:cover;pointer-events:none}
 .v-thumb::after{content:"▶";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;background:rgba(0,0,0,.25)}
 </style>
+
+<!-- SweetAlert2 (remove this line if your header/footer already loads it) -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 (function () {
@@ -249,14 +168,16 @@
   const videoModal = $('videoModal'), viewModal = $('viewModal');
   const form = $('videoForm'), fileInput = $('vFile'), drop = $('vDrop');
   const dropText = $('vDropText'), preview = $('vPreview'), errorEl = $('vError');
-  const body = $('facilityBody'), player = $('viewPlayer');
+  const player = $('viewPlayer'), typeSelect = $('vCategory');
 
   const MAX = 200 * 1024 * 1024;
-  const VIDEO_EXT = /\.(mp4|webm|ogv|ogg|mov|m4v|mkv|avi|wmv|flv|3gp|mpeg|mpg)$/i;
-  let order = 0;
+  const VIDEO_EXT = /\.(mp4|avi|mov|wmv|flv|mkv)$/i;
 
-  const openM = m => { m.classList.add('open'); m.setAttribute('aria-hidden', 'false'); };
-  const closeM = m => { m.classList.remove('open'); m.setAttribute('aria-hidden', 'true'); };
+  // Types that already have a video (from PHP)
+  const EXISTING = <?= json_encode(array_values($existing_types)) ?>;
+
+  const openM  = m => { m.classList.add('open');    m.setAttribute('aria-hidden', 'false'); };
+  const closeM = m => { m.classList.remove('open'); m.setAttribute('aria-hidden', 'true');  };
   const showError = t => { errorEl.textContent = t; errorEl.hidden = false; };
 
   function resetForm() {
@@ -265,10 +186,10 @@
     dropText.innerHTML = '<strong>Click to choose</strong> or drag a video here';
     errorEl.hidden = true;
     if (preview.src) URL.revokeObjectURL(preview.src);
-    preview.removeAttribute('src'); preview.style.display = 'none';
+    preview.removeAttribute('src');
+    preview.style.display = 'none';
   }
 
-  // Only real video files pass: type must be video/* (or a known video extension)
   function isVideo(f) {
     return f.type.startsWith('video/') || (!f.type && VIDEO_EXT.test(f.name));
   }
@@ -279,7 +200,7 @@
       fileInput.value = '';
       drop.classList.remove('has-file');
       preview.style.display = 'none';
-      return showError('Only video files are allowed. Images, PDF and DOCX are rejected.');
+      return showError('Only video files are allowed.');
     }
     if (file.size > MAX) {
       fileInput.value = '';
@@ -291,21 +212,35 @@
     preview.style.display = 'block';
   }
 
-  // open / close
-  $('openVideoModal').addEventListener('click', () => openM(videoModal));
-  document.querySelectorAll('.modal-overlay').forEach(m => {
-    m.addEventListener('click', e => { if (e.target === m || e.target.closest('[data-close]')) closeAny(m); });
+  // ---------- Open upload modal (blocked if every type already exists) ----------
+  $('openVideoModal').addEventListener('click', function () {
+    if (this.dataset.allTaken) {
+      Swal.fire({
+        icon: 'info',
+        title: 'Already uploaded',
+        text: 'A video already exists for every type. Delete one first to upload a new video.'
+      });
+      return;
+    }
+    openM(videoModal);
   });
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(closeAny);
-  });
+
+  // ---------- Close modals ----------
   function closeAny(m) {
     closeM(m);
     if (m === videoModal) resetForm();
     if (m === viewModal) { player.pause(); player.removeAttribute('src'); player.load(); }
   }
+  document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', e => {
+      if (e.target === m || e.target.closest('[data-close]')) closeAny(m);
+    });
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(closeAny);
+  });
 
-  // file input + drag/drop
+  // ---------- File input + drag/drop ----------
   fileInput.addEventListener('change', () => fileInput.files[0] && setFile(fileInput.files[0]));
   ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('drag'); }));
   ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('drag'); }));
@@ -314,67 +249,66 @@
     if (f) { fileInput.files = e.dataTransfer.files; setFile(f); }
   });
 
-  const esc = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-
-  // save -> add row to list
+  // ---------- Validate, then submit normally to PHP ----------
   form.addEventListener('submit', e => {
-    e.preventDefault();
-    const title = $('vTitle').value.trim(), cat = $('vCategory').value, file = fileInput.files[0];
-    if (!title) return showError('Please enter the facility name.');
-    if (!cat) return showError('Please select a category.');
-    if (!file) return showError('Please choose a video file.');
-    if (!isVideo(file)) return showError('Only video files are allowed.');
+    const type = typeSelect.value, file = fileInput.files[0];
 
-    // TODO: upload to your backend:
-    // const data = new FormData(); data.append('title', title); data.append('category', cat); data.append('video', file);
-    // fetch('/api/facilities', { method: 'POST', body: data })
-
-    const url = URL.createObjectURL(file);   // temporary; use the server URL after real upload
-    addRow({ title, cat, url, size: (file.size / 1048576).toFixed(1) + ' MB' });
-    closeAny(videoModal);
-  });
-
-  function addRow({ title, cat, url, size }) {
-    order++;
-    const tr = document.createElement('tr');
-    tr.dataset.url = url; tr.dataset.title = title; tr.dataset.meta = cat + ' · ' + size;
-    tr.innerHTML = `
-      <td>
-        <div class="fac-cell">
-          <div class="v-thumb" data-view><video src="${url}#t=0.5" preload="metadata" muted></video></div>
-          <strong>${esc(title)}</strong>
-        </div>
-      </td>
-      <td>${esc(cat)}</td>
-      <td>${order}</td>
-      <td><span class="badge badge-ok">Active</span></td>
-      <td>
-        <div class="row-actions">
-          <button class="icon-btn" title="View" data-view>
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
-          <button class="icon-btn" title="Delete" data-delete>
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
-          </button>
-        </div>
-      </td>`;
-    body.appendChild(tr);
-  }
-
-  // view / delete (event delegation)
-  body.addEventListener('click', e => {
-    const tr = e.target.closest('tr'); if (!tr) return;
-    if (e.target.closest('[data-view]')) {
-      $('viewTitle').textContent = tr.dataset.title;
-      $('viewMeta').textContent = tr.dataset.meta;
-      player.src = tr.dataset.url;
-      openM(viewModal);
-      player.play().catch(() => {});
-    } else if (e.target.closest('[data-delete]')) {
-      if (confirm('Delete this video?')) tr.remove();
+    if (!type) { e.preventDefault(); return showError('Please select a type.'); }
+    if (EXISTING.indexOf(type) !== -1) {
+      e.preventDefault();
+      return showError('A video already exists for this type. Delete it first.');
     }
+    if (!file) { e.preventDefault(); return showError('Please choose a video file.'); }
+    if (!isVideo(file)) { e.preventDefault(); return showError('Only video files are allowed.'); }
+    if (file.size > MAX) { e.preventDefault(); return showError('Video must be 200 MB or smaller.'); }
+
+    // all good: let the form post. Show a loader while uploading.
+    Swal.fire({
+      title: 'Uploading...',
+      text: 'Please wait, do not close this page.',
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading()
+    });
   });
+
+  // ---------- Play video ----------
+  document.getElementById('facilityBody').addEventListener('click', e => {
+    const t = e.target.closest('[data-view]');
+    if (!t) return;
+    $('viewTitle').textContent = t.dataset.title;
+    player.src = t.dataset.url;
+    openM(viewModal);
+    player.play().catch(() => {});
+  });
+
+  // ---------- Delete with SweetAlert confirmation ----------
+  document.querySelectorAll('.btn-delete').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const id = this.dataset.id, title = this.dataset.title;
+      Swal.fire({
+        title: 'Delete this video?',
+        text: '"' + title + '" video will be removed. This cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Yes, delete it',
+        cancelButtonText: 'Cancel'
+      }).then(result => {
+        if (result.isConfirmed) {
+          $('deleteId').value = id;
+          $('deleteForm').submit();
+        }
+      });
+    });
+  });
+
+  // ---------- Flash messages from controller ----------
+  <?php if ($this->session->flashdata('success')): ?>
+  Swal.fire({ icon: 'success', title: 'Done', text: <?= json_encode($this->session->flashdata('success')) ?>, timer: 2500, showConfirmButton: false });
+  <?php endif; ?>
+  <?php if ($this->session->flashdata('error')): ?>
+  Swal.fire({ icon: 'error', title: 'Oops', html: <?= json_encode($this->session->flashdata('error')) ?> });
+  <?php endif; ?>
 })();
 </script>
-
-     
