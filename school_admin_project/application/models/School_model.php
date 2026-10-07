@@ -156,7 +156,88 @@ public function delete_activities($id)
 
 
 
-
+    private $table = 'all_activities';
+    private $pk    = 'n_slno';
+ 
+    /* single source of truth for the type list: slug => label */
+    public function get_types()
+    {
+        return array(
+            'Library'                      => 'Library',
+            'extra_curricular_activities'  => 'Extra Curricular Activities',
+            'sports'                       => 'Sports',
+            'volley_ball'                  => 'Volley Ball',
+            'basket_ball'                  => 'Basket Ball',
+            'foot_ball'                    => 'Foot Ball',
+            'cricket'                      => 'Cricket',
+            'kho_kho'                      => 'Kho-Kho',
+            'badminton'                    => 'Badminton',
+            'roll_ball'                    => 'Roll Ball',
+            'dance'                        => 'Dance',
+            'music'                        => 'Music',
+            'yoga'                         => 'Yoga',
+            'karate'                       => 'Karate',
+            'drawing'                      => 'Drawing',
+            'painting'                     => 'Painting',
+            'roller_skating'               => 'Roller Skating',
+            'transportation_facility'      => 'Transportation Facility',
+            'educational_tours_excursions' => 'Educational Tours / Excursions',
+            'computer_labs'                => 'Computer Labs',
+            'science_labs'                 => 'Science Labs',
+            'smart_class_facilities'       => 'Smart Class Facilities',
+            'stationary_to_students'       => 'Stationary to Students',
+            'low_achievers'                => 'Low Achievers',
+        );
+    }
+ 
+    /* all active rows, newest first */
+    public function get_all()
+    {
+        return $this->db
+            ->select($this->pk . ' AS n_slno, c_type, d_date, c_images AS c_images', FALSE)
+            ->from($this->table)
+            ->where('c_status', 'Y')
+            ->order_by('d_date', 'DESC')
+            ->order_by($this->pk, 'DESC')
+            ->get()->result();
+    }
+ 
+    /* one active row or NULL */
+    public function get($id)
+    {
+        return $this->db
+            ->select($this->pk . ' AS n_slno, c_type, d_date, c_images AS c_images', FALSE)
+            ->from($this->table)
+            ->where($this->pk, (int)$id)
+            ->where('c_status', 'Y')
+            ->get()->row();
+    }
+ 
+    /* does an active row with this type exist (ignoring $exclude_id)? */
+    public function type_exists_s($type, $exclude_id = 0)
+    {
+        $this->db->where('c_type', $type)->where('c_status', 'Y');
+        if ($exclude_id) {
+            $this->db->where($this->pk . ' !=', (int)$exclude_id);
+        }
+        return $this->db->count_all_results($this->table) > 0;
+    }
+ 
+    public function insert($data)
+    {
+        return $this->db->insert($this->table, $data);
+    }
+ 
+    public function update($id, $data)
+    {
+        return $this->db->where($this->pk, (int)$id)->update($this->table, $data);
+    }
+ 
+    /* soft delete: keeps the row and the image file */
+    public function soft_delete($id)
+    {
+        return $this->db->where($this->pk, (int)$id)->update($this->table, array('c_status' => 'N'));
+    }
 
 
 

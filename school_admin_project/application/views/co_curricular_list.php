@@ -19,12 +19,68 @@
 .field-error{color:#dc2626;font-size:13px;margin:12px 0 0}
 .field-error[hidden]{display:none}
 .field-note{font-size:12px;color:var(--slate-500);margin:-10px 0 16px}
+
+/* fixed-size thumbnails */
+.thumb{
+  width:80px;
+  height:60px;
+  object-fit:cover;
+  border-radius:6px;
+  display:block;
+  cursor:zoom-in;
+  border:1px solid var(--slate-200);
+  transition:transform .15s, box-shadow .15s;
+}
+.thumb:hover{transform:scale(1.05);box-shadow:0 4px 12px rgba(0,0,0,.2)}
+
+/* image viewer modal */
+.img-viewer{position:fixed;inset:0;background:rgba(15,23,42,.85);display:none;align-items:center;justify-content:center;padding:20px;z-index:2000}
+.img-viewer.open{display:flex}
+.img-viewer-box{position:relative;max-width:90vw;max-height:90vh;text-align:center}
+.img-viewer-box img{max-width:100%;max-height:80vh;border-radius:10px;box-shadow:0 20px 50px rgba(0,0,0,.5);background:#fff}
+.img-viewer-caption{color:#fff;margin-top:10px;font-size:14px}
+.img-viewer-close{position:absolute;top:-14px;right:-14px;width:34px;height:34px;border-radius:50%;border:0;background:#fff;color:#111;font-size:22px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)}
 </style>
 
 <?php
-$used = isset($used_types) ? $used_types : array();
-$types_js = array();
-foreach ($all_types as $t) { $types_js[] = $t->c_type; }
+/* ---------- fixed type list: slug (saved in c_type) => label (shown) ---------- */
+$type_list = array(
+  'Library'                      => 'Library',
+  'extra_curricular_activities'  => 'Extra Curricular Activities',
+  'sports'                       => 'Sports',
+  'volley_ball'                  => 'Volley Ball',
+  'basket_ball'                  => 'Basket Ball',
+  'foot_ball'                    => 'Foot Ball',
+  'cricket'                      => 'Cricket',
+  'kho_kho'                      => 'Kho-Kho',
+  'badminton'                    => 'Badminton',
+  'roll_ball'                    => 'Roll Ball',
+  'dance'                        => 'Dance',
+  'music'                        => 'Music',
+  'yoga'                         => 'Yoga',
+  'karate'                       => 'Karate',
+  'drawing'                      => 'Drawing',
+  'painting'                     => 'Painting',
+  'roller_skating'               => 'Roller Skating',
+  'transportation_facility'      => 'Transportation Facility',
+  'educational_tours_excursions' => 'Educational Tours / Excursions',
+  'computer_labs'                => 'Computer Labs',
+  'science_labs'                 => 'Science Labs',
+  'smart_class_facilities'       => 'Smart Class Facilities',
+  'stationary_to_students'       => 'Stationary to Students',
+  'low_achievers'                => 'Low Achievers',
+);
+
+/* used types are taken straight from the rows, so the controller doesn't need to send them */
+$used = array();
+foreach ($rows as $r) { $used[] = $r->c_type; }
+$used = array_values(array_unique($used));
+
+/* true  = each type can be added only once
+   false = a type can be added many times */
+$one_per_type = true;
+
+$img_base = 'http://localhost:8000/assets/images/gallery/';
 ?>
 
 <main class="page">
@@ -47,8 +103,8 @@ foreach ($all_types as $t) { $types_js[] = $t->c_type; }
       </div>
       <select class="filter-select" id="typeFilter" aria-label="Filter by type">
         <option value="">All Types</option>
-        <?php foreach ($used as $u): ?>
-          <option value="<?= html_escape($u) ?>"><?= html_escape($u) ?></option>
+        <?php foreach ($type_list as $val => $label): ?>
+          <option value="<?= html_escape($val) ?>"><?= html_escape($label) ?></option>
         <?php endforeach; ?>
       </select>
     </div>
@@ -62,25 +118,32 @@ foreach ($all_types as $t) { $types_js[] = $t->c_type; }
           </tr>
         </thead>
         <tbody id="rows">
-          <?php $n = 1; foreach ($rows as $r): ?>
+          <?php $n = 1; foreach ($rows as $r):
+            $label = isset($type_list[$r->c_type]) ? $type_list[$r->c_type] : $r->c_type;
+            $img   = $img_base . $r->c_images;
+            $dmy   = date('d-m-Y', strtotime($r->d_date));
+            $ymd   = date('Y-m-d', strtotime($r->d_date));
+          ?>
           <tr data-type="<?= html_escape($r->c_type) ?>"
-              data-date="<?= date('d-m-Y', strtotime($r->d_date)) ?>">
+              data-label="<?= html_escape($label) ?>"
+              data-date="<?= $dmy ?>">
             <td class="num"><?= $n++ ?></td>
-            <td><?= date('d-m-Y', strtotime($r->d_date)) ?></td>
-            <td><span class="badge"><?= html_escape($r->c_type) ?></span></td>
+            <td><?= $dmy ?></td>
+            <td><span class="badge"><?= html_escape($label) ?></span></td>
             <td>
-              <img class="thumb" src="http://localhost:8000/assets/images/gallery/<?= $r->c_images ?>" alt="<?= html_escape($r->c_type) ?> photo"></td>
+              <img class="thumb" src="<?= html_escape($img) ?>" alt="<?= html_escape($label) ?> photo">
+            </td>
             <td>
               <div class="row-actions">
-                <button class="icon-btn" type="button" title="Edit" aria-label="Edit <?= html_escape($r->c_type) ?> entry"
+                <button class="icon-btn" type="button" title="Edit" aria-label="Edit <?= html_escape($label) ?> entry"
                         data-edit
                         data-id="<?= (int)$r->n_slno ?>"
                         data-type="<?= html_escape($r->c_type) ?>"
-                        data-date="<?= html_escape($r->d_date) ?>"
-                        data-img="<?= 'http://localhost:8000/assets/images/gallery/' . $r->c_images ?>">
+                        data-date="<?= $ymd ?>"
+                        data-img="<?= html_escape($img) ?>">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
                 </button>
-                <button class="icon-btn danger" type="button" title="Delete" aria-label="Delete <?= html_escape($r->c_type) ?> entry"
+                <button class="icon-btn danger" type="button" title="Delete" aria-label="Delete <?= html_escape($label) ?> entry"
                         data-del="<?= (int)$r->n_slno ?>">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
                 </button>
@@ -131,6 +194,15 @@ foreach ($all_types as $t) { $types_js[] = $t->c_type; }
   </div>
 </div>
 
+<!-- Image Viewer Modal -->
+<div class="img-viewer" id="imgViewer" aria-hidden="true">
+  <div class="img-viewer-box">
+    <button type="button" class="img-viewer-close" id="imgViewerClose" aria-label="Close">&times;</button>
+    <img id="imgViewerImg" src="" alt="">
+    <div class="img-viewer-caption" id="imgViewerCaption"></div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 (function () {
@@ -140,8 +212,9 @@ foreach ($all_types as $t) { $types_js[] = $t->c_type; }
   const errorEl = $('formError'), typeSel = $('cType'), saveBtn = $('saveBtn');
   const MAX = 5 * 1024 * 1024;
 
-  const ALL_TYPES  = <?= json_encode($types_js) ?>;   // from DB (master)
-  const USED_TYPES = <?= json_encode(array_values($used)) ?>; // already inserted
+  const TYPE_MAP     = <?= json_encode($type_list) ?>;            // slug => label
+  const USED_TYPES   = <?= json_encode($used) ?>;                 // slugs already inserted
+  const ONE_PER_TYPE = <?= $one_per_type ? 'true' : 'false' ?>;
 
   const SAVE_URL   = '<?= site_url('save_co_curricular') ?>';   // <-- change controller name
   const DELETE_URL = '<?= site_url('delete_co_curricular') ?>'; // <-- change controller name
@@ -158,7 +231,7 @@ foreach ($all_types as $t) { $types_js[] = $t->c_type; }
     let shown = 0;
     trs.forEach(tr => {
       const ok = (!tf || tr.dataset.type === tf) &&
-                 (!q || tr.dataset.type.toLowerCase().includes(q) || tr.dataset.date.includes(q));
+                 (!q || tr.dataset.label.toLowerCase().includes(q) || tr.dataset.date.includes(q));
       tr.hidden = !ok;
       if (ok) { shown++; tr.querySelector('.num').textContent = shown; }
     });
@@ -166,17 +239,17 @@ foreach ($all_types as $t) { $types_js[] = $t->c_type; }
     $('count').textContent = `Showing ${shown} of ${trs.length} entries`;
   }
 
-  /* ---------- type select: hide types that already exist ---------- */
+  /* ---------- type select (value = slug, text = label) ---------- */
   function buildTypes(currentType) {
-    // available = master types not yet used (+ current type while editing)
-    const avail = ALL_TYPES.filter(t => !USED_TYPES.includes(t) || t === currentType);
+    const avail = Object.keys(TYPE_MAP).filter(t =>
+      !ONE_PER_TYPE || !USED_TYPES.includes(t) || t === currentType);
     typeSel.innerHTML = '<option value="">Select type</option>' +
-      avail.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('');
+      avail.map(t => `<option value="${esc(t)}">${esc(TYPE_MAP[t])}</option>`).join('');
     typeSel.value = currentType || '';
     $('typeNote').hidden = avail.length > 0;
   }
 
-  /* ---------- modal ---------- */
+  /* ---------- add / edit modal ---------- */
   function resetForm() {
     form.reset(); $('cId').value = 0;
     dropzone.classList.remove('has-file'); preview.removeAttribute('src');
@@ -213,7 +286,6 @@ foreach ($all_types as $t) { $types_js[] = $t->c_type; }
   $('openAddModal').addEventListener('click', () => open(null));
   modal.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', close));
   modal.addEventListener('click', e => { if (e.target === modal) close(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
 
   fileInput.addEventListener('change', () => fileInput.files[0] && setFile(fileInput.files[0]));
   ['dragenter', 'dragover'].forEach(ev => dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.classList.add('drag'); }));
@@ -249,8 +321,32 @@ foreach ($all_types as $t) { $types_js[] = $t->c_type; }
     } finally { saveBtn.disabled = false; }
   });
 
-  /* ---------- edit + delete (row buttons) ---------- */
+  /* ---------- image viewer ---------- */
+  const viewer = $('imgViewer'), viewerImg = $('imgViewerImg'), viewerCap = $('imgViewerCaption');
+
+  function openViewer(src, caption) {
+    viewerImg.src = src;
+    viewerImg.alt = caption || '';
+    viewerCap.textContent = caption || '';
+    viewer.classList.add('open');
+    viewer.setAttribute('aria-hidden', 'false');
+  }
+  function closeViewer() {
+    viewer.classList.remove('open');
+    viewer.setAttribute('aria-hidden', 'true');
+    viewerImg.src = '';
+  }
+  $('imgViewerClose').addEventListener('click', closeViewer);
+  viewer.addEventListener('click', e => { if (e.target === viewer) closeViewer(); });
+
+  /* ---------- table clicks: thumbnail, edit, delete ---------- */
   $('rows').addEventListener('click', e => {
+    const img = e.target.closest('.thumb');
+    if (img) {
+      const tr = img.closest('tr');
+      return openViewer(img.src, tr.dataset.label + ' — ' + tr.dataset.date);
+    }
+
     const ed = e.target.closest('[data-edit]');
     if (ed) return open({ id: ed.dataset.id, type: ed.dataset.type, date: ed.dataset.date, img: ed.dataset.img });
 
@@ -274,6 +370,13 @@ foreach ($all_types as $t) { $types_js[] = $t->c_type; }
         Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong.' });
       }
     });
+  });
+
+  /* ---------- Esc key: close whichever is open (viewer first) ---------- */
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (viewer.classList.contains('open')) closeViewer();
+    else if (modal.classList.contains('open')) close();
   });
 
   $('search').addEventListener('input', applyFilter);

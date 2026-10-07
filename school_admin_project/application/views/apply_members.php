@@ -1,21 +1,32 @@
+<?php
+/* Save as: application/views/members_area/apply_members.php
+   Receives from controller: $applications */
 
+// folder where resumes are stored (change to your real resume folder URL)
+$resume_base = 'http://localhost:8000/assets/resumes/';
+
+// distinct job titles for the filter dropdown
+$jobs = array();
+foreach ($applications as $a) {
+    $jobs[] = !empty($a->job_title) ? $a->job_title : 'Job #' . $a->n_job_id;
+}
+$jobs = array_values(array_unique($jobs));
+sort($jobs);
+?>
 <style>
+/* action buttons */
+.act-btn{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:8px;font:inherit;font-size:13px;font-weight:600;line-height:1;cursor:pointer;text-decoration:none;white-space:nowrap;border:1px solid transparent;transition:background .15s,color .15s,border-color .15s,box-shadow .15s,transform .05s}
+.act-btn svg{width:15px;height:15px;flex:none}
+.act-btn:active{transform:translateY(1px)}
+.act-btn:focus-visible{outline:2px solid #93c5fd;outline-offset:2px}
 
-.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:1000}
-.modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:12px;width:100%;max-width:500px;max-height:92vh;overflow:auto;box-shadow:0 20px 50px rgba(0,0,0,.25)}
-.modal-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--slate-200)}
-.modal-head h2{margin:0;font-size:18px}
-.modal-close{background:none;border:0;font-size:26px;line-height:1;cursor:pointer;color:var(--slate-500)}
-.modal-body{padding:20px}
-.detail{display:grid;grid-template-columns:110px 1fr;gap:10px 12px;margin:0;font-size:14px}
-.detail dt{color:var(--slate-500);font-weight:600}
-.detail dd{margin:0;overflow-wrap:anywhere}
-.modal-foot{display:flex;justify-content:flex-end;padding:14px 20px;border-top:1px solid var(--slate-200)}
-.btn{padding:9px 16px;border:1px solid var(--slate-300);background:#fff;border-radius:8px;font:inherit;font-weight:500;cursor:pointer}
+.act-btn.dl{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+.act-btn.dl:hover{background:#dbeafe;border-color:#93c5fd}
+
+.act-btn.rm{background:#fef2f2;color:#b91c1c;border-color:#fecaca}
+.act-btn.rm:hover{background:#dc2626;color:#fff;border-color:#dc2626;box-shadow:0 4px 10px rgba(220,38,38,.25)}
 </style>
-</head>
-<body>
+
 <main class="page">
   <h1 class="page-title">Job Applications</h1>
   <p class="page-sub">Candidates who applied for open vacancies</p>
@@ -26,25 +37,63 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
         <input type="text" id="search" placeholder="Search by name, email or mobile…" aria-label="Search applications">
       </div>
-      <select class="filter-select" id="jobFilter" aria-label="Filter by job"><option value="">All Jobs</option></select>
+      <select class="filter-select" id="jobFilter" aria-label="Filter by job">
+        <option value="">All Jobs</option>
+        <?php foreach ($jobs as $j): ?>
+          <option value="<?= html_escape($j) ?>"><?= html_escape($j) ?></option>
+        <?php endforeach; ?>
+      </select>
     </div>
 
     <div class="table-wrap">
       <table class="table">
         <thead>
           <tr id="head">
-            <th class="sortable" data-key="no"># <span class="arrows"><i class="up"></i><i class="down"></i></span></th>
+            <th class="sortable" data-key="id"># <span class="arrows"><i class="up"></i><i class="down"></i></span></th>
             <th class="sortable" data-key="date">Date <span class="arrows"><i class="up"></i><i class="down"></i></span></th>
             <th class="sortable" data-key="job">Job <span class="arrows"><i class="up"></i><i class="down"></i></span></th>
             <th class="sortable" data-key="name">Name <span class="arrows"><i class="up"></i><i class="down"></i></span></th>
             <th>Email</th>
             <th>Mobile No</th>
-            <th>View</th>
+            <th>Resume</th>
             <th>Delete</th>
-            <th>Action</th>
           </tr>
         </thead>
-        <tbody id="rows"></tbody>
+        <tbody id="rows">
+          <?php foreach ($applications as $a):
+            $job = !empty($a->job_title) ? $a->job_title : 'Job #' . $a->n_job_id;
+          ?>
+          <tr data-id="<?= (int)$a->n_slno ?>"
+              data-date="<?= date('Y-m-d', strtotime($a->d_date)) ?>"
+              data-job="<?= html_escape($job) ?>"
+              data-name="<?= html_escape($a->c_name) ?>"
+              data-email="<?= html_escape($a->c_email) ?>"
+              data-mobile="<?= html_escape($a->n_mobile) ?>">
+            <td class="num"></td>
+            <td><?= date('d-m-Y', strtotime($a->d_date)) ?></td>
+            <td class="job"><?= html_escape($job) ?></td>
+            <td><?= html_escape($a->c_name) ?></td>
+            <td><?= html_escape($a->c_email) ?></td>
+            <td><?= html_escape($a->n_mobile) ?></td>
+            <td>
+              <?php if (!empty($a->c_resume)): ?>
+                <a class="act-btn dl" href="<?= html_escape($resume_base . rawurlencode($a->c_resume)) ?>" target="_blank" rel="noopener" download>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+                  Download
+                </a>
+              <?php else: ?>
+                &mdash;
+              <?php endif; ?>
+            </td>
+            <td>
+              <button class="act-btn rm" type="button" data-del="<?= (int)$a->n_slno ?>" aria-label="Delete application of <?= html_escape($a->c_name) ?>">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/></svg>
+                Delete
+              </button>
+            </td>
+          </tr>
+          <?php endforeach; ?>
+        </tbody>
       </table>
       <div class="empty" id="empty" hidden>No applications match your search.</div>
     </div>
@@ -52,99 +101,84 @@
   </div>
 </main>
 
-<div class="modal-overlay" id="viewModal" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="viewTitle">
-    <div class="modal-head">
-      <h2 id="viewTitle">Application details</h2>
-      <button class="modal-close" type="button" data-close aria-label="Close">&times;</button>
-    </div>
-    <div class="modal-body"><dl class="detail" id="detail"></dl></div>
-    <div class="modal-foot"><button class="btn" type="button" data-close>Close</button></div>
-  </div>
-</div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 (function () {
   const $ = id => document.getElementById(id);
-  const modal = $('viewModal');
-  // sample data: replace with your API response
-  let items = [
-    { id: 1, date: '2026-06-24', job: 'PGT Mathematics Teacher', name: 'Anjali Nair', email: 'anjali.nair@example.com', mobile: '9847012345', status: 'Pending', note: 'M.Sc. Maths, B.Ed., 4 years CBSE experience.' },
-    { id: 2, date: '2026-06-23', job: 'Office Assistant', name: 'Rahul Menon', email: 'rahul.menon@example.com', mobile: '9946098765', status: 'Shortlisted', note: 'B.Com graduate, proficient in MS Office.' },
-    { id: 3, date: '2026-06-21', job: 'PGT Mathematics Teacher', name: 'Divya S', email: 'divya.s@example.com', mobile: '9895011223', status: 'Rejected', note: 'Fresher, B.Ed. in progress.' }
-  ];
-  let sortKey = 'date', sortDir = 'desc';
-  const fmt = d => d.split('-').reverse().join('-');
-  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const tbody = $('rows');
 
-  function refreshJobs() {
-    const cur = $('jobFilter').value, jobs = [...new Set(items.map(i => i.job))];
-    $('jobFilter').innerHTML = '<option value="">All Jobs</option>' + jobs.map(j => `<option value="${esc(j)}">${esc(j)}</option>`).join('');
-    $('jobFilter').value = jobs.includes(cur) ? cur : '';
+  const DELETE_URL = '<?= site_url('delete_application') ?>';
+  const CSRF_NAME  = '<?= $this->security->get_csrf_token_name() ?>';
+  let   CSRF_HASH  = '<?= $this->security->get_csrf_hash() ?>';
+
+  let sortKey = 'date', sortDir = 'desc';   // matches the order sent by the controller
+
+  /* ---------- filter + renumber ---------- */
+  function applyFilter() {
+    const q = $('search').value.trim().toLowerCase(), jf = $('jobFilter').value;
+    const trs = [...tbody.querySelectorAll('tr')];
+    let shown = 0;
+    trs.forEach(tr => {
+      const d = tr.dataset;
+      const ok = (!jf || d.job === jf) &&
+                 (!q || [d.name, d.email, d.mobile].some(v => v.toLowerCase().includes(q)));
+      tr.hidden = !ok;
+      if (ok) { shown++; tr.querySelector('.num').textContent = shown; }
+    });
+    $('empty').hidden = shown > 0;
+    $('count').textContent = `Showing ${shown} of ${trs.length} applications`;
   }
 
-  function render() {
-    const q = $('search').value.trim().toLowerCase(), jf = $('jobFilter').value;
-    let list = items.filter(i => (!jf || i.job === jf) &&
-      (!q || [i.name, i.email, i.mobile].some(v => v.toLowerCase().includes(q))));
-    const key = sortKey === 'no' ? 'id' : sortKey;
-    list.sort((a, b) => (a[key] > b[key] ? 1 : a[key] < b[key] ? -1 : 0) * (sortDir === 'asc' ? 1 : -1));
-
-    $('rows').innerHTML = list.map((i, n) => `
-      <tr>
-        <td class="num">${n + 1}</td>
-        <td>${fmt(i.date)}</td>
-        <td class="job">${esc(i.job)}</td>
-        <td>${esc(i.name)}</td>
-        <td>${esc(i.email)}</td>
-        <td>${esc(i.mobile)}</td>
-        <td><button class="pill view" data-view="${i.id}">View</button></td>
-        <td><button class="pill del" data-del="${i.id}">Delete</button></td>
-        <td><select class="status ${i.status}" data-status="${i.id}" aria-label="Status for ${esc(i.name)}">
-          ${['Pending', 'Shortlisted', 'Rejected'].map(s => `<option${s === i.status ? ' selected' : ''}>${s}</option>`).join('')}
-        </select></td>
-      </tr>`).join('');
-    $('empty').hidden = list.length > 0;
-    $('count').textContent = `Showing ${list.length} of ${items.length} applications`;
+  /* ---------- sort ---------- */
+  function applySort() {
+    const trs = [...tbody.querySelectorAll('tr')];
+    trs.sort((a, b) => {
+      let x = a.dataset[sortKey], y = b.dataset[sortKey];
+      if (sortKey === 'id') { x = +x; y = +y; }
+      else { x = x.toLowerCase(); y = y.toLowerCase(); }
+      return (x > y ? 1 : x < y ? -1 : 0) * (sortDir === 'asc' ? 1 : -1);
+    });
+    trs.forEach(tr => tbody.appendChild(tr));
     document.querySelectorAll('#head th.sortable').forEach(th => {
       th.classList.remove('asc', 'desc');
       if (th.dataset.key === sortKey) th.classList.add(sortDir);
     });
+    applyFilter();
   }
 
   $('head').addEventListener('click', e => {
     const th = e.target.closest('th.sortable'); if (!th) return;
     sortDir = (sortKey === th.dataset.key && sortDir === 'asc') ? 'desc' : 'asc';
-    sortKey = th.dataset.key; render();
+    sortKey = th.dataset.key;
+    applySort();
   });
 
-  $('rows').addEventListener('click', e => {
-    const v = e.target.closest('[data-view]'), d = e.target.closest('[data-del]');
-    if (v) {
-      const i = items.find(x => x.id === +v.dataset.view);
-      $('detail').innerHTML = [['Date', fmt(i.date)], ['Job', i.job], ['Name', i.name], ['Email', i.email], ['Mobile no', i.mobile], ['Status', i.status], ['Details', i.note]]
-        .map(([k, val]) => `<dt>${k}</dt><dd>${esc(val)}</dd>`).join('');
-      modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false');
-    }
-    if (d && confirm('Delete this application?')) {
-      // TODO: fetch('/api/applications/' + d.dataset.del, { method: 'DELETE' })
-      items = items.filter(x => x.id !== +d.dataset.del); refreshJobs(); render();
-    }
+  /* ---------- delete ---------- */
+  tbody.addEventListener('click', e => {
+    const del = e.target.closest('[data-del]');
+    if (!del) return;
+    Swal.fire({
+      title: 'Are you sure?', text: 'This application will be deleted.', icon: 'warning',
+      showCancelButton: true, confirmButtonColor: '#dc2626',
+      confirmButtonText: 'Yes, delete it', cancelButtonText: 'Cancel'
+    }).then(async r => {
+      if (!r.isConfirmed) return;
+      const fd = new FormData();
+      fd.append('id', del.dataset.del); fd.append(CSRF_NAME, CSRF_HASH);
+      try {
+        const res = await (await fetch(DELETE_URL, { method: 'POST', body: fd })).json();
+        if (res.csrf) CSRF_HASH = res.csrf;
+        if (!res.status) return Swal.fire({ icon: 'error', title: 'Error', text: res.msg });
+        Swal.fire({ icon: 'success', title: 'Deleted!', text: res.msg, timer: 1500, showConfirmButton: false })
+            .then(() => location.reload());
+      } catch (err) {
+        Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong.' });
+      }
+    });
   });
 
-  $('rows').addEventListener('change', e => {
-    const s = e.target.closest('[data-status]'); if (!s) return;
-    // TODO: fetch('/api/applications/' + s.dataset.status, { method: 'PATCH', body: ... })
-    items.find(x => x.id === +s.dataset.status).status = s.value; render();
-  });
-
-  const close = () => { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); };
-  modal.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', close));
-  modal.addEventListener('click', e => { if (e.target === modal) close(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
-  $('search').addEventListener('input', render);
-  $('jobFilter').addEventListener('change', render);
-
-  refreshJobs(); render();
+  $('search').addEventListener('input', applyFilter);
+  $('jobFilter').addEventListener('change', applyFilter);
+  applySort();
 })();
 </script>

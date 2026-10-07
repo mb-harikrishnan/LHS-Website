@@ -41,16 +41,36 @@ $route['delete_co_curricular'] = 'CurricularController/delete_co_curricular';
 
 
 
+
 $route['activities_list'] = 'CurricularController/activities_list';
+$route['save_activities_list'] = 'CurricularController/save_activities_list';
+$route['delete_activities_list'] = 'CurricularController/delete_activities_list';
+
+
 
 
 $route['vaccancy_list'] = 'VaccancyController/vaccancy_list';
-$route['apply_members'] = 'VaccancyController/apply_members';
+$route['delete_vaccancy_list'] = 'VaccancyController/delete_vaccancy_list';
+$route['save_vaccancy'] = 'VaccancyController/save_vaccancy';
 
 
-$route['questionpaper_list'] = 'QuestionpaperController/questionpaper_list';
+  $route['apply_members']       = 'VaccancyController/apply_members';
+ $route['delete_application']  = 'VaccancyController/delete_application';
+
+
+ 
+$route['questionpaper_list'] = 'QuestionPaperController/questionpaper_list';
+$route['insert_paper']       = 'QuestionPaperController/insert_paper';   // add + edit
+$route['delete_paper']       = 'QuestionPaperController/delete_papper';
+
+
 
 $route['slider_list'] = 'QuestionpaperController/slider_list';
+$route['save_slider']   = 'QuestionpaperController/save_slider';
+$route['delete_slider'] = 'QuestionpaperController/delete_slider';
+
+
+
 
 $route['accademic_list'] = 'QuestionpaperController/accademic_list';
 
@@ -60,7 +80,13 @@ $route['term_list'] = 'QuestionpaperController/term_list';
 $route['teacherdashboard'] = 'TeacherController/teacherdashboard';
 
 
-$route['divition_list'] = 'StudentController/divition_list';
+$route['divition_list']         = 'StudentController/divition_list';
+$route['insert_divition']       = 'StudentController/insert_divition';        // NEW
+$route['update_divition']       = 'StudentController/update_divition';
+$route['delete_divition_table'] = 'StudentController/delete_divition_table';
+
+
+
 $route['class_divition_list'] = 'StudentController/class_divition_list';
 $route['students_list'] = 'StudentController/students_list';
 
