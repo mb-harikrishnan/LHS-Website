@@ -9,6 +9,15 @@ class NewsController extends CI_Controller
   {
     parent::__construct();
         $this->load->model('School_model');
+
+         if($this->session->userdata(SESSION_VARIABLE))		
+		{
+
+        }
+		else
+		{
+		    redirect('login', 'refresh');
+		}
   }
 
 public function school_news()

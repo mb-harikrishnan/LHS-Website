@@ -13,6 +13,15 @@ class QuestionpaperController extends CI_Controller
     parent::__construct();
     $this->load->model('Paper_model');
     $this->load->model('Slider_model');
+
+     if($this->session->userdata(SESSION_VARIABLE))		
+		{
+
+        }
+		else
+		{
+		    redirect('login', 'refresh');
+		}
   }
 
 
@@ -298,49 +307,301 @@ class QuestionpaperController extends CI_Controller
 
     /////////////////////////////
 
+/* ---------- LIST ---------- */
+public function accademic_list()
+{
+    $data['academic'] = $this->db->where('amIsCurrent', 1)
+                                 ->order_by('amYear', 'ASC')
+                                 ->get('academic_master')
+                                 ->result();
 
-  public function accademic_list()
-  {
     $this->load->view('header');
-    $this->load->view('accademic_list');
+    $this->load->view('accademic_list', $data);
     $this->load->view('footer');
-  }
+}
+
+/* ---------- ADD + EDIT (POST) ---------- */
+public function save_academic()
+{
+    if ($this->input->method() !== 'post') {
+        return $this->_academic_json(false, 'Invalid request.');
+    }
+
+    $id   = (int)$this->input->post('id');
+    $year = trim((string)$this->input->post('year'));
+
+    if ($year === '') {
+        return $this->_academic_json(false, 'Please enter the academic year.');
+    }
+    if (!preg_match('/^\d{4}-\d{2}$/', $year)) {
+        return $this->_academic_json(false, 'Use the format 2026-27.');
+    }
+    $start = (int)substr($year, 0, 4);
+    $end   = (int)substr($year, 5, 2);
+    if (($start + 1) % 100 !== $end) {
+        return $this->_academic_json(false, 'The end year must follow the start year (e.g. 2026-27).');
+    }
+
+    // does this year already exist (other than the row being edited)?
+    $exists = $this->db->where('amYear', $year)
+                       ->where('amId !=', $id)
+                       ->get('academic_master')
+                       ->row();
+
+    if ($id > 0) {                                   // ---- EDIT ----
+        $cur = $this->db->where('amId', $id)->where('amIsCurrent', 1)->get('academic_master')->row();
+        if (!$cur) {
+            return $this->_academic_json(false, 'Academic year not found.');
+        }
+        if ($exists && (int)$exists->amIsCurrent === 1) {
+            return $this->_academic_json(false, 'This academic year already exists.');
+        }
+        $ok = $this->db->where('amId', $id)->update('academic_master', array('amYear' => $year));
+        return $this->_academic_json($ok, $ok ? 'Academic year updated successfully.' : 'Update failed.');
+    }
+
+    // ---- ADD ----
+    if ($exists) {
+        if ((int)$exists->amIsCurrent === 1) {
+            return $this->_academic_json(false, 'This academic year already exists.');
+        }
+        // it was deleted earlier: bring it back instead of adding a duplicate
+        $ok = $this->db->where('amId', $exists->amId)->update('academic_master', array('amIsCurrent' => 1));
+        return $this->_academic_json($ok, $ok ? 'Academic year added successfully.' : 'Could not save.');
+    }
+
+    $ok = $this->db->insert('academic_master', array('amYear' => $year, 'amIsCurrent' => 1));
+    return $this->_academic_json($ok, $ok ? 'Academic year added successfully.' : 'Could not save. Please try again.');
+}
+
+/* ---------- DELETE (POST) ---------- */
+public function delete_accademic()
+{
+    if ($this->input->method() !== 'post') {
+        return $this->_academic_json(false, 'Invalid request.');
+    }
+
+    $id = (int)$this->input->post('id');
+    if ($id <= 0) {
+        return $this->_academic_json(false, 'Academic year not found.');
+    }
+
+    $ok = $this->db->where('amId', $id)->update('academic_master', array('amIsCurrent' => 0));
+    return $this->_academic_json($ok, $ok ? 'Academic year deleted successfully.' : 'Delete failed.');
+}
+
+/* ---------- JSON helper ---------- */
+private function _academic_json($status, $msg)
+{
+    $this->output
+        ->set_content_type('application/json')
+        ->set_output(json_encode(array(
+            'status' => (bool)$status,
+            'msg'    => $msg,
+            'csrf'   => $this->security->get_csrf_hash()
+        )));
+}
 
 
-  public function term_list()
-  {
+
+
+
+
+
+
+
+
+  //////////////////////////
+
+
+/* ---------- LIST ---------- */
+public function term_list()
+{
+    $data['term'] = $this->db->order_by('tmId', 'ASC')
+                             ->get('term_master')
+                             ->result();
+
     $this->load->view('header');
-    $this->load->view('term_list');
+    $this->load->view('term_list', $data);
     $this->load->view('footer');
-  }
+}
+
+/* ---------- ADD + EDIT (POST) ---------- */
+public function save_term()
+{
+    if ($this->input->method() !== 'post') {
+        return $this->_term_json(false, 'Invalid request.');
+    }
+
+    $id   = (int)$this->input->post('id');
+    $name = trim(preg_replace('/\s+/', ' ', (string)$this->input->post('name')));
+    $code = trim((string)$this->input->post('code'));
+
+    if ($name === '') {
+        return $this->_term_json(false, 'Please enter the term.');
+    }
+    if (mb_strlen($name) > 60) {
+        return $this->_term_json(false, 'Term must be 60 characters or fewer.');
+    }
+    if ($code === '') {
+        return $this->_term_json(false, 'Please enter the code.');
+    }
+    if (mb_strlen($code) > 20) {
+        return $this->_term_json(false, 'Code must be 20 characters or fewer.');
+    }
+
+    // duplicate name (case-insensitive), ignoring the row being edited
+    $dup_name = $this->db->query(
+        'SELECT tmId FROM term_master WHERE LOWER(tmName) = LOWER(?) AND tmId != ? LIMIT 1',
+        array($name, $id)
+    )->row();
+    if ($dup_name) {
+        return $this->_term_json(false, 'This term already exists.');
+    }
+
+    // duplicate code (case-insensitive), ignoring the row being edited
+    $dup_code = $this->db->query(
+        'SELECT tmId FROM term_master WHERE LOWER(tmCode) = LOWER(?) AND tmId != ? LIMIT 1',
+        array($code, $id)
+    )->row();
+    if ($dup_code) {
+        return $this->_term_json(false, 'This code is already used.');
+    }
+
+    $row = array('tmName' => $name, 'tmCode' => $code);
+
+    if ($id > 0) {                                   // ---- EDIT ----
+        $exists = $this->db->where('tmId', $id)->get('term_master')->row();
+        if (!$exists) {
+            return $this->_term_json(false, 'Term not found.');
+        }
+        $ok = $this->db->where('tmId', $id)->update('term_master', $row);
+        return $this->_term_json($ok, $ok ? 'Term updated successfully.' : 'Update failed.');
+    }
+
+    // ---- ADD ----
+    $ok = $this->db->insert('term_master', $row);
+    return $this->_term_json($ok, $ok ? 'Term added successfully.' : 'Could not save. Please try again.');
+}
+
+/* ---------- DELETE (POST) ---------- */
+public function delete_term()
+{
+    if ($this->input->method() !== 'post') {
+        return $this->_term_json(false, 'Invalid request.');
+    }
+
+    $id = (int)$this->input->post('id');
+    if ($id <= 0) {
+        return $this->_term_json(false, 'Term not found.');
+    }
+
+    $ok = $this->db->where('tmId', $id)->delete('term_master');
+    return $this->_term_json($ok, $ok ? 'Term deleted successfully.' : 'Delete failed.');
+}
+
+/* ---------- JSON helper ---------- */
+private function _term_json($status, $msg)
+{
+    $this->output
+        ->set_content_type('application/json')
+        ->set_output(json_encode(array(
+            'status' => (bool)$status,
+            'msg'    => $msg,
+            'csrf'   => $this->security->get_csrf_hash()
+        )));
+}
 
 
+  /////////////////////////////////////
 
-  public function user_role_list()
-  {
+public function user_role_list()
+{
+    $data['roles'] = $this->db->order_by('role_id', 'ASC')->get('user_roles')->result();
+
     $this->load->view('header');
-    $this->load->view('user_role_list');
+    $this->load->view('user_role_list', $data);
     $this->load->view('footer');
-  }
+}
+
+// ADD
+public function user_role_save()
+{
+    $name = trim($this->input->post('role_name', TRUE));
+
+    if ($name === '') {
+        return $this->_jsons(false, 'Please enter a role.');
+    }
+    if ($this->db->where('LOWER(role_name)', strtolower($name))->get('user_roles')->num_rows() > 0) {
+        return $this->_jsons(false, 'This role already exists.');
+    }
+
+    $this->db->insert('user_roles', ['role_name' => $name, 'status' => 1]);
+    return $this->_jsons(true, 'Role added successfully.');
+}
+
+// EDIT
+public function user_role_update()
+{
+    $id   = (int) $this->input->post('role_id');
+    $name = trim($this->input->post('role_name', TRUE));
+
+    if ($id <= 0 || $name === '') {
+        return $this->_jsons(false, 'Please enter a role.');
+    }
+
+    $dup = $this->db->where('LOWER(role_name)', strtolower($name))
+                    ->where('role_id !=', $id)
+                    ->get('user_roles')->num_rows();
+    if ($dup > 0) {
+        return $this->_jsons(false, 'This role already exists.');
+    }
+
+    $this->db->where('role_id', $id)->update('user_roles', ['role_name' => $name]);
+    return $this->_jsons(true, 'Role updated successfully.');
+}
+
+// DELETE
+public function user_role_delete()
+{
+    $id = (int) $this->input->post('role_id');
+
+    if ($id <= 0) {
+        return $this->_jsons(false, 'Invalid role.');
+    }
+
+    $this->db->where('role_id', $id)->delete('user_roles');
+    return $this->_jsons(true, 'Role deleted successfully.');
+}
+
+// ACTIVE (1) / INACTIVE (0)
+public function user_role_status()
+{
+    $id     = (int) $this->input->post('role_id');
+    $status = (int) $this->input->post('status') === 1 ? 1 : 0;
+
+    if ($id <= 0) {
+        return $this->_jsons(false, 'Invalid role.');
+    }
+
+    $this->db->where('role_id', $id)->update('user_roles', ['status' => $status]);
+    return $this->_jsons(true, $status ? 'Role activated.' : 'Role deactivated.');
+}
+
+// helper (name unchanged)
+private function _jsons($success, $message)
+{
+    $this->output
+         ->set_content_type('application/json')
+         ->set_output(json_encode(['success' => $success, 'message' => $message]));
+}
 
 
 
-  public function menu_list()
-  {
-    $this->load->view('header');
-    $this->load->view('menu_list');
-    $this->load->view('footer');
-  }
+/////////////////////////
 
 
-
-
-  public function add_menu_permission()
-  {
-    $this->load->view('header');
-    $this->load->view('add_menu_permission');
-    $this->load->view('footer');
-  }
+////////////////////////////////////////
 
 
 

@@ -8,6 +8,16 @@ class GalleryController extends CI_Controller
     {
         parent::__construct();
         $this->load->model('School_model');
+
+
+         if($this->session->userdata(SESSION_VARIABLE))		
+		{
+
+        }
+		else
+		{
+		    redirect('login', 'refresh');
+		}
     }
 
     // page 1: albums (one card per type)

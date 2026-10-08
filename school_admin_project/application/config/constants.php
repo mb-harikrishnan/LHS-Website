@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 define('JS_PATH', 'assets/js/');
 define('CSS_PATH', 'assets/css/');
 
-define('SESSION_VARIABLE', 'radhamadhav_user_logged_in');
+define('SESSION_VARIABLE', 'user_logged_in');
 
 /*
 |--------------------------------------------------------------------------

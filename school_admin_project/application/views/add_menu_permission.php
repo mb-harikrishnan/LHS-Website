@@ -1,3 +1,5 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <style>
 .perm-top{display:flex;align-items:center;gap:12px;padding:16px 20px;flex-wrap:wrap}
 .perm-top label{font-size:14px;font-weight:700;color:#1e3a8a}
@@ -12,7 +14,7 @@
 .perm td{padding:11px 8px;border-bottom:1px solid #eef0f4;text-align:center}
 .perm td:first-child{text-align:left}
 .perm tr.parent td{background:#fafafa}
-.perm tr.parent .mn{color:#1e3a8a;font-size:15px}
+.perm tr.parent .mn{color:#1e3a8a;font-size:15px;font-weight:600}
 .perm tr.child .mn{color:#475569;font-size:15px;padding-left:34px}
 .mn{display:inline-flex;align-items:center;gap:10px;cursor:pointer}
 .perm input[type=checkbox]{width:16px;height:16px;accent-color:#4f46e5;cursor:pointer;margin:0}
@@ -20,12 +22,26 @@
 
 .perm-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;border-top:1px solid #e2e8f0;margin-top:8px;flex-wrap:wrap}
 .perm-msg{font-size:13px;color:#64748b}
-.perm-msg.ok{color:#15803d;font-weight:600}
 .perm-msg.warn{color:#b45309;font-weight:600}
 .perm-btns{display:flex;gap:10px}
 .perm-btns .btn:disabled{opacity:.5;cursor:not-allowed}
 .hint-row{padding:30px;text-align:center;color:#94a3b8;font-size:14px}
+[hidden]{display:none !important}
 </style>
+
+<?php
+$roles_js = [];
+foreach ($roles as $r) {
+    $roles_js[] = ['id' => (int) $r->role_id, 'name' => $r->role_name];
+}
+$menus_js = [];
+foreach ($menus as $p) {
+    $menus_js[] = ['id' => (int) $p->menu_id, 'name' => $p->display_name, 'parent' => null];
+    foreach ($p->children as $c) {
+        $menus_js[] = ['id' => (int) $c->menu_id, 'name' => $c->display_name, 'parent' => (int) $p->menu_id];
+    }
+}
+?>
 
 <main class="page">
   <div class="page-header">
@@ -71,55 +87,58 @@
 (function () {
   const $ = id => document.getElementById(id);
   const KEYS = ['v', 'a', 'e', 'd'];
-
-  // Load these from your Role List and Menu List pages / backend later
-  const ROLES = [
-    { id: 1, name: 'Admin' }, { id: 2, name: 'Teacher' },
-    { id: 3, name: 'Accountant' }, { id: 4, name: 'Librarian' }
-  ];
-  const MENUS = [
-    { id: 1, name: 'Teacher Dashboard', parent: null },
-    { id: 2, name: 'Mandatory Disclosure', parent: null },
-    { id: 3, name: 'Document And Information', parent: 2 },
-    { id: 4, name: 'Result & Staff', parent: 2 },
-    { id: 5, name: 'Infrastructure video', parent: 2 },
-    { id: 6, name: 'Dashboard', parent: null },
-    { id: 7, name: 'Students', parent: null },
-    { id: 8, name: 'Division', parent: 7 },
-    { id: 9, name: 'Class Division Allocation', parent: 7 }
-  ];
+  const ROLES = <?= json_encode($roles_js, JSON_HEX_TAG | JSON_HEX_AMP) ?>;
+  const MENUS = <?= json_encode($menus_js, JSON_HEX_TAG | JSON_HEX_AMP) ?>;
+  const URLS = {
+    load: "<?= base_url('get_role_permissions') ?>",
+    save: "<?= base_url('save_menu_permissions') ?>"
+  };
 
   const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const blank = () => { const o = {}; MENUS.forEach(m => o[m.id] = { v: false, a: false, e: false, d: false }); return o; };
   const clone = o => JSON.parse(JSON.stringify(o));
   const kidsOf = id => MENUS.filter(m => m.parent === id).map(m => m.id);
 
-  const store = {};          // saved permissions per role id
+  const store = {};      // last saved/loaded permissions per role
   let roleId = null;
-  let cur = null;            // working copy for the selected role
+  let cur = null;        // working copy
 
   $('roleSel').innerHTML = '<option value="">-- Select Role --</option>' +
     ROLES.map(r => `<option value="${r.id}">${esc(r.name)}</option>`).join('');
 
-  const dirty = () => roleId && JSON.stringify(cur) !== JSON.stringify(store[roleId] || blank());
-
+  const dirty = () => roleId && cur && JSON.stringify(cur) !== JSON.stringify(store[roleId] || blank());
   function say(text, cls) { $('msg').textContent = text || ''; $('msg').className = 'perm-msg ' + (cls || ''); }
 
-  /* ---------- rules ---------- */
+  async function post(url, data) {
+    const fd = new FormData();
+    Object.keys(data).forEach(k => fd.append(k, data[k]));
+    // If CSRF is enabled, uncomment:
+    // fd.append('<?= $this->security->get_csrf_token_name() ?>', '<?= $this->security->get_csrf_hash() ?>');
+    try {
+      const res = await fetch(url, { method: 'POST', body: fd });
+      return await res.json();
+    } catch (err) {
+      return { success: false, message: 'Server error. Please try again.' };
+    }
+  }
+
   function setCell(id, key, val) {
     const c = cur[id];
     c[key] = val;
-    if (key === 'v' && !val) { c.a = c.e = c.d = false; }       // no view = no other access
-    if (key !== 'v' && val) c.v = true;                          // add/edit/delete needs view
+    if (key === 'v' && !val) { c.a = c.e = c.d = false; }
+    if (key !== 'v' && val) c.v = true;
   }
-  const state = list => {                                        // list of booleans -> 'all' | 'some' | 'none'
+  const state = list => {
     const n = list.filter(Boolean).length;
     return n === 0 ? 'none' : n === list.length ? 'all' : 'some';
   };
-  function paint(el, st) { el.checked = st === 'all'; el.indeterminate = st === 'some'; }
+  function paint(el, st) { if (!el) return; el.checked = st === 'all'; el.indeterminate = st === 'some'; }
 
-  /* ---------- render ---------- */
   function render() {
+    if (!MENUS.length) {
+      $('rows').innerHTML = '<tr><td colspan="5" class="hint-row">No active menus found.</td></tr>';
+      return;
+    }
     $('rows').innerHTML = MENUS.map(m => {
       const isChild = m.parent !== null;
       const cells = KEYS.map(k =>
@@ -131,21 +150,22 @@
     sync();
   }
 
-  // refresh the row, parent and header "select all" boxes (no full re-render)
   function sync() {
     const on = !!cur;
     $('permTable').classList.toggle('locked', !on);
     $('hint').hidden = on;
     $('saveBtn').disabled = !on || !dirty();
     $('resetBtn').disabled = !on || !dirty();
-    if (!on) { document.querySelectorAll('[data-col]').forEach(c => { c.checked = false; c.indeterminate = false; }); return; }
-
+    if (!on) {
+      document.querySelectorAll('[data-col]').forEach(c => { c.checked = false; c.indeterminate = false; });
+      return;
+    }
     MENUS.forEach(m => {
       KEYS.forEach(k => {
         const el = document.querySelector(`[data-cell="${m.id}|${k}"]`);
         if (el) el.checked = cur[m.id][k];
       });
-      const ids = [m.id].concat(kidsOf(m.id));                  // a parent row also covers its sub-menus
+      const ids = [m.id].concat(kidsOf(m.id));
       const all = [];
       ids.forEach(i => KEYS.forEach(k => all.push(cur[i][k])));
       paint(document.querySelector(`[data-row="${m.id}"]`), state(all));
@@ -153,16 +173,42 @@
     KEYS.forEach(k => paint(document.querySelector(`[data-col="${k}"]`), state(MENUS.map(m => cur[m.id][k]))));
   }
 
-  /* ---------- events ---------- */
-  $('roleSel').addEventListener('change', () => {
-    if (dirty() && !confirm('You have unsaved changes. Discard them?')) {
-      $('roleSel').value = roleId || '';
+  // select role -> load saved permissions from the database
+  $('roleSel').addEventListener('change', async () => {
+    const newId = $('roleSel').value ? +$('roleSel').value : null;
+
+    if (dirty()) {
+      const c = await Swal.fire({
+        title: 'Unsaved changes',
+        text: 'Discard your changes and switch role?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, discard'
+      });
+      if (!c.isConfirmed) { $('roleSel').value = roleId || ''; return; }
+    }
+
+    roleId = newId;
+    say('');
+    if (!roleId) { cur = null; render(); return; }
+
+    Swal.fire({ title: 'Loading...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+    const r = await post(URLS.load, { role_id: roleId });
+    Swal.close();
+
+    if (!r.success) {
+      Swal.fire({ icon: 'error', title: 'Oops', text: r.message });
+      roleId = null; cur = null; $('roleSel').value = ''; render();
       return;
     }
-    roleId = $('roleSel').value ? +$('roleSel').value : null;
-    cur = roleId ? clone(store[roleId] || blank()) : null;
-    // TODO: load from backend, e.g. fetch('/api/roles/' + roleId + '/permissions').then(r => r.json())...
-    say('');
+
+    const saved = blank();
+    const p = r.permissions || {};
+    MENUS.forEach(m => {
+      if (p[m.id]) KEYS.forEach(k => saved[m.id][k] = !!+p[m.id][k]);
+    });
+    store[roleId] = saved;
+    cur = clone(saved);
     render();
   });
 
@@ -188,13 +234,20 @@
     sync();
   });
 
-  $('saveBtn').addEventListener('click', () => {
-    store[roleId] = clone(cur);
-    // TODO: fetch('/api/roles/' + roleId + '/permissions', {
-    //   method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(cur)
-    // })
-    say('Permissions saved successfully.', 'ok');
-    sync();
+  // save to the database
+  $('saveBtn').addEventListener('click', async () => {
+    if (!roleId) return;
+    $('saveBtn').disabled = true;
+    const r = await post(URLS.save, { role_id: roleId, permissions: JSON.stringify(cur) });
+    if (r.success) {
+      store[roleId] = clone(cur);
+      say('');
+      sync();
+      Swal.fire({ icon: 'success', title: r.message, timer: 1400, showConfirmButton: false });
+    } else {
+      sync();
+      Swal.fire({ icon: 'error', title: 'Oops', text: r.message });
+    }
   });
 
   window.addEventListener('beforeunload', e => { if (dirty()) { e.preventDefault(); e.returnValue = ''; } });

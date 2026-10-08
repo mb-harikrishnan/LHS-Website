@@ -1,3 +1,4 @@
+<?php /* Receives: $academic (rows of academic_master with amId, amYear) */ ?>
 <style>
 .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:1000}
 .modal-overlay.open{display:flex}
@@ -35,6 +36,7 @@
         <input type="text" id="search" placeholder="Search year…" aria-label="Search academic year">
       </div>
     </div>
+
     <div class="table-wrap">
       <table class="table">
         <thead>
@@ -44,14 +46,32 @@
             <th style="width:110px;text-align:right">Actions</th>
           </tr>
         </thead>
-        <tbody id="rows"></tbody>
+        <tbody id="rows">
+          <?php foreach ($academic as $i => $a): ?>
+          <tr data-id="<?= (int)$a->amId ?>" data-year="<?= html_escape($a->amYear) ?>">
+            <td class="num"><?= $i + 1 ?></td>
+            <td class="v-title"><?= html_escape($a->amYear) ?></td>
+            <td>
+              <div class="row-actions" style="justify-content:flex-end;">
+                <button class="icon-btn" type="button" title="Edit" data-edit aria-label="Edit <?= html_escape($a->amYear) ?>">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                </button>
+                <button class="icon-btn danger" type="button" title="Delete" data-del aria-label="Delete <?= html_escape($a->amYear) ?>">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <?php endforeach; ?>
+        </tbody>
       </table>
-      <div class="empty" id="empty" hidden>No academic years found. Add one with the button above.</div>
+      <div class="empty" id="empty" <?= empty($academic) ? '' : 'hidden' ?>>No academic years found. Add one with the button above.</div>
     </div>
     <div class="table-foot" id="count"></div>
   </div>
 </main>
 
+<!-- Add / Edit modal -->
 <div class="modal-overlay" id="addModal" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="addTitle">
     <div class="modal-head">
@@ -73,46 +93,42 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 (function () {
   const $ = id => document.getElementById(id);
-  const modal = $('addModal'), form = $('addForm'), errorEl = $('formError');
-  let items = [
-    { id: 1, year: '2024-25' },
-    { id: 2, year: '2025-26' },
-    { id: 3, year: '2026-27' }
-  ];
-  let nextId = 4;
-  let editId = null;
-  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const modal = $('addModal'), form = $('addForm'), errorEl = $('formError'), saveBtn = $('saveBtn');
 
-  function render() {
+  const SAVE_URL   = '<?= site_url('save_academic') ?>';
+  const DELETE_URL = '<?= site_url('delete_accademic') ?>';
+  const CSRF_NAME  = '<?= $this->security->get_csrf_token_name() ?>';
+  let   CSRF_HASH  = '<?= $this->security->get_csrf_hash() ?>';
+
+  let editId = 0;
+
+  const showError = m => { errorEl.textContent = m; errorEl.hidden = false; };
+
+  /* ---------- search + serial numbers ---------- */
+  function refresh() {
     const q = $('search').value.trim().toLowerCase();
-    const list = items.filter(i => !q || i.year.toLowerCase().includes(q));
-    $('rows').innerHTML = list.map((i, n) => `
-      <tr>
-        <td class="num">${n + 1}</td>
-        <td class="v-title">${esc(i.year)}</td>
-        <td>
-          <div class="row-actions" style="justify-content:flex-end;">
-            <button class="icon-btn" title="Edit" data-edit="${i.id}" aria-label="Edit ${esc(i.year)}">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-            </button>
-            <button class="icon-btn danger" title="Delete" data-del="${i.id}" aria-label="Delete ${esc(i.year)}">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
-            </button>
-          </div>
-        </td>
-      </tr>`).join('');
-    $('empty').hidden = list.length > 0;
-    $('count').textContent = `Showing ${list.length} of ${items.length} academic years`;
+    const rows = Array.from($('rows').querySelectorAll('tr'));
+    let n = 0;
+    rows.forEach(tr => {
+      const match = !q || tr.dataset.year.toLowerCase().includes(q);
+      tr.hidden = !match;
+      if (match) tr.querySelector('.num').textContent = ++n;
+    });
+    $('empty').hidden = n > 0;
+    $('count').textContent = 'Showing ' + n + ' of ' + rows.length + ' academic years';
   }
+  $('search').addEventListener('input', refresh);
 
-  function open(item) {
-    editId = item ? item.id : null;
-    $('addTitle').textContent = item ? 'Edit Academic Year' : 'Add Academic Year';
-    $('saveBtn').textContent = item ? 'Update' : 'Save';
-    $('yName').value = item ? item.year : '';
+  /* ---------- modal ---------- */
+  function open(id, year) {
+    editId = id || 0;
+    $('addTitle').textContent = id ? 'Edit Academic Year' : 'Add Academic Year';
+    saveBtn.textContent = id ? 'Update' : 'Save';
+    $('yName').value = year || '';
     errorEl.hidden = true;
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
@@ -123,51 +139,72 @@
     modal.setAttribute('aria-hidden', 'true');
     form.reset();
     errorEl.hidden = true;
-    editId = null;
+    editId = 0;
   }
-  function showError(msg) { errorEl.textContent = msg; errorEl.hidden = false; }
-
-  $('openAddModal').addEventListener('click', () => open(null));
+  $('openAddModal').addEventListener('click', () => open(0, ''));
   modal.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', close));
   modal.addEventListener('click', e => { if (e.target === modal) close(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
 
-  form.addEventListener('submit', e => {
+  /* ---------- save ---------- */
+  form.addEventListener('submit', async e => {
     e.preventDefault();
     const year = $('yName').value.trim();
+
     if (!year) return showError('Please enter the academic year.');
     if (!/^\d{4}-\d{2}$/.test(year)) return showError('Use the format 2026-27.');
-    const start = +year.slice(0, 4), end = +year.slice(5);
-    if ((start + 1) % 100 !== end) return showError('The end year must follow the start year (e.g. 2026-27).');
-    if (items.some(i => i.id !== editId && i.year === year)) return showError('This academic year already exists.');
+    const s = +year.slice(0, 4), en = +year.slice(5);
+    if ((s + 1) % 100 !== en) return showError('The end year must follow the start year (e.g. 2026-27).');
 
-    if (editId) {
-      // TODO: fetch('/api/academic-years/' + editId, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ year }) })
-      items = items.map(i => i.id === editId ? { id: i.id, year } : i);
-    } else {
-      // TODO: fetch('/api/academic-years', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ year }) })
-      items.push({ id: nextId++, year });
-    }
-    items.sort((a, b) => a.year.localeCompare(b.year));
-    render();
-    close();
+    const fd = new FormData();
+    fd.append('id', editId);
+    fd.append('year', year);
+    fd.append(CSRF_NAME, CSRF_HASH);
+
+    saveBtn.disabled = true;
+    try {
+      const res = await (await fetch(SAVE_URL, { method: 'POST', body: fd })).json();
+      if (res.csrf) CSRF_HASH = res.csrf;
+      if (!res.status) return showError(res.msg);
+      close();
+      Swal.fire({ icon: 'success', title: 'Success', text: res.msg, timer: 1500, showConfirmButton: false })
+          .then(() => location.reload());
+    } catch (err) {
+      showError('Something went wrong. Please try again.');
+    } finally { saveBtn.disabled = false; }
   });
 
+  /* ---------- edit / delete ---------- */
   $('rows').addEventListener('click', e => {
-    const ed = e.target.closest('[data-edit]');
-    const del = e.target.closest('[data-del]');
-    if (ed) {
-      const item = items.find(i => i.id === +ed.dataset.edit);
-      if (item) open(item);
-    }
-    if (del && confirm('Delete this academic year?')) {
-      // TODO: fetch('/api/academic-years/' + del.dataset.del, { method: 'DELETE' })
-      items = items.filter(i => i.id !== +del.dataset.del);
-      render();
+    const tr = e.target.closest('tr');
+    if (!tr) return;
+    const id = +tr.dataset.id, year = tr.dataset.year;
+
+    if (e.target.closest('[data-edit]')) return open(id, year);
+
+    if (e.target.closest('[data-del]')) {
+      Swal.fire({
+        title: 'Are you sure?', text: year + ' will be deleted.', icon: 'warning',
+        showCancelButton: true, confirmButtonColor: '#dc2626',
+        confirmButtonText: 'Yes, delete it', cancelButtonText: 'Cancel'
+      }).then(async r => {
+        if (!r.isConfirmed) return;
+        const fd = new FormData();
+        fd.append('id', id);
+        fd.append(CSRF_NAME, CSRF_HASH);
+        try {
+          const res = await (await fetch(DELETE_URL, { method: 'POST', body: fd })).json();
+          if (res.csrf) CSRF_HASH = res.csrf;
+          if (!res.status) return Swal.fire({ icon: 'error', title: 'Error', text: res.msg });
+          Swal.fire({ icon: 'success', title: 'Deleted!', text: res.msg, timer: 1500, showConfirmButton: false })
+              .then(() => location.reload());
+        } catch (err) {
+          Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong.' });
+        }
+      });
     }
   });
 
-  $('search').addEventListener('input', render);
-  render();
+  refresh();
 })();
 </script>

@@ -9,10 +9,20 @@ class DashboardController extends CI_Controller
     {
         parent::__construct();
         // $this->load->model('DashboardModel');
+
+         if($this->session->userdata(SESSION_VARIABLE))		
+		{
+
+        }
+		else
+		{
+		    redirect('login', 'refresh');
+		}
     }
 
     public function dashboard()
     {
+
        
         $this->load->view('header');
         $this->load->view('dashboard');

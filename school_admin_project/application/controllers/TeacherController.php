@@ -9,6 +9,15 @@ class TeacherController extends CI_Controller
     {
         parent::__construct();
         // $this->load->model('DashboardModel');
+
+         if($this->session->userdata(SESSION_VARIABLE))		
+		{
+
+        }
+		else
+		{
+		    redirect('login', 'refresh');
+		}
     }
 
     public function teacherdashboard()

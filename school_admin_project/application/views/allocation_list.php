@@ -1,3 +1,10 @@
+<?php
+/* Receives: $details (grouped allocations), $classes (cmId, cmName), $exams (emId, emDisplayName),
+             $subjects (smId, smName) */
+$classes_js = array(); foreach ($classes as $c) { $classes_js[] = array('id' => (string)$c->cmId, 'name' => $c->cmName); }
+$exams_js   = array(); foreach ($exams as $e)   { $exams_js[]   = array('id' => (string)$e->emId, 'name' => $e->emDisplayName); }
+$subs_js    = array(); foreach ($subjects as $s){ $subs_js[]    = array('id' => (string)$s->smId, 'name' => $s->smName); }
+?>
 <style>
 .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:1000}
 .modal-overlay.open{display:flex}
@@ -12,8 +19,6 @@
 .req{color:#dc2626}
 .field-input{width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit;font-size:14px;margin-bottom:16px;background:#f8fafc}
 .field-input:focus{outline:2px solid #6366f1;outline-offset:1px;background:#fff}
-
-/* subject picker */
 .picker{position:relative;margin-bottom:16px}
 .pick-box{display:flex;flex-wrap:wrap;gap:6px;min-height:46px;padding:7px 10px;border:1px solid #cbd5e1;border-radius:10px;background:#f8fafc;cursor:pointer;align-items:center}
 .pick-box.focus{outline:2px solid #6366f1;outline-offset:1px;background:#fff}
@@ -24,8 +29,6 @@
 .pick-menu button{display:block;width:100%;text-align:left;padding:9px 12px;background:none;border:0;font:inherit;font-size:14px;cursor:pointer}
 .pick-menu button:hover{background:#eef2ff}
 .pick-empty{padding:10px 12px;color:#94a3b8;font-size:13px}
-
-/* marks rows */
 .mark-row{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:center;margin-bottom:12px}
 .mark-row label{font-size:12px;font-weight:700;text-transform:uppercase}
 .mark-row .field-input{margin:0}
@@ -55,26 +58,51 @@
         <input type="text" id="search" placeholder="Search class, exam or subject…" aria-label="Search">
       </div>
     </div>
+
     <div class="table-wrap">
       <table class="table">
         <thead>
           <tr>
             <th style="width:70px">SL</th>
             <th style="width:100px">Class</th>
-            <th style="width:120px">Exam</th>
+            <th style="width:160px">Exam</th>
             <th>Subject</th>
             <th style="width:80px;text-align:center">Edit</th>
             <th style="width:80px;text-align:center">Action</th>
           </tr>
         </thead>
-        <tbody id="rows"></tbody>
+        <tbody id="rows">
+          <?php foreach ($details as $i => $d): ?>
+          <tr data-a="<?= html_escape(json_encode($d)) ?>">
+            <td class="num"><?= $i + 1 ?></td>
+            <td><strong><?= html_escape($d['class_name']) ?></strong></td>
+            <td><?= html_escape($d['exam_name']) ?></td>
+            <td>
+              <?php foreach ($d['subjects'] as $s): ?>
+                <span class="tag"><?= html_escape($s['name']) ?><b><?= (int)$s['marks'] ?></b></span>
+              <?php endforeach; ?>
+            </td>
+            <td style="text-align:center">
+              <button class="icon-btn" type="button" title="Edit" data-edit aria-label="Edit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              </button>
+            </td>
+            <td style="text-align:center">
+              <button class="icon-btn danger" type="button" title="Delete" data-del aria-label="Delete">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
+              </button>
+            </td>
+          </tr>
+          <?php endforeach; ?>
+        </tbody>
       </table>
-      <div class="empty" id="empty" hidden>No mark allocations found. Add one with the button above.</div>
+      <div class="empty" id="empty" <?= empty($details) ? '' : 'hidden' ?>>No mark allocations found. Add one with the button above.</div>
     </div>
     <div class="table-foot" id="count"></div>
   </div>
 </main>
 
+<!-- Add / Edit modal -->
 <div class="modal-overlay" id="addModal" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="addTitle">
     <div class="modal-head">
@@ -110,74 +138,71 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 (function () {
   const $ = id => document.getElementById(id);
-  const modal = $('addModal'), form = $('addForm'), errorEl = $('formError');
+  const modal = $('addModal'), form = $('addForm'), errorEl = $('formError'), saveBtn = $('saveBtn');
 
-  // Master data (load these from your backend later)
-  const CLASSES  = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
-  const EXAMS    = ['PA1','PA2','Half Yearly','PA3','Annual'];
-  const SUBJECTS = ['Hindi','English','Malayalam','Maths','Physics','Chemistry','Biology','Social Science','Computer'];
+  const SAVE_URL   = '<?= site_url('save_allocation') ?>';
+  const DELETE_URL = '<?= site_url('delete_allocation') ?>';
+  const CSRF_NAME  = '<?= $this->security->get_csrf_token_name() ?>';
+  let   CSRF_HASH  = '<?= $this->security->get_csrf_hash() ?>';
 
-  let items = [
-    { id: 1, cls: 'II', exam: 'PA1', subjects: [{ name: 'Hindi', marks: 50 }, { name: 'Physics', marks: 50 }] }
-  ];
-  let nextId = 2, editId = null;
-  let selected = [];      // chosen subject names (in order)
-  let marks = {};         // subject -> marks typed so far
+  const CLASSES  = <?= json_encode($classes_js) ?>;   // [{id, name}]
+  const EXAMS    = <?= json_encode($exams_js) ?>;
+  const SUBJECTS = <?= json_encode($subs_js) ?>;
 
-  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const fill = (el, list, ph) => el.innerHTML = `<option value="">${ph}</option>` +
-    list.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
-  fill($('mClass'), CLASSES, 'Select Class');
-  fill($('mExam'), EXAMS, 'Select Exam');
+  let oldExam = 0, oldClass = 0;   // set while editing
+  let selected = [];               // chosen subject ids, in order
+  let marks = {};                  // subject id -> marks typed so far
 
-  /* ---------- list ---------- */
-  function render() {
-    const q = $('search').value.trim().toLowerCase();
-    const list = items.filter(i => !q || i.cls.toLowerCase().includes(q) ||
-      i.exam.toLowerCase().includes(q) || i.subjects.some(s => s.name.toLowerCase().includes(q)));
-    $('rows').innerHTML = list.map((i, n) => `
-      <tr>
-        <td class="num">${n + 1}</td>
-        <td><strong>${esc(i.cls)}</strong></td>
-        <td>${esc(i.exam)}</td>
-        <td>${i.subjects.map(s => `<span class="tag">${esc(s.name)}<b>${s.marks}</b></span>`).join('')}</td>
-        <td style="text-align:center">
-          <button class="icon-btn" title="Edit" data-edit="${i.id}" aria-label="Edit">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-          </button>
-        </td>
-        <td style="text-align:center">
-          <button class="icon-btn danger" title="Delete" data-del="${i.id}" aria-label="Delete">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
-          </button>
-        </td>
-      </tr>`).join('');
-    $('empty').hidden = list.length > 0;
-    $('count').textContent = `Showing ${list.length} of ${items.length} allocations`;
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const subName = id => (SUBJECTS.find(s => s.id === String(id)) || { name: id }).name;
+  const showError = m => { errorEl.textContent = m; errorEl.hidden = false; };
+
+  function fill(el, list, ph, value, fallbackName) {
+    let l = list.slice();
+    if (value && !l.some(i => i.id === String(value))) l.push({ id: String(value), name: fallbackName || value });
+    el.innerHTML = '<option value="">' + esc(ph) + '</option>' +
+      l.map(i => `<option value="${esc(i.id)}">${esc(i.name)}</option>`).join('');
+    el.value = value ? String(value) : '';
   }
 
+  /* ---------- search + serial numbers ---------- */
+  function refresh() {
+    const q = $('search').value.trim().toLowerCase();
+    const rows = Array.from($('rows').querySelectorAll('tr'));
+    let n = 0;
+    rows.forEach(tr => {
+      const match = !q || tr.textContent.toLowerCase().includes(q);
+      tr.hidden = !match;
+      if (match) tr.querySelector('.num').textContent = ++n;
+    });
+    $('empty').hidden = n > 0;
+    $('count').textContent = 'Showing ' + n + ' of ' + rows.length + ' allocations';
+  }
+  $('search').addEventListener('input', refresh);
+
   /* ---------- subject picker ---------- */
-  function saveMarks() {              // keep typed marks before re-rendering
+  function saveMarks() {
     $('marksList').querySelectorAll('input[data-sub]').forEach(inp => { marks[inp.dataset.sub] = inp.value; });
   }
   function renderPicker() {
     $('pickBox').innerHTML = selected.length
-      ? selected.map(s => `<span class="chip"><button type="button" data-rm="${esc(s)}" aria-label="Remove ${esc(s)}">&times;</button>${esc(s)}</span>`).join('')
+      ? selected.map(id => `<span class="chip"><button type="button" data-rm="${esc(id)}" aria-label="Remove">&times;</button>${esc(subName(id))}</span>`).join('')
       : '<span class="pick-ph">Click to select subjects</span>';
-    const rest = SUBJECTS.filter(s => !selected.includes(s));
+    const rest = SUBJECTS.filter(s => !selected.includes(s.id));
     $('pickMenu').innerHTML = rest.length
-      ? rest.map(s => `<button type="button" data-add="${esc(s)}">${esc(s)}</button>`).join('')
+      ? rest.map(s => `<button type="button" data-add="${esc(s.id)}">${esc(s.name)}</button>`).join('')
       : '<div class="pick-empty">All subjects selected</div>';
 
     $('marksWrap').hidden = !selected.length;
-    $('marksList').innerHTML = selected.map(s => `
+    $('marksList').innerHTML = selected.map(id => `
       <div class="mark-row">
-        <label for="mk-${esc(s)}">${esc(s)}</label>
-        <input class="field-input" type="number" min="1" step="1" id="mk-${esc(s)}" data-sub="${esc(s)}"
-               placeholder="Enter max marks" value="${marks[s] != null ? esc(marks[s]) : ''}">
+        <label for="mk-${esc(id)}">${esc(subName(id))}</label>
+        <input class="field-input" type="number" min="1" step="1" id="mk-${esc(id)}" data-sub="${esc(id)}"
+               placeholder="Enter max marks" value="${marks[id] != null ? esc(marks[id]) : ''}">
       </div>`).join('');
   }
   const menuOpen = v => { $('pickMenu').hidden = !v; $('pickBox').classList.toggle('focus', v); };
@@ -202,17 +227,18 @@
   document.addEventListener('click', e => { if (!$('picker').contains(e.target)) menuOpen(false); });
 
   /* ---------- modal ---------- */
-  function open(item) {
+  function open(a) {
     form.reset();
     errorEl.hidden = true;
-    editId = item ? item.id : null;
-    $('addTitle').textContent = item ? 'Edit Mark Allocation' : 'Add Mark Allocation';
-    $('saveBtn').textContent = item ? 'Update' : 'Save';
-    $('mClass').value = item ? item.cls : '';
-    $('mExam').value = item ? item.exam : '';
-    selected = item ? item.subjects.map(s => s.name) : [];
+    oldExam  = a ? a.exam_id  : 0;
+    oldClass = a ? a.class_id : 0;
+    $('addTitle').textContent = a ? 'Edit Mark Allocation' : 'Add Mark Allocation';
+    saveBtn.textContent = a ? 'Update' : 'Save';
+    fill($('mClass'), CLASSES, 'Select Class', a ? a.class_id : '', a ? a.class_name : '');
+    fill($('mExam'),  EXAMS,   'Select Exam',  a ? a.exam_id  : '', a ? a.exam_name  : '');
+    selected = a ? a.subjects.map(s => String(s.id)) : [];
     marks = {};
-    if (item) item.subjects.forEach(s => { marks[s.name] = s.marks; });
+    if (a) a.subjects.forEach(s => { marks[String(s.id)] = s.marks; });
     menuOpen(false);
     renderPicker();
     modal.classList.add('open');
@@ -221,59 +247,83 @@
   function close() {
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden', 'true');
-    editId = null;
+    errorEl.hidden = true;
+    oldExam = oldClass = 0;
   }
-  const showError = msg => { errorEl.textContent = msg; errorEl.hidden = false; };
-
   $('openAddModal').addEventListener('click', () => open(null));
   modal.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', close));
   modal.addEventListener('click', e => { if (e.target === modal) close(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
 
-  form.addEventListener('submit', e => {
+  /* ---------- save ---------- */
+  form.addEventListener('submit', async e => {
     e.preventDefault();
     saveMarks();
     const cls = $('mClass').value, exam = $('mExam').value;
-    if (!cls) return showError('Please select a class.');
+    if (!cls)  return showError('Please select a class.');
     if (!exam) return showError('Please select an exam.');
     if (!selected.length) return showError('Please select at least one subject.');
 
     const subjects = [];
-    for (const s of selected) {
-      const m = Number(marks[s]);
-      if (!marks[s] || !Number.isInteger(m) || m <= 0) return showError('Enter valid marks for ' + s + '.');
-      subjects.push({ name: s, marks: m });
+    for (const id of selected) {
+      const m = Number(marks[id]);
+      if (!marks[id] || !Number.isInteger(m) || m <= 0) return showError('Enter valid marks for ' + subName(id) + '.');
+      subjects.push({ id: +id, marks: m });
     }
-    if (items.some(i => i.id !== editId && i.cls === cls && i.exam === exam))
-      return showError('This class and exam already have an allocation. Edit it from the list.');
 
-    if (editId) {
-      // TODO: fetch('/api/mark-allocations/' + editId, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ cls, exam, subjects }) })
-      items = items.map(i => i.id === editId ? { id: i.id, cls, exam, subjects } : i);
-    } else {
-      // TODO: fetch('/api/mark-allocations', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ cls, exam, subjects }) })
-      items.push({ id: nextId++, cls, exam, subjects });
-    }
-    items.sort((a, b) => CLASSES.indexOf(a.cls) - CLASSES.indexOf(b.cls) || EXAMS.indexOf(a.exam) - EXAMS.indexOf(b.exam));
-    render();
-    close();
+    const fd = new FormData();
+    fd.append('exam_id', exam);
+    fd.append('class_id', cls);
+    fd.append('old_exam', oldExam);
+    fd.append('old_class', oldClass);
+    fd.append('subjects', JSON.stringify(subjects));
+    fd.append(CSRF_NAME, CSRF_HASH);
+
+    saveBtn.disabled = true;
+    try {
+      const res = await (await fetch(SAVE_URL, { method: 'POST', body: fd })).json();
+      if (res.csrf) CSRF_HASH = res.csrf;
+      if (!res.status) return showError(res.msg);
+      close();
+      Swal.fire({ icon: 'success', title: 'Success', text: res.msg, timer: 1500, showConfirmButton: false })
+          .then(() => location.reload());
+    } catch (err) {
+      showError('Something went wrong. Please try again.');
+    } finally { saveBtn.disabled = false; }
   });
 
+  /* ---------- edit / delete ---------- */
   $('rows').addEventListener('click', e => {
-    const ed = e.target.closest('[data-edit]');
-    const del = e.target.closest('[data-del]');
-    if (ed) {
-      const item = items.find(i => i.id === +ed.dataset.edit);
-      if (item) open(item);
-    }
-    if (del && confirm('Delete this mark allocation?')) {
-      // TODO: fetch('/api/mark-allocations/' + del.dataset.del, { method: 'DELETE' })
-      items = items.filter(i => i.id !== +del.dataset.del);
-      render();
+    const tr = e.target.closest('tr');
+    if (!tr || !tr.dataset.a) return;
+    const a = JSON.parse(tr.dataset.a);
+
+    if (e.target.closest('[data-edit]')) return open(a);
+
+    if (e.target.closest('[data-del]')) {
+      Swal.fire({
+        title: 'Are you sure?', text: a.class_name + ' - ' + a.exam_name + ' allocation will be deleted.', icon: 'warning',
+        showCancelButton: true, confirmButtonColor: '#dc2626',
+        confirmButtonText: 'Yes, delete it', cancelButtonText: 'Cancel'
+      }).then(async r => {
+        if (!r.isConfirmed) return;
+        const fd = new FormData();
+        fd.append('exam_id', a.exam_id);
+        fd.append('class_id', a.class_id);
+        fd.append(CSRF_NAME, CSRF_HASH);
+        try {
+          const res = await (await fetch(DELETE_URL, { method: 'POST', body: fd })).json();
+          if (res.csrf) CSRF_HASH = res.csrf;
+          if (!res.status) return Swal.fire({ icon: 'error', title: 'Error', text: res.msg });
+          Swal.fire({ icon: 'success', title: 'Deleted!', text: res.msg, timer: 1500, showConfirmButton: false })
+              .then(() => location.reload());
+        } catch (err) {
+          Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong.' });
+        }
+      });
     }
   });
 
-  $('search').addEventListener('input', render);
-  render();
+  refresh();
 })();
 </script>

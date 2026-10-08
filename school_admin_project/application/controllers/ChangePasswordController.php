@@ -9,6 +9,15 @@ class ChangePasswordController extends CI_Controller
   {
     parent::__construct();
     // $this->load->model('GalleryModel');
+
+     if($this->session->userdata(SESSION_VARIABLE))		
+		{
+
+        }
+		else
+		{
+		    redirect('login', 'refresh');
+		}
   }
 
 
