@@ -146,7 +146,10 @@ $route['employee_list']     = 'EmployeeController/employee_list';
 $route['employee_save']     = 'EmployeeController/employee_save';
 $route['employee_update']   = 'EmployeeController/employee_update';
 $route['employee_delete']   = 'EmployeeController/employee_delete';
+
+
 $route['employee_divisions'] = 'EmployeeController/employee_divisions';
+$route['gdhfheghfge'] = 'EmployeeController/hmvsmjdfbjsdbcjk';
 
 
 
