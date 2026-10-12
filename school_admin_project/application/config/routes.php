@@ -35,6 +35,8 @@ $route['gallery_album/(:num)']   = 'GalleryController/gallery_album/$1';
 $route['save_gallery_images']    = 'GalleryController/save_gallery_images';
 $route['delete_gallery_image']   = 'GalleryController/delete_gallery_image';
 
+$route['save_album'] = 'GalleryController/save_album';
+
 $route['co_curricular_list'] = 'CurricularController/co_curricular_list';
 $route['save_co_curricular'] = 'CurricularController/save_co_curricular';
 $route['delete_co_curricular'] = 'CurricularController/delete_co_curricular';
@@ -120,7 +122,7 @@ $route['delete_marks']    = 'ExamController/delete_marks';
 $route['final_submit']    = 'ExamController/final_submit';
 
 $route['change_password'] = 'ChangePasswordController/change_password';
-
+$route['update_account'] = 'ChangePasswordController/update_account';
 
 $route['user_role_list']   = 'QuestionpaperController/user_role_list';
 $route['user_role_save']   = 'QuestionpaperController/user_role_save';

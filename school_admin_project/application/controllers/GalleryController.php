@@ -141,7 +141,49 @@ class GalleryController extends CI_Controller
 
 
 
+// add new album + cover image (AJAX)
+public function save_album()
+{
+    $name = trim((string) $this->input->post('name', TRUE));
 
+    if ($name === '') {
+        return $this->_json(false, 'Please enter the album name.');
+    }
+    if (mb_strlen($name) > 100) {
+        return $this->_json(false, 'Album name is too long (max 100 characters).');
+    }
+    if ($this->School_model->event_type_exists($name)) {
+        return $this->_json(false, '"' . $name . '" already exists.');
+    }
+    if (empty($_FILES['cover']['name'])) {
+        return $this->_json(false, 'Please choose a cover image.');
+    }
+
+    $this->load->library('upload', array(
+        'upload_path'   => '../assets/images/gallery/',
+        'allowed_types' => 'jpg|jpeg|png|webp',
+        'max_size'      => 5120,
+        'encrypt_name'  => TRUE
+    ));
+
+    if (!$this->upload->do_upload('cover')) {
+        return $this->_json(false, strip_tags($this->upload->display_errors('', '')));
+    }
+    $up = $this->upload->data();
+
+    $id = $this->School_model->insert_event_type(array(
+        'name'     => $name,
+        'c_status' => 1,
+        'c_cover'  => $up['file_name']
+    ));
+
+    if (!$id) {
+        @unlink($up['full_path']);          // don't leave an orphan file
+        return $this->_json(false, 'Could not save the album.');
+    }
+
+    return $this->_json(true, 'Album added.');
+}
 
 
 

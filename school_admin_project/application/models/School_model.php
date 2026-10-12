@@ -48,23 +48,23 @@ public function get_event_type($id)
 }
 
 // one card per type: photo count, latest cover, latest date
-public function get_gallery_albums()
-{
-    $sql = "SELECT t.slno AS type_id, t.name,
-                   COUNT(i.n_slno) AS total,
-                   MAX(i.d_date)   AS last_date,
-                   (SELECT c_image FROM school_event_images
-                     WHERE c_type = t.slno AND c_status = 'Y'
-                     ORDER BY n_slno DESC LIMIT 1) AS cover
-            FROM events t
-            LEFT JOIN school_event_images i
-                   ON i.c_type = t.slno AND i.c_status = 'Y'
-            WHERE t.c_status = 1
-            GROUP BY t.slno, t.name
-            ORDER BY MAX(i.n_slno) DESC, t.name ASC";
+// public function get_gallery_albums()
+// {
+//     $sql = "SELECT t.slno AS type_id, t.name,
+//                    COUNT(i.n_slno) AS total,
+//                    MAX(i.d_date)   AS last_date,
+//                    (SELECT c_image FROM school_event_images
+//                      WHERE c_type = t.slno AND c_status = 'Y'
+//                      ORDER BY n_slno DESC LIMIT 1) AS cover
+//             FROM events t
+//             LEFT JOIN school_event_images i
+//                    ON i.c_type = t.slno AND i.c_status = 'Y'
+//             WHERE t.c_status = 1
+//             GROUP BY t.slno, t.name
+//             ORDER BY MAX(i.n_slno) DESC, t.name ASC";
 
-    return $this->db->query($sql)->result();
-}
+//     return $this->db->query($sql)->result();
+// }
 
 // all images of one type
 public function get_images_by_type($type_id)
@@ -242,7 +242,37 @@ public function delete_activities($id)
 
 
 
+public function get_gallery_albums()
+{
+    $sql = "SELECT t.slno AS type_id,
+                   t.name,
+                   COALESCE(NULLIF(t.c_cover, ''),
+                       (SELECT s.c_image
+                          FROM school_event_images s
+                         WHERE s.c_type = t.slno AND s.c_status = 'Y'
+                         ORDER BY s.n_slno DESC LIMIT 1)) AS cover,
+                   COUNT(i.n_slno) AS total,
+                   MAX(i.d_date)   AS last_date
+            FROM events t
+            LEFT JOIN school_event_images i
+                   ON i.c_type = t.slno AND i.c_status = 'Y'
+            WHERE t.c_status = 1
+            GROUP BY t.slno, t.name, t.c_cover
+            ORDER BY t.slno DESC";
 
+    return $this->db->query($sql)->result();
+}
+
+public function event_type_exists($name)
+{
+    return $this->db->where('name', $name)->count_all_results('events') > 0;
+}
+
+public function insert_event_type($data)
+{
+    $this->db->insert('events', $data);
+    return $this->db->insert_id();
+}
 
 
 

@@ -27,6 +27,10 @@ $gradients = array(
       <p class="page-sub">Campus events, cultural fests, tournaments and celebratory albums</p>
     </div>
     <div class="page-actions">
+      <button class="btn" type="button" id="openNewAlbum">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        Add Album
+      </button>
       <button class="btn btn-primary" type="button" id="openAlbumModal">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
         Add Images
@@ -34,7 +38,7 @@ $gradients = array(
     </div>
   </div>
 
-  <!-- Gallery Grid (one card per category) -->
+  <!-- Gallery Grid (one card per album) -->
   <div class="gallery-grid" id="galleryGrid">
     <?php if (!empty($albums)): ?>
       <?php foreach ($albums as $i => $a): ?>
@@ -45,7 +49,7 @@ $gradients = array(
               : 'background:' . $gradients[$i % count($gradients)];
           $total = (int) $a->total;
         ?>
-        <a class="gallery-card-link" href="<?= site_url('GalleryController/gallery_album/' . (int) $a->type_id) ?>">
+        <a class="gallery-card-link" href="<?= site_url('gallery_album/' . (int) $a->type_id) ?>">
           <div class="gallery-card">
             <div class="gallery-thumb <?= $has_cover ? 'has-img' : '' ?>" style="<?= $thumb_style ?>">
               <?= $has_cover ? '' : html_escape($a->name) ?>
@@ -69,13 +73,46 @@ $gradients = array(
         </a>
       <?php endforeach; ?>
     <?php else: ?>
-      <p class="empty-note">No albums yet. Add event categories first, then upload images.</p>
+      <p class="empty-note">No albums yet. Click <strong>Add Album</strong> to create one.</p>
     <?php endif; ?>
   </div>
 </main>
 
 
-<!-- Add Images Modal -->
+<!-- ===================== Add Album Modal ===================== -->
+<div class="modal-overlay" id="newAlbumModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="newAlbumTitle">
+    <div class="modal-head">
+      <h2 id="newAlbumTitle">Add Album</h2>
+      <button class="modal-close" type="button" data-close-album aria-label="Close">&times;</button>
+    </div>
+
+    <form id="newAlbumForm" novalidate>
+      <div class="modal-body">
+        <label class="field-label" for="nName">Album name <span class="req">*</span></label>
+        <input type="text" id="nName" class="field-input" maxlength="100" placeholder="e.g. Sports Day 2026" autocomplete="off">
+
+        <label class="field-label" for="nCover">Cover image <span class="req">*</span></label>
+        <label class="dropzone" id="nDrop" for="nCover">
+          <img id="nPrev" alt="" hidden style="max-height:140px;max-width:100%;border-radius:8px">
+          <span id="nHint"><strong>Click to choose</strong> or drag the cover image here</span>
+          <small>JPG, PNG, WEBP · max 5 MB</small>
+        </label>
+        <input type="file" id="nCover" accept="image/png,image/jpeg,image/webp" hidden>
+
+        <p class="field-error" id="nError" hidden></p>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn" data-close-album>Cancel</button>
+        <button type="submit" class="btn btn-primary" id="nSubmit">Save Album</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- ===================== Add Images Modal ===================== -->
 <div class="modal-overlay" id="albumModal" aria-hidden="true">
   <div class="modal" style="max-width:640px" role="dialog" aria-modal="true" aria-labelledby="albumModalTitle">
     <div class="modal-head">
@@ -85,9 +122,9 @@ $gradients = array(
 
     <form id="albumForm" novalidate>
       <div class="modal-body">
-        <label class="field-label" for="aCategory">Category <span class="req">*</span></label>
+        <label class="field-label" for="aCategory">Album <span class="req">*</span></label>
         <select id="aCategory" class="field-input">
-          <option value="">Select category</option>
+          <option value="">Select album</option>
           <?php foreach ($types as $t): ?>
             <option value="<?= (int) $t->slno ?>"><?= html_escape($t->name) ?></option>
           <?php endforeach; ?>
@@ -135,6 +172,7 @@ $gradients = array(
 .gallery-info p{font-size:12.5px;color:var(--slate-500);margin:0 0 12px}
 .gallery-meta{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--slate-100);padding-top:10px}
 .empty-note{grid-column:1/-1;text-align:center;color:#64748b;padding:40px 0}
+.page-actions{display:flex;gap:10px;flex-wrap:wrap}
 
 /* ---------- modal ---------- */
 .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:1000}
@@ -167,6 +205,89 @@ $gradients = array(
 </style>
 
 
+<!-- ===================== Add Album script ===================== -->
+<script>
+(function () {
+  const $ = id => document.getElementById(id);
+  const modal = $('newAlbumModal'), form = $('newAlbumForm');
+  const nameEl = $('nName'), fileEl = $('nCover'), drop = $('nDrop');
+  const prev = $('nPrev'), hint = $('nHint'), err = $('nError'), btn = $('nSubmit');
+  const MAX = 5 * 1024 * 1024, OK = ['image/jpeg', 'image/png', 'image/webp'];
+
+  // CSRF (CodeIgniter) - updated after every AJAX response
+  let csrfName = '<?= $this->security->get_csrf_token_name() ?>';
+  let csrfHash = '<?= $this->security->get_csrf_hash() ?>';
+  const URL_SAVE = '<?= site_url('save_album') ?>';
+  let cover = null;
+
+  const showErr = t => { err.classList.remove('ok'); err.textContent = t; err.hidden = false; };
+  const showOk  = t => { err.classList.add('ok');    err.textContent = t; err.hidden = false; };
+
+  function setCover(f) {
+    err.hidden = true;
+    if (!f) return;
+    if (!OK.includes(f.type)) return showErr('Only JPG, PNG or WEBP images are allowed.');
+    if (f.size > MAX)         return showErr('Image is larger than 5 MB.');
+    if (prev.src) URL.revokeObjectURL(prev.src);
+    cover = f;
+    prev.src = URL.createObjectURL(f);
+    prev.hidden = false;
+    hint.textContent = f.name;
+  }
+
+  function open()  { modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); nameEl.focus(); }
+  function close() {
+    modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true');
+    form.reset(); cover = null; err.hidden = true;
+    if (prev.src) URL.revokeObjectURL(prev.src);
+    prev.removeAttribute('src'); prev.hidden = true;
+    hint.innerHTML = '<strong>Click to choose</strong> or drag the cover image here';
+  }
+
+  $('openNewAlbum').addEventListener('click', open);
+  modal.addEventListener('click', e => { if (e.target === modal || e.target.closest('[data-close-album]')) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
+
+  fileEl.addEventListener('change', () => { setCover(fileEl.files[0]); fileEl.value = ''; });
+  ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('drag'); }));
+  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('drag'); }));
+  drop.addEventListener('drop', e => setCover(e.dataTransfer.files[0]));
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const name = nameEl.value.trim();
+    if (!name)  return showErr('Please enter the album name.');
+    if (!cover) return showErr('Please choose a cover image.');
+
+    const data = new FormData();
+    data.append('name', name);
+    data.append('cover', cover);
+    data.append(csrfName, csrfHash);
+
+    btn.disabled = true; btn.textContent = 'Saving...'; err.hidden = true;
+
+    try {
+      const res  = await fetch(URL_SAVE, { method: 'POST', body: data, headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+      const json = await res.json();
+      if (json.csrf) csrfHash = json.csrf;
+
+      if (json.status) {
+        showOk(json.msg);
+        setTimeout(() => window.location.reload(), 800);
+      } else {
+        showErr(json.msg || 'Could not save.');
+        btn.disabled = false; btn.textContent = 'Save Album';
+      }
+    } catch (x) {
+      showErr('Something went wrong. Please try again.');
+      btn.disabled = false; btn.textContent = 'Save Album';
+    }
+  });
+})();
+</script>
+
+
+<!-- ===================== Add Images script ===================== -->
 <script>
 (function () {
   const $ = id => document.getElementById(id);
@@ -178,10 +299,9 @@ $gradients = array(
   const MAX_SIZE = 5 * 1024 * 1024, MAX_FILES = 30;
   const OK_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
-  // CSRF (CodeIgniter) - updated after every AJAX response
   let csrfName = '<?= $this->security->get_csrf_token_name() ?>';
   let csrfHash = '<?= $this->security->get_csrf_hash() ?>';
-  const UPLOAD_URL = '<?= site_url('GalleryController/save_gallery_images') ?>';
+  const UPLOAD_URL = '<?= site_url('save_gallery_images') ?>';
 
   let items = [];   // [{ id, file, url }]
   let uid = 0;
@@ -191,7 +311,7 @@ $gradients = array(
   const showOk    = t => { errorEl.classList.add('ok');    errorEl.textContent = t; errorEl.hidden = false; };
 
   function render() {
-    preview.innerHTML = items.map((it, i) => `
+    preview.innerHTML = items.map(it => `
       <div class="prev-item">
         <img src="${it.url}" alt="">
         <button type="button" class="prev-x" data-remove="${it.id}" title="Remove" aria-label="Remove image">&times;</button>
@@ -230,13 +350,11 @@ $gradients = array(
   modal.addEventListener('click', e => { if (e.target === modal || e.target.closest('[data-close]')) close(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
 
-  // choose / drag-drop
   input.addEventListener('change', () => { addFiles(input.files); input.value = ''; });
   ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('drag'); }));
   ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('drag'); }));
   drop.addEventListener('drop', e => addFiles(e.dataTransfer.files));
 
-  // remove one / remove all
   preview.addEventListener('click', e => {
     const btn = e.target.closest('[data-remove]'); if (!btn) return;
     const id = Number(btn.dataset.remove);
@@ -248,11 +366,10 @@ $gradients = array(
   });
   $('aClear').addEventListener('click', () => { clearItems(); errorEl.hidden = true; });
 
-  // upload
   form.addEventListener('submit', async e => {
     e.preventDefault();
     const type = $('aCategory').value;
-    if (!type) return showError('Please select a category.');
+    if (!type) return showError('Please select an album.');
     if (!items.length) return showError('Please add at least one image.');
 
     const data = new FormData();
@@ -265,13 +382,9 @@ $gradients = array(
     errorEl.hidden = true;
 
     try {
-      const res  = await fetch(UPLOAD_URL, {
-        method: 'POST',
-        body: data,
-        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-      });
+      const res  = await fetch(UPLOAD_URL, { method: 'POST', body: data, headers: { 'X-Requested-With': 'XMLHttpRequest' } });
       const json = await res.json();
-      if (json.csrf) csrfHash = json.csrf;      // refresh token
+      if (json.csrf) csrfHash = json.csrf;
 
       if (json.status) {
         showOk(json.msg);

@@ -1,3 +1,4 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <style>
 .pw-shell{display:grid;grid-template-columns:300px 1fr;max-width:880px;margin:8px auto 24px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 10px 40px rgba(30,41,59,.10);border:1px solid #e8eaf0}
 
@@ -21,6 +22,7 @@
 .pw-main .sub{margin:0 0 24px;font-size:13px;color:#64748b}
 .fgroup{margin-bottom:18px}
 .field-label{display:block;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:#334155;margin:0 0 7px}
+.field-label small{text-transform:none;letter-spacing:0;font-weight:500;color:#94a3b8}
 .req{color:#dc2626}
 .pw-wrap{position:relative}
 .pw-wrap .lead{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:#94a3b8;pointer-events:none;transition:color .15s}
@@ -35,6 +37,7 @@
 .eye:hover{background:#eef2ff;color:#4f46e5}
 .eye.on{color:#4f46e5}
 .eye svg{width:19px;height:19px}
+.divider{height:1px;background:#e8eaf0;margin:22px 0}
 
 /* strength */
 .strength{margin:-6px 0 10px}
@@ -72,8 +75,8 @@
 <main class="page">
   <div class="page-header">
     <div>
-      <h1 class="page-title">Change Password</h1>
-      <p class="page-sub">Update your account password</p>
+      <h1 class="page-title">Account Settings</h1>
+      <p class="page-sub">Update your username and password</p>
     </div>
   </div>
 
@@ -94,8 +97,18 @@
 
     <!-- Form -->
     <form id="pwForm" class="pw-main" novalidate autocomplete="off">
-      <h3>Password details</h3>
-      <p class="sub">Enter your current password, then choose a new one.</p>
+      <h3>Account details</h3>
+      <p class="sub">Your current password is required to save any change.</p>
+
+      <div class="fgroup">
+        <label class="field-label" for="userName">Username <span class="req">*</span></label>
+        <div class="pw-wrap">
+          <svg class="lead" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+          <input type="text" id="userName" maxlength="50" value="<?= html_escape($username) ?>" placeholder="Enter username" autocomplete="off" style="padding-right:14px">
+        </div>
+      </div>
+
+      <div class="divider"></div>
 
       <div class="fgroup">
         <label class="field-label" for="curPw">Current Password <span class="req">*</span></label>
@@ -107,7 +120,7 @@
       </div>
 
       <div class="fgroup">
-        <label class="field-label" for="newPw">New Password <span class="req">*</span></label>
+        <label class="field-label" for="newPw">New Password <small>(leave blank to keep the current one)</small></label>
         <div class="pw-wrap">
           <svg class="lead" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M16 7l3 3M14 9l2 2"/></svg>
           <input type="password" id="newPw" placeholder="Enter new password" autocomplete="new-password">
@@ -129,7 +142,7 @@
       </ul>
 
       <div class="fgroup">
-        <label class="field-label" for="cfmPw">Confirm New Password <span class="req">*</span></label>
+        <label class="field-label" for="cfmPw">Confirm New Password</label>
         <div class="pw-wrap">
           <svg class="lead" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.2 8.3 8 9 4.8-.7 8-4.5 8-9V6l-8-3Z"/></svg>
           <input type="password" id="cfmPw" placeholder="Re-enter new password" autocomplete="new-password">
@@ -141,7 +154,7 @@
 
       <div class="pw-actions">
         <button type="reset" class="btn">Clear</button>
-        <button type="submit" class="btn btn-primary" id="saveBtn">Update Password</button>
+        <button type="submit" class="btn btn-primary" id="saveBtn">Save Changes</button>
       </div>
     </form>
   </div>
@@ -151,7 +164,13 @@
 (function () {
   const $ = id => document.getElementById(id);
   const form = $('pwForm'), msg = $('pwMsg');
-  const cur = $('curPw'), nw = $('newPw'), cfm = $('cfmPw');
+  const usr = $('userName'), cur = $('curPw'), nw = $('newPw'), cfm = $('cfmPw');
+
+  // CSRF (CodeIgniter) - refreshed after every AJAX response
+  let csrfName = '<?= $this->security->get_csrf_token_name() ?>';
+  let csrfHash = '<?= $this->security->get_csrf_hash() ?>';
+  const SAVE_URL = '<?= site_url('update_account') ?>';
+  let savedUser = usr.value;
 
   const EYE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12Z"/><circle cx="12" cy="12" r="3"/></svg>';
   const EYE_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.9 17.9A10.9 10.9 0 0 1 12 20C5 20 1 12 1 12a18.5 18.5 0 0 1 5.1-5.9M9.9 4.2A10.7 10.7 0 0 1 12 4c7 0 11 8 11 8a18.6 18.6 0 0 1-2.2 3.2M1 1l22 22"/><path d="M14.1 14.1a3 3 0 1 1-4.2-4.2"/></svg>';
@@ -174,7 +193,7 @@
   ];
 
   const showMsg = (text, type) => {
-    msg.innerHTML = (type === 'ok' ? '✓ ' : '⚠ ') + text.replace(/</g, '&lt;');
+    msg.textContent = (type === 'ok' ? '✓ ' : '⚠ ') + text;
     msg.className = 'pw-msg ' + type;
     msg.hidden = false;
   };
@@ -209,49 +228,76 @@
     });
   });
 
+  usr.addEventListener('input', () => { clearMsg(); usr.classList.remove('bad'); });
   nw.addEventListener('input', () => { updateStrength(); checkMatch(); clearMsg(); nw.classList.remove('bad'); });
   cfm.addEventListener('input', () => { checkMatch(); clearMsg(); cfm.classList.remove('bad'); });
   cur.addEventListener('input', () => { clearMsg(); cur.classList.remove('bad'); });
 
+  // reset: username goes back to the saved one
   form.addEventListener('reset', () => {
     setTimeout(() => {
-      [cur, nw, cfm].forEach(i => { i.classList.remove('bad', 'good'); i.type = 'password'; });
+      usr.value = savedUser;
+      [usr, cur, nw, cfm].forEach(i => i.classList.remove('bad', 'good'));
+      [cur, nw, cfm].forEach(i => { i.type = 'password'; });
       form.querySelectorAll('.eye').forEach(b => { b.innerHTML = EYE; b.classList.remove('on'); });
       updateStrength();
       clearMsg();
     });
   });
 
-  form.addEventListener('submit', e => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
-    [cur, nw, cfm].forEach(i => i.classList.remove('bad'));
+    [usr, cur, nw, cfm].forEach(i => i.classList.remove('bad'));
     clearMsg();
     const fail = (el, text) => { el.classList.add('bad'); el.focus(); showMsg(text, 'err'); };
 
+    const username = usr.value.trim();
+    const changeUser = username !== savedUser;
+    const changePw = nw.value !== '';
+
+    if (!username) return fail(usr, 'Please enter a username.');
+    if (changeUser && !/^[A-Za-z0-9._@-]{3,50}$/.test(username))
+      return fail(usr, 'Username must be 3-50 characters (letters, numbers, . _ @ - only).');
     if (!cur.value) return fail(cur, 'Please enter your current password.');
-    if (!nw.value) return fail(nw, 'Please enter a new password.');
-    if (Object.keys(RULES).some(k => !RULES[k](nw.value))) return fail(nw, 'New password does not meet all the rules.');
-    if (nw.value === cur.value) return fail(nw, 'New password must be different from the current password.');
-    if (!cfm.value) return fail(cfm, 'Please confirm your new password.');
-    if (cfm.value !== nw.value) return fail(cfm, 'New password and confirm password do not match.');
+    if (changePw) {
+      if (Object.keys(RULES).some(k => !RULES[k](nw.value))) return fail(nw, 'New password does not meet all the rules.');
+      if (nw.value === cur.value) return fail(nw, 'New password must be different from the current password.');
+      if (!cfm.value) return fail(cfm, 'Please confirm your new password.');
+      if (cfm.value !== nw.value) return fail(cfm, 'New password and confirm password do not match.');
+    }
+    if (!changeUser && !changePw) return showMsg('Nothing to update. Change the username or enter a new password.', 'err');
+
+    const data = new FormData();
+    data.append('username', username);
+    data.append('current_password', cur.value);
+    data.append('new_password', nw.value);
+    data.append('confirm_password', cfm.value);
+    data.append(csrfName, csrfHash);
 
     const btn = $('saveBtn');
     btn.disabled = true;
-    btn.textContent = 'Updating…';
+    btn.textContent = 'Saving…';
 
-    // TODO: send to your backend (the server must verify the current password), e.g.
-    // fetch('/api/change-password', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ current_password: cur.value, new_password: nw.value, new_password_confirmation: cfm.value })
-    // }).then(r => r.json()).then(res => { ...show success or error from res... });
+    try {
+      const res  = await fetch(SAVE_URL, { method: 'POST', body: data, headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+      const json = await res.json();
+      if (json.csrf) csrfHash = json.csrf;
 
-    setTimeout(() => {          // demo only: remove when the real API is connected
-      btn.disabled = false;
-      btn.textContent = 'Update Password';
-      form.reset();
-      showMsg('Password updated successfully.', 'ok');
-    }, 600);
+      if (json.status) {
+        savedUser = username;
+        form.reset();                 // clears the 3 password fields, username restored by reset handler
+        showMsg(json.msg, 'ok');
+      } else {
+        const wrongCur = /current password/i.test(json.msg || '');
+        const dupUser  = /username/i.test(json.msg || '');
+        if (wrongCur) cur.classList.add('bad'); else if (dupUser) usr.classList.add('bad');
+        showMsg(json.msg || 'Could not update.', 'err');
+      }
+    } catch (err) {
+      showMsg('Something went wrong. Please try again.', 'err');
+    }
+    btn.disabled = false;
+    btn.textContent = 'Save Changes';
   });
 
   updateStrength();
