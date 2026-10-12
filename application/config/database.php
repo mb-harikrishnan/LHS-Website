@@ -70,6 +70,7 @@ $db['default'] = array(
 	// 'database' => 'school_managment_db',
 
 	
+	
 	'hostname' => '103.122.182.25',
 	'username' => 'lhs_demo',
 	'password' => 'lhsdemo@123',

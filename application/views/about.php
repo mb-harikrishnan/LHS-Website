@@ -1,33 +1,3 @@
-<!doctype html>
-<html lang="en">
-
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <title>Little Flower | About</title>
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap.min.css') ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/font-awesome.min.css') ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/edua-icons.css') ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/animate.min.css') ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.carousel.css') ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.transitions.css') ?> ">
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/cubeportfolio.min.css') ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/settings.css') ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootsnav.css') ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/style.css') ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/loader.css') ?>">
-
-  <link rel="icon" href="<?php echo base_url('assets/images/favicon.png') ?>">
-
-  <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
-</head>
-
-
-
 <!--Search-->
 <div id="search">
   <button type="button" class="close">×</button>
@@ -88,7 +58,7 @@
 
             <div class="col-md-4 col-sm-4">
               <div class="feature-box text-center">
-                <i class="icon-icons9"></i>
+                <i class="fa fa-balance-scale"></i>
                 <h4>Ethical Leadership</h4>
                 <p>
                   Rooted in respect for human dignity and environmental responsibility.
@@ -98,7 +68,7 @@
 
             <div class="col-md-4 col-sm-4">
               <div class="feature-box text-center">
-                <i class="icon-icons20"></i>
+                <i class="fa fa-heart"></i>
                 <h4>Social Empathy</h4>
                 <p>
                   Demonstrated through community outreach programs and service learning.
@@ -108,7 +78,7 @@
 
             <div class="col-md-4 col-sm-4">
               <div class="feature-box text-center">
-                <i class="icon-laptop"></i>
+                <i class="fa fa-graduation-cap"></i>
                 <h4>Lifelong Learning</h4>
                 <p>
                   Cultivated via NEP-aligned pedagogies like coding, computational thinking,
@@ -136,7 +106,7 @@
     <div class="row top40">
       <div class="col-md-12 wow fadeInUp" data-wow-delay="400ms">
 
-        <div class="about-detail-box">
+        <div class="about-detail-box wow fadeInUp">
 
           <h3 class="bottom20">Our Journey</h3>
 
@@ -207,24 +177,24 @@
     <h2 class="hidden">hidden</h2>
     <div class="row number-counters">
       <div class="col-md-3 col-sm-6 col-xs-6 counters-item text-center wow fadeInUp" data-wow-delay="300ms">
-        <i class="icon-checkmark3"></i>
+        <i class="fa fa-check-circle"></i>
         <strong data-to="1235">0</strong>
-        <p>Project Completed</p>
+        <p>Happy Alumni</p>
       </div>
       <div class="col-md-3 col-sm-6 col-xs-6 counters-item text-center wow fadeInUp" data-wow-delay="400ms">
-        <i class="icon-trophy"></i>
+        <i class="fa fa-trophy"></i>
         <strong data-to="78">0</strong>
         <p>Awards Won</p>
       </div>
       <div class="col-md-3 col-sm-6 col-xs-6 counters-item text-center wow fadeInUp" data-wow-delay="500ms">
-        <i class=" icon-icons20"></i>
+        <i class="fa fa-users"></i>
         <strong data-to="186">0</strong>
-        <p>Hours of Work / Month</p>
+        <p>Dedicated Staff</p>
       </div>
       <div class="col-md-3 col-sm-6 col-xs-6 counters-item text-center wow fadeInUp" data-wow-delay="600ms">
-        <i class="icon-happy"></i>
+        <i class="fa fa-smile-o"></i>
         <strong data-to="89">0</strong>
-        <p>Satisfied Clients</p>
+        <p>Years of Trust</p>
       </div>
     </div>
   </div>
@@ -234,316 +204,483 @@
 
 
 
+
 <style>
- /*================================
-        ABOUT SECTION
-================================*/
+/* ============================================================
+   LITTLE HEARTS SCHOOL — SCHOOL UI LAYER v2 (internal per-page)
+   School design: notebook paper bg, tape-top cards, dashed
+   borders, cap/star icon chips, doodle blobs, Fredoka headings.
+   Per-page accent color comes from the section id (--acc).
+   ============================================================ */
+:root{
+    --fl-navy:#0b2447; --fl-navy2:#123a6b; --fl-gold:#f5a623; --fl-gold2:#e2911a;
+    --fl-ink:#22314a; --fl-muted:#5b6b84; --fl-paper:#f6f9ff; --fl-line:#e3ecf7;
+    --fl-r:22px; --fl-sh:0 16px 36px rgba(11,36,71,.10);
+    --acc:#2f6fed;
+}
+/* ---- per-page accent colors ---- */
+#about{--acc:#2f6fed} #mission_vision{--acc:#2f6fed} #curriculum{--acc:#22a06b}
+#admissions{--acc:#e0475f} #discipline{--acc:#7c5cff} #fee_regulations{--acc:#0e9f6e}
+#rules_and_regulations{--acc:#f97316} #scheme_of_studies{--acc:#2f6fed}
+#school_uniform{--acc:#0ea5e9} #parental_support{--acc:#ec4899}
+#mandatory_disclosure{--acc:#2f6fed} #transfer_certificates{--acc:#f5a623}
+#downloads{--acc:#e0475f} #clubs{--acc:#f5a623} #news{--acc:#f5a623}
+#sports{--acc:#22a06b} #activities{--acc:#8e6fe8} #fun{--acc:#2fb380}
+#contact{--acc:#2f6fed} #teachers{--acc:#8e6fe8} #testinomila_page{--acc:#f5a623}
+#vacancy{--acc:#2f6fed} #house_system{--acc:#e0475f} #band_page{--acc:#f5a623}
+#study_tour{--acc:#22a06b} #directors_message{--acc:#2f6fed} #principals_message{--acc:#2fb380}
 
-#about{
-    background: linear-gradient(to bottom,#f7faff,#eef5ff);
-    padding: 100px 0;
-    position: relative;
+/* ---- notebook-paper page background + doodle blobs ---- */
+#about,#mission_vision,#curriculum,#admissions,#discipline,#fee_regulations,
+#rules_and_regulations,#scheme_of_studies,#school_uniform,#parental_support,
+#mandatory_disclosure,#transfer_certificates,#downloads,#clubs,#news,#sports,
+#activities,#fun,#contact,#teachers,#testinomila_page,#vacancy,#house_system,
+#band_page,#study_tour,#directors_message,#principals_message{
+    background-color:var(--fl-paper) !important;
+    background-image:
+        radial-gradient(circle at 8% 6%, color-mix(in srgb, var(--acc) 9%, transparent) 0, transparent 24%),
+        radial-gradient(circle at 96% 90%, rgba(245,166,35,.10) 0, transparent 28%),
+        radial-gradient(rgba(11,36,71,.055) 1.3px, transparent 1.3px) !important;
+    background-size:auto, auto, 26px 26px !important;
+    position:relative;
+    overflow-x:hidden;
+}
+/* crayon doodle blobs (pure CSS, decorative) */
+#about::before,#mission_vision::before,#curriculum::before,#admissions::before,
+#discipline::before,#fee_regulations::before,#rules_and_regulations::before,
+#scheme_of_studies::before,#school_uniform::before,#parental_support::before,
+#downloads::before,#clubs::before,#fun::before,#contact::before{
+    content:"";position:absolute;top:70px;right:3%;width:130px;height:130px;z-index:0;
+    border-radius:42% 58% 62% 38%/48% 42% 58% 52%;
+    border:3px dashed color-mix(in srgb, var(--acc) 38%, transparent);
+    animation:fl-float 7s ease-in-out infinite;pointer-events:none;
+}
+#about::after,#curriculum::after,#admissions::after,#discipline::after,
+#fee_regulations::after,#rules_and_regulations::after,#scheme_of_studies::after,
+#school_uniform::after,#parental_support::after,#clubs::after,#fun::after{
+    content:"";position:absolute;bottom:120px;left:2.5%;width:86px;height:86px;z-index:0;
+    border-radius:50%;
+    background:
+        radial-gradient(circle at 35% 35%, color-mix(in srgb, var(--fl-gold) 55%, transparent), transparent 62%);
+    animation:fl-float 9s ease-in-out infinite reverse;pointer-events:none;
+}
+@keyframes fl-float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-16px) rotate(8deg)}}
+
+/* ---- Fredoka headings with marker highlight underline ---- */
+h1,h2,h3,h4,h5,h6,.heading,.main_title h2{font-family:'Fredoka',cursive !important;letter-spacing:.2px;}
+body,p,li,a,span,td,th,label,input,textarea,select,button{font-family:'Nunito Sans',sans-serif !important;}
+
+.main_title h2,.heading{
+    position:relative;display:inline-block;margin-bottom:8px;z-index:1;
+}
+.main_title h2::after,.heading::after{
+    content:"";position:absolute;left:50%;transform:translateX(-50%);
+    bottom:-4px;width:110%;height:12px;z-index:-1;border-radius:6px;
+    background:linear-gradient(90deg,
+        color-mix(in srgb, var(--acc) 26%, transparent),
+        color-mix(in srgb, var(--fl-gold) 32%, transparent));
+    transform:translateX(-50%) rotate(-.6deg);
+}
+.heading::after{left:0;transform:rotate(-.6deg);width:100px;}
+.divider-left,.divider-center{display:none !important;}
+.main_title p{color:var(--fl-muted);font-size:15.5px;line-height:1.9;max-width:860px;margin:16px auto 0;}
+
+/* ---- pencil-dash tag chips ---- */
+.admission_tag,.curriculum_tag,.discipline_tag,.fee_tag,.rules_tag,.scheme_tag,
+.support_tag,.uniform_tag,.fun_tag,.subtitle{
+    display:inline-flex;align-items:center;gap:9px;
+    background:#fff;
+    color:var(--acc);
+    border:2px dashed color-mix(in srgb, var(--acc) 50%, #fff);
+    padding:8px 20px;border-radius:50px;font-weight:800;font-size:12.5px;
+    letter-spacing:1.1px;text-transform:uppercase;margin-bottom:14px;
+    box-shadow:3px 3px 0 color-mix(in srgb, var(--acc) 18%, transparent);
+}
+.admission_tag::before,.curriculum_tag::before,.discipline_tag::before,.fee_tag::before,
+.rules_tag::before,.scheme_tag::before,.support_tag::before,.uniform_tag::before,
+.fun_tag::before,.subtitle::before{content:"✏";font-size:13px;}
+
+/* ---- cards: clean white paper ---- */
+.admission_card,.curriculum_card,.fee_card,.rules_card,.study_card,.support_card,
+.disclosure_card,.uniform_card,.club_box,.download_box,
+.mission_box,.fun_content_box,.about-detail-box,.mission-box,.discipline_wrapper,
+.director-image-box,.director-message-box,.principal-image-box,.principal-message-box,
+.closing_message,.highlight_box,.news_box,.teacher,.note_card{
+    position:relative;
+    background:#fff !important;
+    border:2px solid var(--fl-line) !important;
+    border-radius:var(--fl-r) !important;
+    box-shadow:var(--fl-sh) !important;
+    transition:transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease !important;
+}
+.admission_card:hover,.curriculum_card:hover,.fee_card:hover,.rules_card:hover,
+.study_card:hover,.support_card:hover,.disclosure_card:hover,.uniform_card:hover,
+.club_box:hover,.download_box:hover,
+.mission_box:hover,.fun_content_box:hover,.about-detail-box:hover,
+.director-image-box:hover,.principal-image-box:hover,.news_box:hover,
+.teacher:hover,.note_card:hover{
+    transform:translateY(-8px) rotate(-.4deg) !important;
+    box-shadow:0 26px 50px rgba(11,36,71,.17) !important;
+    border-color:color-mix(in srgb, var(--acc) 45%, #fff) !important;
 }
 
-.aboutus{
-    position: relative;
-    z-index: 2;
+/* ---- icon chips: graduation-cap style rounded squares ---- */
+.admission_icon,.curriculum_icon,.fee_icon,.rules_icon,.support_icon,.study_header i,
+.discipline_item i,.uniform_icon,.note_icon,.intro_icon,.funlearn_card .icon_box,.mission_icon{
+    border-radius:16px !important;
+    background:linear-gradient(135deg, var(--acc), color-mix(in srgb, var(--acc) 68%, #000)) !important;
+    box-shadow:0 10px 20px color-mix(in srgb, var(--acc) 35%, transparent) !important;
+    transition:transform .35s cubic-bezier(.34,1.56,.64,1) !important;
+}
+.admission_card:hover .admission_icon,.curriculum_card:hover .curriculum_icon,
+.fee_card:hover .fee_icon,.rules_card:hover .rules_icon,.support_card:hover .support_icon,
+.discipline_item:hover i,.uniform_card:hover .uniform_icon,.note_card:hover .note_icon{
+    transform:rotate(-8deg) scale(1.1);
 }
 
-/*================================
-        HEADING AREA
-================================*/
+/* ---- text colors ---- */
+.admission_card h3,.curriculum_card h3,.fee_card h3,.rules_card h3,.support_card h3,
+.study_card h3,.club_box h3,.download_box h4,.vacancy_title,.fun_content_box h3,
+.about-detail-box h3,.news_box h4,.note_content h4,.disclosure_card .card_title{color:var(--fl-navy) !important;}
+.admission_card p,.curriculum_card p,.fee_card p,.rules_card p,.support_card p,
+.club_box p,.fun_content_box p,.news_box p,.discipline_item p,.note_content p{color:var(--fl-muted) !important;font-size:15px;line-height:1.9;}
 
-.heading{
-    font-size: 52px;
-    font-weight: 800;
-    line-height: 65px;
-    color: #111;
-    margin-bottom: 20px;
-    text-align: center;
+/* ---- checklist: round pastel ✓ badges ---- */
+.curriculum_card ul li::before,.fee_card ul li::before,.support_card ul li::before,
+.rules_card ul li::before,.study_list li::before{
+    content:"✓" !important;font-family:'Nunito Sans' !important;
+    width:20px;height:20px;border-radius:50%;
+    background:color-mix(in srgb, var(--acc) 16%, #fff);
+    color:var(--acc);display:inline-flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:900;left:0;top:3px;
+}
+.curriculum_card ul li,.fee_card ul li,.support_card ul li,.rules_card ul li,.study_list li{padding-left:30px !important;}
+
+/* ---- tables: rounded, pastel header ---- */
+.fee_table,.uniform_table,.disclosure_table{border-radius:14px;overflow:hidden;}
+.fee_table thead,.uniform_table thead,.disclosure_table thead,.tc_table thead tr th{
+    background:linear-gradient(135deg, var(--acc), color-mix(in srgb, var(--acc) 72%, #000)) !important;
+}
+.fee_table thead th,.uniform_table thead th,.disclosure_table thead th{
+    font-family:'Fredoka' !important;font-weight:600;letter-spacing:.4px;
+}
+.disclosure_table tbody tr:hover td,.fee_table tbody tr:hover td,.uniform_table tbody tr:hover td{
+    background:color-mix(in srgb, var(--acc) 7%, #fff) !important;
 }
 
-.divider-left{
-    width: 120px;
-    height: 5px;
-    background: linear-gradient(90deg,#0654c2,#2ea7ff);
-    display: block;
-    margin: 22px auto 0;
-    border-radius: 50px;
+/* ---- buttons: pill with hard offset shadow (sticker feel) ---- */
+.btn_common,.btn_download,.view_btn,.apply_btn,.download_btn,.admission_btn,.submit_btn,.back_btn{
+    border-radius:50px !important;font-weight:800 !important;letter-spacing:.3px;
+    box-shadow:0 6px 0 color-mix(in srgb, var(--acc) 55%, #000) !important;
+    transition:transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease !important;
+}
+.btn_common:hover,.btn_download:hover,.view_btn:hover,.apply_btn:hover,
+.download_btn:hover,.admission_btn:hover,.submit_btn:hover{
+    transform:translateY(-3px) !important;
+    box-shadow:0 9px 0 color-mix(in srgb, var(--acc) 55%, #000) !important;
+}
+.view_btn,.btn_download,.apply_btn{
+    background:linear-gradient(135deg, var(--acc), color-mix(in srgb, var(--acc) 75%, #000)) !important;
 }
 
-#about h4{
-    text-align: center;
-    font-size: 24px;
-    line-height: 38px;
-    color: #0654c2;
-    font-weight: 600;
-    margin-bottom: 35px;
+/* ---- banner images: white polaroid frame + tilt ---- */
+.house_banner img,.band_banner img{
+    border-radius:18px !important;
+    border:10px solid #fff;
+    box-shadow:0 24px 50px rgba(11,36,71,.18) !important;
+    transform:rotate(-.7deg);
+}
+.house_box{
+    border-radius:26px !important;
+    border:4px solid rgba(255,255,255,.55) !important;
+    min-height:220px;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 18px 40px rgba(11,36,71,.16) !important;
+}
+.house_box h3{font-size:30px !important;letter-spacing:1px;}
+
+/* ---- leaders / messages ---- */
+.director-quote{
+    background:color-mix(in srgb, var(--acc) 8%, #fff) !important;
+    border-left:6px solid var(--acc) !important;border-radius:16px !important;
+}
+.director-img,.principal-img{border:8px solid #fff !important;box-shadow:var(--fl-sh) !important;border-radius:18px !important;}
+
+/* ---- news cards: gold spine ---- */
+.news_box{border-left:6px solid var(--fl-gold) !important;}
+
+/* ---- responsive ---- */
+@media(max-width:767px){
+    .main_title h2,.heading{font-size:27px !important;}
+    #about::before,#admissions::before,#curriculum::before,#discipline::before{width:70px;height:70px;}
 }
 
-#about p{
-    color: #555;
-    font-size: 16px;
-    line-height: 34px;
-    text-align: justify;
+/* ---- v5 creative flourishes (school theme, internal) ---- */
+
+/* title block: chip on its own line, h2 full block */
+.main_title h2 { display: block; margin-top: 4px; }
+
+/* marker underline draws itself in when WOW fires */
+.main_title h2::after {
+    transform: translateX(-50%) rotate(-.6deg) scaleX(0);
+    transform-origin: center;
+    transition: transform .7s cubic-bezier(.22, 1, .36, 1) .2s;
 }
 
-/*================================
-        INTRO CONTENT
-================================*/
-
-.about-intro{
-    background: #fff;
-    padding: 60px;
-    border-radius: 30px;
-    box-shadow: 0 15px 50px rgba(0,0,0,0.06);
-    margin-bottom: 60px;
-    position: relative;
-    overflow: hidden;
+.main_title.animated h2::after {
+    transform: translateX(-50%) rotate(-.6deg) scaleX(1);
 }
 
-.about-intro::before{
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 6px;
-    background: linear-gradient(90deg,#0654c2,#2ea7ff);
+
+/* page header: floating doodle ring + gold glow */
+.page_header { position: relative; overflow: hidden; }
+
+.page_header::before {
+    content: ""; position: absolute; right: 6%; top: 18%;
+    width: 120px; height: 120px; pointer-events: none;
+    border: 3px dashed rgba(255, 255, 255, .22);
+    border-radius: 42% 58% 62% 38% / 48% 42% 58% 52%;
+    animation: fl-float 8s ease-in-out infinite;
 }
 
-/*================================
-        CORE VALUES
-================================*/
-
-.mission-box{
-    margin-top: 55px;
-}
-
-.mission-box h3{
-    text-align: center;
-    font-size: 36px;
-    font-weight: 800;
-    color: #111;
-    margin-bottom: 45px;
-}
-
-/* SAME SIZE BOXES */
-
-.core-value-row{
-    display: flex;
-    flex-wrap: wrap;
-    gap: 25px;
-}
-
-.core-value-col{
-    flex: 1;
-    display: flex;
-}
-
-.feature-box{
-    width: 100%;
-    background: #fff;
-    border-radius: 28px;
-    padding: 40px 28px;
-    text-align: center;
-    box-shadow: 0 15px 45px rgba(0,0,0,0.06);
-    transition: 0.4s ease;
-    position: relative;
-    overflow: hidden;
-
-    /* SAME HEIGHT */
-    min-height: 360px;
-
-    /* PERFECT ALIGN */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-}
-
-.feature-box::before{
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 5px;
-    background: linear-gradient(90deg,#0654c2,#2ea7ff);
-}
-
-.feature-box:hover{
-    transform: translateY(-12px);
-    box-shadow: 0 20px 55px rgba(0,0,0,0.12);
-}
-
-.feature-box i{
-    width: 95px;
-    height: 95px;
-    line-height: 95px;
+.page_header::after {
+    content: ""; position: absolute; left: 5%; bottom: -30px;
+    width: 90px; height: 90px; pointer-events: none;
     border-radius: 50%;
-    background: rgba(6,84,194,0.10);
-    color: #0654c2;
-    font-size: 40px;
-    margin-bottom: 25px;
+    background: radial-gradient(circle at 35% 35%, rgba(245, 166, 35, .25), transparent 62%);
+    animation: fl-float 10s ease-in-out infinite reverse;
 }
 
-.feature-box h4{
-    font-size: 24px !important;
-    font-weight: 700;
-    color: #111 !important;
-    margin-bottom: 18px !important;
-    line-height: 32px;
+.page_header .page-content { position: relative; z-index: 1; }
+
+/* cards lift with an accent strip (no layout shift) */
+.admission_card:hover, .curriculum_card:hover, .fee_card:hover, .rules_card:hover,
+.study_card:hover, .support_card:hover, .disclosure_card:hover, .uniform_card:hover,
+.club_box:hover, .download_box:hover, .mission_box:hover, .fun_content_box:hover,
+.about-detail-box:hover, .director-image-box:hover, .principal-image-box:hover,
+.news_box:hover, .teacher:hover, .note_card:hover {
+    box-shadow: 0 26px 50px rgba(11, 36, 71, .17), inset 0 5px 0 var(--acc) !important;
 }
 
-.feature-box p{
-    text-align: center !important;
-    font-size: 15px !important;
-    line-height: 30px !important;
-    color: #666 !important;
+/* gold glow blob for sections that lacked one */
+#mission_vision::after, #downloads::after, #news::after, #sports::after, #activities::after,
+#teachers::after, #testinomila_page::after, #vacancy::after, #house_system::after,
+#band_page::after, #study_tour::after, #directors_message::after, #principals_message::after,
+#contact::after {
+    content: ""; position: absolute; bottom: 120px; left: 2.5%;
+    width: 86px; height: 86px; z-index: 0; pointer-events: none;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, color-mix(in srgb, var(--fl-gold) 55%, transparent), transparent 62%);
+    animation: fl-float 9s ease-in-out infinite reverse;
 }
 
-/*================================
-        JOURNEY SECTION
-================================*/
+@media (max-width: 767px) {
+    .page_header::before { width: 64px; height: 64px; right: 4%; }
+    .page_header::after { width: 48px; height: 48px; left: 4%; }
+    #mission_vision::after, #downloads::after, #news::after, #sports::after, #activities::after,
+    #teachers::after, #testinomila_page::after, #vacancy::after, #house_system::after,
+    #band_page::after, #study_tour::after, #directors_message::after, #principals_message::after,
+    #contact::after { width: 52px; height: 52px; bottom: 60px; }
+}
 
-.about-detail-box{
+/* ---- v9: refined card accents (replaces washi tape) ---- */
+.admission_card,.curriculum_card,.fee_card,.rules_card,.study_card,.support_card,
+.disclosure_card,.uniform_card,.club_box,.download_box,.mission_box,.fun_content_box,
+.about-detail-box,.news_box,.teacher,.note_card{
+    overflow:hidden;
+    border-top:4px solid color-mix(in srgb, var(--acc) 45%, #fff) !important;
+}
+.admission_card::after,.curriculum_card::after,.fee_card::after,.rules_card::after,
+.study_card::after,.support_card::after,.club_box::after,.download_box::after,
+.mission_box::after,.fun_content_box::after,.news_box::after,.note_card::after{
+    content:"";position:absolute;top:-48px;right:-48px;width:120px;height:120px;
+    border-radius:50%;pointer-events:none;z-index:0;
+    background:radial-gradient(circle at 32% 32%,
+        color-mix(in srgb, var(--acc) 20%, transparent), transparent 68%);
+    transition:transform .45s cubic-bezier(.22,1,.36,1);
+}
+.admission_card:hover::after,.curriculum_card:hover::after,.fee_card:hover::after,
+.rules_card:hover::after,.study_card:hover::after,.support_card:hover::after,
+.club_box:hover::after,.download_box:hover::after,.mission_box:hover::after,
+.fun_content_box:hover::after,.news_box:hover::after,.note_card:hover::after{
+    transform:scale(1.3);
+}
+
+/* ============================================================
+   v10 — ABOUT US CREATIVE LAYER (internal)
+   ============================================================ */
+
+/* welcome column owns the full width (its image sibling is gone) */
+#about .aboutus > .row > .col-md-7 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+/* welcome heading: eyebrow-style chip above */
+#about .heading.heading_space::before {
+    content: "Namaste 🙏";
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     background: #fff;
-    border-radius: 35px;
-    padding: 70px;
-    margin-top: 70px;
-    box-shadow: 0 15px 50px rgba(0,0,0,0.06);
-    position: relative;
-    overflow: hidden;
+    color: var(--acc);
+    border: 2px dashed color-mix(in srgb, var(--acc) 50%, #fff);
+    padding: 7px 18px;
+    border-radius: 50px;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    box-shadow: 3px 3px 0 color-mix(in srgb, var(--acc) 18%, transparent);
 }
 
-.about-detail-box::before{
+#about .heading.heading_space { margin-top: 6px; }
+
+/* core-value cards: gradient ring chips + hover lift */
+.mission-box .feature-box {
+    background: linear-gradient(180deg, #fff, color-mix(in srgb, var(--acc) 4%, #fff));
+    border: 2px solid var(--fl-line);
+    border-radius: 20px;
+    padding: 26px 18px;
+    height: 100%;
+    transition: transform .35s cubic-bezier(.34, 1.56, .64, 1), box-shadow .35s ease, border-color .35s ease;
+    box-shadow: 0 10px 26px rgba(11, 36, 71, .07);
+}
+
+.mission-box .feature-box:hover {
+    transform: translateY(-8px);
+    border-color: color-mix(in srgb, var(--acc) 45%, #fff);
+    box-shadow: 0 24px 44px rgba(11, 36, 71, .15);
+}
+
+.mission-box .feature-box i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    font-size: 22px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--acc), color-mix(in srgb, var(--acc) 62%, #04214d));
+    box-shadow: 0 12px 24px color-mix(in srgb, var(--acc) 38%, transparent);
+    margin-bottom: 14px;
+    transition: transform .4s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.mission-box .feature-box:hover i { transform: rotate(-10deg) scale(1.12); }
+
+.mission-box .feature-box h4 {
+    color: var(--fl-navy);
+    font-size: 17px;
+    margin: 0 0 8px;
+}
+
+.mission-box .feature-box p { color: var(--fl-muted); font-size: 13.5px; line-height: 1.8; margin: 0; }
+
+/* journey box: timeline spine + milestone chips */
+.about-detail-box { padding: 34px 34px 26px; }
+
+.about-detail-box > h3::before {
+    content: "🚌";
+    margin-right: 10px;
+    font-size: 22px;
+}
+
+.about-detail-box p { position: relative; padding-left: 26px; }
+
+.about-detail-box p::before {
     content: "";
     position: absolute;
-    top: 0;
     left: 0;
-    width: 100%;
-    height: 6px;
-    background: linear-gradient(90deg,#0654c2,#2ea7ff);
+    top: 9px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--acc);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--acc) 18%, transparent);
 }
 
-.about-detail-box h3{
-    font-size: 42px;
-    font-weight: 800;
-    text-align: center;
-    margin-bottom: 45px;
-    color: #111;
-}
-
-.about-detail-box p{
-    margin-bottom: 28px;
-    color: #555;
-    font-size: 16px;
-    line-height: 34px;
-}
-
-/*================================
-        QUOTE BOX
-================================*/
-
-.school-quote{
-    margin-top: 50px;
-    background: linear-gradient(135deg,#0654c2,#0b76ff);
-    border: none;
-    border-radius: 30px;
-    padding: 55px;
-    color: #fff;
-    font-size: 20px;
-    line-height: 40px;
-    text-align: center;
+/* journey quote: speech-bubble styling */
+.school-quote {
     position: relative;
-    overflow: hidden;
+    background: color-mix(in srgb, var(--acc) 7%, #fff);
+    border: 1px dashed color-mix(in srgb, var(--acc) 35%, #fff);
+    border-radius: 18px;
+    padding: 22px 26px 22px 58px;
+    margin: 26px 0 8px;
     font-style: italic;
+    color: var(--fl-ink);
 }
 
-.school-quote::before{
+.school-quote::before {
     content: "❝";
     position: absolute;
-    top: -35px;
-    left: 30px;
-    font-size: 140px;
-    color: rgba(255,255,255,0.12);
-    font-family: serif;
+    left: 20px;
+    top: 14px;
+    font-size: 30px;
+    color: var(--acc);
+    opacity: .85;
 }
 
-.school-quote strong{
-    display: inline-block;
-    margin-top: 20px;
+/* counters band: navy gradient + glowing stat chips */
+#counter {
+    background:
+        radial-gradient(circle at 12% 18%, rgba(47, 111, 237, .25) 0, transparent 34%),
+        radial-gradient(circle at 88% 82%, rgba(245, 166, 35, .2) 0, transparent 34%),
+        linear-gradient(135deg, #081a34, #0b2447 55%, #123a6b);
+    border-radius: 28px;
+    padding: 58px 22px;
+    box-shadow: 0 30px 60px rgba(11, 36, 71, .35);
+    margin: 10px 0 30px;
+}
+
+.counters-item i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .08);
+    border: 1px solid rgba(245, 166, 35, .35);
+    color: var(--fl-gold);
     font-size: 24px;
+    margin-bottom: 12px;
+    box-shadow: 0 0 0 0 rgba(245, 166, 35, .3);
+    animation: lhCountPulse 3s ease-in-out infinite;
+}
+
+.counters-item:nth-child(2) i { animation-delay: .5s; }
+.counters-item:nth-child(3) i { animation-delay: 1s; }
+.counters-item:nth-child(4) i { animation-delay: 1.5s; }
+
+@keyframes lhCountPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245, 166, 35, .28); }
+    50%      { box-shadow: 0 0 0 12px rgba(245, 166, 35, 0); }
+}
+
+.counters-item strong {
+    display: block;
+    font-family: 'Fredoka', cursive;
+    font-size: 40px;
+    font-weight: 700;
     color: #fff;
+    line-height: 1.1;
+    text-shadow: 0 6px 18px rgba(0, 0, 0, .35);
 }
 
-/*================================
-        SPACING
-================================*/
+.counters-item p { color: #c9d5e8; font-size: 13.5px; font-weight: 600; letter-spacing: .3px; margin-top: 4px; }
 
-.bottom20{
-    margin-bottom: 20px;
-}
-
-.bottom25{
-    margin-bottom: 25px;
-}
-
-.bottom30{
-    margin-bottom: 30px;
-}
-
-.top20{
-    margin-top: 20px;
-}
-
-.top40{
-    margin-top: 40px;
-}
-
-/*================================
-        RESPONSIVE
-================================*/
-
-@media(max-width:991px){
-
-    .heading{
-        font-size: 38px;
-        line-height: 52px;
-    }
-
-    #about h4{
-        font-size: 20px;
-        line-height: 32px;
-    }
-
-    .about-intro,
-    .about-detail-box{
-        padding: 35px 25px;
-    }
-
-    .mission-box h3,
-    .about-detail-box h3{
-        font-size: 30px;
-    }
-
-    .core-value-row{
-        flex-direction: column;
-    }
-
-    .feature-box{
-        min-height: auto;
-    }
-
-    .school-quote{
-        padding: 35px 25px;
-        font-size: 17px;
-        line-height: 32px;
-    }
-
-    #about p{
-        text-align: left;
-    }
+/* responsive */
+@media (max-width: 767px) {
+    .mission-box .feature-box { padding: 22px 16px; }
+    .about-detail-box { padding: 26px 20px; }
+    .school-quote { padding: 18px 18px 18px 52px; }
+    #counter { padding: 44px 14px; border-radius: 20px; }
+    .counters-item strong { font-size: 32px; }
 }
 </style>
+

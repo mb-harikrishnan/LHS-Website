@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>Little Flower | About</title>
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/font-awesome.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/edua-icons.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/animate.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.carousel.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.transitions.css') ?> ">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/cubeportfolio.min.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/settings.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootsnav.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/style.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/loader.css') ?>">
+
+  <link rel="icon" href="<?php echo base_url('assets/images/favicon.png') ?>">
+
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
+</head>
+
+
+
+<!--Search-->
+<div id="search">
+  <button type="button" class="close">×</button>
+  <form>
+    <input type="search" value="" placeholder="Search here...." required />
+    <button type="submit" class="btn btn_common blue">Search</button>
+  </form>
+</div>
+
+<!--Page Header-->
+<section class="page_header padding-top">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 page-content">
+        <h1>About Us</h1>
+        <p>Empowering Young Minds for a Bright Future</p>
+        <div class="page_nav">
+          <span>You are here:</span> <a href="<?php echo base_url('home_page'); ?>">Home</a> <span><i class="fa fa-angle-double-right"></i>About Us</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--ABout US-->
+<section id="about" class="padding">
+  <div class="container aboutus">
+
+    <div class="row">
+
+      <!-- Content -->
+      <div class="col-md-7 wow fadeInLeft" data-wow-delay="300ms">
+
+        <h2 class="heading heading_space">
+          Welcome to Little Hearts School
+          <span class="divider-left"></span>
+        </h2>
+
+        <h4 class="bottom25">
+          Where learning blossoms with creativity, confidence, and values.
+        </h4>
+
+        <p class="bottom25">
+          Our mission, aligned with the National Education Policy (NEP 2020), is to
+          <strong>"Strive for Holistic Excellence"</strong> by nurturing well-rounded individuals
+          through experiential learning, critical thinking, and ethical values.
+          We empower students to become creative problem-solvers, compassionate leaders,
+          and responsible global citizens, committed to social justice, environmental stewardship,
+          and building an equitable society. Our pedagogy emphasizes multidisciplinary learning,
+          digital literacy, and life skills to prepare youth for 21st-century challenges.
+        </p>
+
+        <!-- Core Values -->
+        <div class="mission-box bottom30">
+
+          <h3 class="bottom20">Every Student Graduates With 3 Core Values</h3>
+
+          <div class="row">
+
+            <div class="col-md-4 col-sm-4">
+              <div class="feature-box text-center">
+                <i class="icon-icons9"></i>
+                <h4>Ethical Leadership</h4>
+                <p>
+                  Rooted in respect for human dignity and environmental responsibility.
+                </p>
+              </div>
+            </div>
+
+            <div class="col-md-4 col-sm-4">
+              <div class="feature-box text-center">
+                <i class="icon-icons20"></i>
+                <h4>Social Empathy</h4>
+                <p>
+                  Demonstrated through community outreach programs and service learning.
+                </p>
+              </div>
+            </div>
+
+            <div class="col-md-4 col-sm-4">
+              <div class="feature-box text-center">
+                <i class="icon-laptop"></i>
+                <h4>Lifelong Learning</h4>
+                <p>
+                  Cultivated via NEP-aligned pedagogies like coding, computational thinking,
+                  and arts-integrated education.
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          <p class="top20">
+            We blend tradition with innovation to create learners who
+            <strong>"Stop at nothing except ethical excellence."</strong>
+          </p>
+
+        </div>
+
+      </div>
+
+
+    </div>
+
+
+    <!-- History Section -->
+    <div class="row top40">
+      <div class="col-md-12 wow fadeInUp" data-wow-delay="400ms">
+
+        <div class="about-detail-box">
+
+          <h3 class="bottom20">Our Journey</h3>
+
+          <p class="bottom20">
+            Nestled amidst the emerald embrace of Paravur’s pristine landscapes,
+            Little Hearts School blossomed into existence in 1997, initially cradled
+            within the humble confines of a rented edifice. Today, it stands as a luminous
+            beacon of progressive pedagogy, flourishing within its own architectural sanctuary
+            at Kizhakkepram—a verdant haven where nature’s tranquility harmonizes with scholarly vigor.
+          </p>
+
+          <p class="bottom20">
+            Affiliated with the Central Board of Secondary Education (CBSE), New Delhi,
+            in 2006 (Affiliation No. 930601), the institution ascended to Senior Secondary stature
+            in 2008, unfurling academic pathways in Science and Commerce, enriched by the modern
+            cadence of Information Technology.
+          </p>
+
+          <p class="bottom20">
+            Guided by a constellation of erudite mentors—seasoned, passionate, and unwavering
+            in their dedication—the school thrums with the vibrant energy of curious minds.
+            Within these halls, the CBSE curriculum unfolds in English, while Hindi
+            (mandatory until Class VIII) and Malayalam (as a third language) weave linguistic
+            diversity into young intellects. From Class IX onward, students may choose between
+            Hindi and Malayalam, crafting their linguistic tapestry.
+          </p>
+
+          <p class="bottom20">
+            Beyond textbooks, the campus resonates with the symphony of co-curricular alchemy:
+            melodies of music, strokes of artistry, the grace of dance, the strategic silence
+            of chess, the whirl of roller-skating, the discipline of yoga and karate, and the
+            tactile poetry of clay modeling and paper crafts. A spirited Band Troop marches proudly here,
+            its rhythms echoing the heartbeat of collective ambition.
+          </p>
+
+          <p class="bottom20">
+            Students, kindled into four celestial houses—<strong>Ragam, Thalam, Sruthi, Layam</strong>—
+            compete in a kaleidoscope of intra- and inter-house contests: debates that spark intellectual fire,
+            essays that paint worlds, recitations that breathe life into words, and artistic expressions
+            that mirror the soul.
+          </p>
+
+          <blockquote class="school-quote">
+            At its core, the school’s vision is a sacred odyssey—to sculpt individuals who embody
+            both personal integrity and societal stewardship. Here, education is not mere instruction
+            but the cultivation of torchbearers destined to champion justice, love, truth, and peace,
+            forever thirsting for growth.
+            <br><br>
+            <strong>"Education for complete living"</strong> remains the eternal mantra, illuminating
+            every endeavor within this sanctuary of learning.
+          </blockquote>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+<!--ABout US-->
+
+
+
+
+<!--Fun Facts-->
+<section id="counter" class="parallax padding">
+  <div class="container">
+    <h2 class="hidden">hidden</h2>
+    <div class="row number-counters">
+      <div class="col-md-3 col-sm-6 col-xs-6 counters-item text-center wow fadeInUp" data-wow-delay="300ms">
+        <i class="icon-checkmark3"></i>
+        <strong data-to="1235">0</strong>
+        <p>Project Completed</p>
+      </div>
+      <div class="col-md-3 col-sm-6 col-xs-6 counters-item text-center wow fadeInUp" data-wow-delay="400ms">
+        <i class="icon-trophy"></i>
+        <strong data-to="78">0</strong>
+        <p>Awards Won</p>
+      </div>
+      <div class="col-md-3 col-sm-6 col-xs-6 counters-item text-center wow fadeInUp" data-wow-delay="500ms">
+        <i class=" icon-icons20"></i>
+        <strong data-to="186">0</strong>
+        <p>Hours of Work / Month</p>
+      </div>
+      <div class="col-md-3 col-sm-6 col-xs-6 counters-item text-center wow fadeInUp" data-wow-delay="600ms">
+        <i class="icon-happy"></i>
+        <strong data-to="89">0</strong>
+        <p>Satisfied Clients</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!--Fun Facts-->
+
+
+
+
+<style>
+ /*================================
+        ABOUT SECTION
+================================*/
+
+#about{
+    background: linear-gradient(to bottom,#f7faff,#eef5ff);
+    padding: 100px 0;
+    position: relative;
+}
+
+.aboutus{
+    position: relative;
+    z-index: 2;
+}
+
+/*================================
+        HEADING AREA
+================================*/
+
+.heading{
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 65px;
+    color: #111;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.divider-left{
+    width: 120px;
+    height: 5px;
+    background: linear-gradient(90deg,#0654c2,#2ea7ff);
+    display: block;
+    margin: 22px auto 0;
+    border-radius: 50px;
+}
+
+#about h4{
+    text-align: center;
+    font-size: 24px;
+    line-height: 38px;
+    color: #0654c2;
+    font-weight: 600;
+    margin-bottom: 35px;
+}
+
+#about p{
+    color: #555;
+    font-size: 16px;
+    line-height: 34px;
+    text-align: justify;
+}
+
+/*================================
+        INTRO CONTENT
+================================*/
+
+.about-intro{
+    background: #fff;
+    padding: 60px;
+    border-radius: 30px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.06);
+    margin-bottom: 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+.about-intro::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg,#0654c2,#2ea7ff);
+}
+
+/*================================
+        CORE VALUES
+================================*/
+
+.mission-box{
+    margin-top: 55px;
+}
+
+.mission-box h3{
+    text-align: center;
+    font-size: 36px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 45px;
+}
+
+/* SAME SIZE BOXES */
+
+.core-value-row{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+}
+
+.core-value-col{
+    flex: 1;
+    display: flex;
+}
+
+.feature-box{
+    width: 100%;
+    background: #fff;
+    border-radius: 28px;
+    padding: 40px 28px;
+    text-align: center;
+    box-shadow: 0 15px 45px rgba(0,0,0,0.06);
+    transition: 0.4s ease;
+    position: relative;
+    overflow: hidden;
+
+    /* SAME HEIGHT */
+    min-height: 360px;
+
+    /* PERFECT ALIGN */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.feature-box::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg,#0654c2,#2ea7ff);
+}
+
+.feature-box:hover{
+    transform: translateY(-12px);
+    box-shadow: 0 20px 55px rgba(0,0,0,0.12);
+}
+
+.feature-box i{
+    width: 95px;
+    height: 95px;
+    line-height: 95px;
+    border-radius: 50%;
+    background: rgba(6,84,194,0.10);
+    color: #0654c2;
+    font-size: 40px;
+    margin-bottom: 25px;
+}
+
+.feature-box h4{
+    font-size: 24px !important;
+    font-weight: 700;
+    color: #111 !important;
+    margin-bottom: 18px !important;
+    line-height: 32px;
+}
+
+.feature-box p{
+    text-align: center !important;
+    font-size: 15px !important;
+    line-height: 30px !important;
+    color: #666 !important;
+}
+
+/*================================
+        JOURNEY SECTION
+================================*/
+
+.about-detail-box{
+    background: #fff;
+    border-radius: 35px;
+    padding: 70px;
+    margin-top: 70px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.06);
+    position: relative;
+    overflow: hidden;
+}
+
+.about-detail-box::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg,#0654c2,#2ea7ff);
+}
+
+.about-detail-box h3{
+    font-size: 42px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 45px;
+    color: #111;
+}
+
+.about-detail-box p{
+    margin-bottom: 28px;
+    color: #555;
+    font-size: 16px;
+    line-height: 34px;
+}
+
+/*================================
+        QUOTE BOX
+================================*/
+
+.school-quote{
+    margin-top: 50px;
+    background: linear-gradient(135deg,#0654c2,#0b76ff);
+    border: none;
+    border-radius: 30px;
+    padding: 55px;
+    color: #fff;
+    font-size: 20px;
+    line-height: 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    font-style: italic;
+}
+
+.school-quote::before{
+    content: "❝";
+    position: absolute;
+    top: -35px;
+    left: 30px;
+    font-size: 140px;
+    color: rgba(255,255,255,0.12);
+    font-family: serif;
+}
+
+.school-quote strong{
+    display: inline-block;
+    margin-top: 20px;
+    font-size: 24px;
+    color: #fff;
+}
+
+/*================================
+        SPACING
+================================*/
+
+.bottom20{
+    margin-bottom: 20px;
+}
+
+.bottom25{
+    margin-bottom: 25px;
+}
+
+.bottom30{
+    margin-bottom: 30px;
+}
+
+.top20{
+    margin-top: 20px;
+}
+
+.top40{
+    margin-top: 40px;
+}
+
+/*================================
+        RESPONSIVE
+================================*/
+
+@media(max-width:991px){
+
+    .heading{
+        font-size: 38px;
+        line-height: 52px;
+    }
+
+    #about h4{
+        font-size: 20px;
+        line-height: 32px;
+    }
+
+    .about-intro,
+    .about-detail-box{
+        padding: 35px 25px;
+    }
+
+    .mission-box h3,
+    .about-detail-box h3{
+        font-size: 30px;
+    }
+
+    .core-value-row{
+        flex-direction: column;
+    }
+
+    .feature-box{
+        min-height: auto;
+    }
+
+    .school-quote{
+        padding: 35px 25px;
+        font-size: 17px;
+        line-height: 32px;
+    }
+
+    #about p{
+        text-align: left;
+    }
+}
+</style>
