@@ -3,59 +3,48 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class ChangePassword_model extends CI_Model
 {
-    // ---- CHANGE THESE to match your employee master table ----
-    const EMP_TABLE    = 'employee_master';   // table name
-    const EMP_PK       = 'emId';              // column that equals admin_login.employe_id
-    const EMP_PASSWORD = 'emPassword';        // password column (from your screenshot)
+    const LOGIN_TABLE  = 'user_login';
 
-    // one admin_login row (active only)
-    public function get_login($id)
+    const EMP_TABLE    = 'employee_master';
+    const EMP_LINK     = 'user_log_id';     // employee_master.user_log_id = user_login.user_id
+    const EMP_PASSWORD = 'emPassword';
+
+    // one active login row
+    public function get_login($user_id)
     {
         return $this->db
-            ->where('sl_no', (int) $id)
-            ->where('c_status', 'Y')
-            ->get('admin_login')
+            ->where('user_id', (int) $user_id)
+            ->where('status', 1)
+            ->get(self::LOGIN_TABLE)
             ->row();
     }
 
-    // current password hash: employee master for employee logins, admin_login otherwise
-    public function get_stored_hash($user, $use_emp)
+    // typed password vs stored: md5 (employees) or plain text (old admin row)
+    public function verify_password($input, $stored)
     {
-        if ($use_emp) {
-            $row = $this->db
-                ->select(self::EMP_PASSWORD . ' AS pw', FALSE)
-                ->where(self::EMP_PK, $user->employe_id)
-                ->get(self::EMP_TABLE)
-                ->row();
-            return $row ? (string) $row->pw : null;
+        $stored = (string) $stored;
+        if ($stored === '') {
+            return false;
         }
-        return (string) $user->c_password;
+        return hash_equals(strtolower($stored), md5($input))
+            || hash_equals($stored, (string) $input);
     }
 
-    public function username_exists($username, $except_id)
-    {
-        return $this->db
-            ->where('c_username', $username)
-            ->where('sl_no !=', (int) $except_id)
-            ->count_all_results('admin_login') > 0;
-    }
-
-    // $username / $hash may be null (= leave unchanged)
-    public function save($user, $use_emp, $username, $hash)
+    // save the new password hash
+    public function save_password($user_id, $hash)
     {
         $this->db->trans_start();
 
-        $login = array();
-        if ($username !== null)              $login['c_username'] = $username;
-        if ($hash !== null && !$use_emp)     $login['c_password'] = $hash;
-        if ($login) {
-            $this->db->where('sl_no', (int) $user->sl_no)->update('admin_login', $login);
-        }
+        // 1) user_login
+        $this->db->where('user_id', (int) $user_id)
+                 ->update(self::LOGIN_TABLE, array(
+                     'password'   => $hash,
+                     'updated_at' => date('Y-m-d H:i:s')
+                 ));
 
-        if ($hash !== null && $use_emp) {
-            $this->db->where(self::EMP_PK, $user->employe_id)
-                     ->update(self::EMP_TABLE, array(self::EMP_PASSWORD => $hash));
-        }
+        // 2) employee_master (only the row linked to this login, if any)
+        $this->db->where(self::EMP_LINK, (int) $user_id)
+                 ->update(self::EMP_TABLE, array(self::EMP_PASSWORD => $hash));
 
         $this->db->trans_complete();
         return $this->db->trans_status() !== FALSE;
