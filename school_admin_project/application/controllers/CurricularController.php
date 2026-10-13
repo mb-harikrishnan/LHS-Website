@@ -46,7 +46,7 @@ public function save_co_curricular()
         return $this->_json(false, 'Type and date are required.');
     }
     // once a type exists, it is not allowed again
-    if ($this->School_model->type_exists_s($type, $id)) {
+    if ($this->School_model->type_exists($type, $id)) {
         return $this->_json(false, 'This type already exists.');
     }
  
@@ -75,8 +75,12 @@ public function save_co_curricular()
         $this->School_model->update_activities($id, $data);
         return $this->_json(true, 'Updated successfully.');
     }
-    $this->School_model->insert_activities($data);
-    return $this->_json(true, 'Added successfully.');
+   $ok = $this->School_model->insert_activities($data);
+if (!$ok) {
+    $err = $this->db->error();
+    return $this->_json(false, 'Save failed: ' . $err['message']);
+}
+return $this->_json(true, 'Added successfully.');
 }
  
 /** Delete (AJAX, returns JSON) */
@@ -110,115 +114,155 @@ private function _json($ok, $msg)
 
 
 
-  /* ---- settings ---- */
-    private $act_upload_path  = '../assets/images/gallery/'; // same folder you used before
-    private $act_one_per_type = TRUE;                        // TRUE = each type only once, FALSE = many images per type
- 
-    /* ---------- LIST PAGE ---------- */
-    public function activities_list()
-    {
-        $this->load->model('School_model');
- 
-        $data['rows']         = $this->School_model->get_all();
-        $data['type_list']    = $this->School_model->get_types();
-        $data['one_per_type'] = $this->act_one_per_type;
- 
-        $this->load->view('header');
-        $this->load->view('activities_list', $data);
-        $this->load->view('footer');
+  /* ---- settings ---- *//* ---- settings ---- */
+private $act_upload_path = '../assets/images/gallery/';
+
+/* ---------- LIST PAGE ---------- */
+public function activities_list()
+{
+    $this->load->model('School_model');
+
+    $data['rows']      = $this->School_model->get_all();
+    $data['type_list'] = $this->School_model->get_types();
+
+    $this->load->view('header');
+    $this->load->view('activities_list', $data);
+    $this->load->view('footer');
+}
+
+/* normalise $_FILES[$field] (single or multiple) into a flat array of files */
+private function _act_files($field)
+{
+    $out = array();
+    if (empty($_FILES[$field]['name'])) return $out;
+
+    $f = $_FILES[$field];
+    if (!is_array($f['name'])) {
+        if ($f['name'] !== '') $out[] = $f;
+        return $out;
     }
- 
-    /* ---------- JSON helper (always returns a fresh CSRF hash) ---------- */
-    private function _act_json($status, $msg)
-    {
-        $this->output
-            ->set_content_type('application/json')
-            ->set_output(json_encode(array(
-                'status' => (bool)$status,
-                'msg'    => $msg,
-                'csrf'   => $this->security->get_csrf_hash()
-            )));
-    }
- 
-    /* ---------- ADD + EDIT ---------- */
-    public function save_activities_list()
-    {
-        if ($this->input->method() !== 'post') {
-            return $this->_act_json(false, 'Invalid request.');
-        }
-        $this->load->model('School_model');
- 
-        $id   = (int)$this->input->post('id');
-        $type = trim((string)$this->input->post('type'));
-        $date = trim((string)$this->input->post('date'));
- 
-        // type must be one of the fixed values
-        if (!array_key_exists($type, $this->School_model->get_types())) {
-            return $this->_act_json(false, 'Please select a valid type.');
-        }
- 
-        // date must be a real Y-m-d date
-        $d = DateTime::createFromFormat('Y-m-d', $date);
-        if (!$d || $d->format('Y-m-d') !== $date) {
-            return $this->_act_json(false, 'Please choose a valid date.');
-        }
- 
-        // one entry per type (optional)
-        if ($this->act_one_per_type && $this->School_model->type_exists_s($type, $id)) {
-            return $this->_act_json(false, 'This type has already been added.');
-        }
- 
-        // when editing, the row must exist
-        $old = null;
-        if ($id) {
-            $old = $this->School_model->get($id);
-            if (!$old) {
-                return $this->_act_json(false, 'Entry not found.');
-            }
-        }
- 
-        $has_file = !empty($_FILES['image']['name']);
-        if (!$id && !$has_file) {
-            return $this->_act_json(false, 'Please choose an image.');
-        }
- 
-        $data = array(
-            'c_type' => $type,
-            'd_date' => $date
+    foreach ($f['name'] as $i => $name) {
+        if ($name === '') continue;
+        $out[] = array(
+            'name'     => $name,
+            'type'     => $f['type'][$i],
+            'tmp_name' => $f['tmp_name'][$i],
+            'error'    => $f['error'][$i],
+            'size'     => $f['size'][$i],
         );
- 
-        // image upload
-        if ($has_file) {
-            if (!is_dir($this->act_upload_path)) {
-                @mkdir($this->act_upload_path, 0755, TRUE);
-            }
-            $config = array(
-                'upload_path'   => $this->act_upload_path,
-                'allowed_types' => 'jpg|jpeg|png|webp',
-                'max_size'      => 5120,   // KB (5 MB)
-                'encrypt_name'  => TRUE
-            );
-            $this->load->library('upload', $config);
- 
-            if (!$this->upload->do_upload('image')) {
-                return $this->_act_json(false, strip_tags($this->upload->display_errors('', '')));
-            }
-            $data['c_images'] = $this->upload->data('file_name');
-        }
- 
-        if ($id) {
-            $ok = $this->School_model->update($id, $data);
-            if ($ok && $has_file && !empty($old->c_images)) {
-                @unlink($this->act_upload_path . $old->c_images); // remove replaced image
-            }
-            return $this->_act_json($ok, $ok ? 'Updated successfully.' : 'Update failed.');
-        }
- 
-        $data['c_status'] = 'Y';
-        $ok = $this->School_model->insert($data);
-        return $this->_act_json($ok, $ok ? 'Added successfully.' : 'Could not save. Please try again.');
     }
- 
+    return $out;
+}
+
+
+
+/* ---------- JSON helper (always returns a fresh CSRF hash) ---------- */
+private function _act_json($status, $msg)
+{
+    $this->output
+        ->set_content_type('application/json')
+        ->set_output(json_encode(array(
+            'status' => (bool)$status,
+            'msg'    => $msg,
+            'csrf'   => $this->security->get_csrf_hash()
+        )));
+}
+/* ---------- ADD (many images) + EDIT (one image) ---------- */
+public function save_activities_list()
+{
+    if ($this->input->method() !== 'post') {
+        return $this->_act_json(false, 'Invalid request.');
+    }
+    $this->load->model('School_model');
+
+    $id   = (int)$this->input->post('id');
+    $type = trim((string)$this->input->post('type'));
+    $date = trim((string)$this->input->post('date'));
+
+    if (!array_key_exists($type, $this->School_model->get_types())) {
+        return $this->_act_json(false, 'Please select a valid type.');
+    }
+
+    $d = DateTime::createFromFormat('Y-m-d', $date);
+    if (!$d || $d->format('Y-m-d') !== $date) {
+        return $this->_act_json(false, 'Please choose a valid date.');
+    }
+
+    $old = null;
+    if ($id) {
+        $old = $this->School_model->get($id);
+        if (!$old) return $this->_act_json(false, 'Entry not found.');
+    }
+
+    $files = $this->_act_files('images');
+    if (!$id && !$files) {
+        return $this->_act_json(false, 'Please choose at least one image.');
+    }
+    if ($id) $files = array_slice($files, 0, 1);   // edit = one image only
+
+    if ($files && !is_dir($this->act_upload_path)) {
+        @mkdir($this->act_upload_path, 0755, TRUE);
+    }
+
+    $this->load->library('upload');
+    $config = array(
+        'upload_path'   => $this->act_upload_path,
+        'allowed_types' => 'jpg|jpeg|png|webp',
+        'max_size'      => 5120,   // KB (5 MB) per image
+        'encrypt_name'  => TRUE
+    );
+
+    $saved = 0; $errors = array(); $new_images = array();
+
+    foreach ($files as $file) {
+        $_FILES['act_single'] = $file;
+        $this->upload->initialize($config);
+
+        if (!$this->upload->do_upload('act_single')) {
+            $errors[] = $file['name'] . ': ' . strip_tags($this->upload->display_errors('', ''));
+            continue;
+        }
+        $new_images[] = $this->upload->data('file_name');
+    }
+
+    /* ----- EDIT ----- */
+    if ($id) {
+        if ($files && !$new_images) {
+            return $this->_act_json(false, implode(' | ', $errors));
+        }
+        $data = array('c_type' => $type, 'd_date' => $date);
+        if ($new_images) $data['c_images'] = $new_images[0];
+
+        $ok = $this->School_model->update($id, $data);
+        if ($ok && $new_images && !empty($old->c_images)) {
+            @unlink($this->act_upload_path . $old->c_images);
+        }
+        return $this->_act_json($ok, $ok ? 'Updated successfully.' : 'Update failed.');
+    }
+
+    /* ----- ADD: one row per image ----- */
+    foreach ($new_images as $img) {
+        $ok = $this->School_model->insert(array(
+            'c_type'   => $type,
+            'd_date'   => $date,
+            'c_images' => $img,
+            'c_status' => 'Y'
+        ));
+        if ($ok) {
+            $saved++;
+        } else {
+            @unlink($this->act_upload_path . $img);
+            $errors[] = 'Could not save ' . $img;
+        }
+    }
+
+    if ($saved === 0) {
+        return $this->_act_json(false, implode(' | ', $errors) ?: 'Could not save.');
+    }
+    $msg = $saved . ' image(s) added successfully.';
+    if ($errors) $msg .= ' Skipped: ' . implode(' | ', $errors);
+    return $this->_act_json(true, $msg);
+}
     /* ---------- DELETE (soft delete: c_status = 'N') ---------- */
     public function delete_activities_list()
     {

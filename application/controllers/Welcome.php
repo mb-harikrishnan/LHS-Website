@@ -36,16 +36,48 @@ class Welcome extends CI_Controller
 	}
 
 
-	public function gallery()
-	{
-		$data['all_images'] = $this->Welcome_model->fetch_all_images();
-		$data['all_types'] = $this->Welcome_model->fetch_all_types();
+	// public function gallery()
+	// {
+	// 	$data['all_images'] = $this->Welcome_model->fetch_all_images();
+	// 	$data['all_types'] = $this->Welcome_model->fetch_all_types();
 
-		$this->load->view('topbar');
-		$this->load->view('header');
-		$this->load->view('gallery', $data);
-		$this->load->view('footer');
-	}
+	// 	$this->load->view('topbar');
+	// 	$this->load->view('header');
+	// 	$this->load->view('gallery', $data);
+	// 	$this->load->view('footer');
+	// }
+
+
+	public function gallery()
+{
+    $data['all_events'] = $this->Welcome_model->fetch_all_events();
+ 
+    $this->load->view('topbar');
+    $this->load->view('header');
+    $this->load->view('gallery', $data);
+    $this->load->view('footer');
+}
+ 
+// NEW – details page for one event
+public function gallery_detail($id = 0)
+{
+    $event = $this->Welcome_model->fetch_event((int) $id);
+    if (empty($event)) {
+        show_404();
+    }
+ 
+    $data['event']      = $event;
+    $data['all_images'] = $this->Welcome_model->fetch_event_images((int) $id);
+ 
+    $this->load->view('topbar');
+    $this->load->view('header');
+    $this->load->view('gallery_detail', $data);
+    $this->load->view('footer');
+}
+ 
+
+
+
 	public function house_system()
 	{
 		$this->load->view('topbar');
@@ -53,14 +85,22 @@ class Welcome extends CI_Controller
 		$this->load->view('house_system');
 		$this->load->view('footer');
 	}
-	public function co_curricular_activities()
-	{
-		$data['all_images'] = $this->Welcome_model->fetch_all_co_images();
-		$this->load->view('topbar');
-		$this->load->view('header');
-		$this->load->view('co_curricular_activities',$data);
-		$this->load->view('footer');
-	}
+public function co_curricular_activities()
+{
+    $rows = $this->Welcome_model->fetch_all_co_images();
+
+    // map: c_type => image file name
+    $images = array();
+    foreach ($rows as $r) {
+        $images[$r->c_type] = $r->c_images;
+    }
+    $data['images'] = $images;
+
+    $this->load->view('topbar');
+    $this->load->view('header');
+    $this->load->view('co_curricular_activities', $data);
+    $this->load->view('footer');
+}
 
 	public function list_all_activities($type = '')
 	{

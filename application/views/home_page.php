@@ -8,15 +8,31 @@
     </form>
 </div>
 
+<?php
+// Extract the YouTube video ID from youtu.be / watch?v= / embed / shorts / live links
+if (!function_exists('lh_youtube_id')) {
+    function lh_youtube_id($url) {
+        if (preg_match('~(?:youtu\.be/|youtube\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/|live/))([A-Za-z0-9_-]{11})~', trim($url), $m)) {
+            return $m[1];
+        }
+        return '';
+    }
+}
+?>
+
 <!-- ============ HERO ============ -->
 <section class="hero" id="hero">
 
     <div class="hero-slides">
         <?php $slide_i = 0; foreach ($slider as $value) { $slide_i++; ?>
-            <div class="hero-slide <?php echo $slide_i === 1 ? 'is-active' : ''; ?>">
+            <div class="hero-slide <?php echo $slide_i === 1 ? 'is-active' : ''; ?>"
+                 data-type="<?php echo htmlspecialchars($value->c_upload_type); ?>"
+                 data-title="<?php echo htmlspecialchars($value->c_title); ?>"
+                 data-desc="<?php echo htmlspecialchars($value->c_description); ?>">
 
                 <?php if ($value->c_upload_type == "image") { ?>
-                    <img src="<?php echo base_url('../assets/images/gallery/' . $value->c_file); ?>" alt="" class="hero-media">
+                    <img src="<?php echo base_url('../assets/images/gallery/' . $value->c_file); ?>"
+                         alt="<?php echo htmlspecialchars($value->c_title); ?>" class="hero-media">
                 <?php } ?>
 
                 <?php if ($value->c_upload_type == "video") { ?>
@@ -25,11 +41,22 @@
                     </video>
                 <?php } ?>
 
-                <?php if ($value->c_upload_type == "link") { ?>
-                    <video autoplay muted loop playsinline class="hero-media">
-                        <source src="<?php echo $value->c_file; ?>" type="video/webm">
-                    </video>
-                <?php } ?>
+                <?php if ($value->c_upload_type == "link") {
+                    $yt = lh_youtube_id($value->c_file);
+                    if ($yt !== '') { ?>
+                        <div class="hero-yt">
+                            <iframe
+                                data-src="https://www.youtube.com/embed/<?php echo $yt; ?>?autoplay=1&mute=1&loop=1&playlist=<?php echo $yt; ?>&controls=0&modestbranding=1&rel=0&playsinline=1&disablekb=1"
+                                title="<?php echo htmlspecialchars($value->c_title); ?>"
+                                frameborder="0" allow="autoplay; encrypted-media" tabindex="-1"></iframe>
+                        </div>
+                    <?php } else { ?>
+                        <!-- direct video file link (mp4 / webm) -->
+                        <video autoplay muted loop playsinline class="hero-media">
+                            <source src="<?php echo $value->c_file; ?>">
+                        </video>
+                    <?php }
+                } ?>
 
             </div>
         <?php } ?>
@@ -38,15 +65,18 @@
 
     <div class="lh-container hero-content">
         <span class="eyebrow eyebrow-light wow fadeInDown"><span class="dash"></span> Welcome to Little Hearts School</span>
-        <h1 class="hero-title wow fadeInUp">
+
+        <h1 class="hero-title wow fadeInUp" id="heroTitle">
             Inspiring Young Minds.<br>
             Building <span class="accent">Bright Futures.</span>
         </h1>
-        <p class="hero-copy wow fadeInUp" data-wow-delay="0.15s">
+
+        <p class="hero-copy wow fadeInUp" id="heroCopy" data-wow-delay="0.15s">
             At Little Hearts School, we nurture every child with quality education, strong values
             and a caring environment to help them become confident, compassionate and responsible
             global citizens.
         </p>
+
         <div class="hero-actions wow fadeInUp" data-wow-delay="0.3s">
             <a href="<?php echo base_url('about_us'); ?>" class="btn-gold">Explore Our School <i class="fa fa-arrow-right"></i></a>
             <a href="<?php echo base_url('admissions'); ?>" class="btn-outline">Admission Enquiry <i class="fa fa-file-text-o"></i></a>
@@ -58,6 +88,11 @@
         <div class="hero-badge-row"><i class="fa fa-users"></i><div><strong>1000+</strong><span>Students</span></div></div>
         <div class="hero-badge-row"><i class="fa fa-star"></i><div><strong>100%</strong><span>Commitment</span></div></div>
     </div>
+
+    <!-- sound on/off (shown only on video / link slides) -->
+    <button type="button" class="hero-sound" id="heroSound" aria-label="Turn sound on">
+        <i class="fa fa-volume-off"></i> <span>Tap for sound</span>
+    </button>
 </section>
 
 <!-- ============ ABOUT ============ -->
@@ -191,7 +226,7 @@
                 <span class="tile-label">Annual Sports Day<small>Celebrating energy, teamwork &amp; achievement.</small></span>
             </a>
 
-            <a href="<?php echo base_url('annual_day'); ?>" class="gallery-tile wow fadeInUp">
+            <a href="<?php echo base_url('gallery'); ?>" class="gallery-tile wow fadeInUp">
                 <img src="<?php echo base_url(); ?>assets/images/main_image/anual_day.jpeg" alt="Annual Day">
                 <span class="tile-label">Cultural Events<small>Showcasing talent and creativity.</small></span>
             </a>
@@ -220,35 +255,49 @@
     <div class="lh-container journey-grid">
 
         <div class="journey-media lh-reveal">
-            <?php foreach ($homepage_video as $link_value) {
-                if ($link_value->c_type == 'infrastructure') {
-                    if ($link_value->links != "") {
-                        $link = trim($link_value->links);
-                        $video_id = '';
-                        parse_str(parse_url($link, PHP_URL_QUERY), $vars);
-                        if (isset($vars['v'])) { $video_id = $vars['v']; }
-                        if (empty($video_id)) { $path = parse_url($link, PHP_URL_PATH); $video_id = trim($path, '/'); }
-                        ?>
-                        <?php if (!empty($video_id)) { ?>
-                            <div class="journey-video">
-                                <iframe
-                                    src="https://www.youtube.com/embed/<?php echo $video_id; ?>?mute=1&playsinline=1&rel=0"
-                                    title="School story video"
-                                    frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowfullscreen></iframe>
-                            </div>
-                        <?php }
-                    } else { ?>
-                        <div class="journey-video">
-                            <video width="100%" height="100%" controls playsinline>
-                                <source src="<?php echo base_url('../assets/uploads/videos/' . $link_value->c_videos); ?>" type="video/*">
-                            </video>
-                        </div>
-                    <?php }
-                }
-            } ?>
-        </div>
+    <?php foreach ($homepage_video as $link_value) {
+
+        $file = isset($link_value->c_videos) ? trim($link_value->c_videos) : '';
+        $link = isset($link_value->links)    ? trim($link_value->links)    : '';
+
+        if ($file !== '') { ?>
+
+            <!-- uploaded video file -->
+            <div class="journey-video">
+                <video width="100%" height="100%" controls playsinline preload="metadata">
+                    <source src="<?php echo base_url('../assets/uploads/videos/' . $file); ?>" type="video/mp4">
+                </video>
+            </div>
+
+        <?php } elseif ($link !== '') {
+
+            // YouTube link -> embed
+            $video_id = lh_youtube_id($link);
+            if ($video_id === '') {   // fallback for other URL shapes
+                parse_str((string) parse_url($link, PHP_URL_QUERY), $vars);
+                $video_id = isset($vars['v']) ? $vars['v'] : trim((string) parse_url($link, PHP_URL_PATH), '/');
+            }
+
+            if ($video_id !== '') { ?>
+                <div class="journey-video">
+                    <iframe
+                        src="https://www.youtube.com/embed/<?php echo htmlspecialchars($video_id); ?>?playsinline=1&rel=0"
+                        title="School story video"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+            <?php } else { ?>
+                <!-- direct video URL (mp4 / webm) -->
+                <div class="journey-video">
+                    <video width="100%" height="100%" controls playsinline preload="metadata">
+                        <source src="<?php echo htmlspecialchars($link); ?>">
+                    </video>
+                </div>
+            <?php }
+        }
+    } ?>
+</div>
 
         <div class="journey-copy">
             <span class="eyebrow"><span class="dash"></span> Our Learning Journey</span>
@@ -420,7 +469,7 @@
     .link-arrow{color:var(--navy);font-weight:700;font-size:14px;text-decoration:none;display:inline-flex;gap:8px;align-items:center;}
     .link-arrow:hover{color:var(--gold-deep);}
 
-    /* hero — UNCHANGED, exactly as supplied */
+    /* hero */
     .hero{position:relative;min-height:640px;display:flex;align-items:center;overflow:hidden;color:#fff;}
     .hero-slides{position:absolute;inset:0;}
     .hero-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease;}
@@ -546,11 +595,11 @@
     /* ---------- v3 creative layer ---------- */
     .lh-container{position:relative;z-index:1;}
 
-    /* slow Ken Burns drift on hero media — UNCHANGED */
+    /* slow Ken Burns drift on hero media */
     .hero-media{animation:lhKen 14s ease-in-out infinite alternate;}
     @keyframes lhKen{from{transform:scale(1) translate(0,0);}to{transform:scale(1.12) translate(-1.5%,1%);}}
 
-    /* floating hero badge — UNCHANGED + pulsing about badge */
+    /* floating hero badge + pulsing about badge */
     .hero-badge{animation:lhFloat 5s ease-in-out infinite;}
     @keyframes lhFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-9px);}}
     .about-badge{animation:lhPulse 3.2s ease-in-out infinite;}
@@ -601,7 +650,6 @@
 
     @media (max-width:768px){
         .h2{font-size:29px;}
-        /* hero stacks vertically: content, then badge card — UNCHANGED */
         .hero{display:block;min-height:0;}
         .hero-badge{position:static;margin:0 24px 34px;width:auto;min-width:0;}
     }
@@ -638,7 +686,6 @@
         .leader-block,.leader-block.reverse{grid-template-columns:1fr;}
         .leader-block.reverse .leader-photo{order:0;}
         .leader-photo{max-width:220px;margin:0 auto;}
-        /* hero stacks vertically: content, then badge card — UNCHANGED */
         .hero{display:block;min-height:0;}
         .hero-badge{position:static;margin:0 24px 34px;width:auto;min-width:0;}
         .h2{font-size:29px;}
@@ -667,10 +714,6 @@
 
     /* =========================================================
        v7 — PROFESSIONAL SCHOOL REDESIGN (ALL SECTIONS EXCEPT HERO)
-       Everything below overrides the rules above for non-hero
-       selectors only. Hero (.hero, .hero-*, lhKen, lhFloat) is
-       never redeclared past this point — it stays exactly as
-       supplied above.
     ========================================================= */
     :root{
         --space-y: 104px;
@@ -686,7 +729,7 @@
     .cta-band{padding:var(--space-y) 0;margin-top:34px;}
     .features-grid,.gallery-grid,.news-grid,.details-grid{margin-top:40px;}
 
-    /* big faint editorial numerals behind each (non-hero) section title */
+    /* big faint editorial numerals behind each section title */
     .about-section .h2::before,
     .features-section .h2::before,
     .activities-section .h2::before,
@@ -703,7 +746,7 @@
     .news-section .h2::before{content:"05";}
     .details-section .h2::before{content:"06";}
 
-    /* school-style "tab" eyebrow (notebook index-tab look) */
+    /* school-style "tab" eyebrow */
     .eyebrow{
         background:rgba(245,166,35,.1);border:1px dashed rgba(226,145,26,.45);
         border-radius:50px;padding:6px 16px 6px 12px;text-transform:uppercase;
@@ -715,7 +758,7 @@
     .link-arrow::after{content:"";position:absolute;left:0;bottom:-3px;width:0;height:2px;background:var(--gold-deep);transition:width .25s ease;}
     .link-arrow:hover::after{width:100%;}
 
-    /* crayon-tin stripe seam right under the hero (hero itself untouched) */
+    /* crayon-tin stripe seam right under the hero */
     .hero + .about-section{position:relative;}
     .hero + .about-section::before{
         content:"";position:absolute;top:0;left:0;right:0;height:6px;z-index:2;
@@ -826,20 +869,175 @@
     @media (max-width:480px){
         .stat{padding:26px 10px 16px;}
     }
+
+    /* =========================================================
+       HERO VIDEO / YOUTUBE SUPPORT  (keep at the END of the CSS)
+    ========================================================= */
+
+    /* YouTube background, scaled to cover the hero */
+    .hero-yt{position:absolute;inset:0;overflow:hidden;background:#000;}
+    .hero-yt iframe{
+        position:absolute;top:50%;left:50%;
+        width:100vw;height:56.25vw;min-height:100%;min-width:177.78vh;
+        transform:translate(-50%,-50%);border:0;pointer-events:none;
+    }
+
+    /* no Ken Burns zoom on videos */
+    .hero-slide[data-type="video"] .hero-media,
+    .hero-slide[data-type="link"] .hero-media{animation:none;}
+
+    /* remove the dark mask while a video / link slide is showing */
+    .hero-overlay{transition:opacity .6s ease;}
+    .hero.is-video .hero-overlay{opacity:0;}
+    .hero.is-video .hero-title,
+    .hero.is-video .hero-copy,
+    .hero.is-video .eyebrow{text-shadow:0 2px 14px rgba(0,0,0,.7);}
+
+    /* smooth text swap when the slide changes */
+    .hero-title,.hero-copy{transition:opacity .35s ease;}
+    .hero-title.is-swapping,.hero-copy.is-swapping{opacity:0;}
+
+    /* sound button */
+    .hero-sound{
+        position:absolute;left:24px;bottom:46px;z-index:3;display:none;align-items:center;gap:8px;
+        background:rgba(8,26,52,.78);backdrop-filter:blur(8px);color:#fff;cursor:pointer;
+        border:1px solid rgba(255,255,255,.3);border-radius:50px;padding:10px 18px;
+        font-family:var(--font-body);font-weight:700;font-size:13.5px;
+    }
+    .hero-sound:hover{background:var(--gold);color:var(--navy-deep);}
+    .hero-sound i{font-size:16px;}
+    .hero.is-video .hero-sound{display:inline-flex;}
+    @media (max-width:768px){ .hero-sound{left:24px;bottom:auto;top:16px;} }
 </style>
 
 <script>
-    // hero slide rotation
+    // hero slide rotation + DB title/description + video unmask + SOUND
     (function () {
-        var slides = document.querySelectorAll('.hero-slide');
-        if (slides.length > 1) {
-            var i = 0;
-            setInterval(function () {
-                slides[i].classList.remove('is-active');
-                i = (i + 1) % slides.length;
-                slides[i].classList.add('is-active');
-            }, 6000);
+        var hero    = document.getElementById('hero');
+        var slides  = document.querySelectorAll('.hero-slide');
+        var titleEl = document.getElementById('heroTitle');
+        var copyEl  = document.getElementById('heroCopy');
+        var soundBtn = document.getElementById('heroSound');
+        if (!hero || !slides.length) return;
+
+        var defTitle = titleEl ? titleEl.innerHTML : '';
+        var defCopy  = copyEl ? copyEl.innerHTML : '';
+        var i = 0;
+        var first = true;
+
+        // ---------- sound state ----------
+        var soundOn   = false;   // sound currently on
+        var userMuted = false;   // user pressed the button to mute
+
+        function ytPost(frame, func, args) {
+            try {
+                frame.contentWindow.postMessage(JSON.stringify({event:'command', func:func, args:args || []}), '*');
+            } catch (e) {}
         }
+
+        function updateBtn() {
+            if (!soundBtn) return;
+            soundBtn.innerHTML = soundOn
+                ? '<i class="fa fa-volume-up"></i> <span>Sound on</span>'
+                : '<i class="fa fa-volume-off"></i> <span>Tap for sound</span>';
+            soundBtn.setAttribute('aria-label', soundOn ? 'Turn sound off' : 'Turn sound on');
+        }
+
+        // only the ACTIVE slide may have sound; all others stay muted
+        function applySound() {
+            slides.forEach(function (s, n) {
+                var active = (n === i);
+                var v = s.querySelector('video');
+                if (v) {
+                    v.muted = !(soundOn && active);
+                    if (active) {
+                        var pr = v.play();
+                        if (pr && pr.catch) pr.catch(function () {
+                            // browser refused sound autoplay -> fall back to muted
+                            v.muted = true; soundOn = false; updateBtn(); v.play();
+                        });
+                    }
+                }
+                var f = s.querySelector('iframe');
+                if (f && f.getAttribute('src')) {
+                    if (active && soundOn) { ytPost(f, 'unMute'); ytPost(f, 'setVolume', [100]); }
+                    else { ytPost(f, 'mute'); }
+                }
+            });
+            updateBtn();
+        }
+
+        if (soundBtn) {
+            soundBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                soundOn = !soundOn;
+                userMuted = !soundOn;
+                applySound();
+            });
+        }
+
+        // browsers only allow sound after a user gesture -> turn it on at the first tap/click/key
+        function firstGesture() {
+            if (!userMuted && !soundOn) { soundOn = true; applySound(); }
+            ['click', 'touchstart', 'keydown'].forEach(function (ev) {
+                document.removeEventListener(ev, firstGesture, true);
+            });
+        }
+        ['click', 'touchstart', 'keydown'].forEach(function (ev) {
+            document.addEventListener(ev, firstGesture, true);
+        });
+
+        // ---------- text ----------
+        function setText(slide) {
+            if (!titleEl || !copyEl) return;
+            var t = (slide.getAttribute('data-title') || '').trim();
+            var d = (slide.getAttribute('data-desc')  || '').trim();
+
+            function apply() {
+                if (t) { titleEl.textContent = t; } else { titleEl.innerHTML = defTitle; }
+                if (d) { copyEl.textContent  = d; } else { copyEl.innerHTML  = defCopy; }
+                titleEl.classList.remove('is-swapping');
+                copyEl.classList.remove('is-swapping');
+            }
+            if (first) { first = false; apply(); return; }
+            titleEl.classList.add('is-swapping');
+            copyEl.classList.add('is-swapping');
+            setTimeout(apply, 350);
+        }
+
+        // ---------- slides ----------
+        function show(idx) {
+            slides.forEach(function (s, n) { s.classList.toggle('is-active', n === idx); });
+            var type = slides[idx].getAttribute('data-type');
+            hero.classList.toggle('is-video', type === 'video' || type === 'link');
+            setText(slides[idx]);
+
+            // load the YouTube iframe only while its slide is active
+            slides.forEach(function (s, n) {
+                var f = s.querySelector('iframe[data-src]');
+                if (!f) return;
+                if (n === idx) {
+                    var src = f.getAttribute('data-src') + '&enablejsapi=1';
+                    if (soundOn) src = src.replace('mute=1', 'mute=0');
+                    f.onload = function () { if (soundOn) { ytPost(f, 'unMute'); ytPost(f, 'setVolume', [100]); } };
+                    f.src = src;
+                } else {
+                    f.src = '';
+                }
+            });
+
+            applySound();
+            return type;
+        }
+
+        function loop() {
+            var type  = show(i);
+            var delay = (type === 'video' || type === 'link') ? 20000 : 6000;
+            if (slides.length > 1) {
+                setTimeout(function () { i = (i + 1) % slides.length; loop(); }, delay);
+            }
+        }
+        loop();
     })();
 
     // animated counters
@@ -869,7 +1067,7 @@
         run();
     })();
 
-    /* v3: reveal-on-scroll for media/step blocks (WOW handles .wow) */
+    /* reveal-on-scroll for media/step blocks (WOW handles .wow) */
     (function () {
         var els = document.querySelectorAll('.lh-reveal');
         if (!('IntersectionObserver' in window)) {

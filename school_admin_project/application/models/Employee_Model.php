@@ -23,14 +23,23 @@ class Employee_Model extends CI_Model
                         ->get('class_master')->result();
     }
 
-    public function get_divisions($class_id)
-    {
-        return $this->db->select('dmId, dmName')
-                        ->where('cmId', (int) $class_id)
-                        ->order_by('dmName', 'ASC')
-                        ->get('division_master')->result();
+public function get_divisions($class_id)
+{
+    $fields = $this->db->list_fields('division_master');
+
+    $col = null;
+    foreach (['cmId', 'dmClassId', 'dmCmId', 'dmClass', 'class_id', 'classId', 'dmCm'] as $c) {
+        if (in_array($c, $fields)) { $col = $c; break; }
     }
 
+    $this->db->select('dmId, dmName')->order_by('dmName', 'ASC');
+    if ($col) {
+        $this->db->where($col, (int) $class_id);
+    }
+    $q = $this->db->get('division_master');
+
+    return $q ? $q->result() : [];
+}
     public function mobile_exists($mobile, $exclude_id = 0)
     {
         $this->db->where('emPhoneNo', $mobile)->where('emActive', 1);
@@ -44,34 +53,80 @@ class Employee_Model extends CI_Model
                         ->count_all_results('employee_master') > 0;
     }
 
-    public function insert_employee($d, $password)
-    {
-        $this->db->trans_start();
+    // public function insert_employee($d, $password)
+    // {
+    //     $this->db->trans_start();
 
-        $this->db->insert('employee_master', [
-            'emActive'   => 1,
-            'emTS'       => date('Y-m-d H:i:s'),
-            'emName'     => $d['name'],
-            'emPassword' => md5($password),
-            'emClass'    => $d['class_id'],
-            'emDiv'      => $d['division_id'],
-            'emPhoneNo'  => $d['mobile'],
-            'emDesigId'  => $d['role_id'],
-            'user_id'    => $d['role_id'],   // remove this line if employee_master has no user_id column
-        ]);
-        $emp_id = $this->db->insert_id();
+    //     $this->db->insert('employee_master', [
+    //         'emActive'   => 1,
+    //         'emTS'       => date('Y-m-d H:i:s'),
+    //         'emName'     => $d['name'],
+    //         'emPassword' => md5($password),
+    //         'emClass'    => $d['class_id'],
+    //         'emDiv'      => $d['division_id'],
+    //         'emPhoneNo'  => $d['mobile'],
+    //         'emDesigId'  => $d['role_id'],
+    //         'user_id'    => $d['role_id'],   // remove this line if employee_master has no user_id column
+    //     ]);
+    //     $emp_id = $this->db->insert_id();
 
-        $this->db->insert('admin_login', [
-            'employe_id' => $emp_id,
-            'user_id'    => $d['role_id'],
-            'c_username' => $d['name'],
-            'c_password' => md5($password),
-        ]);
+    //     $this->db->insert('admin_login', [
+    //         'employe_id' => $emp_id,
+    //         'user_id'    => $d['role_id'],
+    //         'c_username' => $d['name'],
+    //         'c_password' => md5($password),
+    //     ]);
 
-        $this->db->trans_complete();
-        return $this->db->trans_status();
-    }
+    //     $this->db->trans_complete();
+    //     return $this->db->trans_status();
+    // }
 
+
+        public function insert_employee($d, $password)
+        {
+            $now = date('Y-m-d H:i:s');
+
+            // user_type = role_name from the userrole table
+            $role = $this->db->select('role_name,role_id')
+                            ->where('role_id', $d['role_id'])
+                            ->get('user_roles')
+                            ->row();
+            $user_type = $role ? $role->role_name : '';
+            $role_id = $role ? $role->role_id : '';
+
+            $this->db->trans_start();
+
+            // 1) user_login first
+            $this->db->insert('user_login', [
+                'name'       => $d['name'],
+                'mobile'     => $d['mobile'],
+                'email'      => (!empty($d['email'])) ? $d['email'] : NULL,  // NULL, not '', because email is a unique key
+                'password'   => md5($password),
+                'user_type'  => $user_type,
+                'user_role_id' =>$role_id,
+                'status'     => 1,
+                'created_at' => $now,
+            ]);
+            $user_log_id = $this->db->insert_id();
+
+            // 2) employee_master with the new user_login id
+            $this->db->insert('employee_master', [
+                'emActive'    => 1,
+                'emTS'        => $now,
+                'emName'      => $d['name'],
+                'emPassword'  => md5($password),
+                'emClass'     => $d['class_id'],
+                'emDiv'       => $d['division_id'],
+                'emPhoneNo'   => $d['mobile'],
+                'emDesigId'   => $d['role_id'],
+                'user_log_id' => $user_log_id,
+            ]);
+            $emp_id = $this->db->insert_id();
+
+            $this->db->trans_complete();
+            return $this->db->trans_status();
+        }
+        
     public function update_employee($id, $d, $password = '')
     {
         $this->db->trans_start();

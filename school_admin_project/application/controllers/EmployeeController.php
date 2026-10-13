@@ -33,15 +33,22 @@ class EmployeeController extends CI_Controller
 
     // AJAX: divisions of a class
     public function employee_divisions()
-    {
-        $rows = $this->Employee_Model->get_divisions((int) $this->input->post('class_id'));
-        $out  = [];
-        foreach ($rows as $r) {
-            $out[] = ['id' => (int) $r->dmId, 'name' => $r->dmName];
-        }
-        return $this->_jsons(true, '', ['divisions' => $out]);
+{
+    $class_id = (int) $this->input->post('class_id');
+
+    $out = [];
+    foreach ($this->Employee_Model->get_divisions($class_id) as $r) {
+        $out[] = ['id' => (int) $r->dmId, 'name' => $r->dmName];
     }
 
+    $this->output
+         ->set_content_type('application/json')
+         ->set_output(json_encode([
+             'success'   => true,
+             'message'   => '',
+             'divisions' => $out
+         ]));
+}
     private function _input($self_id = 0)
     {
         $d = [

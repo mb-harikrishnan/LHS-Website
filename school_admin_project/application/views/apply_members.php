@@ -3,7 +3,7 @@
    Receives from controller: $applications */
 
 // folder where resumes are stored (change to your real resume folder URL)
-$resume_base = 'http://localhost:8000/assets/resumes/';
+$resume_base = 'http://localhost:8000/assets/images/resumes/';
 
 // distinct job titles for the filter dropdown
 $jobs = array();

@@ -47,8 +47,8 @@ class Login extends CI_Controller
         $this->session->sess_regenerate(TRUE);
 
         $sess_array = [
-            'id'           => $user->sl_no,
-            'c_username'   => $user->c_username,
+            'id'           => $user->user_id,
+            'c_username'   => $user->name,
             'user_role_id' => $user->user_role_id,
             'login_time'   => date('Y-m-d H:i:s'),
             'remember'     => $remember

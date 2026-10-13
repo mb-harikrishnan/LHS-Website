@@ -1,40 +1,54 @@
+<?php
+/* ------------------------------------------------------------
+   Activities shown on this page: DB value (c_type) => label.
+   Add or remove a sport here and the grid updates itself.
+------------------------------------------------------------ */
+$sports = array(
+    'volley_ball' => 'Volley Ball',
+    'basket_ball' => 'Basket Ball',
+    'foot_ball'   => 'Foot Ball',
+    'cricket'     => 'Cricket',
+    'kho_kho'     => 'Kho-Kho',
+    'badminton'   => 'Badminton',
+    'roll_ball'   => 'Roll Ball',
+);
+
+/* Lookup: c_type => image file (one row per type from the model) */
+$images = array();
+if (!empty($all_images)) {
+    foreach ($all_images as $row) {
+        $images[$row->c_type] = $row->c_images;
+    }
+}
+
+$placeholder = base_url('assets/images/empty_images/no-image-icon-6.png');
+?>
 <!doctype html>
-<html lang="en">
-
-</html>
-
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <title>Little Hearts | Sports and Games</title>
 
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
-
   <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap.min.css') ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/font-awesome.min.css') ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/edua-icons.css') ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/animate.min.css') ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.carousel.css') ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.transitions.css') ?> ">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/owl.transitions.css') ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/cubeportfolio.min.css') ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/settings.css') ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootsnav.css') ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/loader.css') ?>">
   <link rel="icon" href="<?php echo base_url('assets/images/favicon.png') ?>">
 
-
   <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+  <![endif]-->
 </head>
 
-
-<!--Search-->
+<!-- Search -->
 <div id="search">
   <button type="button" class="close">×</button>
   <form>
@@ -49,244 +63,52 @@
 
     <div class="row">
       <div class="col-md-12 text-center">
-
-
-        <div class="row">
-          <div class="col-md-12 text-center">
-            <div class="main_title margin_bottom">
-              <h2>Sports and Games</h2>
-              <p>
-                Each individual in Little Hearts School is held in high esteem as they take part in various sports activities which enable them to develop their sportsman spirit.
-
-                Our School conducts various indoor and outdoor activities.
-
-                Training programmes are held in the school campus on all working days for the students. </p>
-            </div>
-          </div>
+        <div class="main_title margin_bottom">
+          <h2>Sports and Games</h2>
+          <p>
+            Each individual in Little Hearts School is held in high esteem as they take part in various sports activities which enable them to develop their sportsman spirit.
+            Our School conducts various indoor and outdoor activities.
+            Training programmes are held in the school campus on all working days for the students.
+          </p>
         </div>
       </div>
-
     </div>
 
     <div class="row">
 
-      <!-- Activity Box -->
+      <?php foreach ($sports as $type => $label) { ?>
+        <div class="col-md-3 col-sm-6">
+          <div class="activity_box">
 
+            <?php if (!empty($images[$type])) { ?>
+              <a href="<?php echo base_url('list_all_activities/' . $type); ?>">
+                <img src="<?php echo base_url('assets/images/gallery/' . $images[$type]); ?>"
+                     alt="<?php echo htmlspecialchars($label); ?>" width="150">
+              </a>
+            <?php } else { ?>
+              <img src="<?php echo $placeholder; ?>"
+                   alt="<?php echo htmlspecialchars($label); ?>" width="150">
+            <?php } ?>
 
-    <?php foreach($all_images as $value){ ?>
-
-      <div class="col-md-3 col-sm-6">
-        <div class="activity_box">
-       <?php 
-       if ($value->c_type == 'Volley_Ball') 
-        {
-            
-        $img_path = base_url('assets/images/gallery/' . $value->c_images);
-          ?>
-                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
-
-                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
-                  </a>  
-      
-          
-        <?php } else { 
-            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
-            ?>
-
-
-            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
-    
-            
-        <?php } ?>        
-           <h4>Volley Ball</h4>
+            <h4><?php echo htmlspecialchars($label); ?></h4>
+          </div>
         </div>
-      </div>
-
-      <div class="col-md-3 col-sm-6">
-        <div class="activity_box">
-      <?php 
-       if ($value->c_type == 'Basket_Ball') 
-        {
-            
-        $img_path = base_url('assets/images/gallery/' . $value->c_images);
-          ?>
-                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
-
-                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
-                  </a>  
-      
-          
-        <?php } else { 
-            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
-            ?>
-
-
-            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
-    
-            
-        <?php } ?>   
-                <h4>Basket Ball</h4>
-        </div>
-      </div>
-
-      <div class="col-md-3 col-sm-6">
-        <div class="activity_box">
-         <?php 
-       if ($value->c_type == 'Foot_Ball') 
-        {
-            
-        $img_path = base_url('assets/images/gallery/' . $value->c_images);
-          ?>
-                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
-
-                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
-                  </a>  
-      
-          
-        <?php } else { 
-            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
-            ?>
-
-
-            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
-    
-            
-        <?php } ?>         
-          <h4>Foot Ball</h4>
-        </div>
-      </div>
-
-      <div class="col-md-3 col-sm-6">
-        <div class="activity_box">
-      <?php 
-       if ($value->c_type == 'Cricket') 
-        {
-            
-        $img_path = base_url('assets/images/gallery/' . $value->c_images);
-          ?>
-                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
-
-                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
-                  </a>  
-      
-          
-        <?php } else { 
-            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
-            ?>
-
-
-            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
-    
-            
-        <?php } ?>         
-          <h4>Cricket</h4>
-        </div>
-      </div>
-
-      <div class="col-md-3 col-sm-6">
-        <div class="activity_box">
-       <?php 
-       if ($value->c_type == 'Kho-Kho') 
-        {
-            
-        $img_path = base_url('assets/images/gallery/' . $value->c_images);
-          ?>
-                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
-
-                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
-                  </a>  
-      
-          
-        <?php } else { 
-            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
-            ?>
-
-
-            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
-    
-            
-        <?php } ?>   
-                <h4>Kho-Kho</h4>
-        </div>
-      </div>
-
-      <div class="col-md-3 col-sm-6">
-        <div class="activity_box">
-      <?php 
-       if ($value->c_type == 'Badminton') 
-        {
-            
-        $img_path = base_url('assets/images/gallery/' . $value->c_images);
-          ?>
-                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
-
-                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
-                  </a>  
-      
-          
-        <?php } else { 
-            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
-            ?>
-
-
-            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
-    
-            
-        <?php } ?>       
-            <h4>Badminton</h4>
-        </div>
-      </div>
-
-      <div class="col-md-3 col-sm-6">
-        <div class="activity_box">
-      <?php 
-       if ($value->c_type == 'Roll_Ball') 
-        {
-            
-        $img_path = base_url('assets/images/gallery/' . $value->c_images);
-          ?>
-                 <a href="<?php echo base_url('list_all_activities/'.$value->c_type); ?>">
-
-                  <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
-                  </a>  
-      
-          
-        <?php } else { 
-            $img_path = base_url('assets/images/empty_images/no-image-icon-6.png');
-            ?>
-
-
-            <img src="<?php echo $img_path; ?>" alt="Image" width="150">   
-    
-            
-        <?php } ?>   
-                <h4>Roll Ball</h4>
-        </div>
-      </div>
-
-      <?php }?>
-
+      <?php } ?>
 
     </div>
   </div>
 </section>
 
 
-
 <style>
-  /* ============================================================
+/* ============================================================
    LITTLE HEARTS — v13 "SCRAPBOOK STICKER ALBUM" (internal CSS)
-   Cards look like photos taped into a school scrapbook: striped
-   washi tape + star sticker, candy-tint confetti tiles, ghosted
-   placeholder icons, dashed perforation, crayon underline
-   captions, folded page corner, collage tilt on hover.
-   CSS ONLY — markup, PHP, links and DB untouched.
    ============================================================ */
 
-/* ---- notebook-paper page canvas (matches the school theme) ---- */
+/* ---- notebook-paper page canvas ---- */
 #activities, #sports{
     --fl-navy:#0b2447; --fl-muted:#5b6b84; --fl-paper:#f6f9ff; --fl-gold:#f5a623;
-    --acc:#8e6fe8;                          /* co-curricular accent */
+    --acc:#8e6fe8;
     position:relative;
     background-color:var(--fl-paper);
     background-image:
@@ -296,9 +118,9 @@
     background-size:auto, auto, 26px 26px;
     overflow-x:hidden;
 }
-#sports{ --acc:#22a06b; }                   /* sports accent */
+#sports{ --acc:#22a06b; }
 
-/* crayon doodle blobs floating at the page corners */
+/* crayon doodle blobs */
 #activities::before, #sports::before{
     content:""; position:absolute; top:80px; right:3%; width:130px; height:130px; z-index:0;
     border-radius:42% 58% 62% 38%/48% 42% 58% 52%;
@@ -313,7 +135,7 @@
 }
 @keyframes lh-float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-16px) rotate(8deg)}}
 
-/* ---- heading: Fredoka with marker-highlight underline ---- */
+/* ---- heading ---- */
 #activities .main_title h2, #sports .main_title h2{
     position:relative; display:inline-block; z-index:1;
     font-family:'Fredoka','Baloo 2',cursive !important;
@@ -331,7 +153,7 @@
 }
 #activities .container, #sports .container{ position:relative; z-index:1; }
 
-/* ---- flex rows so every card in a row shares one height ---- */
+/* ---- flex rows: equal-height cards ---- */
 #activities .row, #sports .row{ display:flex; flex-wrap:wrap; }
 #activities .row::before, #activities .row::after,
 #sports .row::before, #sports .row::after{ display:none; }
@@ -339,10 +161,10 @@
 #sports     .row > [class*="col-"]{ margin-bottom:28px; }
 
 /* ============================================================
-   THE CARD — one sticker page per activity
+   THE CARD
    ============================================================ */
 #activities .activity_box, #sports .activity_box{
-    --tint:#2f6fed; --tint-deep:#123a8f;    /* default tint (slot 1) */
+    --tint:#2f6fed; --tint-deep:#123a8f;
     position:relative;
     display:flex; flex-direction:column;
     width:100%; height:100%;
@@ -353,7 +175,7 @@
     transition:transform .4s cubic-bezier(.34,1.56,.64,1), box-shadow .4s ease, border-color .4s ease;
 }
 
-/* per-card candy tints cycling 6 colours (neighbours always differ) */
+/* candy tints (6-colour cycle) */
 #activities .row > [class*="col-"]:nth-child(6n+2) .activity_box,
 #sports     .row > [class*="col-"]:nth-child(6n+2) .activity_box{ --tint:#22a06b; --tint-deep:#0d6b45; }
 #activities .row > [class*="col-"]:nth-child(6n+3) .activity_box,
@@ -365,13 +187,13 @@
 #activities .row > [class*="col-"]:nth-child(6n+6) .activity_box,
 #sports     .row > [class*="col-"]:nth-child(6n+6) .activity_box{ --tint:#0ea5e9; --tint-deep:#0b6f9e; }
 
-/* scrapbook collage tilt, alternating down the grid */
+/* collage tilt */
 #activities .row > [class*="col-"]:nth-child(odd)  .activity_box,
 #sports     .row > [class*="col-"]:nth-child(odd)  .activity_box{ transform:rotate(-.9deg); }
 #activities .row > [class*="col-"]:nth-child(even) .activity_box,
 #sports     .row > [class*="col-"]:nth-child(even) .activity_box{ transform:rotate(.8deg); }
 
-/* ---- washi tape + star sticker holding the "photo" down ---- */
+/* washi tape + star */
 #activities .activity_box::before, #sports .activity_box::before{
     content:"★";
     position:absolute; top:-13px; left:50%; z-index:6;
@@ -386,7 +208,7 @@
     box-shadow:0 3px 7px rgba(11,36,71,.18);
     transition:transform .4s cubic-bezier(.34,1.56,.64,1);
 }
-/* folded page corner */
+/* folded corner */
 #activities .activity_box::after, #sports .activity_box::after{
     content:"";
     position:absolute; right:2px; bottom:2px; z-index:5;
@@ -397,7 +219,7 @@
     transition:width .35s ease, height .35s ease;
 }
 
-/* ---- media tile: real photo (wrapped in <a>) ---- */
+/* ---- media tile: real photo ---- */
 #activities .activity_box a, #sports .activity_box a{
     position:relative;
     display:flex; align-items:center; justify-content:center;
@@ -415,7 +237,6 @@
     filter:saturate(1.06);
     transition:transform .65s cubic-bezier(.22,1,.36,1);
 }
-/* star sticker badge on photo cards */
 #activities .activity_box a::before, #sports .activity_box a::before{
     content:"★";
     position:absolute; top:12px; left:12px; z-index:3;
@@ -425,7 +246,6 @@
     box-shadow:0 4px 10px rgba(11,36,71,.25);
     transition:transform .4s cubic-bezier(.34,1.56,.64,1);
 }
-/* tint fade at the photo base + shine sweep on hover */
 #activities .activity_box a::after, #sports .activity_box a::after{
     content:""; position:absolute; inset:0; z-index:2; pointer-events:none;
     background:
@@ -435,11 +255,8 @@
     background-position:-80% 0, 0 0;
     transition:background-position .65s ease;
 }
-/* #activities .activity_box:hover a img, #sports .activity_box:hover a img{ transform:scale(1.09) rotate(.5deg); }
-#activities .activity_box:hover a::after, #sports .activity_box:hover a::after{ background-position:170% 0, 0 0; }
-#activities .activity_box:hover a::before, #sports .activity_box:hover a::before{ transform:rotate(-18deg) scale(1.15); } */
 
-/* ---- media tile: placeholder icon (no <a>) → ghost porthole ---- */
+/* ---- media tile: placeholder icon ---- */
 #activities .activity_box > img, #sports .activity_box > img{
     display:block;
     flex:1 0 auto; min-height:210px;
@@ -455,9 +272,8 @@
     mix-blend-mode:multiply;
     transition:transform .45s cubic-bezier(.34,1.56,.64,1);
 }
-/* #activities .activity_box:hover > img, #sports .activity_box:hover > img{ transform:translateY(-5px) rotate(-3deg); } */
 
-/* ---- caption: cream strip under the photo ---- */
+/* ---- caption ---- */
 #activities .activity_box h4, #sports .activity_box h4{
     position:relative;
     display:flex; align-items:center; justify-content:center;
@@ -470,41 +286,42 @@
     border-top:3px dashed color-mix(in srgb, var(--tint) 45%, #fff);
     border-radius:0 0 20px 20px;
 }
-/* crayon underline */
 #activities .activity_box h4::before, #sports .activity_box h4::before{
     content:""; position:absolute; left:50%; bottom:6px; transform:translateX(-50%);
     width:34px; height:4px; border-radius:4px;
     background:linear-gradient(90deg, var(--tint), color-mix(in srgb, var(--fl-gold) 70%, var(--tint)));
     opacity:.85; transition:width .35s ease;
 }
-/* arrow slides in on hover */
 #activities .activity_box h4::after, #sports .activity_box h4::after{
     content:"→"; margin-left:7px; color:var(--tint);
     opacity:0; transform:translateX(-8px);
     transition:opacity .3s ease, transform .3s ease;
 }
-/* #activities .activity_box:hover h4::before, #sports .activity_box:hover h4::before{ width:58px; }
-#activities .activity_box:hover h4::after, #sports .activity_box:hover h4::after{ opacity:1; transform:translateX(0); } */
 
-/* ---- hover: sticker lifts and straightens ---- */
-/* #activities .row > [class*="col-"] .activity_box:hover,
+/* ---- hover effects (disabled in your original; uncomment to enable) ----
+#activities .activity_box:hover a img, #sports .activity_box:hover a img{ transform:scale(1.09) rotate(.5deg); }
+#activities .activity_box:hover a::after, #sports .activity_box:hover a::after{ background-position:170% 0, 0 0; }
+#activities .activity_box:hover a::before, #sports .activity_box:hover a::before{ transform:rotate(-18deg) scale(1.15); }
+#activities .activity_box:hover > img, #sports .activity_box:hover > img{ transform:translateY(-5px) rotate(-3deg); }
+#activities .activity_box:hover h4::before, #sports .activity_box:hover h4::before{ width:58px; }
+#activities .activity_box:hover h4::after, #sports .activity_box:hover h4::after{ opacity:1; transform:translateX(0); }
+#activities .row > [class*="col-"] .activity_box:hover,
 #sports     .row > [class*="col-"] .activity_box:hover{
     transform:translateY(-10px) rotate(0deg);
     box-shadow:9px 12px 0 rgba(11,36,71,.07), 0 30px 58px rgba(11,36,71,.2);
     border-color:color-mix(in srgb, var(--tint) 55%, #fff);
-} */
-/* #activities .activity_box:hover::before, #sports .activity_box:hover::before{ transform:translateX(-50%) rotate(-1deg) scale(1.07); }
-#activities .activity_box:hover::after, #sports .activity_box:hover::after{ width:32px; height:32px; } */
+}
+#activities .activity_box:hover::before, #sports .activity_box:hover::before{ transform:translateX(-50%) rotate(-1deg) scale(1.07); }
+#activities .activity_box:hover::after, #sports .activity_box:hover::after{ width:32px; height:32px; }
+*/
 
-/* cascade on reveal … but instant hover response */
+/* staggered transition delays */
 #activities .row > [class*="col-"]:nth-child(4n+2) .activity_box,
 #sports     .row > [class*="col-"]:nth-child(4n+2) .activity_box{ transition-delay:.04s; }
 #activities .row > [class*="col-"]:nth-child(4n+3) .activity_box,
 #sports     .row > [class*="col-"]:nth-child(4n+3) .activity_box{ transition-delay:.08s; }
 #activities .row > [class*="col-"]:nth-child(4n+4) .activity_box,
 #sports     .row > [class*="col-"]:nth-child(4n+4) .activity_box{ transition-delay:.12s; }
-/* #activities .row > [class*="col-"] .activity_box:hover,
-#sports     .row > [class*="col-"] .activity_box:hover{ transition-delay:0s; } */
 
 /* ---- responsive ---- */
 @media (max-width:991px){
@@ -525,7 +342,7 @@
     #activities::before, #sports::before{ width:70px; height:70px; }
 }
 
-/* ---- respect reduced-motion preferences ---- */
+/* ---- reduced motion ---- */
 @media (prefers-reduced-motion:reduce){
     #activities *, #sports *{ animation:none !important; transition:none !important; }
 }

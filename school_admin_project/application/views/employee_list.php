@@ -117,16 +117,22 @@ $role_js = []; foreach ($roles as $r)   $role_js[] = ['id' => (int) $r->role_id,
   const done = msg => Swal.fire({ icon: 'success', title: msg, timer: 1200, showConfirmButton: false }).then(() => location.reload());
   const opts = (list, ph) => `<option value="">${ph}</option>` + list.map(o => `<option value="${o.id}">${esc(o.name)}</option>`).join('');
 
-  async function loadDivisions(classId, selected) {
-    const sel = $('fDiv');
-    if (!classId) { sel.innerHTML = opts([], 'Select Class first'); sel.disabled = true; return; }
-    sel.disabled = true;
-    sel.innerHTML = opts([], 'Loading...');
-    const r = await post(URLS.divs, { class_id: classId });
-    sel.innerHTML = opts(r.divisions || [], 'Select Option');
-    sel.disabled = false;
-    if (selected) sel.value = String(selected);
+async function loadDivisions(classId, selected) {
+  const sel = $('fDiv');
+  if (!classId) { sel.innerHTML = opts([], 'Select Class first'); sel.disabled = true; return; }
+  sel.disabled = true;
+  sel.innerHTML = opts([], 'Loading...');
+  const r = await post(URLS.divs, { class_id: classId });
+  if (r.success === false) {
+    sel.innerHTML = opts([], 'Could not load');
+    Swal.showValidationMessage(r.message || 'Could not load divisions.');
+    return;
   }
+  const list = r.divisions || [];
+  sel.innerHTML = opts(list, list.length ? 'Select Option' : 'No divisions for this class');
+  sel.disabled = false;
+  if (selected) sel.value = String(selected);
+}
 
   async function empForm(item) {
     item = item || null;

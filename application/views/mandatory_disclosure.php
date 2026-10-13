@@ -1390,42 +1390,42 @@
               <td>50</td>
             </tr>
 
-            <tr>
-              <td>Infrastructure Inspection Video</td>
-              <td>
+           <tr>
+  <td>Infrastructure Inspection Video</td>
+  <td>
+    <?php
+    if (!empty($video)) {
+        foreach ($video as $value) {
 
-        <?php 
-        if(!empty($video))
-        {
-            foreach($video as $value)
-            {
-                if(!empty($value->links))
-                {
-        ?>
+            if (!empty($value->links)) {
+                // Link chosen
+                $play_url = $value->links;
 
-                    <a href="<?php echo $value->links; ?>" 
-                       target="_blank" 
-                       class="view_btn">
-                       Play Video
-                    </a>
+            } elseif (!empty($value->c_videos)) {
+                // Uploaded video file
+                $play_url = base_url('assets/uploads/videos/' . $value->c_videos); // adjust to your public path
 
-        <?php
-                }
-                else
-                {
-                    echo "No Video";
-                }
+            } else {
+                $play_url = '';
+            }
+
+            if ($play_url !== '') { ?>
+                <a href="<?php echo html_escape($play_url); ?>"
+                   target="_blank"
+                   rel="noopener"
+                   class="view_btn">
+                   Play Video
+                </a>
+            <?php } else {
+                echo "No Video";
             }
         }
-        else
-        {
-            echo "No Video";
-        }
-        ?>
-
-    </td>
-             </tr>
-          </tbody>
+    } else {
+        echo "No Video";
+    }
+    ?>
+  </td>
+</tr>          </tbody>
         </table>
       </div>
     </div>

@@ -19,15 +19,13 @@ $route['Result_and_Staff'] = 'MandatoryController/Result_and_Staff';
 $route['delete_Result_and_Staff'] = 'MandatoryController/delete_Result_and_Staff';
 $route['upload_Result_and_Staff'] = 'MandatoryController/upload_Result_and_Staff';
 
-
-$route['infrastructure'] = 'MandatoryController/infrastructure';
-$route['delete_infrastructure'] = 'MandatoryController/delete_infrastructure';
+$route['infrastructure']        = 'MandatoryController/infrastructure';
 $route['upload_infrastructure'] = 'MandatoryController/upload_infrastructure';
-
-	
+$route['delete_infrastructure'] = 'MandatoryController/delete_infrastructure';
 
 $route['school_news'] = 'NewsController/school_news';
-$route['save_news'] = 'NewsController/school_news';
+$route['save_news']   = 'NewsController/save_news';
+$route['delete_news'] = 'NewsController/delete_news';
 
 
 $route['gallery']                = 'GalleryController/gallery';
@@ -149,7 +147,6 @@ $route['employee_delete']   = 'EmployeeController/employee_delete';
 
 
 $route['employee_divisions'] = 'EmployeeController/employee_divisions';
-$route['gdhfheghfge'] = 'EmployeeController/hmvsmjdfbjsdbcjk';
 
 
 

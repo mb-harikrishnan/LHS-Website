@@ -1,12 +1,8 @@
 <?php
 /* Save as: application/views/activities_list.php
-   Receives from controller: $rows, $type_list (slug => label), $one_per_type */
+   Receives from controller: $rows, $type_list (slug => label) */
 
 $img_base = 'http://localhost:8000/assets/images/gallery/';
-
-$used = array();
-foreach ($rows as $r) { $used[] = $r->c_type; }
-$used = array_values(array_unique($used));
 ?>
 <style>
 /* modal */
@@ -28,7 +24,6 @@ $used = array_values(array_unique($used));
 .has-file .preview{display:block}
 .field-error{color:#dc2626;font-size:13px;margin:12px 0 0}
 .field-error[hidden]{display:none}
-.field-note{font-size:12px;color:var(--slate-500);margin:-10px 0 16px}
 
 /* fixed-size thumbnails */
 .thumb{width:80px;height:60px;object-fit:cover;border-radius:6px;display:block;cursor:zoom-in;border:1px solid var(--slate-200);transition:transform .15s, box-shadow .15s}
@@ -129,18 +124,17 @@ $used = array_values(array_unique($used));
       <div class="modal-body">
         <label class="field-label" for="cType">Type <span class="req">*</span></label>
         <select id="cType" class="field-input"></select>
-        <p class="field-note" id="typeNote" hidden>All types are already added.</p>
 
         <label class="field-label" for="cDate">Date <span class="req">*</span></label>
         <input type="date" id="cDate" class="field-input">
 
-        <label class="field-label" for="cImage">Image <span class="req" id="imgReq">*</span></label>
+        <label class="field-label" for="cImage">Image(s) <span class="req" id="imgReq">*</span></label>
         <label class="dropzone" id="dropzone" for="cImage">
           <img class="preview" id="preview" alt="Selected image preview">
-          <span id="dropText"><strong>Click to choose</strong> or drag an image here</span>
-          <small>JPG, PNG or WEBP, max 5 MB</small>
+          <span id="dropText"><strong>Click to choose</strong> or drag images here</span>
+          <small>JPG, PNG or WEBP, max 5 MB each. You can select multiple.</small>
         </label>
-        <input type="file" id="cImage" accept="image/png,image/jpeg,image/webp" hidden>
+        <input type="file" id="cImage" accept="image/png,image/jpeg,image/webp" multiple hidden>
 
         <p class="field-error" id="formError" hidden></p>
       </div>
@@ -170,9 +164,7 @@ $used = array_values(array_unique($used));
   const errorEl = $('formError'), typeSel = $('cType'), saveBtn = $('saveBtn');
   const MAX = 5 * 1024 * 1024;
 
-  const TYPE_MAP     = <?= json_encode($type_list) ?>;              // slug => label
-  const USED_TYPES   = <?= json_encode($used) ?>;                   // slugs already inserted
-  const ONE_PER_TYPE = <?= $one_per_type ? 'true' : 'false' ?>;
+  const TYPE_MAP = <?= json_encode($type_list) ?>;   // slug => label
 
   const SAVE_URL   = '<?= site_url('save_activities_list') ?>';
   const DELETE_URL = '<?= site_url('delete_activities_list') ?>';
@@ -199,71 +191,77 @@ $used = array_values(array_unique($used));
 
   /* ---------- type select (value = slug, text = label) ---------- */
   function buildTypes(currentType) {
-    const avail = Object.keys(TYPE_MAP).filter(t =>
-      !ONE_PER_TYPE || !USED_TYPES.includes(t) || t === currentType);
     typeSel.innerHTML = '<option value="">Select type</option>' +
-      avail.map(t => `<option value="${esc(t)}">${esc(TYPE_MAP[t])}</option>`).join('');
+      Object.keys(TYPE_MAP).map(t => `<option value="${esc(t)}">${esc(TYPE_MAP[t])}</option>`).join('');
     typeSel.value = currentType || '';
-    $('typeNote').hidden = avail.length > 0;
   }
 
   /* ---------- add / edit modal ---------- */
   function resetForm() {
     form.reset(); $('cId').value = 0;
+    fileInput.multiple = true;
     dropzone.classList.remove('has-file'); preview.removeAttribute('src');
-    dropText.innerHTML = '<strong>Click to choose</strong> or drag an image here';
+    dropText.innerHTML = '<strong>Click to choose</strong> or drag images here';
     errorEl.hidden = true;
   }
   function open(edit) {
     resetForm();
     $('addTitle').textContent = edit ? 'Edit Activity' : 'Add Activity';
     $('imgReq').hidden = !!edit;
+    fileInput.multiple = !edit;              // edit = replace with a single image
     buildTypes(edit ? edit.type : '');
     if (edit) {
       $('cId').value = edit.id;
       $('cDate').value = edit.date;
       preview.src = edit.img; dropzone.classList.add('has-file');
       dropText.textContent = 'Current image (choose a new one to replace)';
+    } else {
+      $('cDate').value = new Date().toISOString().slice(0, 10); // default today
     }
     modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); typeSel.focus();
   }
   const close = () => { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); resetForm(); };
 
-  function setFile(file) {
+  /* ---------- files (single or multiple) ---------- */
+  function setFiles(fileList) {
     errorEl.hidden = true;
-    if (!/^image\/(png|jpe?g|webp)$/.test(file.type)) { fileInput.value = ''; return showError('Only JPG, PNG or WEBP images are allowed.'); }
-    if (file.size > MAX) { fileInput.value = ''; return showError('Image must be 5 MB or smaller.'); }
+    const files = [...fileList];
+    for (const f of files) {
+      if (!/^image\/(png|jpe?g|webp)$/.test(f.type)) { fileInput.value = ''; return showError(f.name + ': only JPG, PNG or WEBP allowed.'); }
+      if (f.size > MAX) { fileInput.value = ''; return showError(f.name + ': must be 5 MB or smaller.'); }
+    }
     const r = new FileReader();
     r.onload = () => {
       preview.src = r.result; dropzone.classList.add('has-file');
-      dropText.textContent = file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+      dropText.textContent = files.length === 1
+        ? files[0].name + ' (' + (files[0].size / 1024 / 1024).toFixed(2) + ' MB)'
+        : files.length + ' images selected';
     };
-    r.readAsDataURL(file);
+    r.readAsDataURL(files[0]);
   }
 
   $('openAddModal').addEventListener('click', () => open(null));
   modal.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', close));
   modal.addEventListener('click', e => { if (e.target === modal) close(); });
 
-  fileInput.addEventListener('change', () => fileInput.files[0] && setFile(fileInput.files[0]));
+  fileInput.addEventListener('change', () => fileInput.files.length && setFiles(fileInput.files));
   ['dragenter', 'dragover'].forEach(ev => dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.classList.add('drag'); }));
   ['dragleave', 'drop'].forEach(ev => dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.classList.remove('drag'); }));
   dropzone.addEventListener('drop', e => {
-    const f = e.dataTransfer.files[0];
-    if (f) { fileInput.files = e.dataTransfer.files; setFile(f); }
+    if (e.dataTransfer.files.length) { fileInput.files = e.dataTransfer.files; setFiles(fileInput.files); }
   });
 
   /* ---------- save (insert / update) ---------- */
   form.addEventListener('submit', async e => {
     e.preventDefault();
-    const id = +$('cId').value, type = typeSel.value, date = $('cDate').value, file = fileInput.files[0];
+    const id = +$('cId').value, type = typeSel.value, date = $('cDate').value, files = [...fileInput.files];
     if (!type) return showError('Please select a type.');
     if (!date) return showError('Please choose a date.');
-    if (!id && !file) return showError('Please choose an image.');
+    if (!id && !files.length) return showError('Please choose at least one image.');
 
     const fd = new FormData();
     fd.append('id', id); fd.append('type', type); fd.append('date', date);
-    if (file) fd.append('image', file);
+    (id ? files.slice(0, 1) : files).forEach(f => fd.append('images[]', f));
     fd.append(CSRF_NAME, CSRF_HASH);
 
     saveBtn.disabled = true;
@@ -272,7 +270,7 @@ $used = array_values(array_unique($used));
       if (res.csrf) CSRF_HASH = res.csrf;
       if (!res.status) return showError(res.msg);
       close();
-      Swal.fire({ icon: 'success', title: 'Success', text: res.msg, timer: 1500, showConfirmButton: false })
+      Swal.fire({ icon: 'success', title: 'Success', text: res.msg, timer: 1800, showConfirmButton: false })
           .then(() => location.reload());
     } catch (err) {
       showError('Something went wrong. Please try again.');

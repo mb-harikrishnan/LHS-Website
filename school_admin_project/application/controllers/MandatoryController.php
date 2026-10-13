@@ -254,59 +254,60 @@ public function delete_Result_and_Staff()
  //////////////////////////////////////// INFRASTRICTURE  ////////////////////////////////////////
 
 
+ protected $video_dir = '../assets/uploads/videos/';
 
-// Single source of truth for categories
-private $infra_types = array(
-    'infrastructure' => 'Infrastructure',
-);
+     protected $infra_types = array(
+        'infrastructure' => 'Infrastructure',
+        // 'slider_video'   => 'Slider Video'
+    );
 
-// Folder where videos are stored (relative to your front controller, as in your original code)
-private $video_dir = '../assets/uploads/videos/';
 
 public function infrastructure()
 {
-    // Types that already have an active video (used by the upload modal)
-    $existing = $this->db->select('c_type')
-                         ->where('c_status', 'Y')
-                         ->group_by('c_type')
-                         ->get('infrastructure_videos')->result();
-    $data['existing_types'] = array_map(function ($r) { return $r->c_type; }, $existing);
-
-    // List for the table (optional ?type= filter)
-    $type = $this->input->get('type');
-    $this->db->where('c_status', 'Y');
-    if (!empty($type) && isset($this->infra_types[$type])) {
-        $this->db->where('c_type', $type);
+    $documents = $this->db->where('c_status', 'Y')
+                          ->order_by('n_slno', 'DESC')
+                          ->get('infrastructure_videos')
+                          ->result();
+ 
+    // Types that already have an active entry (video OR link)
+    $existing_types = array();
+    foreach ($documents as $d) {
+        $existing_types[] = $d->c_type;
     }
-    $this->db->order_by('d_date', 'DESC');
-
-    $data['documents'] = $this->db->get('infrastructure_videos')->result();
-    $data['doc_types'] = $this->infra_types;   // was $this->res_types
-
+ 
+    $data['documents']      = $documents;
+    $data['doc_types']      = $this->infra_types;
+    $data['existing_types'] = array_values(array_unique($existing_types));
+ 
+    // Change these to match how you load your header/footer
     $this->load->view('header');
-    $this->load->view('infrastructure', $data);
+    $this->load->view('infrastructure', $data);   // <-- your view file name
     $this->load->view('footer');
 }
-
+ 
+ 
+// ------------------------------------------------------------
+// UPLOAD (video file OR link)
+// ------------------------------------------------------------
 public function upload_infrastructure()
 {
     // POST only
     if ($this->input->method() !== 'post') {
         show_404();
     }
-
+ 
     $document_type = $this->input->post('document_type');
-
+ 
     if (!isset($this->infra_types[$document_type])) {
         $this->session->set_flashdata('error', 'Please select a valid type.');
         redirect('infrastructure');
     }
-
+ 
     // Server-side duplicate check (runs BEFORE the file is saved, so no orphan files)
     $exists = $this->db->where('c_type', $document_type)
                        ->where('c_status', 'Y')
                        ->count_all_results('infrastructure_videos');
-
+ 
     if ($exists > 0) {
         $this->session->set_flashdata(
             'error',
@@ -314,61 +315,90 @@ public function upload_infrastructure()
         );
         redirect('infrastructure');
     }
-
-    // Make sure the upload folder exists
-    if (!is_dir($this->video_dir)) {
-        @mkdir($this->video_dir, 0755, true);
-    }
-
-    $config['upload_path']   = $this->video_dir;
-    $config['allowed_types'] = 'mp4|avi|mov|wmv|flv|mkv';   // was "mkvf"
-    $config['max_size']      = 204800;                       // 200 MB (value is in KB)
-    $config['encrypt_name']  = TRUE;
-
-    $this->load->library('upload', $config);
-
-    if (!$this->upload->do_upload('document_file')) {
-        $this->session->set_flashdata('error', $this->upload->display_errors('', ''));
+ 
+    $source = $this->input->post('source'); // 'file' or 'link'
+ 
+    $data = array(
+        'c_type'   => $document_type,
+        'c_videos' => '',
+        'links'    => '',
+        'd_date'   => date('Y-m-d'),
+        'c_status' => 'Y'
+    );
+ 
+    if ($source === 'link') {
+ 
+        $link = trim((string)$this->input->post('video_link'));
+ 
+        if (!preg_match('#^https?://#i', $link) || !filter_var($link, FILTER_VALIDATE_URL)) {
+            $this->session->set_flashdata('error', 'Please enter a valid video link (starting with http:// or https://).');
+            redirect('infrastructure');
+        }
+        $data['links'] = $link;
+ 
+    } elseif ($source === 'file') {
+ 
+        // Make sure the upload folder exists
+        if (!is_dir($this->video_dir)) {
+            @mkdir($this->video_dir, 0755, true);
+        }
+ 
+        $config['upload_path']   = $this->video_dir;
+        $config['allowed_types'] = 'mp4|avi|mov|wmv|flv|mkv';
+        $config['max_size']      = 204800;   // 200 MB (value is in KB)
+        $config['encrypt_name']  = TRUE;
+ 
+        $this->load->library('upload', $config);
+ 
+        if (!$this->upload->do_upload('document_file')) {
+            $this->session->set_flashdata('error', $this->upload->display_errors('', ''));
+            redirect('infrastructure');
+        }
+        $data['c_videos'] = $this->upload->data('file_name');
+ 
     } else {
-        $upload_data = $this->upload->data();
-
-        $this->db->insert('infrastructure_videos', array(
-            'c_type'   => $document_type,
-            'c_videos'  => $upload_data['file_name'],
-            'd_date'   => date('Y-m-d'),
-            'links'    => '',          // was empty (syntax error); remove if the column doesn't exist
-            'c_status' => 'Y'
-        ));
-        $this->session->set_flashdata('success', 'Video uploaded successfully.');
+        $this->session->set_flashdata('error', 'Please choose Video or Link.');
+        redirect('infrastructure');
     }
+ 
+    $this->db->insert('infrastructure_videos', $data);
+    $this->session->set_flashdata('success', 'Video added successfully.');
     redirect('infrastructure');
 }
-
+ 
+ 
+// ------------------------------------------------------------
+// DELETE (soft delete: c_status = 'D', file removed from disk if any)
+// ------------------------------------------------------------
 public function delete_infrastructure()
 {
-    // POST only (a GET link could be triggered by crawlers or prefetching)
     if ($this->input->method() !== 'post') {
         show_404();
     }
-
-    $id  = (int) $this->input->post('id');
+ 
+    $id = (int)$this->input->post('id');
+ 
     $row = $this->db->where('n_slno', $id)
                     ->where('c_status', 'Y')
-                    ->get('infrastructure_videos')->row();
-
-    if ($row) {
-        // Soft delete, matching your c_status flag
-        $this->db->where('n_slno', $id)->update('infrastructure_videos', array('c_status' => 'N'));
-
-        // Remove the physical file (same folder as upload, correct column c_video)
-        $path = $this->video_dir . $row->c_videos;
+                    ->get('infrastructure_videos')
+                    ->row();
+ 
+    if (!$row) {
+        $this->session->set_flashdata('error', 'Record not found.');
+        redirect('infrastructure');
+    }
+ 
+    // Remove the physical file only when it was a file upload (not a link)
+    if (!empty($row->c_videos)) {
+        $path = rtrim($this->video_dir, '/') . '/' . $row->c_videos;
         if (is_file($path)) {
             @unlink($path);
         }
-        $this->session->set_flashdata('success', 'Video deleted. You can now upload a new one.');
-    } else {
-        $this->session->set_flashdata('error', 'Video not found.');
     }
+ 
+    $this->db->where('n_slno', $id)->update('infrastructure_videos', array('c_status' => 'D'));
+ 
+    $this->session->set_flashdata('success', 'Deleted successfully.');
     redirect('infrastructure');
 }
 

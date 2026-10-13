@@ -1,5 +1,5 @@
 <?php
-// Existing types = types that already have an active video (from controller)
+// Existing types = types that already have an active video/link (from controller)
 $existing_types = isset($existing_types) ? $existing_types : array();
 $all_taken = true;
 foreach ($doc_types as $k => $label) {
@@ -38,18 +38,35 @@ $csrf_hash = $this->security->get_csrf_hash();
         </thead>
         <tbody id="facilityBody">
           <?php if (!empty($documents)): foreach ($documents as $d):
-            $label = isset($doc_types[$d->c_type]) ? $doc_types[$d->c_type] : $d->c_type;
-            $url   = base_url('assets/uploads/videos/' . $d->c_videos); // adjust to your public path
+            $label   = isset($doc_types[$d->c_type]) ? $doc_types[$d->c_type] : $d->c_type;
+            $is_link = empty($d->c_videos);
+            $url     = $is_link ? $d->links : base_url('assets/uploads/videos/' . $d->c_videos); // adjust to your public path
+
+            // YouTube support: embed URL + thumbnail
+            $yt_id = '';
+            if ($is_link && preg_match('~(?:youtu\.be/|youtube\.com/(?:watch\?v=|embed/|shorts/))([A-Za-z0-9_-]{11})~', $url, $m)) {
+                $yt_id = $m[1];
+            }
           ?>
             <tr>
               <td><span class="badge badge-purple"><?= html_escape($label) ?></span></td>
 
               <td>
                 <div class="v-thumb" data-view
-                     data-url="<?= html_escape($url) ?>"
+                     data-kind="<?= $is_link ? ($yt_id ? 'youtube' : 'link') : 'file' ?>"
+                     data-url="<?= html_escape($yt_id ? 'https://www.youtube.com/embed/' . $yt_id : $url) ?>"
                      data-title="<?= html_escape($label) ?>">
-                  <video src="<?= html_escape($url) ?>#t=0.5" preload="metadata" muted></video>
+                  <?php if (!$is_link): ?>
+                    <video src="<?= html_escape($url) ?>#t=0.5" preload="metadata" muted></video>
+                  <?php elseif ($yt_id): ?>
+                    <img src="https://img.youtube.com/vi/<?= $yt_id ?>/mqdefault.jpg" alt="">
+                  <?php else: ?>
+                    <span class="link-ph">🔗 Link</span>
+                  <?php endif; ?>
                 </div>
+                <?php if ($is_link): ?>
+                  <small class="muted" style="display:block;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><?= html_escape($url) ?></small>
+                <?php endif; ?>
               </td>
 
               <td>
@@ -104,15 +121,30 @@ $csrf_hash = $this->security->get_csrf_hash();
           <?php endforeach; ?>
         </select>
 
-        <label class="field-label" for="vFile">Video <span class="req">*</span></label>
-        <label class="dropzone" id="vDrop" for="vFile">
-          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="14" height="14" rx="2"/><path d="m22 8-6 4 6 4V8Z"/></svg>
-          <span id="vDropText"><strong>Click to choose</strong> or drag a video here</span>
-          <small>MP4, AVI, MOV, WMV, FLV, MKV (max 200 MB).</small>
-        </label>
-        <input type="file" id="vFile" name="document_file" accept="video/*" hidden>
+        <label class="field-label">Upload Type <span class="req">*</span></label>
+        <div class="source-switch">
+          <label><input type="radio" name="source" value="file" checked> Video file</label>
+          <label><input type="radio" name="source" value="link"> Link</label>
+        </div>
 
-        <video id="vPreview" controls style="display:none;width:100%;margin-top:12px;border-radius:8px;background:#000"></video>
+        <!-- Video file box -->
+        <div id="fileBox">
+          <label class="field-label" for="vFile">Video <span class="req">*</span></label>
+          <label class="dropzone" id="vDrop" for="vFile">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="14" height="14" rx="2"/><path d="m22 8-6 4 6 4V8Z"/></svg>
+            <span id="vDropText"><strong>Click to choose</strong> or drag a video here</span>
+            <small>MP4, AVI, MOV, WMV, FLV, MKV (max 200 MB).</small>
+          </label>
+          <input type="file" id="vFile" name="document_file" accept="video/*" hidden>
+          <video id="vPreview" controls style="display:none;width:100%;margin-top:12px;border-radius:8px;background:#000"></video>
+        </div>
+
+        <!-- Link box -->
+        <div id="linkBox" hidden>
+          <label class="field-label" for="vLink">Video link <span class="req">*</span></label>
+          <input type="url" id="vLink" name="video_link" class="field-input" placeholder="https://youtu.be/xxxxxxxxxxx">
+        </div>
+
         <p class="field-error" id="vError" hidden></p>
       </div>
 
@@ -133,6 +165,7 @@ $csrf_hash = $this->security->get_csrf_hash();
     </div>
     <div class="modal-body">
       <video id="viewPlayer" controls style="width:100%;max-height:70vh;border-radius:8px;background:#000"></video>
+      <iframe id="viewFrame" style="display:none;width:100%;height:60vh;border:0;border-radius:8px" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
     </div>
   </div>
 </div>
@@ -154,9 +187,15 @@ $csrf_hash = $this->security->get_csrf_hash();
 .dropzone.has-file{border-style:solid;border-color:#16a34a;background:#f0fdf4;color:#166534}
 .field-error{color:#dc2626;font-size:13px;margin:12px 0 0}
 
+.source-switch{display:flex;gap:20px;margin-bottom:16px}
+.source-switch label{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px}
+
 .v-thumb{position:relative;width:120px;height:68px;border-radius:8px;overflow:hidden;background:#000;cursor:pointer}
 .v-thumb video{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.v-thumb img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.v-thumb .link-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;background:#334155}
 .v-thumb::after{content:"▶";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;background:rgba(0,0,0,.25)}
+.swal2-container{z-index:2000 !important}
 </style>
 
 <!-- SweetAlert2 (remove this line if your header/footer already loads it) -->
@@ -168,20 +207,31 @@ $csrf_hash = $this->security->get_csrf_hash();
   const videoModal = $('videoModal'), viewModal = $('viewModal');
   const form = $('videoForm'), fileInput = $('vFile'), drop = $('vDrop');
   const dropText = $('vDropText'), preview = $('vPreview'), errorEl = $('vError');
-  const player = $('viewPlayer'), typeSelect = $('vCategory');
+  const player = $('viewPlayer'), frame = $('viewFrame'), typeSelect = $('vCategory');
+  const fileBox = $('fileBox'), linkBox = $('linkBox'), linkInput = $('vLink');
 
   const MAX = 200 * 1024 * 1024;
   const VIDEO_EXT = /\.(mp4|avi|mov|wmv|flv|mkv)$/i;
 
-  // Types that already have a video (from PHP)
+  // Types that already have a video/link (from PHP)
   const EXISTING = <?= json_encode(array_values($existing_types)) ?>;
 
   const openM  = m => { m.classList.add('open');    m.setAttribute('aria-hidden', 'false'); };
   const closeM = m => { m.classList.remove('open'); m.setAttribute('aria-hidden', 'true');  };
   const showError = t => { errorEl.textContent = t; errorEl.hidden = false; };
+  const getSource = () => form.querySelector('input[name="source"]:checked').value;
+
+  // ---------- Video / Link switch ----------
+  form.querySelectorAll('input[name="source"]').forEach(r => r.addEventListener('change', () => {
+    const isLink = getSource() === 'link';
+    linkBox.hidden = !isLink;
+    fileBox.hidden = isLink;
+    errorEl.hidden = true;
+  }));
 
   function resetForm() {
     form.reset();
+    fileBox.hidden = false; linkBox.hidden = true;
     drop.classList.remove('has-file');
     dropText.innerHTML = '<strong>Click to choose</strong> or drag a video here';
     errorEl.hidden = true;
@@ -229,7 +279,10 @@ $csrf_hash = $this->security->get_csrf_hash();
   function closeAny(m) {
     closeM(m);
     if (m === videoModal) resetForm();
-    if (m === viewModal) { player.pause(); player.removeAttribute('src'); player.load(); }
+    if (m === viewModal) {
+      player.pause(); player.removeAttribute('src'); player.load();
+      frame.removeAttribute('src'); frame.style.display = 'none'; player.style.display = 'block';
+    }
   }
   document.querySelectorAll('.modal-overlay').forEach(m => {
     m.addEventListener('click', e => {
@@ -237,7 +290,7 @@ $csrf_hash = $this->security->get_csrf_hash();
     });
   });
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(closeAny);
+    if (e.key === 'Escape' && !Swal.isVisible()) document.querySelectorAll('.modal-overlay.open').forEach(closeAny);
   });
 
   // ---------- File input + drag/drop ----------
@@ -251,34 +304,55 @@ $csrf_hash = $this->security->get_csrf_hash();
 
   // ---------- Validate, then submit normally to PHP ----------
   form.addEventListener('submit', e => {
-    const type = typeSelect.value, file = fileInput.files[0];
+    const type = typeSelect.value;
 
     if (!type) { e.preventDefault(); return showError('Please select a type.'); }
     if (EXISTING.indexOf(type) !== -1) {
       e.preventDefault();
       return showError('A video already exists for this type. Delete it first.');
     }
-    if (!file) { e.preventDefault(); return showError('Please choose a video file.'); }
-    if (!isVideo(file)) { e.preventDefault(); return showError('Only video files are allowed.'); }
-    if (file.size > MAX) { e.preventDefault(); return showError('Video must be 200 MB or smaller.'); }
 
-    // all good: let the form post. Show a loader while uploading.
+    if (getSource() === 'link') {
+      const v = linkInput.value.trim();
+      if (!/^https?:\/\/.+/i.test(v)) { e.preventDefault(); return showError('Please enter a valid link (http:// or https://).'); }
+      fileInput.value = '';          // don't send a file when link is chosen
+    } else {
+      const file = fileInput.files[0];
+      if (!file) { e.preventDefault(); return showError('Please choose a video file.'); }
+      if (!isVideo(file)) { e.preventDefault(); return showError('Only video files are allowed.'); }
+      if (file.size > MAX) { e.preventDefault(); return showError('Video must be 200 MB or smaller.'); }
+      linkInput.value = '';
+    }
+
+    // all good: let the form post. Show a loader while saving.
     Swal.fire({
-      title: 'Uploading...',
+      title: 'Saving...',
       text: 'Please wait, do not close this page.',
       allowOutsideClick: false,
       didOpen: () => Swal.showLoading()
     });
   });
 
-  // ---------- Play video ----------
-  document.getElementById('facilityBody').addEventListener('click', e => {
+  // ---------- Play video / open link ----------
+  $('facilityBody').addEventListener('click', e => {
     const t = e.target.closest('[data-view]');
     if (!t) return;
+    const kind = t.dataset.kind, url = t.dataset.url;
+
+    if (kind === 'link') { window.open(url, '_blank', 'noopener'); return; }  // non-YouTube link
+
     $('viewTitle').textContent = t.dataset.title;
-    player.src = t.dataset.url;
+    if (kind === 'youtube') {
+      player.style.display = 'none';
+      frame.style.display = 'block';
+      frame.src = url + '?autoplay=1';
+    } else {
+      frame.style.display = 'none';
+      player.style.display = 'block';
+      player.src = url;
+      player.play().catch(() => {});
+    }
     openM(viewModal);
-    player.play().catch(() => {});
   });
 
   // ---------- Delete with SweetAlert confirmation ----------
@@ -305,10 +379,10 @@ $csrf_hash = $this->security->get_csrf_hash();
 
   // ---------- Flash messages from controller ----------
   <?php if ($this->session->flashdata('success')): ?>
-  Swal.fire({ icon: 'success', title: 'Done', text: <?= json_encode($this->session->flashdata('success')) ?>, timer: 2500, showConfirmButton: false });
+  Swal.fire({ icon: 'success', title: 'Done', text: <?= json_encode(strip_tags((string)$this->session->flashdata('success'))) ?>, timer: 2500, showConfirmButton: false });
   <?php endif; ?>
   <?php if ($this->session->flashdata('error')): ?>
-  Swal.fire({ icon: 'error', title: 'Oops', html: <?= json_encode($this->session->flashdata('error')) ?> });
+  Swal.fire({ icon: 'error', title: 'Oops', text: <?= json_encode(strip_tags((string)$this->session->flashdata('error'))) ?> });
   <?php endif; ?>
 })();
 </script>

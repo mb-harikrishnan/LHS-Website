@@ -50,10 +50,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 $route['default_controller'] = 'welcome';
+
 $route['home_page'] = 'welcome';
 
 $route['rules_and_regulations'] = 'welcome/rules_and_regulations';
-$route['gallery'] = 'welcome/gallery';
+
+$route['gallery']            = 'welcome/gallery';
+$route['gallery/(:num)']     = 'welcome/gallery_detail/$1';  
+ 
+ 
 $route['house_system'] = 'welcome/house_system';
 $route['co_curricular_activities'] = 'welcome/co_curricular_activities';
 $route['list_all_activities/(:any)'] = 'welcome/list_all_activities/$1';

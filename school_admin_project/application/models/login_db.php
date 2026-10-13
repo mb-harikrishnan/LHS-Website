@@ -6,11 +6,11 @@ class Login_db extends CI_Model
     public function login_checking($username, $password)
     {
         return $this->db
-            ->select('sl_no, c_username, user_role_id')
-            ->where('c_username', $username)
-            ->where('c_password', md5($password))   // keep md5 only to match your existing DB
+            ->select('user_id, name, user_role_id')
+            ->where('name', $username)
+            ->where('password', md5($password))   // keep md5 only to match your existing DB
             ->limit(1)
-            ->get('admin_login')
+            ->get('user_login')
             ->row();
     }
 
