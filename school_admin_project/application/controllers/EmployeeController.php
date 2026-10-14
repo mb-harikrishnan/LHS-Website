@@ -84,38 +84,44 @@ class EmployeeController extends CI_Controller
             ? $this->_jsons(true, 'Employee added successfully.')
             : $this->_jsons(false, 'Failed to add employee.');
     }
-
     public function employee_update()
     {
-        $id = (int) $this->input->post('emp_id');
-        if ($id <= 0 || !$this->Employee_Model->employee_exists($id)) {
+        $emp_id = (int) $this->input->post('emp_id');
+        if ($emp_id <= 0 || !$this->Employee_Model->employee_exists($emp_id)) {
             return $this->_jsons(false, 'Employee not found.');
         }
-        list($d, $pw, $err) = $this->_input($id);
+
+        list($d, $pw, $err) = $this->_input($emp_id);
         if ($err) return $this->_jsons(false, $err);
 
-        return $this->Employee_Model->update_employee($id, $d, $pw)
+        // $pw === '' means "keep current password"
+        return $this->Employee_Model->update_employee($emp_id, $d, $pw)
             ? $this->_jsons(true, 'Employee updated successfully.')
             : $this->_jsons(false, 'Failed to update employee.');
     }
 
     public function employee_delete()
     {
-        $id = (int) $this->input->post('emp_id');
-        if ($id <= 0 || !$this->Employee_Model->employee_exists($id)) {
+        $emp_id = (int) $this->input->post('emp_id');
+        if ($emp_id <= 0 || !$this->Employee_Model->employee_exists($emp_id)) {
             return $this->_jsons(false, 'Employee not found.');
         }
-        return $this->Employee_Model->delete_employee($id)
+
+        return $this->Employee_Model->delete_employee($emp_id)
             ? $this->_jsons(true, 'Employee deleted successfully.')
             : $this->_jsons(false, 'Failed to delete employee.');
     }
 
-    private function _jsons($success, $message, $extra = [])
+    private function _jsons($success, $message)
     {
         $this->output
              ->set_content_type('application/json')
-             ->set_output(json_encode(array_merge(
-                 ['success' => $success, 'message' => $message], $extra
-             )));
+             ->set_output(json_encode([
+                 'success' => (bool) $success,
+                 'message' => $message
+             ]));
     }
+   
+
+
 }

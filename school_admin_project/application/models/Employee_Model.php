@@ -53,33 +53,6 @@ public function get_divisions($class_id)
                         ->count_all_results('employee_master') > 0;
     }
 
-    // public function insert_employee($d, $password)
-    // {
-    //     $this->db->trans_start();
-
-    //     $this->db->insert('employee_master', [
-    //         'emActive'   => 1,
-    //         'emTS'       => date('Y-m-d H:i:s'),
-    //         'emName'     => $d['name'],
-    //         'emPassword' => md5($password),
-    //         'emClass'    => $d['class_id'],
-    //         'emDiv'      => $d['division_id'],
-    //         'emPhoneNo'  => $d['mobile'],
-    //         'emDesigId'  => $d['role_id'],
-    //         'user_id'    => $d['role_id'],   // remove this line if employee_master has no user_id column
-    //     ]);
-    //     $emp_id = $this->db->insert_id();
-
-    //     $this->db->insert('admin_login', [
-    //         'employe_id' => $emp_id,
-    //         'user_id'    => $d['role_id'],
-    //         'c_username' => $d['name'],
-    //         'c_password' => md5($password),
-    //     ]);
-
-    //     $this->db->trans_complete();
-    //     return $this->db->trans_status();
-    // }
 
 
         public function insert_employee($d, $password)
@@ -127,39 +100,72 @@ public function get_divisions($class_id)
             return $this->db->trans_status();
         }
         
-    public function update_employee($id, $d, $password = '')
-    {
-        $this->db->trans_start();
 
-        $emp = [
+
+            public function update_employee($emp_id, $d, $password = '')
+    {
+        $emp = $this->db->select('user_log_id')
+                        ->where('emId', (int) $emp_id)
+                        ->where('emActive', 1)
+                        ->get('employee_master')->row();
+        if (!$emp) return false;
+
+        $role = $this->db->select('role_name, role_id')
+                         ->where('role_id', $d['role_id'])
+                         ->get('user_roles')->row();
+        $user_type = $role ? $role->role_name : '';
+        $role_id   = $role ? $role->role_id   : 0;
+
+        $em = [
             'emName'    => $d['name'],
             'emClass'   => $d['class_id'],
             'emDiv'     => $d['division_id'],
             'emPhoneNo' => $d['mobile'],
             'emDesigId' => $d['role_id'],
-            'user_id'   => $d['role_id'],    // remove if no user_id column
         ];
-        $login = [
-            'user_id'    => $d['role_id'],
-            'c_username' => $d['name'],
+        $ul = [
+            'name'         => $d['name'],
+            'mobile'       => $d['mobile'],
+            'user_type'    => $user_type,
+            'user_role_id' => $role_id,
         ];
+
+        // Only change the password if a new one was entered
         if ($password !== '') {
-            $emp['emPassword']   = md5($password);
-            $login['c_password'] = md5($password);
+            $em['emPassword'] = md5($password);
+            $ul['password']   = md5($password);
         }
 
-        $this->db->where('emId', (int) $id)->update('employee_master', $emp);
-        $this->db->where('employe_id', (int) $id)->update('admin_login', $login);
+        $this->db->trans_start();
+
+        $this->db->where('emId', (int) $emp_id)->update('employee_master', $em);
+
+        if (!empty($emp->user_log_id)) {
+            $this->db->where('user_id', (int) $emp->user_log_id)->update('user_login', $ul);
+        }
 
         $this->db->trans_complete();
         return $this->db->trans_status();
     }
 
-    public function delete_employee($id)
+    public function delete_employee($emp_id)
     {
+        $emp = $this->db->select('user_log_id')
+                        ->where('emId', (int) $emp_id)
+                        ->where('emActive', 1)
+                        ->get('employee_master')->row();
+        if (!$emp) return false;
+
         $this->db->trans_start();
-        $this->db->where('emId', (int) $id)->update('employee_master', ['emActive' => 0]);
-        $this->db->where('employe_id', (int) $id)->delete('admin_login');
+
+        // Soft delete the employee (list only shows emActive = 1)
+        $this->db->where('emId', (int) $emp_id)->update('employee_master', ['emActive' => 0]);
+
+        // Remove the login so they can no longer sign in
+        if (!empty($emp->user_log_id)) {
+            $this->db->where('user_id', (int) $emp->user_log_id)->delete('user_login');
+        }
+
         $this->db->trans_complete();
         return $this->db->trans_status();
     }
