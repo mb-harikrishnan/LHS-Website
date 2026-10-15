@@ -10,6 +10,9 @@ class Welcome extends CI_Controller
 		parent::__construct();
 		$this->load->model('Welcome_model');
 		$this->load->library('session');
+
+		   $this->load->helper(['form', 'url']);
+        $this->load->library('form_validation');
 	}
 
 	public function index()
@@ -481,9 +484,191 @@ public function submit_job_application()
 
 
 
+    private $admin_email = 'info.littleheartsschool@gmail.com';
+ 
 
+    /* =====================================================
+     *  PAGE + FORM HANDLER  (GET shows form, POST saves it)
+     * ===================================================== */
+    public function admissions_enqry()
+    {
+        if ($this->input->method() === 'post') {
+ 
+            $this->_admission_rules();
+ 
+            if ($this->form_validation->run() === TRUE) {
+ 
+                $data = [
+                    'student_name'  => $this->input->post('student_name', TRUE),
+                    'dob'           => $this->input->post('dob', TRUE),
+                    'gender'        => $this->input->post('gender', TRUE),
+                    'class_applied' => $this->input->post('class', TRUE),
+                    'prev_school'   => $this->input->post('prev_school', TRUE),
+                    'parent_name'   => $this->input->post('parent_name', TRUE),
+                    'phone'         => $this->input->post('phone', TRUE),
+                    'email'         => $this->input->post('email', TRUE),
+                    'address'       => $this->input->post('address', TRUE),
+                ];
+ 
+                $id = $this->Welcome_model->insert($data);
+ 
+                if ($id) {
+                    $data['ref'] = 'LHS-' . str_pad($id, 5, '0', STR_PAD_LEFT);
+ 
+                    // PHP mail() does not work on XAMPP/localhost, so skip it there
+                    $is_local = in_array($this->input->server('SERVER_NAME'), ['localhost', '127.0.0.1', '::1']);
+                    if ($is_local) {
+                        log_message('debug', 'Local server: admission emails skipped for ' . $data['ref']);
+                    } else {
+                        $this->_send_admission_mails($data);   // parent + admin
+                    }
+ 
+                    $this->session->set_flashdata('ae_success',
+                        'Thank you! Your application is received. Reference no: ' . $data['ref'] .
+                        '. We will contact you soon.');
+                } else {
+                    $this->session->set_flashdata('ae_error',
+                        'Sorry, we could not save your application. Please try again.');
+                }
+                redirect(current_url());   // stops double submit on refresh
+            }
+            // validation failed: fall through, the view shows errors and old values
+        }
+ 
+        $this->load->view('topbar');
+        $this->load->view('header');
+        $this->load->view('admissions_enqry');
+        $this->load->view('footer');
+    }
+ 
+    /* =====================================================
+     *  VALIDATION RULES + MESSAGES
+     * ===================================================== */
+    private function _admission_rules()
+    {
+        $name_rule = 'required|trim|min_length[3]|max_length[100]|regex_match[/^[A-Za-z][A-Za-z .\']+$/]';
+        $classes   = 'PRE KG,LKG,UKG,Class 1,Class 2,Class 3,Class 4,Class 5,Class 6,Class 7,Class 8,Class 9,Class 10';
+ 
+        $this->form_validation->set_error_delimiters('', '');
+ 
+        $this->form_validation->set_rules('student_name', 'Student name', $name_rule, [
+            'required'    => 'Please enter the student name.',
+            'min_length'  => 'Student name must be at least 3 characters.',
+            'max_length'  => 'Student name is too long.',
+            'regex_match' => 'Student name can contain only letters, spaces and dots.',
+        ]);
+ 
+        $this->form_validation->set_rules('dob', 'Date of birth', 'required|trim|callback_valid_dob', [
+            'required' => 'Please select the date of birth.',
+        ]);
+ 
+        $this->form_validation->set_rules('gender', 'Gender', 'required|in_list[Girl,Boy,Other]', [
+            'required' => 'Please choose a gender.',
+            'in_list'  => 'Please choose a valid gender.',
+        ]);
+ 
+        $this->form_validation->set_rules('class', 'Class', 'required|in_list[' . $classes . ']', [
+            'required' => 'Please select the class.',
+            'in_list'  => 'Please select a valid class.',
+        ]);
+ 
+        $this->form_validation->set_rules('prev_school', 'Previous school', 'trim|max_length[150]', [
+            'max_length' => 'Previous school name is too long.',
+        ]);
+ 
+        $this->form_validation->set_rules('parent_name', 'Parent name', $name_rule, [
+            'required'    => 'Please enter the parent name.',
+            'min_length'  => 'Parent name must be at least 3 characters.',
+            'max_length'  => 'Parent name is too long.',
+            'regex_match' => 'Parent name can contain only letters, spaces and dots.',
+        ]);
+ 
+        $this->form_validation->set_rules('phone', 'Phone number', 'required|trim|regex_match[/^[6-9][0-9]{9}$/]', [
+            'required'    => 'Please enter the phone number.',
+            'regex_match' => 'Enter a valid 10-digit mobile number.',
+        ]);
+ 
+        $this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email|max_length[120]', [
+            'required'    => 'Please enter the email address.',
+            'valid_email' => 'Enter a valid email address.',
+            'max_length'  => 'Email address is too long.',
+        ]);
+ 
+        $this->form_validation->set_rules('address', 'Address', 'trim|max_length[300]', [
+            'max_length' => 'Address must be under 300 characters.',
+        ]);
+    }
+ 
+    /* Custom rule used by callback_valid_dob (must stay public) */
+    public function valid_dob($dob)
+    {
+        $d = DateTime::createFromFormat('Y-m-d', $dob);
+        if (!$d || $d->format('Y-m-d') !== $dob) {
+            $this->form_validation->set_message('valid_dob', 'Enter a valid date of birth.');
+            return FALSE;
+        }
+        $today = new DateTime('today');
+        if ($d > $today) {
+            $this->form_validation->set_message('valid_dob', 'Date of birth cannot be in the future.');
+            return FALSE;
+        }
+        $age = $d->diff($today)->y;
+        if ($age < 2 || $age > 18) {
+            $this->form_validation->set_message('valid_dob', 'Student age must be between 2 and 18 years.');
+            return FALSE;
+        }
+        return TRUE;
+    }
+ 
+    /* =====================================================
+     *  EMAILS (PHP mail): thank-you to parent, details to admin
+     *  Templates: application/views/admission_user.php
+     *             application/views/admission_admin.php
+     * ===================================================== */
+    private function _send_admission_mails($d)
+    {
+        $this->load->library('email');
+        $school = 'Little Hearts School';
+ 
+        // From must be an address on your own domain (e.g. noreply@yourdomain.com)
+        $host = preg_replace('/^www\./', '', preg_replace('/:\d+$/', '', $this->input->server('HTTP_HOST')));
+        $from = 'noreply@' . $host;
+ 
+        $this->email->initialize([
+            'protocol' => 'mail',
+            'mailtype' => 'html',
+            'charset'  => 'utf-8',
+            'newline'  => "\r\n",
+            'crlf'     => "\r\n",
+            'wordwrap' => TRUE,
+        ]);
+ 
+        // 1) Parent: "we will contact you soon" + student details
+        $this->email->clear(TRUE);
+        $this->email->from($from, $school);
+        $this->email->reply_to($this->admin_email, $school);
+        $this->email->to($d['email']);
+        $this->email->subject('Admission enquiry received - ' . $school . ' (' . $d['ref'] . ')');
+        $this->email->message($this->load->view('admission_user', $d, TRUE));
+        if (!$this->email->send(FALSE)) {
+            log_message('error', 'Admission parent mail failed: ' . $this->email->print_debugger(['headers']));
+        }
+ 
+        // 2) Admin: full student + parent details, reply goes to the parent
+        $this->email->clear(TRUE);
+        $this->email->from($from, $school . ' Website');
+        $this->email->reply_to($d['email'], $d['parent_name']);
+        $this->email->to($this->admin_email);
+        $this->email->subject('New admission enquiry: ' . $d['student_name'] . ' - ' . $d['class_applied'] . ' (' . $d['ref'] . ')');
+        $this->email->message($this->load->view('admission_admin', $d, TRUE));
+        if (!$this->email->send(FALSE)) {
+            log_message('error', 'Admission admin mail failed: ' . $this->email->print_debugger(['headers']));
+        }
+    }
 
-
+ 
+    /* ---------- Validation rules and messages ---------- */
+   
 
 
 

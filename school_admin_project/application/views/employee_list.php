@@ -21,36 +21,36 @@ $cls_js  = []; foreach ($classes as $c) $cls_js[]  = ['id' => (int) $c->cmId,   
 $role_js = []; foreach ($roles as $r)   $role_js[] = ['id' => (int) $r->role_id,  'name' => $r->role_name];
 ?>
 
-<main class="page">
-  <div class="page-header">
-    <div>
-      <h1 class="page-title">Employee List</h1>
-      <p class="page-sub">Manage employees, their designations and classes</p>
-    </div>
-    <button class="btn btn-primary" type="button" id="openAdd">+ Add Employee</button>
-  </div>
-
-  <div class="card">
-    <div class="table-toolbar">
-      <div class="search-box">
-        <input type="text" id="search" placeholder="Search name, mobile, designation, class…" aria-label="Search employees">
+  <main class="page">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Employee List</h1>
+        <p class="page-sub">Manage employees, their designations and classes</p>
       </div>
+      <button class="btn btn-primary" type="button" id="openAdd">+ Add Employee</button>
     </div>
-    <div class="table-wrap">
-      <table class="table">
-        <thead>
-          <tr>
-            <th style="width:60px">SL</th>
-            <th style="width:110px">Date</th>
-            <th>Name</th>
-            <th style="width:110px">Password</th>
-            <th>Mobile</th>
-            <th>Designation</th>
-            <th>Class</th>
-            <th>Division</th>
-            <th style="width:110px;text-align:right">Actions</th>
-          </tr>
-        </thead>
+
+    <div class="card">
+      <div class="table-toolbar">
+        <div class="search-box">
+          <input type="text" id="search" placeholder="Search name, mobile, designation, class…" aria-label="Search employees">
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="width:60px">SL</th>
+              <th style="width:110px">Date</th>
+              <th>Name</th>
+              <th style="width:110px">Password</th>
+              <th>Mobile</th>
+              <th>Designation</th>
+              <th>Class</th>
+              <th>Division</th>
+              <th style="width:110px;text-align:right">Actions</th>
+            </tr>
+          </thead>
         <tbody id="rows">
           <?php if (!empty($employees)): $n = 1; foreach ($employees as $e): ?>
           <tr data-text="<?= html_escape(strtolower($e->emName.' '.$e->emPhoneNo.' '.$e->role_name.' '.$e->cmName.' '.$e->dmName)) ?>">

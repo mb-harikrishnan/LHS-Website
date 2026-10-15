@@ -34,6 +34,9 @@ $route['save_gallery_images']    = 'GalleryController/save_gallery_images';
 $route['delete_gallery_image']   = 'GalleryController/delete_gallery_image';
 
 $route['save_album'] = 'GalleryController/save_album';
+$route['delete_album'] = 'GalleryController/delete_album';
+
+$route['delete_album_images'] = 'GalleryController/delete_album_images';
 
 $route['co_curricular_list'] = 'CurricularController/co_curricular_list';
 $route['save_co_curricular'] = 'CurricularController/save_co_curricular';
@@ -148,6 +151,11 @@ $route['employee_delete']   = 'EmployeeController/employee_delete';
 
 $route['employee_divisions'] = 'EmployeeController/employee_divisions';
 
+
+$route['contact']   = 'EnquiryController/contact';
+$route['read_contact'] = 'EnquiryController/read_contact';
+$route['admission']      = 'EnquiryController/admission';
+$route['read_admission'] = 'EnquiryController/read_admission';
 
 
 $route['logout'] = 'Login/logout';

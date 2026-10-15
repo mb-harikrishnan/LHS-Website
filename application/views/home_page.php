@@ -79,13 +79,13 @@ if (!function_exists('lh_youtube_id')) {
 
         <div class="hero-actions wow fadeInUp" data-wow-delay="0.3s">
             <a href="<?php echo base_url('about_us'); ?>" class="btn-gold">Explore Our School <i class="fa fa-arrow-right"></i></a>
-            <a href="<?php echo base_url('admissions'); ?>" class="btn-outline">Admission Enquiry <i class="fa fa-file-text-o"></i></a>
+            <a href="<?php echo base_url('admissions_enqry'); ?>" class="btn-outline">Admission Enquiry <i class="fa fa-file-text-o"></i></a>
         </div>
     </div>
 
     <div class="hero-badge">
-        <div class="hero-badge-row"><i class="fa fa-mortar-board"></i><div><strong>25+</strong><span>Years of Excellence</span></div></div>
-        <div class="hero-badge-row"><i class="fa fa-users"></i><div><strong>1000+</strong><span>Students</span></div></div>
+        <div class="hero-badge-row"><i class="fa fa-mortar-board"></i><div><strong>30+</strong><span>Years of Excellence</span></div></div>
+        <div class="hero-badge-row"><i class="fa fa-users"></i><div><strong>2000+</strong><span>Students</span></div></div>
         <div class="hero-badge-row"><i class="fa fa-star"></i><div><strong>100%</strong><span>Commitment</span></div></div>
     </div>
 
@@ -119,8 +119,8 @@ if (!function_exists('lh_youtube_id')) {
 
         <div class="about-media lh-reveal">
             <img src="<?php echo base_url(); ?>assets/images/main_image/schoolimg.jpg" alt="School campus" class="about-img-main">
-            <img src="<?php echo base_url(); ?>assets/images/main_image/school_full_image.png" alt="School building" class="about-img-small">
-            <div class="about-badge"><strong>25+</strong><span>Years of<br>Excellence</span></div>
+            <img src="<?php echo base_url(); ?>assets/images/main_image/school_full_image.jpeg" alt="School building" class="about-img-small">
+            <div class="about-badge"><strong>30+</strong><span>Years of<br>Excellence</span></div>
         </div>
 
     </div>
@@ -136,7 +136,7 @@ if (!function_exists('lh_youtube_id')) {
         <div class="features-grid">
 
             <div class="feature-hero">
-                <img src="<?php echo base_url(); ?>assets/images/main_image/house.jpg" alt="Academic Excellence" class="feature-hero-img">
+                <img src="<?php echo base_url(); ?>assets/images/main_image/smartclass.jpeg" alt="Academic Excellence" class="feature-hero-img">
                 <div class="feature-hero-overlay"></div>
                 <div class="feature-hero-icon"><i class="fa fa-book"></i></div>
                 <h3>Smart Classrooms</h3>
@@ -185,11 +185,7 @@ if (!function_exists('lh_youtube_id')) {
                 <p>Specialised coaching in dance, music and yoga for well-rounded growth.</p>
             </div>
 
-            <div class="feature-card wow fadeInUp">
-                <div class="feature-icon i-purple"><i class="fa fa-trophy"></i></div>
-                <h4>Graduation Day</h4>
-                <p>UKG graduates receive scrolls of honour, marking their step into formal schooling.</p>
-            </div>
+          
 
         </div>
     </div>
@@ -205,9 +201,9 @@ if (!function_exists('lh_youtube_id')) {
             <h2 class="h2 h2-light">Why Parents Choose<br>Little Hearts School</h2>
         </div>
         <div class="stats-grid">
-            <div class="stat wow fadeInUp"><i class="fa fa-mortar-board"></i><strong data-count="25">0</strong>+<span>Years of Excellence</span></div>
-            <div class="stat wow fadeInUp"><i class="fa fa-users"></i><strong data-count="1000">0</strong>+<span>Students</span></div>
-            <div class="stat wow fadeInUp"><i class="fa fa-user"></i><strong data-count="186">0</strong>+<span>Qualified Staff</span></div>
+            <div class="stat wow fadeInUp"><i class="fa fa-mortar-board"></i><strong data-count="30">0</strong>+<span>Years of Excellence</span></div>
+            <div class="stat wow fadeInUp"><i class="fa fa-users"></i><strong data-count="2000">0</strong>+<span>Students</span></div>
+            <div class="stat wow fadeInUp"><i class="fa fa-user"></i><strong data-count="100">0</strong>+<span>Qualified Staff</span></div>
             <div class="stat wow fadeInUp"><i class="fa fa-heart"></i><strong data-count="100">0</strong>%<span>Commitment to Learning</span></div>
         </div>
     </div>
@@ -236,14 +232,14 @@ if (!function_exists('lh_youtube_id')) {
                 <span class="tile-label">Arts &amp; Creativity<small>Explore, express, grow.</small></span>
             </a>
 
-            <a href="<?php echo base_url('clubs'); ?>" class="gallery-tile wow fadeInUp">
-                <img src="<?php echo base_url(); ?>assets/images/main_image/ClubsActivities.jpg" alt="Clubs">
+            <a href="<?php echo base_url('gallery'); ?>" class="gallery-tile wow fadeInUp">
+                <img src="<?php echo base_url(); ?>assets/images/main_image/ClubsActivities.jpeg" alt="Clubs">
                 <span class="tile-label">Clubs &amp; Co-curricular<small>Discover new interests.</small></span>
             </a>
 
-            <a href="<?php echo base_url('study_tour'); ?>" class="gallery-tile wow fadeInUp">
-                <img src="<?php echo base_url(); ?>assets/images/main_image/tourimage.jpg" alt="Study Tour">
-                <span class="tile-label">Field Trips<small>Learning beyond the classroom.</small></span>
+            <a href="<?php echo base_url('gallery'); ?>" class="gallery-tile wow fadeInUp">
+                <img src="<?php echo base_url(); ?>assets/images/main_image/tourimage.jpeg" alt="Study Tour">
+                <span class="tile-label">Class Trips<small>Learning beyond the classroom.</small></span>
             </a>
 
         </div>
@@ -320,7 +316,7 @@ if (!function_exists('lh_youtube_id')) {
     <div class="lh-container">
 
         <div class="leader-block wow fadeInUp">
-            <img src="<?php echo base_url(); ?>assets/images/main_image/director.jpg" alt="Mrs. Nancy Sebastian" class="leader-photo lh-reveal">
+            <img src="<?php echo base_url(); ?>assets/images/main_image/director.jpeg" alt="Mrs. Nancy Sebastian" class="leader-photo lh-reveal">
             <div class="leader-copy">
                 <span class="eyebrow"><span class="dash"></span> Message from the Chairman</span>
                 <p class="leader-quote">&ldquo;Since 1997, Little Hearts School has blossomed from a modest rented space into a beacon of excellence &mdash; a cradle where every young mind is polished to brilliance.&rdquo;</p>
@@ -330,7 +326,7 @@ if (!function_exists('lh_youtube_id')) {
         </div>
 
         <div class="leader-block wow fadeInUp reverse">
-            <img src="<?php echo base_url(); ?>assets/images/main_image/principal.jpg" alt="Mrs. Pushpalatha P" class="leader-photo lh-reveal">
+            <img src="<?php echo base_url(); ?>assets/images/main_image/principal.jpeg" alt="Mrs. Pushpalatha P" class="leader-photo lh-reveal">
             <div class="leader-copy">
                 <span class="eyebrow"><span class="dash"></span> Message from the Principal</span>
                 <p class="leader-quote">&ldquo;We nurture visionary thinkers and compassionate leaders, blending academic rigor, creative expression and character &mdash; in step with NEP 2020.&rdquo;</p>
@@ -341,6 +337,49 @@ if (!function_exists('lh_youtube_id')) {
 
     </div>
 </section>
+
+<!-- ============ IMPORTANT DETAILS ============ -->
+<section class="section details-section">
+    <div class="lh-container">
+        <span class="eyebrow"><span class="dash"></span> School Information</span>
+        <h2 class="h2 wow fadeInUp">Important Details</h2>
+
+        <div class="details-grid">
+
+            <a href="<?php echo base_url('mandatory_disclosure'); ?>" class="detail-card wow fadeInUp">
+                <img src="<?php echo base_url(); ?>assets/images/main_image/mandatory.jpeg" alt="Mandatory Disclosure">
+                <div><i class="fa fa-info-circle"></i><h4>Mandatory Disclosure</h4><span>Policies, infrastructure &amp; staff information.</span></div>
+            </a>
+
+            <a href="<?php echo base_url('admissions'); ?>" class="detail-card wow fadeInUp">
+                <img src="<?php echo base_url(); ?>assets/images/main_image/admission.jpeg" alt="Admissions">
+                <div><i class="fa fa-mortar-board"></i><h4>Admissions</h4><span>Process, eligibility &amp; enquiry.</span></div>
+            </a>
+
+            <a href="<?php echo base_url('transfer_certificates'); ?>" class="detail-card wow fadeInUp">
+                <img src="<?php echo base_url(); ?>assets/images/main_image/transfer_new.jpeg" alt="Transfer Certificates">
+                <div><i class="fa fa-certificate"></i><h4>Certificates</h4><span>Transfer certificates &amp; records.</span></div>
+            </a>
+
+            <a href="<?php echo base_url('fee_regulations'); ?>" class="detail-card wow fadeInUp">
+                <img src="<?php echo base_url(); ?>assets/images/main_image/School-Fees.jpeg" alt="Fee Regulations">
+                <div><i class="fa fa-credit-card"></i><h4>Fee Payment Policy</h4><span>Due dates &amp; late fee rules.</span></div>
+            </a>
+
+            <a href="<?php echo base_url('school_uniform'); ?>" class="detail-card wow fadeInUp">
+                <img src="<?php echo base_url(); ?>assets/images/main_image/uniform.jpeg" alt="School Uniform">
+                <div><i class="fa fa-shopping-bag"></i><h4>School Uniform</h4><span>Guidelines for daily wear.</span></div>
+            </a>
+
+            <a href="<?php echo base_url('parental_support'); ?>" class="detail-card wow fadeInUp">
+                <img src="<?php echo base_url(); ?>assets/images/main_image/parents.jpeg" alt="A Word to Parents">
+                <div><i class="fa fa-heart"></i><h4>A Word to Parents</h4><span>Partnering for a child&rsquo;s success.</span></div>
+            </a>
+
+        </div>
+    </div>
+</section>
+
 
 <!-- ============ NEWS & EVENTS ============ -->
 <section class="section news-section">
@@ -369,47 +408,6 @@ if (!function_exists('lh_youtube_id')) {
     </div>
 </section>
 
-<!-- ============ IMPORTANT DETAILS ============ -->
-<section class="section details-section">
-    <div class="lh-container">
-        <span class="eyebrow"><span class="dash"></span> School Information</span>
-        <h2 class="h2 wow fadeInUp">Important Details</h2>
-
-        <div class="details-grid">
-
-            <a href="<?php echo base_url('mandatory_disclosure'); ?>" class="detail-card wow fadeInUp">
-                <img src="<?php echo base_url(); ?>assets/images/main_image/mandatory.jpg" alt="Mandatory Disclosure">
-                <div><i class="fa fa-info-circle"></i><h4>Mandatory Disclosure</h4><span>Policies, infrastructure &amp; staff information.</span></div>
-            </a>
-
-            <a href="<?php echo base_url('admissions'); ?>" class="detail-card wow fadeInUp">
-                <img src="<?php echo base_url(); ?>assets/images/main_image/admission.jpg" alt="Admissions">
-                <div><i class="fa fa-mortar-board"></i><h4>Admissions</h4><span>Process, eligibility &amp; enquiry.</span></div>
-            </a>
-
-            <a href="<?php echo base_url('transfer_certificates'); ?>" class="detail-card wow fadeInUp">
-                <img src="<?php echo base_url(); ?>assets/images/main_image/transfer_new.png" alt="Transfer Certificates">
-                <div><i class="fa fa-certificate"></i><h4>Certificates</h4><span>Transfer certificates &amp; records.</span></div>
-            </a>
-
-            <a href="<?php echo base_url('fee_regulations'); ?>" class="detail-card wow fadeInUp">
-                <img src="<?php echo base_url(); ?>assets/images/main_image/School-Fees.jpg" alt="Fee Regulations">
-                <div><i class="fa fa-credit-card"></i><h4>Fee Payment Policy</h4><span>Due dates &amp; late fee rules.</span></div>
-            </a>
-
-            <a href="<?php echo base_url('school_uniform'); ?>" class="detail-card wow fadeInUp">
-                <img src="<?php echo base_url(); ?>assets/images/main_image/uniform.avif" alt="School Uniform">
-                <div><i class="fa fa-shopping-bag"></i><h4>School Uniform</h4><span>Guidelines for daily wear.</span></div>
-            </a>
-
-            <a href="<?php echo base_url('parental_support'); ?>" class="detail-card wow fadeInUp">
-                <img src="<?php echo base_url(); ?>assets/images/main_image/parents.jpg" alt="A Word to Parents">
-                <div><i class="fa fa-heart"></i><h4>A Word to Parents</h4><span>Partnering for a child&rsquo;s success.</span></div>
-            </a>
-
-        </div>
-    </div>
-</section>
 
 <!-- ============ CTA BAND ============ -->
 <section class="cta-band">
@@ -419,13 +417,38 @@ if (!function_exists('lh_youtube_id')) {
         <h2 class="h2 h2-light">Give Your Child a Brighter Tomorrow</h2>
         <p>Discover an environment where children learn, explore, create and grow with confidence.</p>
         <div class="hero-actions wow fadeInUp" data-wow-delay="0.3s">
-            <a href="<?php echo base_url('admissions'); ?>" class="btn-gold">Apply for Admission <i class="fa fa-arrow-right"></i></a>
-            <a href="<?php echo base_url('about_us'); ?>" class="btn-outline">Contact School <i class="fa fa-phone"></i></a>
+            <a href="<?php echo base_url('admissions_enqry'); ?>" class="btn-gold">Apply for Admission <i class="fa fa-arrow-right"></i></a>
+            <a href="<?php echo base_url('contact'); ?>" class="btn-outline">Contact School <i class="fa fa-phone"></i></a>
         </div>
     </div>
 </section>
 
 <style>
+
+
+/* ---- tighter spacing: journey, leaders, news, details ---- */
+.journey-section,
+.leaders-section,
+.news-section,
+.details-section{
+    --space-y: 64px;                          /* top padding (was 104px) */
+    padding-bottom: calc(var(--space-y) * .55);   /* much smaller bottom gap */
+}
+
+.leaders-section .leader-block{margin-bottom:22px;}
+.leaders-section .leader-block:last-child{margin-bottom:0;}
+
+.news-grid,
+.details-grid{margin-top:24px;}
+
+.cta-band{margin-top:0;}
+
+@media (max-width:1024px){
+    .journey-section,.leaders-section,.news-section,.details-section{--space-y:52px;}
+}
+@media (max-width:768px){
+    .journey-section,.leaders-section,.news-section,.details-section{--space-y:40px;}
+}
     /* =========================================================
        LITTLE HEARTS SCHOOL — HOME PAGE (navy + gold theme)
        Pairs with header.php / footer.php
@@ -908,6 +931,15 @@ if (!function_exists('lh_youtube_id')) {
     .hero-sound i{font-size:16px;}
     .hero.is-video .hero-sound{display:inline-flex;}
     @media (max-width:768px){ .hero-sound{left:24px;bottom:auto;top:16px;} }
+.leader-photo {
+    width: 100%;
+    max-width: 420px;      /* adjust to your layout */
+    height: auto;          /* remove any fixed height */
+    aspect-ratio: auto;    /* remove forced ratio, e.g. 4/5 */
+    object-fit: contain;   /* was likely "cover" */
+    display: block;
+}
+  
 </style>
 
 <script>

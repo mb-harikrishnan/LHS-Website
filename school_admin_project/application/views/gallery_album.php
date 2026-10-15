@@ -1,10 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-// Same image folder logic as the gallery page
 $img_base   = dirname(rtrim(base_url(), '/')) . '/assets/images/gallery/';
 $back_url   = site_url('gallery');
 $delete_url = site_url('delete_gallery_image');
+$delete_all = site_url('delete_album_images');
 $upload_url = site_url('save_gallery_images');
 ?>
 <main class="page">
@@ -15,6 +15,12 @@ $upload_url = site_url('save_gallery_images');
       <p class="page-sub"><?= count($images) ?> <?= count($images) === 1 ? 'photo' : 'photos' ?> in this album</p>
     </div>
     <div class="page-actions">
+      <?php if (!empty($images)): ?>
+      <button class="btn btn-danger-outline" type="button" id="deleteAllImages">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
+        Delete All Images
+      </button>
+      <?php endif; ?>
       <button class="btn btn-primary" type="button" id="openUpload">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
         Add Images
@@ -83,6 +89,9 @@ $upload_url = site_url('save_gallery_images');
 <style>
 .back-link{display:inline-block;font-size:13px;color:#2563eb;text-decoration:none;margin-bottom:6px}
 .back-link:hover{text-decoration:underline}
+.page-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn-danger-outline{color:#dc2626;border-color:#fecaca}
+.btn-danger-outline:hover{background:#fef2f2}
 .photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
 .photo-item{position:relative;aspect-ratio:4/3;border-radius:12px;overflow:hidden;border:1px solid #e2e8f0;background:#f1f5f9;transition:opacity .2s,transform .2s}
 .photo-item img{width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in}
@@ -98,7 +107,7 @@ $upload_url = site_url('save_gallery_images');
 .lightbox img{max-width:100%;max-height:100%;border-radius:8px}
 .lightbox-x{position:absolute;top:14px;right:20px;background:none;border:0;color:#fff;font-size:34px;cursor:pointer;line-height:1}
 
-/* ---------- modal (same styles as gallery page) ---------- */
+/* modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:1000}
 .modal-overlay.open{display:flex}
 .modal{background:#fff;border-radius:12px;width:100%;max-width:480px;max-height:92vh;overflow:auto;box-shadow:0 20px 50px rgba(0,0,0,.25)}
@@ -124,50 +133,88 @@ $upload_url = site_url('save_gallery_images');
 .prev-name{position:absolute;left:0;right:0;bottom:0;padding:3px 6px;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 </style>
 
-
-<!-- ===================== photo grid: zoom + delete ===================== -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- ============ zoom + delete one image + delete all images ============ -->
 <script>
 (function () {
-  // CSRF (CodeIgniter) - updated after every AJAX response
   const GalleryCsrf = {
     name: '<?= $this->security->get_csrf_token_name() ?>',
     hash: '<?= $this->security->get_csrf_hash() ?>'
   };
   window.GalleryCsrf = GalleryCsrf;   // shared with the upload script below
 
+  const TYPE_ID = <?= (int) $type->slno ?>;
+
+  // reusable: confirm -> POST -> success popup
+  async function confirmAndPost(url, id, text) {
+    const ask = await Swal.fire({
+      title: 'Are you sure?',
+      text: text,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#64748b',
+      confirmButtonText: 'Yes, delete it',
+      cancelButtonText: 'Cancel'
+    });
+    if (!ask.isConfirmed) return null;
+
+    const body = new FormData();
+    body.append('id', id);
+    body.append(GalleryCsrf.name, GalleryCsrf.hash);
+
+    try {
+      const res  = await fetch(url, { method: 'POST', body, headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+      const json = await res.json();
+      if (json.csrf) GalleryCsrf.hash = json.csrf;
+
+      if (!json.status) {
+        Swal.fire({ icon: 'error', title: 'Oops', text: json.msg });
+        return null;
+      }
+      return json;
+    } catch (err) {
+      Swal.fire({ icon: 'error', title: 'Network error', text: 'Please try again.' });
+      return null;
+    }
+  }
+
+  const done = msg => Swal.fire({ icon: 'success', title: 'Deleted!', text: msg, timer: 1200, showConfirmButton: false });
+
+  // lightbox
   const grid = document.getElementById('photoGrid');
   const box = document.getElementById('lightbox'), boxImg = box.querySelector('img');
   const closeBox = () => { box.hidden = true; boxImg.src = ''; };
-
   box.addEventListener('click', closeBox);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !box.hidden) closeBox(); });
+
+  // delete ALL images of this album (c_type)
+  const allBtn = document.getElementById('deleteAllImages');
+  if (allBtn) {
+    allBtn.addEventListener('click', async () => {
+      const json = await confirmAndPost('<?= $delete_all ?>', TYPE_ID, 'Delete ALL images in this album?');
+      if (!json) return;
+      await done(json.msg);
+      location.reload();
+    });
+  }
+
   if (!grid) return;
 
   grid.addEventListener('click', async e => {
     const zoom = e.target.closest('[data-zoom]');
     if (zoom) { boxImg.src = zoom.src; box.hidden = false; return; }
 
+    // delete ONE image (n_slno)
     const btn = e.target.closest('[data-delete]'); if (!btn) return;
-    if (!confirm('Delete this image?')) return;
+    const json = await confirmAndPost('<?= $delete_url ?>', btn.dataset.delete, 'Delete this image?');
+    if (!json) return;
 
-    const body = new FormData();
-    body.append('id', btn.dataset.delete);
-    body.append(GalleryCsrf.name, GalleryCsrf.hash);
-    btn.disabled = true;
-
-    try {
-      const res  = await fetch('<?= $delete_url ?>', { method: 'POST', body, headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-      const json = await res.json();
-      if (json.csrf) GalleryCsrf.hash = json.csrf;
-      if (!json.status) { alert(json.msg); btn.disabled = false; return; }
-
-      const item = btn.closest('.photo-item');
-      item.classList.add('removing');
-      setTimeout(() => { item.remove(); if (!grid.children.length) location.reload(); }, 200);
-    } catch (err) {
-      alert('Network error. Please try again.');
-      btn.disabled = false;
-    }
+    const item = btn.closest('.photo-item');
+    item.classList.add('removing');
+    await done(json.msg);
+    item.remove();
+    if (!grid.children.length) location.reload();
   });
 })();
 </script>

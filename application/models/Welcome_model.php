@@ -305,6 +305,20 @@ public function fetch_all_co_images()
     return $this->db->query($sql)->result();
 }
 
+
+
+public function insert($data)
+    {
+        $data['status']     = 'New';
+        $data['ip_address'] = $this->input->ip_address();
+        $data['created_at'] = date('Y-m-d H:i:s');
+ 
+        if ($this->db->insert('admission_enquiries', $data)) {
+            return (int) $this->db->insert_id();
+        }
+        return 0;
+    }
+
    
 
 

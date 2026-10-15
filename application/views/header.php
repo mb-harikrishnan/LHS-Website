@@ -378,6 +378,48 @@
             .lh-nav-login { padding: 10px 18px; }
             .lh-login-btn { width: 100%; justify-content: center; margin-left: 0; }
         }
+
+
+        /* ===== NEWS TICKER: clickable + adjustable speed ===== */
+.news-ticker-label {
+    color: inherit;
+    text-decoration: none;
+}
+.news-ticker-track {
+    overflow: hidden;
+    position: relative;
+    flex: 1;
+}
+.news-ticker-list {
+    display: inline-block;
+    margin: 0;
+    padding: 0 0 0 100%;              /* starts just outside the right edge */
+    list-style: none;
+    white-space: nowrap;
+    animation: lhTicker var(--ticker-duration, 30s) linear infinite !important;
+    will-change: transform;
+}
+.news-ticker-list li {
+    display: inline-block;
+    padding-right: 60px;              /* gap between news items */
+}
+.news-ticker-list li a {
+    color: inherit;
+    text-decoration: none;
+    transition: color .2s ease;
+}
+.news-ticker-list li a:hover { color: #f5a623; text-decoration: underline; }
+
+/* pause while the visitor hovers / touches so they can click */
+.news-ticker-track:hover .news-ticker-list,
+.news-ticker-track:active .news-ticker-list {
+    animation-play-state: paused !important;
+}
+
+@keyframes lhTicker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-100%); }
+}
     </style>
 
     <link rel="icon" href="<?php echo base_url(); ?>assets/images/favicon.png">
@@ -406,9 +448,12 @@
          ============================================================ -->
 
     <?php
-    $sql = "SELECT c_news FROM school_news WHERE c_status='Y'";
-    $query = $this->db->query($sql);
-    $result = $query->result();
+
+        $sql = "SELECT c_news FROM school_news WHERE c_status='Y'";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+
+        $ticker_speed = 60;   // <-- running speed: 30 = slow, 60 = normal, 100 = fast
     ?>
 
     <header class="lh-header">
@@ -427,15 +472,15 @@
                 </div>
 
                 <div class="lh-topbar-right">
-                    <a href="https://www.facebook.com/LittleHeartsSchool" target="_blank" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=100071342449643" target="_blank" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
                     <a href="#" aria-label="Instagram"><i class="fa fa-instagram"></i></a>
-                    <a href="#" aria-label="YouTube"><i class="fa fa-youtube-play"></i></a>
+                    <a href="https://www.youtube.com/@littleheartsschool7138" aria-label="YouTube"><i class="fa fa-youtube-play"></i></a>
                 </div>
             </div>
         </div>
 
         <!-- Scrolling News Ticker -->
-        <div class="news-ticker-wrap">
+        <!-- <div class="news-ticker-wrap">
             <div class="news-ticker-label">
                 <i class="fa fa-bullhorn"></i> <span>Latest News</span>
             </div>
@@ -446,7 +491,27 @@
                     <?php } ?>
                 </ul>
             </div>
-        </div>
+        </div> -->
+
+        <!-- Scrolling News Ticker -->
+<?php if (!empty($result)) { ?>
+<div class="news-ticker-wrap" data-speed="<?php echo (int)$ticker_speed; ?>">
+    <a class="news-ticker-label" href="<?php echo base_url('news'); ?>">
+        <i class="fa fa-bullhorn"></i> <span>Latest News</span>
+    </a>
+    <div class="news-ticker-track">
+        <ul class="news-ticker-list">
+            <?php foreach ($result as $row) { ?>
+                <li>
+                    <a href="<?php echo base_url('news'); ?>">
+                        <?php echo $row->c_news; ?>
+                    </a>
+                </li>
+            <?php } ?>
+        </ul>
+    </div>
+</div>
+<?php } ?>
 
         <!-- Main Navigation -->
         <nav class="navbar navbar-default navbar-sticky bootsnav">
@@ -474,9 +539,9 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">School <i class="fa fa-caret-down"></i></a>
                             <ul class="dropdown-menu">
+                                <li><a href="<?php echo base_url('about_us'); ?>"><i class="fa fa-info-circle dd-ico"></i>About Us</a></li>
                                 <li><a href="<?php echo base_url('mandatory_disclosure'); ?>"><i class="fa fa-shield dd-ico"></i>Mandatory Disclosure</a></li>
                                 <li><a href="<?php echo base_url('transfer_certificates'); ?>"><i class="fa fa-file-text-o dd-ico"></i>Transfer Certificates</a></li>
-                                <li><a href="<?php echo base_url('about_us'); ?>"><i class="fa fa-info-circle dd-ico"></i>About Us</a></li>
                                 <li><a href="<?php echo base_url('mission_vision'); ?>"><i class="fa fa-bullseye dd-ico"></i>Mission &amp; Vision</a></li>
                                 <li><a href="<?php echo base_url('directors_message'); ?>"><i class="fa fa-user-circle-o dd-ico"></i>Director's Message</a></li>
                                 <li><a href="<?php echo base_url('principals_message'); ?>"><i class="fa fa-commenting-o dd-ico"></i>Principal's Message</a></li>
@@ -520,7 +585,7 @@
                             <button
                                 type="button"
                                 class="lh-login-btn"
-                                onclick="window.location.href='<?php echo base_url('login'); ?>';"
+                                onclick="window.location.href='<?php echo base_url('school_admin_project'); ?>';"
                                 style="background: #3F51B5 !important; color: #fff !important; border: none; cursor: pointer; border-radius: 20px;">
                                 <i class="fa fa-user"></i> Login
                             </button>
@@ -530,7 +595,7 @@
                             <button
                                 type="button"
                                 class="lh-apply-btn"
-                                onclick="window.location.href='<?php echo base_url('admissions'); ?>';"
+                                onclick="window.location.href='<?php echo base_url('admissions_enqry'); ?>';"
                                 style="padding: 11px !important; background: #df3e3e !important; color: #fff !important; border: none; cursor: pointer;">
                                 <i class="fa fa-graduation-cap"></i> Apply Now
                             </button>
@@ -671,3 +736,21 @@
 </script>
 
     <!--Header ends-->
+
+
+    <script>
+(function () {
+    var wrap = document.querySelector('.news-ticker-wrap');
+    if (!wrap) return;
+    var list  = wrap.querySelector('.news-ticker-list');
+    var speed = parseInt(wrap.getAttribute('data-speed'), 10) || 60;   // px per second
+
+    function setSpeed() {
+        var distance = list.scrollWidth;                 // full travel distance
+        list.style.setProperty('--ticker-duration', (distance / speed) + 's');
+    }
+    setSpeed();
+    window.addEventListener('load', setSpeed);
+    window.addEventListener('resize', setSpeed);
+})();
+</script>

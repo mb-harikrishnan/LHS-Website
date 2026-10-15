@@ -190,10 +190,32 @@ public function save_album()
 
 
 
+// delete album + its images (AJAX, soft delete)
+public function delete_album()
+{
+    $id = (int) $this->input->post('id');
+
+    if ($id <= 0 || !$this->School_model->get_event_type($id)) {
+        return $this->_json(false, 'Album not found.');
+    }
+
+    $ok = $this->School_model->delete_event_type($id);
+    return $this->_json($ok, $ok ? 'Album deleted.' : 'Could not delete the album.');
+}
 
 
 
+public function delete_album_images()
+{
+    $type_id = (int) $this->input->post('id');
 
+    if ($type_id <= 0 || !$this->School_model->get_event_type($type_id)) {
+        return $this->_json(false, 'Album not found.');
+    }
+
+    $ok = $this->School_model->delete_images_by_type($type_id);
+    return $this->_json($ok, $ok ? 'All images deleted.' : 'No images to delete.');
+}
 
     
 }

@@ -172,13 +172,13 @@ public function delete_activities($id)
             'cricket'                      => 'Cricket',
             'kho_kho'                      => 'Kho-Kho',
             'badminton'                    => 'Badminton',
-            'roll_ball'                    => 'Roll Ball',
+            'Roll_ball'                    => 'Roll Ball',
             'dance'                        => 'Dance',
             'music'                        => 'Music',
             'yoga'                         => 'Yoga',
             'karate'                       => 'Karate',
             'drawing'                      => 'Drawing',
-            'painting'                     => 'Painting',
+            'Painting'                     => 'Painting',
             'roller_skating'               => 'Roller Skating',
             'transportation_facility'      => 'Transportation Facility',
             'educational_tours_excursions' => 'Educational Tours / Excursions',
@@ -276,6 +276,54 @@ public function insert_event_type($data)
 
 
 
+
+
+// public function delete_image($id)
+// {
+//     $this->db->where('n_slno', (int) $id)
+//              ->update('school_event_images', array('c_status' => 'N'));
+//     return $this->db->affected_rows() > 0;
+// }
+
+// // soft delete album + all its images
+// public function delete_event_type($id)
+// {
+//     $id = (int) $id;
+
+//     $this->db->trans_start();
+//     $this->db->where('slno', $id)->update('events', array('c_status' => 0));
+//     $this->db->where('c_type', $id)->update('school_event_images', array('c_status' => 'N'));
+//     $this->db->trans_complete();
+
+//     return $this->db->trans_status();
+// }
+
+
+public function delete_event_type($id)
+{
+    $this->db->where('slno', (int) $id)
+             ->update('events', array('c_status' => 0));
+
+    return $this->db->affected_rows() > 0;
+}
+
+
+// delete ONE image  (n_slno)
+public function delete_image($id)
+{
+    $this->db->where('n_slno', (int) $id)
+             ->update('school_event_images', array('c_status' => 'N'));
+    return $this->db->affected_rows() > 0;
+}
+
+// delete ALL images of an album  (c_type)
+public function delete_images_by_type($type_id)
+{
+    $this->db->where('c_type', (int) $type_id)
+             ->where('c_status', 'Y')
+             ->update('school_event_images', array('c_status' => 'N'));
+    return $this->db->affected_rows() > 0;
+}
 
 
 }

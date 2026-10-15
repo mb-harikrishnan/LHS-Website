@@ -95,6 +95,9 @@ $route['parental_support'] = 'welcome/parental_support';
 $route['apply_job'] = 'welcome/apply_job';
 
 
+$route['admissions_enqry'] = 'welcome/admissions_enqry';
+
+
 
 
 
@@ -108,6 +111,8 @@ $route['submit_contact'] = 'welcome/submit_contact';
 $route['testimonials'] = 'welcome/testimonials';
 $route['teachers'] = 'welcome/teachers';
 $route['pricing'] = 'welcome/pricing';
+
+
 // $route['home_page'] = 'welcome/home_page';
 
 

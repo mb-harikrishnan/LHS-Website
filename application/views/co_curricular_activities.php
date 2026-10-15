@@ -52,12 +52,12 @@
 <?php
 $activities = array(
    'Library'                      => 'Library',
-  'extra_curricular_activities'  => 'Extra Curricular Activities',
-  'sports'                       => 'Sports',
+//   'extra_curricular_activities'  => 'Extra Curricular Activities',
+//   'sports'                       => 'Sports',
   'volley_ball'                  => 'Volley Ball',
   'basket_ball'                  => 'Basket Ball',
   'foot_ball'                    => 'Foot Ball',
-  'cricket'                      => 'Cricket',
+//   'cricket'                      => 'Cricket',
   'kho_kho'                      => 'Kho-Kho',
   'badminton'                    => 'Badminton',
   'roll_ball'                    => 'Roll Ball',
@@ -68,13 +68,13 @@ $activities = array(
   'drawing'                      => 'Drawing',
   'painting'                     => 'Painting',
   'roller_skating'               => 'Roller Skating',
-  'transportation_facility'      => 'Transportation Facility',
-  'educational_tours_excursions' => 'Educational Tours / Excursions',
-  'computer_labs'                => 'Computer Labs',
-  'science_labs'                 => 'Science Labs',
+//   'transportation_facility'      => 'Transportation Facility',
+//   'educational_tours_excursions' => 'Educational Tours / Excursions',
+//   'computer_labs'                => 'Computer Labs',
+//   'science_labs'                 => 'Science Labs',
   'smart_class_facilities'       => 'Smart Class Facilities',
-  'stationary_to_students'       => 'Stationary to Students',
-  'low_achievers'                => 'Low Achievers',
+//   'stationary_to_students'       => 'Stationary to Students',
+//   'low_achievers'                => 'Low Achievers',
 );
 
 foreach ($activities as $type => $label) {

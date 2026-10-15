@@ -49,28 +49,35 @@ $gradients = array(
               : 'background:' . $gradients[$i % count($gradients)];
           $total = (int) $a->total;
         ?>
-        <a class="gallery-card-link" href="<?= site_url('gallery_album/' . (int) $a->type_id) ?>">
-          <div class="gallery-card">
-            <div class="gallery-thumb <?= $has_cover ? 'has-img' : '' ?>" style="<?= $thumb_style ?>">
-              <?= $has_cover ? '' : html_escape($a->name) ?>
-              <span><?= $total ?> <?= $total === 1 ? 'Photo' : 'Photos' ?></span>
-            </div>
-            <div class="gallery-info">
-              <h3><?= html_escape($a->name) ?></h3>
-              <p>
-                <?= $a->last_date
-                    ? 'Last updated ' . date('d M Y', strtotime($a->last_date))
-                    : 'No photos added yet' ?>
-              </p>
-              <div class="gallery-meta">
-                <span class="badge badge-purple">Album</span>
-                <span class="badge <?= $total > 0 ? 'badge-ok' : 'badge-muted' ?>">
-                  <?= $total > 0 ? 'Active' : 'Empty' ?>
-                </span>
-              </div>
-            </div>
-          </div>
-        </a>
+   <div class="gallery-card-wrap">
+  <a class="gallery-card-link" href="<?= site_url('gallery_album/' . (int) $a->type_id) ?>">
+    <div class="gallery-card">
+      <div class="gallery-thumb <?= $has_cover ? 'has-img' : '' ?>" style="<?= $thumb_style ?>">
+        <?= $has_cover ? '' : html_escape($a->name) ?>
+        <span><?= $total ?> <?= $total === 1 ? 'Photo' : 'Photos' ?></span>
+      </div>
+      <div class="gallery-info">
+        <h3><?= html_escape($a->name) ?></h3>
+        <p>
+          <?= $a->last_date
+              ? 'Last updated ' . date('d M Y', strtotime($a->last_date))
+              : 'No photos added yet' ?>
+        </p>
+        <div class="gallery-meta">
+          <span class="badge badge-purple">Album</span>
+          <span class="badge <?= $total > 0 ? 'badge-ok' : 'badge-muted' ?>">
+            <?= $total > 0 ? 'Active' : 'Empty' ?>
+          </span>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <button type="button" class="album-del"
+          data-delete-album="<?= (int) $a->type_id ?>"
+          data-name="<?= html_escape($a->name) ?>"
+          title="Delete album" aria-label="Delete album">&times;</button>
+</div>
       <?php endforeach; ?>
     <?php else: ?>
       <p class="empty-note">No albums yet. Click <strong>Add Album</strong> to create one.</p>
@@ -157,6 +164,12 @@ $gradients = array(
 
 
 <style>
+
+  .gallery-card-wrap{position:relative}
+.album-del{position:absolute;top:10px;right:10px;width:30px;height:30px;border:0;border-radius:50%;background:rgba(15,23,42,.75);color:#fff;font-size:20px;line-height:1;cursor:pointer;opacity:0;transition:.15s;display:flex;align-items:center;justify-content:center;z-index:2}
+.gallery-card-wrap:hover .album-del,.album-del:focus{opacity:1}
+.album-del:hover{background:#dc2626}
+@media (hover:none){.album-del{opacity:1}}
 /* ---------- gallery grid ---------- */
 .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
 .gallery-card-link{text-decoration:none;color:inherit;display:block}
@@ -204,6 +217,8 @@ $gradients = array(
 .prev-name{position:absolute;left:0;right:0;bottom:0;padding:3px 6px;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 </style>
 
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- ===================== Add Album script ===================== -->
 <script>
@@ -398,6 +413,65 @@ $gradients = array(
       showError('Something went wrong. Please try again.');
       submitBtn.disabled = false;
       submitBtn.textContent = 'Upload';
+    }
+  });
+})();
+</script>
+
+<script>
+(function () {
+  let csrfName = '<?= $this->security->get_csrf_token_name() ?>';
+  let csrfHash = '<?= $this->security->get_csrf_hash() ?>';
+  const grid = document.getElementById('galleryGrid');
+  if (!grid) return;
+
+  grid.addEventListener('click', async e => {
+    const btn = e.target.closest('[data-delete-album]'); if (!btn) return;
+
+    // "Are you sure?" popup
+    const ask = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'Delete album "' + btn.dataset.name + '"? This cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#64748b',
+      confirmButtonText: 'Yes, delete it',
+      cancelButtonText: 'Cancel'
+    });
+    if (!ask.isConfirmed) return;
+
+    const body = new FormData();
+    body.append('id', btn.dataset.deleteAlbum);
+    body.append(csrfName, csrfHash);
+    btn.disabled = true;
+
+    try {
+      const res  = await fetch('<?= site_url('delete_album') ?>', {
+        method: 'POST', body, headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      });
+      const json = await res.json();
+      if (json.csrf) csrfHash = json.csrf;
+
+      if (!json.status) {
+        Swal.fire({ icon: 'error', title: 'Oops', text: json.msg });
+        btn.disabled = false;
+        return;
+      }
+
+      // "Done" popup, then reload
+      await Swal.fire({
+        icon: 'success',
+        title: 'Deleted!',
+        text: json.msg,
+        timer: 1200,
+        showConfirmButton: false
+      });
+      window.location.reload();
+
+    } catch (err) {
+      Swal.fire({ icon: 'error', title: 'Network error', text: 'Please try again.' });
+      btn.disabled = false;
     }
   });
 })();

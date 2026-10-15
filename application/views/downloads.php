@@ -17,7 +17,7 @@
         <div class="main_title wow fadeInUp margin_bottom">
           <h2>Downloads</h2>
           <p>
-            Download CBSE Sample Question Papers for Classes IX, X, XI & XII
+           Download Student Informations
           </p>
         </div>
       </div>
@@ -70,17 +70,18 @@
 
 <?php } else { ?>
 
-    <div class="col-12">
-        <div class="download_box wow fadeInUp text-center">
-
-            <i class="fa fa-file-pdf-o"></i>
-
-            <h4>No Question Papers Available</h4>
-
+    <div class="col-md-12">
+        <div class="empty_state wow fadeInUp text-center">
+            <div class="empty_icon">
+                <i class="fa fa-folder-open-o"></i>
+            </div>
+            <h4>No downloads yet</h4>
+            <p>New files will appear here once the school uploads them. Please check back soon.</p>
+            <a href="<?php echo base_url(); ?>" class="btn_download">Back to Home</a>
         </div>
     </div>
 
-<?php } ?>     
+<?php } ?>    
     </div>
 
   </div>
@@ -384,6 +385,52 @@ body,p,li,a,span,td,th,label,input,textarea,select,button{font-family:'Nunito Sa
 .club_box:hover::after,.download_box:hover::after,.mission_box:hover::after,
 .fun_content_box:hover::after,.news_box:hover::after,.note_card:hover::after{
     transform:scale(1.3);
+}
+
+
+/* ---- Empty state ---- */
+.empty_state{
+    max-width:520px;
+    margin:10px auto 0;
+    padding:44px 32px 38px;
+    background:#fff;
+    border:2px dashed color-mix(in srgb, var(--acc) 45%, #fff);
+    border-radius:var(--fl-r);
+    box-shadow:var(--fl-sh);
+    position:relative;
+    z-index:1;
+}
+.empty_icon{
+    width:92px; height:92px; margin:0 auto 20px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:color-mix(in srgb, var(--acc) 10%, #fff);
+    border:3px dashed color-mix(in srgb, var(--acc) 40%, transparent);
+    animation:fl-float 7s ease-in-out infinite;
+}
+.empty_icon i{
+    font-size:38px;
+    color:var(--acc);
+}
+.empty_state h4{
+    color:var(--fl-navy);
+    font-size:24px;
+    margin:0 0 8px;
+}
+.empty_state p{
+    color:var(--fl-muted);
+    font-size:15px;
+    line-height:1.8;
+    margin:0 auto 22px;
+    max-width:380px;
+}
+.empty_state .btn_download{
+    display:inline-block;
+    padding:11px 28px;
+    color:#fff;
+}
+@media(max-width:767px){
+    .empty_state{padding:34px 20px 30px;}
 }
 </style>
 
