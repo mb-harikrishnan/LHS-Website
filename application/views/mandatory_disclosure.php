@@ -1746,5 +1746,11 @@ body,p,li,a,span,td,th,label,input,textarea,select,button{font-family:'Nunito Sa
 .fun_content_box:hover::after,.news_box:hover::after,.note_card:hover::after{
     transform:scale(1.3);
 }
+
+.view_btn,
+.view_btn:hover,
+.view_btn:focus {
+    color: #ffffff !important;
+}
 </style>
 
