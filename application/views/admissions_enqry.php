@@ -10,7 +10,7 @@ $err = $this->session->flashdata('ae_error');     // save-failed text from contr
   <div class="container">
 
     <div class="ae_head">
-      <h2>Admission 2025-26</h2>
+      <h2>Admission 2027-28</h2>
       <p>Give your child a brighter future. Fill in the form and our admission team will contact you.</p>
     </div>
 

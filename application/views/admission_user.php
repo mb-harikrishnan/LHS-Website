@@ -8,7 +8,7 @@
 
     <tr><td style="background:#0b2447;padding:26px 30px;">
       <div style="font-size:22px;font-weight:bold;color:#ffffff;">Little Hearts School</div>
-      <div style="font-size:13px;color:#f5a623;margin-top:4px;">Admission 2025-26</div>
+      <div style="font-size:13px;color:#f5a623;margin-top:4px;">Admission 2027-28</div>
     </td></tr>
 
     <tr><td style="padding:30px;">

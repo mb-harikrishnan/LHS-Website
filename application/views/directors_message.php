@@ -30,7 +30,7 @@
       <div class="col-md-4 col-sm-5 wow fadeInLeft" data-wow-delay="300ms">
         <div class="director-image-box wow fadeInUp text-center">
 
-          <img src="<?php echo base_url(); ?>assets/images/main_image/director.jpg"
+          <img src="<?php echo base_url(); ?>assets/images/main_image/director.jpeg"
             alt="Director"
             class="img-responsive director-img">
 
