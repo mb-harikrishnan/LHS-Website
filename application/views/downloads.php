@@ -16,9 +16,9 @@
       <div class="col-md-12 text-center">
         <div class="main_title wow fadeInUp margin_bottom">
           <h2>Downloads</h2>
-          <p>
+          <!-- <p>
            Download Student Informations
-          </p>
+          </p> -->
         </div>
       </div>
     </div>

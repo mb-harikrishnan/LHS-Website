@@ -167,7 +167,7 @@
 
       <div class="note_card wow fadeInUp">
         <div class="note_icon">
-          <i class="fa fa-cloud-rain"></i>
+          <i class="fa fa-umbrella"></i>
         </div>
 
         <div class="note_content">
@@ -188,6 +188,22 @@
           <p>
             No jewellery except ear studs is allowed. Girls with long hair should plait hair on both sides using only black ribbon/brush. Girls with short hair may use black hair bands.
           </p>
+        </div>
+
+
+      </div>
+
+
+      <div class="note_card wow fadeInUp">
+        <div class="note_icon">
+          <i class="fa fa-male"></i>
+        </div>
+        
+        <div class="note_content">
+          <h4>Boys Grooming Guidelines</h4>
+          <p>
+
+          Boys should maintain a neat, short haircut. Hair should be properly combed and should not fall over the forehead or cover the ears. Fancy hairstyles, hair colouring, and hair gel are not permitted. Boys are not allowed to wear jewellery, bracelets, or other fashion accessories. Fingernails should be kept short and clean.          </p>
         </div>
       </div>
 

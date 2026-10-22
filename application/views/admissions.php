@@ -157,7 +157,7 @@
           </div>
 
           <div class="col-md-4 text-center">
-            <a href="#contactus" class="admission_btn">
+            <a href="<?php echo base_url('contact')?>" class="admission_btn">
               Contact Now
             </a>
           </div>

@@ -1070,7 +1070,7 @@
 
                 foreach($_yers_board_exam as $value)
                 {
-                    if($value->c_type == '_yers_board_exam' && !empty($value->c_document))
+                    if($value->c_type == '3_yers_board_exam' && !empty($value->c_document))
                     {
                         $found = true;
 
@@ -1391,7 +1391,7 @@
             </tr>
 
            <tr>
-  <td>Infrastructure Inspection Video</td>
+  <!-- <td>Infrastructure Inspection Video</td>
   <td>
     <?php
     if (!empty($video)) {
@@ -1424,7 +1424,7 @@
         echo "No Video";
     }
     ?>
-  </td>
+  </td> -->
 </tr>          </tbody>
         </table>
       </div>

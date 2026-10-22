@@ -45,21 +45,23 @@
         </div>
       </div>
 
-      <!-- Sruthi -->
-      <div class="col-md-3 col-sm-6">
-        <div class="house_box wow fadeInUp sruthi" style="background:#ffffff; color:#333; border:2px solid #ddd;">
-          <h3>Sruthi</h3>
-          
-        </div>
-      </div>
-
-      <!-- Thalam -->
+       <!-- Thalam -->
       <div class="col-md-3 col-sm-6">
         <div class="house_box wow fadeInUp thalam" style="background:#d7da81; color:#333;">
           <h3>Thalam</h3>
        
         </div>
       </div>
+
+      <!-- Sruthi -->
+      <div class="col-md-3 col-sm-6">
+        <div class="house_box wow fadeInUp sruthi" style="background:#d4a91c; color:#333; border:2px solid #d4a91c;">
+          <h3>Sruthi</h3>
+          
+        </div>
+      </div>
+
+     
 
       <!-- Layam -->
       <div class="col-md-3 col-sm-6">

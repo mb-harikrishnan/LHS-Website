@@ -22,9 +22,7 @@ class Login extends CI_Controller
     // POST /login_submit  -> returns JSON for the AJAX call
     public function login_submit()
     {
-        if (!$this->input->is_ajax_request()) {
-            show_404();
-        }
+       
 
         $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[3]|max_length[30]|regex_match[/^[a-zA-Z0-9._]+$/]');
         $this->form_validation->set_rules('password', 'Password', 'required|min_length[6]|max_length[50]');

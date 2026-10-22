@@ -74,6 +74,46 @@
 </section>
 
 <style>
+
+
+    /* ---- Mission list: same round pastel ✓ badge style ---- */
+.mission_content ul{
+    list-style:none;
+    margin:0 0 18px;
+    padding:0;
+}
+.mission_content ul li{
+    position:relative;
+    padding-left:30px !important;
+    margin-bottom:10px;
+    color:var(--fl-muted);
+    font-size:15px;
+    line-height:1.9;
+}
+.mission_content ul li::before{
+    content:"✓" !important;
+    font-family:'Nunito Sans' !important;
+    position:absolute;
+    left:0;
+    top:5px;
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    background:color-mix(in srgb, var(--acc) 16%, #fff);
+    color:var(--acc);
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:11px;
+    font-weight:900;
+}
+
+.curriculum_card ul li::before,.fee_card ul li::before,.support_card ul li::before,
+.rules_card ul li::before,.study_list li::before,
+.mission_content ul li::before{ ... }
+
+.curriculum_card ul li,.fee_card ul li,.support_card ul li,.rules_card ul li,.study_list li,
+.mission_content ul li{padding-left:30px !important;}
 /* ============================================================
    LITTLE HEARTS SCHOOL — SCHOOL UI LAYER v2 (internal per-page)
    School design: notebook paper bg, tape-top cards, dashed
