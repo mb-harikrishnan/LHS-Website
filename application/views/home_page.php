@@ -163,8 +163,8 @@ if (!function_exists('lh_youtube_id')) {
 
             <div class="feature-card wow fadeInUp">
                 <div class="feature-icon i-rose"><i class="fa fa-shield"></i></div>
-                <h4>Strict Security</h4>
-                <p>Children are released only to authorised individuals with proper ID.</p>
+                <h4>Student Safety</h4>
+                <p>Students are released only to authorised parents or guardians after proper identity verification.</p>
             </div>
 
             <div class="feature-card wow fadeInUp">

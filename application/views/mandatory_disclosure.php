@@ -776,9 +776,9 @@
         </table>
       </div>
 
-      <div class="note_box">
+      <!-- <div class="note_box">
         <strong>Note:</strong> Note: The schools need to upload the self-attested copies of the above-listed documents by Chairman/Manager/Secretary and Principal. In case it is noticed at a later stage that uploaded documents are not genuine, then the school shall be liable for action as per norms.
-      </div>
+      </div> -->
     </div>
 
     <!-- C -->
