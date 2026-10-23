@@ -41,15 +41,20 @@ class Login extends CI_Controller
             return $this->_json(['status' => 'error', 'message' => 'Invalid username or password']);
         }
 
+        $sql = "SELECT emName FROM employee_master WHERE emUserId=' $user->user_id'";
+        $query = $this->db->query($sql);
+        $res = $query->row()->emName;
+
         // prevent session fixation
         $this->session->sess_regenerate(TRUE);
 
         $sess_array = [
             'id'           => $user->user_id,
-            'c_username'   => $user->name,
+            'c_username'   => $res,
             'user_role_id' => $user->user_role_id,
             'login_time'   => date('Y-m-d H:i:s'),
-            'remember'     => $remember
+            'remember'     => $remember,
+            'user_type'    =>$user->user_type
         ];
 
         $this->session->set_userdata($sess_array);

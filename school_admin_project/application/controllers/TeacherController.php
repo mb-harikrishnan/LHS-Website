@@ -26,7 +26,7 @@ class TeacherController extends CI_Controller
 {
     $this->load->model('Exam_Model');
 
-    $emp_id  = (int)$this->session->userdata('emId');   // adjust to your login session key
+    $emp_id  = (int)$this->session->userdata('id');   // adjust to your login session key
     $teacher = $this->TeacherDashboard_model->get_teacher($emp_id);
 
     $class = $teacher ? (int)$teacher->emClass : 0;
@@ -41,10 +41,15 @@ class TeacherController extends CI_Controller
         }
     }
 
+    $sql= "SELECT dmName FROM division_master WHERE dmId =$div";
+    $query = $this->db->query($sql);
+    $res = $query->row()->dmName;
+
     $data['teacher'] = $teacher;
     $data['stats']   = $this->TeacherDashboard_model->student_stats($class, $div);
     $data['exams']   = $running;
     $data['news']    = $this->TeacherDashboard_model->latest_news(5);
+    $data['division'] =$res;
 
     $this->load->view('header');
     $this->load->view('teacherdashboard', $data);

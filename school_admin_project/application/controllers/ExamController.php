@@ -264,6 +264,23 @@ public function save_allocation()
 }
 
 /* ---------- DELETE (POST) ---------- */
+// public function delete_allocation()
+// {
+//     if ($this->input->method() !== 'post') {
+//         return $this->_exam_json(false, 'Invalid request.');
+//     }
+
+//     $exam_id  = (int)$this->input->post('exam_id');
+//     $class_id = (int)$this->input->post('class_id');
+
+//     if ($exam_id <= 0 || $class_id <= 0 || !$this->Exam_Model->allocation_exists($exam_id, $class_id)) {
+//         return $this->_exam_json(false, 'Allocation not found.');
+//     }
+
+//     $ok = $this->Exam_Model->delete_allocation($exam_id, $class_id);
+//     return $this->_exam_json($ok, $ok ? 'Mark allocation deleted successfully.' : 'Delete failed.');
+// }
+
 public function delete_allocation()
 {
     if ($this->input->method() !== 'post') {
@@ -275,6 +292,10 @@ public function delete_allocation()
 
     if ($exam_id <= 0 || $class_id <= 0 || !$this->Exam_Model->allocation_exists($exam_id, $class_id)) {
         return $this->_exam_json(false, 'Allocation not found.');
+    }
+
+    if ($this->Exam_Model->marks_entered($exam_id)) {
+        return $this->_exam_json(false, 'This allocation cannot be deleted because marks have already been entered for students in this exam.');
     }
 
     $ok = $this->Exam_Model->delete_allocation($exam_id, $class_id);

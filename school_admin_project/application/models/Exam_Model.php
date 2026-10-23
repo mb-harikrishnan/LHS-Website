@@ -149,19 +149,19 @@ class Exam_Model extends CI_Model
     public function fetch_all_allocation_list()
     {
         $sql = "SELECT emd.emdEmId, emd.emdCmId, emd.emdSmId, emd.emdMaxMark,
-                       cm.cmName, em.emDisplayName, sm.smName
+                       cm.cmName, em.emDisplayName, sm.smName,emName
                 FROM exam_master_detail emd
                 JOIN class_master   cm ON cm.cmId = emd.emdCmId
                 JOIN exam_master    em ON em.emId = emd.emdEmId
                 JOIN subject_master sm ON sm.smId = emd.emdSmId
-                ORDER BY emd.emdEmId DESC, emd.emdCmId ASC, sm.smDisplayOrder ASC";
+                ORDER BY  emd.emdCmId ASC , emd.emdEmId ASC, sm.smDisplayOrder ASC";
         $out = array();
         foreach ($this->db->query($sql)->result() as $r) {
             $key = $r->emdEmId . '-' . $r->emdCmId;
             if (!isset($out[$key])) {
                 $out[$key] = array(
                     'exam_id' => (int)$r->emdEmId, 'class_id' => (int)$r->emdCmId,
-                    'exam_name' => $r->emDisplayName, 'class_name' => $r->cmName, 'subjects' => array()
+                    'exam_name' => $r->emName, 'class_name' => $r->cmName, 'subjects' => array()
                 );
             }
             $out[$key]['subjects'][] = array('id' => (int)$r->emdSmId, 'name' => $r->smName, 'marks' => (int)$r->emdMaxMark);
@@ -242,6 +242,13 @@ public function save_allocation_multi($exam_ids, $class_ids, $subjects)
         return $this->db->where('emdEmId', (int)$exam_id)->where('emdCmId', (int)$class_id)
                         ->delete('exam_master_detail');
     }
+
+
+    public function marks_entered($exam_id)
+{
+    return $this->db->where('esEmId', (int)$exam_id)
+                    ->count_all_results('exam_summary') > 0;
+}
 
 
     /* =====================  MARK ENTRY  ===================== */

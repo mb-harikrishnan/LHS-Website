@@ -8,8 +8,8 @@ public function get_teacher($emp_id)
 {
     return $this->db->select('e.emId, e.emName, e.emClass, e.emDiv, cm.cmName')
         ->from('employee_master e')
-        ->join('class_master cm', 'cm.cmId = e.emClass', 'left')
-        ->where('e.emId', (int)$emp_id)
+        ->join('class_master cm', 'cm.cmId = e.emClass', 'inner')
+        ->where('e.emUserId', (int)$emp_id)
         ->get()->row();
 }
 
@@ -26,10 +26,13 @@ public function student_stats($class, $div)
     $rows = $this->db->group_by('smGender')->get()->result();
 
     foreach ($rows as $r) {
-        $g = strtolower(substr(trim((string)$r->smGender), 0, 1));
-        $out['total'] += (int)$r->c;
-        if ($g === 'm' || $g === 'b') { $out['boys']  += (int)$r->c; }
-        elseif ($g === 'f' || $g === 'g') { $out['girls'] += (int)$r->c; }
+        $count = (int)$r->c;
+        $out['total'] += $count;
+        if ((int)$r->smGender === 1) {
+            $out['boys'] += $count;      // 1 = boy
+        } elseif ((int)$r->smGender === 0) {
+            $out['girls'] += $count;     // 0 = girl
+        }
     }
     return $out;
 }

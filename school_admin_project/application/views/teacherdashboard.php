@@ -6,7 +6,7 @@
    $news     array of objects (nwId, nwTitle, nwBody, nwDate)
 */
 $has_class  = $teacher && (int)$teacher->emClass > 0;
-$class_text = $has_class ? $teacher->cmName . ((string)$teacher->emDiv !== '' && $teacher->emDiv !== '0' ? ' - ' . $teacher->emDiv : '') : 'Not assigned';
+$class_text = $has_class ? $teacher->cmName  : 'Not assigned';
 ?>
 <style>
 .td-hello{margin:0 0 20px}
@@ -56,7 +56,7 @@ $class_text = $has_class ? $teacher->cmName . ((string)$teacher->emDiv !== '' &&
   <div class="td-grid">
     <div class="td-stat">
       <div class="td-ico blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg></div>
-      <div><div class="td-label">Assigned Class</div><div class="td-value sm"><?= html_escape($class_text) ?></div></div>
+      <div><div class="td-label">Assigned Class</div><div class="td-value sm"><?= html_escape($class_text .'-'. $division) ?></div></div>
     </div>
     <div class="td-stat">
       <div class="td-ico green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M21 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg></div>

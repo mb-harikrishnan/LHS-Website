@@ -20,7 +20,7 @@ $schoolNameSub  = 'School';
 $userId    = $this->session->userdata('id');
 $firstName = $this->session->userdata('c_username') ?: 'User';
 $roleId    = (int) $this->session->userdata('user_role_id');
-$roleLabel = ($roleId === 1) ? 'Administrator' : 'User';
+$roleLabel = ($roleId === 1) ? 'Administrator' : $this->session->userdata('user_type');
 
 // Initials from username (max 2 letters)
 $initials = '';
