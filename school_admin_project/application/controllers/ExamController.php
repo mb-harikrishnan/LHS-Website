@@ -328,7 +328,7 @@ private $grades = array('A+', 'A', 'B+', 'B', 'C+', 'C', 'D', 'E');
 private function _marks_scope()
 {
     $role = (int)$this->session->userdata('user_role_id');
-    $uid  = (int)$this->session->userdata('user_id');
+    $uid  = (int)$this->session->userdata('id');
 
     $menu = $this->Exam_Model->get_menu_id_by_link('Marksentry_list');
     $perm = $this->Exam_Model->get_permissions($role, $menu);
@@ -537,7 +537,7 @@ public function save_marks()
         return $this->_marks_json(false, 'Please enter marks for at least one student.');
     }
 
-    $uid = (int)$this->session->userdata('user_id');
+    $uid = (int)$this->session->userdata('id');
     $ok  = $this->Exam_Model->save_marks($t['exam_id'], $t['class'], $t['div'], $batch, $uid);
     return $this->_marks_json($ok, $ok
         ? ($is_edit ? 'Marks updated successfully.' : 'Marks saved successfully.')
@@ -597,7 +597,7 @@ public function final_submit()
         return $this->_marks_json(false, 'Please fill all marks and update before final submit (' . $p['filled'] . ' of ' . $p['expected'] . ' filled).');
     }
 
-    $ok = $this->Exam_Model->final_submit($t['exam_id'], $t['class'], $t['div'], (int)$this->session->userdata('user_id'));
+    $ok = $this->Exam_Model->final_submit($t['exam_id'], $t['class'], $t['div'], (int)$this->session->userdata('id'));
     return $this->_marks_json($ok, $ok ? 'Marks final submitted successfully.' : 'Final submit failed.');
 }
 

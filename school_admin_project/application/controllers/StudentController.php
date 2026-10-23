@@ -248,7 +248,7 @@ public function divition_list()
     {
  
         $role = (int)$this->session->userdata('user_role_id');
-        $uid  = (int)$this->session->userdata('user_id');   // login user id; change the key if your login stores it under another name
+        $uid  = (int)$this->session->userdata('id');   // login user id; change the key if your login stores it under another name
  
         $menu = $this->Subject_Model->get_menu_id_by_link('students_list');
         $perm = $this->Subject_Model->get_permissions($role, $menu);
