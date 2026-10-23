@@ -22,12 +22,44 @@ class TeacherController extends CI_Controller
         }
     }
 
-    public function teacherdashboard()
-    {
-       
+   public function teacherdashboard()
+{
+    $this->load->model('Exam_Model');
 
-        $this->load->view('header');
-        $this->load->view('teacherdashboard');
-        $this->load->view('footer');
+    $emp_id  = (int)$this->session->userdata('emId');   // adjust to your login session key
+    $teacher = $this->TeacherDashboard_model->get_teacher($emp_id);
+
+    $class = $teacher ? (int)$teacher->emClass : 0;
+    $div   = $teacher ? $teacher->emDiv : '';
+
+    // running exams = open exams that have a mark allocation for this teacher's class
+    $running = array();
+    if ($class > 0) {
+        $class_exam_ids = $this->TeacherDashboard_model->exam_ids_for_class($class);
+        foreach ($this->Exam_Model->fetch_open_exams() as $e) {
+            if (in_array((int)$e->emId, $class_exam_ids, true)) { $running[] = $e; }
+        }
     }
+
+    $data['teacher'] = $teacher;
+    $data['stats']   = $this->TeacherDashboard_model->student_stats($class, $div);
+    $data['exams']   = $running;
+    $data['news']    = $this->TeacherDashboard_model->latest_news(5);
+
+    $this->load->view('header');
+    $this->load->view('teacherdashboard', $data);
+    $this->load->view('footer');
+}
+
+
+
+
+
+
+
+
+
+
+
+
 }

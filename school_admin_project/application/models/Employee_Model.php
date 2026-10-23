@@ -71,9 +71,7 @@ public function get_divisions($class_id)
 
             // 1) user_login first
             $this->db->insert('user_login', [
-                'name'       => $d['name'],
-                'mobile'     => $d['mobile'],
-                'email'      => (!empty($d['email'])) ? $d['email'] : NULL,  // NULL, not '', because email is a unique key
+                'name'       => $d['mobile'],
                 'password'   => md5($password),
                 'user_type'  => $user_type,
                 'user_role_id' =>$role_id,
@@ -92,7 +90,7 @@ public function get_divisions($class_id)
                 'emDiv'       => $d['division_id'],
                 'emPhoneNo'   => $d['mobile'],
                 'emDesigId'   => $d['role_id'],
-                'user_log_id' => $user_log_id,
+                'emUserId' => $user_log_id,
             ]);
             $emp_id = $this->db->insert_id();
 
@@ -104,7 +102,7 @@ public function get_divisions($class_id)
 
             public function update_employee($emp_id, $d, $password = '')
     {
-        $emp = $this->db->select('user_log_id')
+        $emp = $this->db->select('emUserId')
                         ->where('emId', (int) $emp_id)
                         ->where('emActive', 1)
                         ->get('employee_master')->row();
@@ -140,8 +138,8 @@ public function get_divisions($class_id)
 
         $this->db->where('emId', (int) $emp_id)->update('employee_master', $em);
 
-        if (!empty($emp->user_log_id)) {
-            $this->db->where('user_id', (int) $emp->user_log_id)->update('user_login', $ul);
+        if (!empty($emp->emUserId)) {
+            $this->db->where('user_id', (int) $emp->emUserId)->update('user_login', $ul);
         }
 
         $this->db->trans_complete();
@@ -150,7 +148,7 @@ public function get_divisions($class_id)
 
     public function delete_employee($emp_id)
     {
-        $emp = $this->db->select('user_log_id')
+        $emp = $this->db->select('emUserId')
                         ->where('emId', (int) $emp_id)
                         ->where('emActive', 1)
                         ->get('employee_master')->row();
@@ -162,8 +160,8 @@ public function get_divisions($class_id)
         $this->db->where('emId', (int) $emp_id)->update('employee_master', ['emActive' => 0]);
 
         // Remove the login so they can no longer sign in
-        if (!empty($emp->user_log_id)) {
-            $this->db->where('user_id', (int) $emp->user_log_id)->delete('user_login');
+        if (!empty($emp->emUserId)) {
+            $this->db->where('user_id', (int) $emp->emUserId)->delete('user_login');
         }
 
         $this->db->trans_complete();
