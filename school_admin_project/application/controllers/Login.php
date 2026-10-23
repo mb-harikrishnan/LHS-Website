@@ -43,7 +43,7 @@ class Login extends CI_Controller
 
         $sql = "SELECT emName FROM employee_master WHERE emUserId=' $user->user_id'";
         $query = $this->db->query($sql);
-        $res = $query->row()->emName;
+        $res = $query->row()->emName ?? '';
 
         // prevent session fixation
         $this->session->sess_regenerate(TRUE);
