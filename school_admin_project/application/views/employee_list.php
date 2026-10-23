@@ -43,7 +43,6 @@ $role_js = []; foreach ($roles as $r)   $role_js[] = ['id' => (int) $r->role_id,
               <th style="width:60px">SL</th>
               <th style="width:110px">Date</th>
               <th>Name</th>
-              <th style="width:110px">Password</th>
               <th>Mobile</th>
               <th>Designation</th>
               <th>Class</th>
@@ -57,7 +56,6 @@ $role_js = []; foreach ($roles as $r)   $role_js[] = ['id' => (int) $r->role_id,
             <td class="num"><?= $n++ ?></td>
             <td><?= $e->emTS ? date('d-m-Y', strtotime($e->emTS)) : '-' ?></td>
             <td><strong><?= html_escape($e->emName) ?></strong></td>
-            <td><span class="mask">••••••••</span></td>
             <td><?= html_escape($e->emPhoneNo) ?></td>
             <td><?= html_escape($e->role_name) ?></td>
             <td><?= html_escape($e->cmName) ?></td>
@@ -137,10 +135,13 @@ async function loadDivisions(classId, selected) {
   async function empForm(item) {
     item = item || null;
     const html = `
-      <div class="frow"><label>Name *</label><input id="fName" class="sw-input" placeholder="Enter Name" maxlength="80"></div>
+      <div class="frow"><label>Name *</label>
+       <input id="fName" class="sw-input" placeholder="Enter Name" maxlength="80">
+       </div>
       <div class="frow"><label>Password ${item ? '' : '*'}</label>
         <input id="fPw" type="password" class="sw-input" placeholder="Enter Password" autocomplete="new-password">
         ${item ? '<span class="hint">Leave empty to keep the current password.</span>' : ''}</div>
+        
       <div class="frow"><label>Mobile *</label><input id="fMobile" class="sw-input" placeholder="10 digit mobile" inputmode="numeric" maxlength="10"></div>
       <div class="frow"><label>Designation *</label><select id="fRole" class="sw-input">${opts(ROLES, 'Select Option')}</select></div>
       <div class="frow"><label>Class *</label><select id="fClass" class="sw-input">${opts(CLASSES, 'Select Option')}</select></div>

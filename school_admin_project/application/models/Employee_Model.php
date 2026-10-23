@@ -85,7 +85,6 @@ public function get_divisions($class_id)
                 'emActive'    => 1,
                 'emTS'        => $now,
                 'emName'      => $d['name'],
-                'emPassword'  => md5($password),
                 'emClass'     => $d['class_id'],
                 'emDiv'       => $d['division_id'],
                 'emPhoneNo'   => $d['mobile'],
@@ -122,15 +121,13 @@ public function get_divisions($class_id)
             'emDesigId' => $d['role_id'],
         ];
         $ul = [
-            'name'         => $d['name'],
-            'mobile'       => $d['mobile'],
+            'name'         => $d['mobile'],
             'user_type'    => $user_type,
             'user_role_id' => $role_id,
         ];
 
         // Only change the password if a new one was entered
         if ($password !== '') {
-            $em['emPassword'] = md5($password);
             $ul['password']   = md5($password);
         }
 

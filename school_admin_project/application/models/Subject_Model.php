@@ -9,7 +9,7 @@ class Subject_Model extends CI_Model
 public function get_employee_class_div($user_id)
 {
     return $this->db->select('emClass, emDiv')
-                    ->where('user_id', (int)$user_id)
+                    ->where('emUserId', (int)$user_id)
                     ->get('employee_master')
                     ->row();
 }
