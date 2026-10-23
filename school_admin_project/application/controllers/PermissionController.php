@@ -168,13 +168,15 @@ public function menu_status()
 }
 
 // helper
-private function _jsons($success, $message)
+private function _jsons($success, $message, $extra = [])
 {
     $this->output
          ->set_content_type('application/json')
-         ->set_output(json_encode(['success' => $success, 'message' => $message]));
+         ->set_output(json_encode(array_merge(
+             ['success' => $success, 'message' => $message],
+             $extra
+         )));
 }
-
 
 
 
