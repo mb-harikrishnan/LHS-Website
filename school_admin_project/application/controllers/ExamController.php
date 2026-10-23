@@ -127,25 +127,88 @@ public function allocation_list()
 }
 
 /* ---------- ADD + EDIT (POST) ---------- */
+// public function save_allocation()
+// {
+//     if ($this->input->method() !== 'post') {
+//         return $this->_exam_json(false, 'Invalid request.');
+//     }
+
+//     $exam_id   = (int)$this->input->post('exam_id');
+//     $class_id  = (int)$this->input->post('class_id');
+//     $old_exam  = (int)$this->input->post('old_exam');
+//     $old_class = (int)$this->input->post('old_class');
+//     $is_edit   = ($old_exam > 0 && $old_class > 0);
+
+//     $list = json_decode((string)$this->input->post('subjects'), true);
+
+//     if ($exam_id <= 0 || !$this->Exam_Model->get_exam($exam_id)) {
+//         return $this->_exam_json(false, 'Please select a valid exam.');
+//     }
+//     if ($class_id <= 0 || !$this->Exam_Model->class_exists($class_id)) {
+//         return $this->_exam_json(false, 'Please select a valid class.');
+//     }
+//     if (!is_array($list) || empty($list)) {
+//         return $this->_exam_json(false, 'Please select at least one subject.');
+//     }
+
+//     $subjects = array();
+//     $seen     = array();
+//     foreach ($list as $s) {
+//         $sid   = isset($s['id']) ? (int)$s['id'] : 0;
+//         $marks = isset($s['marks']) ? $s['marks'] : '';
+//         if ($sid <= 0 || isset($seen[$sid])) {
+//             return $this->_exam_json(false, 'Invalid subject selection.');
+//         }
+//         if (!ctype_digit((string)$marks) || (int)$marks <= 0 || (int)$marks > 1000) {
+//             return $this->_exam_json(false, 'Enter valid marks for every subject.');
+//         }
+//         $seen[$sid] = true;
+//         $subjects[] = array('id' => $sid, 'marks' => (int)$marks);
+//     }
+//     if (!$this->Exam_Model->subjects_exist(array_keys($seen))) {
+//         return $this->_exam_json(false, 'One or more subjects are invalid.');
+//     }
+
+//     // same exam + class already has an allocation (unless it is the one being edited)
+//     $same_pair = $is_edit && $old_exam === $exam_id && $old_class === $class_id;
+//     if (!$same_pair && $this->Exam_Model->allocation_exists($exam_id, $class_id)) {
+//         return $this->_exam_json(false, 'This class and exam already have an allocation. Edit it from the list.');
+//     }
+
+//     $ok = $this->Exam_Model->save_allocation($exam_id, $class_id, $subjects, $is_edit ? $old_exam : 0, $is_edit ? $old_class : 0);
+//     return $this->_exam_json($ok, $ok
+//         ? ($is_edit ? 'Mark allocation updated successfully.' : 'Mark allocation added successfully.')
+//         : 'Could not save. Please try again.');
+// }
+
+
+private function _id_list($raw)
+{
+    $arr = json_decode((string)$raw, true);
+    if (!is_array($arr)) { return array(); }
+    $arr = array_filter(array_map('intval', $arr), function ($v) { return $v > 0; });
+    return array_values(array_unique($arr));
+}
+
 public function save_allocation()
 {
     if ($this->input->method() !== 'post') {
         return $this->_exam_json(false, 'Invalid request.');
     }
 
-    $exam_id   = (int)$this->input->post('exam_id');
-    $class_id  = (int)$this->input->post('class_id');
+    $exam_ids  = $this->_id_list($this->input->post('exam_ids'));
+    $class_ids = $this->_id_list($this->input->post('class_ids'));
     $old_exam  = (int)$this->input->post('old_exam');
     $old_class = (int)$this->input->post('old_class');
     $is_edit   = ($old_exam > 0 && $old_class > 0);
 
     $list = json_decode((string)$this->input->post('subjects'), true);
 
-    if ($exam_id <= 0 || !$this->Exam_Model->get_exam($exam_id)) {
-        return $this->_exam_json(false, 'Please select a valid exam.');
+    if (empty($exam_ids) || !$this->Exam_Model->exams_exist($exam_ids)) {
+        return $this->_exam_json(false, 'Please select valid exam(s).');
     }
-    if ($class_id <= 0 || !$this->Exam_Model->class_exists($class_id)) {
-        return $this->_exam_json(false, 'Please select a valid class.');
+    if (empty($class_ids) || !$this->Exam_Model->classes_exist($class_ids)) {
+        return $this->_exam_json(false, 'Please select valid class(es).');
     }
     if (!is_array($list) || empty($list)) {
         return $this->_exam_json(false, 'Please select at least one subject.');
@@ -169,16 +232,35 @@ public function save_allocation()
         return $this->_exam_json(false, 'One or more subjects are invalid.');
     }
 
-    // same exam + class already has an allocation (unless it is the one being edited)
-    $same_pair = $is_edit && $old_exam === $exam_id && $old_class === $class_id;
-    if (!$same_pair && $this->Exam_Model->allocation_exists($exam_id, $class_id)) {
-        return $this->_exam_json(false, 'This class and exam already have an allocation. Edit it from the list.');
+    /* ---------- EDIT: single class + single exam ---------- */
+    if ($is_edit) {
+        if (count($exam_ids) !== 1 || count($class_ids) !== 1) {
+            return $this->_exam_json(false, 'Select only one class and one exam when editing.');
+        }
+        $exam_id  = $exam_ids[0];
+        $class_id = $class_ids[0];
+
+        $same_pair = ($old_exam === $exam_id && $old_class === $class_id);
+        if (!$same_pair && $this->Exam_Model->allocation_exists($exam_id, $class_id)) {
+            return $this->_exam_json(false, 'This class and exam already have an allocation. Edit it from the list.');
+        }
+        $ok = $this->Exam_Model->save_allocation($exam_id, $class_id, $subjects, $old_exam, $old_class);
+        return $this->_exam_json($ok, $ok ? 'Mark allocation updated successfully.' : 'Could not save. Please try again.');
     }
 
-    $ok = $this->Exam_Model->save_allocation($exam_id, $class_id, $subjects, $is_edit ? $old_exam : 0, $is_edit ? $old_class : 0);
-    return $this->_exam_json($ok, $ok
-        ? ($is_edit ? 'Mark allocation updated successfully.' : 'Mark allocation added successfully.')
-        : 'Could not save. Please try again.');
+    /* ---------- ADD: every class x exam saved separately ---------- */
+    $res = $this->Exam_Model->save_allocation_multi($exam_ids, $class_ids, $subjects);
+    if (!$res['ok']) {
+        return $this->_exam_json(false, 'Could not save. Please try again.');
+    }
+    if ($res['added'] === 0) {
+        return $this->_exam_json(false, 'All selected class and exam combinations already have an allocation.');
+    }
+    $msg = $res['added'] . ' mark allocation(s) added successfully.';
+    if ($res['skipped'] > 0) {
+        $msg .= ' ' . $res['skipped'] . ' already existed and were skipped.';
+    }
+    return $this->_exam_json(true, $msg);
 }
 
 /* ---------- DELETE (POST) ---------- */

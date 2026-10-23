@@ -111,16 +111,22 @@ $subs_js    = array(); foreach ($subjects as $s){ $subs_js[]    = array('id' => 
     </div>
     <form id="addForm" novalidate>
       <div class="modal-body">
-        <label class="field-label" for="mClass">Select Class <span class="req">*</span></label>
-        <select id="mClass" class="field-input"></select>
+        <label class="field-label">Select Class <span class="req">*</span></label>
+        <div class="picker" id="classPicker">
+          <div class="pick-box" tabindex="0"></div>
+          <div class="pick-menu" hidden></div>
+        </div>
 
-        <label class="field-label" for="mExam">Select Exam <span class="req">*</span></label>
-        <select id="mExam" class="field-input"></select>
+        <label class="field-label">Select Exam <span class="req">*</span></label>
+        <div class="picker" id="examPicker">
+          <div class="pick-box" tabindex="0"></div>
+          <div class="pick-menu" hidden></div>
+        </div>
 
         <label class="field-label">Select Subjects <span class="req">*</span></label>
-        <div class="picker" id="picker">
-          <div class="pick-box" id="pickBox" tabindex="0"></div>
-          <div class="pick-menu" id="pickMenu" hidden></div>
+        <div class="picker" id="subjectPicker">
+          <div class="pick-box" tabindex="0"></div>
+          <div class="pick-menu" hidden></div>
         </div>
 
         <div id="marksWrap" hidden>
@@ -154,20 +160,10 @@ $subs_js    = array(); foreach ($subjects as $s){ $subs_js[]    = array('id' => 
   const SUBJECTS = <?= json_encode($subs_js) ?>;
 
   let oldExam = 0, oldClass = 0;   // set while editing
-  let selected = [];               // chosen subject ids, in order
   let marks = {};                  // subject id -> marks typed so far
 
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const subName = id => (SUBJECTS.find(s => s.id === String(id)) || { name: id }).name;
   const showError = m => { errorEl.textContent = m; errorEl.hidden = false; };
-
-  function fill(el, list, ph, value, fallbackName) {
-    let l = list.slice();
-    if (value && !l.some(i => i.id === String(value))) l.push({ id: String(value), name: fallbackName || value });
-    el.innerHTML = '<option value="">' + esc(ph) + '</option>' +
-      l.map(i => `<option value="${esc(i.id)}">${esc(i.name)}</option>`).join('');
-    el.value = value ? String(value) : '';
-  }
 
   /* ---------- search + serial numbers ---------- */
   function refresh() {
@@ -184,47 +180,75 @@ $subs_js    = array(); foreach ($subjects as $s){ $subs_js[]    = array('id' => 
   }
   $('search').addEventListener('input', refresh);
 
-  /* ---------- subject picker ---------- */
+  /* ---------- reusable picker ---------- */
+  function makePicker(root, o) {
+    o = o || {};
+    const box = root.querySelector('.pick-box'), menu = root.querySelector('.pick-menu');
+    const api = { selected: [], single: false, list: [], placeholder: o.placeholder || 'Click to select' };
+    const name = id => (api.list.find(i => i.id === id) || { name: id }).name;
+    const toggle = v => { menu.hidden = !v; box.classList.toggle('focus', v); };
+
+    api.name = name;
+    api.close = () => toggle(false);
+    api.render = () => {
+      box.innerHTML = api.selected.length
+        ? api.selected.map(id => `<span class="chip"><button type="button" data-rm="${esc(id)}" aria-label="Remove">&times;</button>${esc(name(id))}</span>`).join('')
+        : `<span class="pick-ph">${esc(api.placeholder)}</span>`;
+      const rest = api.list.filter(i => !api.selected.includes(i.id));
+      menu.innerHTML = rest.length
+        ? rest.map(i => `<button type="button" data-add="${esc(i.id)}">${esc(i.name)}</button>`).join('')
+        : '<div class="pick-empty">Nothing left to select</div>';
+    };
+
+    box.addEventListener('click', e => {
+      const rm = e.target.closest('[data-rm]');
+      if (rm) {
+        if (o.before) o.before();
+        api.selected = api.selected.filter(s => s !== rm.dataset.rm);
+        api.render();
+        if (o.change) o.change();
+        return;
+      }
+      toggle(menu.hidden);
+    });
+    menu.addEventListener('click', e => {
+      const add = e.target.closest('[data-add]');
+      if (!add) return;
+      if (o.before) o.before();
+      api.selected = api.single ? [add.dataset.add] : api.selected.concat(add.dataset.add);
+      api.render();
+      if (o.change) o.change();
+      if (api.single) toggle(false);
+    });
+    document.addEventListener('click', e => { if (!e.composedPath().includes(root)) toggle(false); });
+    return api;
+  }
+
+  /* ---------- subject marks inputs ---------- */
   function saveMarks() {
     $('marksList').querySelectorAll('input[data-sub]').forEach(inp => { marks[inp.dataset.sub] = inp.value; });
   }
-  function renderPicker() {
-    $('pickBox').innerHTML = selected.length
-      ? selected.map(id => `<span class="chip"><button type="button" data-rm="${esc(id)}" aria-label="Remove">&times;</button>${esc(subName(id))}</span>`).join('')
-      : '<span class="pick-ph">Click to select subjects</span>';
-    const rest = SUBJECTS.filter(s => !selected.includes(s.id));
-    $('pickMenu').innerHTML = rest.length
-      ? rest.map(s => `<button type="button" data-add="${esc(s.id)}">${esc(s.name)}</button>`).join('')
-      : '<div class="pick-empty">All subjects selected</div>';
-
-    $('marksWrap').hidden = !selected.length;
-    $('marksList').innerHTML = selected.map(id => `
+  function renderMarks() {
+    const sel = subjectP.selected;
+    $('marksWrap').hidden = !sel.length;
+    $('marksList').innerHTML = sel.map(id => `
       <div class="mark-row">
-        <label for="mk-${esc(id)}">${esc(subName(id))}</label>
+        <label for="mk-${esc(id)}">${esc(subjectP.name(id))}</label>
         <input class="field-input" type="number" min="1" step="1" id="mk-${esc(id)}" data-sub="${esc(id)}"
                placeholder="Enter max marks" value="${marks[id] != null ? esc(marks[id]) : ''}">
       </div>`).join('');
   }
-  const menuOpen = v => { $('pickMenu').hidden = !v; $('pickBox').classList.toggle('focus', v); };
 
-  $('pickBox').addEventListener('click', e => {
-    const rm = e.target.closest('[data-rm]');
-    if (rm) {
-      saveMarks();
-      selected = selected.filter(s => s !== rm.dataset.rm);
-      renderPicker();
-      return;
-    }
-    menuOpen($('pickMenu').hidden);
-  });
-  $('pickMenu').addEventListener('click', e => {
-    const add = e.target.closest('[data-add]');
-    if (!add) return;
-    saveMarks();
-    selected.push(add.dataset.add);
-    renderPicker();
-  });
-  document.addEventListener('click', e => { if (!$('picker').contains(e.target)) menuOpen(false); });
+  const classP   = makePicker($('classPicker'),   { placeholder: 'Click to select classes' });
+  const examP    = makePicker($('examPicker'),    { placeholder: 'Click to select exams' });
+  const subjectP = makePicker($('subjectPicker'), { placeholder: 'Click to select subjects', before: saveMarks, change: renderMarks });
+
+  // while editing, make sure the current item is selectable even if it's not in the list
+  function withFallback(list, id, name) {
+    const l = list.slice();
+    if (id && !l.some(i => i.id === String(id))) l.push({ id: String(id), name: name || String(id) });
+    return l;
+  }
 
   /* ---------- modal ---------- */
   function open(a) {
@@ -234,13 +258,20 @@ $subs_js    = array(); foreach ($subjects as $s){ $subs_js[]    = array('id' => 
     oldClass = a ? a.class_id : 0;
     $('addTitle').textContent = a ? 'Edit Mark Allocation' : 'Add Mark Allocation';
     saveBtn.textContent = a ? 'Update' : 'Save';
-    fill($('mClass'), CLASSES, 'Select Class', a ? a.class_id : '', a ? a.class_name : '');
-    fill($('mExam'),  EXAMS,   'Select Exam',  a ? a.exam_id  : '', a ? a.exam_name  : '');
-    selected = a ? a.subjects.map(s => String(s.id)) : [];
+
+    classP.single = examP.single = !!a;          // edit = one class / one exam only
+    classP.list = a ? withFallback(CLASSES, a.class_id, a.class_name) : CLASSES;
+    examP.list  = a ? withFallback(EXAMS,   a.exam_id,  a.exam_name)  : EXAMS;
+    subjectP.list = SUBJECTS;
+
+    classP.selected   = a ? [String(a.class_id)] : [];
+    examP.selected    = a ? [String(a.exam_id)]  : [];
+    subjectP.selected = a ? a.subjects.map(s => String(s.id)) : [];
     marks = {};
     if (a) a.subjects.forEach(s => { marks[String(s.id)] = s.marks; });
-    menuOpen(false);
-    renderPicker();
+
+    [classP, examP, subjectP].forEach(p => { p.close(); p.render(); });
+    renderMarks();
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
   }
@@ -259,21 +290,20 @@ $subs_js    = array(); foreach ($subjects as $s){ $subs_js[]    = array('id' => 
   form.addEventListener('submit', async e => {
     e.preventDefault();
     saveMarks();
-    const cls = $('mClass').value, exam = $('mExam').value;
-    if (!cls)  return showError('Please select a class.');
-    if (!exam) return showError('Please select an exam.');
-    if (!selected.length) return showError('Please select at least one subject.');
+    if (!classP.selected.length)   return showError('Please select at least one class.');
+    if (!examP.selected.length)    return showError('Please select at least one exam.');
+    if (!subjectP.selected.length) return showError('Please select at least one subject.');
 
     const subjects = [];
-    for (const id of selected) {
+    for (const id of subjectP.selected) {
       const m = Number(marks[id]);
-      if (!marks[id] || !Number.isInteger(m) || m <= 0) return showError('Enter valid marks for ' + subName(id) + '.');
+      if (!marks[id] || !Number.isInteger(m) || m <= 0) return showError('Enter valid marks for ' + subjectP.name(id) + '.');
       subjects.push({ id: +id, marks: m });
     }
 
     const fd = new FormData();
-    fd.append('exam_id', exam);
-    fd.append('class_id', cls);
+    fd.append('exam_ids',  JSON.stringify(examP.selected.map(Number)));
+    fd.append('class_ids', JSON.stringify(classP.selected.map(Number)));
     fd.append('old_exam', oldExam);
     fd.append('old_class', oldClass);
     fd.append('subjects', JSON.stringify(subjects));
@@ -285,7 +315,7 @@ $subs_js    = array(); foreach ($subjects as $s){ $subs_js[]    = array('id' => 
       if (res.csrf) CSRF_HASH = res.csrf;
       if (!res.status) return showError(res.msg);
       close();
-      Swal.fire({ icon: 'success', title: 'Success', text: res.msg, timer: 1500, showConfirmButton: false })
+      Swal.fire({ icon: 'success', title: 'Success', text: res.msg, timer: 2200, showConfirmButton: false })
           .then(() => location.reload());
     } catch (err) {
       showError('Something went wrong. Please try again.');

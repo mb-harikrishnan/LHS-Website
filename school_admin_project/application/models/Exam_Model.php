@@ -13,7 +13,7 @@ class Exam_Model extends CI_Model
 
     public function fetch_open_exams()
     {
-        return $this->db->where('emActive', 1)->where('emIsOpened', 1)
+        return $this->db->where('emActive', 1)
                         ->order_by('emDisplayOrder', 'ASC')
                         ->get('exam_master')->result();
     }
@@ -87,10 +87,10 @@ class Exam_Model extends CI_Model
         return $map;
     }
 
-    public function class_exists($id)
-    {
-        return $this->db->where('cmId', (int)$id)->count_all_results('class_master') > 0;
-    }
+        public function class_exists($id)
+        {
+            return $this->db->where('cmId', (int)$id)->count_all_results('class_master') > 0;
+        }
 
     public function class_exists_by_id($id)
     {
@@ -175,23 +175,67 @@ class Exam_Model extends CI_Model
                         ->count_all_results('exam_master_detail') > 0;
     }
 
-    public function save_allocation($exam_id, $class_id, $subjects, $old_exam = 0, $old_class = 0)
-    {
-        $this->db->trans_start();
-        if ($old_exam > 0 && $old_class > 0) {
-            $this->db->where('emdEmId', (int)$old_exam)->where('emdCmId', (int)$old_class)->delete('exam_master_detail');
+    // public function save_allocation($exam_id, $class_id, $subjects, $old_exam = 0, $old_class = 0)
+    // {
+    //     $this->db->trans_start();
+    //     if ($old_exam > 0 && $old_class > 0) {
+    //         $this->db->where('emdEmId', (int)$old_exam)->where('emdCmId', (int)$old_class)->delete('exam_master_detail');
+    //     }
+    //     $batch = array();
+    //     foreach ($subjects as $s) {
+    //         $batch[] = array(
+    //             'emdEmId' => (int)$exam_id, 'emdCmId' => (int)$class_id,
+    //             'emdSmId' => (int)$s['id'], 'emdMaxMark' => (int)$s['marks']
+    //         );
+    //     }
+    //     $this->db->insert_batch('exam_master_detail', $batch);
+    //     $this->db->trans_complete();
+    //     return $this->db->trans_status();
+    // }
+
+
+    public function exams_exist($ids)
+{
+    if (empty($ids)) { return false; }
+    $ids = array_values(array_unique(array_map('intval', $ids)));
+    return $this->db->where_in('emId', $ids)->count_all_results('exam_master') === count($ids);
+}
+
+public function classes_exist($ids)
+{
+    if (empty($ids)) { return false; }
+    $ids = array_values(array_unique(array_map('intval', $ids)));
+    return $this->db->where_in('cmId', $ids)->count_all_results('class_master') === count($ids);
+}
+
+/* Insert the same subjects/marks for every exam x class pair (skips pairs that already exist) */
+public function save_allocation_multi($exam_ids, $class_ids, $subjects)
+{
+    $batch = array(); $added = 0; $skipped = 0;
+
+    foreach ($exam_ids as $e) {
+        foreach ($class_ids as $c) {
+            if ($this->allocation_exists($e, $c)) { $skipped++; continue; }
+            foreach ($subjects as $s) {
+                $batch[] = array(
+                    'emdEmId' => (int)$e, 'emdCmId' => (int)$c,
+                    'emdSmId' => (int)$s['id'], 'emdMaxMark' => (int)$s['marks']
+                );
+            }
+            $added++;
         }
-        $batch = array();
-        foreach ($subjects as $s) {
-            $batch[] = array(
-                'emdEmId' => (int)$exam_id, 'emdCmId' => (int)$class_id,
-                'emdSmId' => (int)$s['id'], 'emdMaxMark' => (int)$s['marks']
-            );
-        }
-        $this->db->insert_batch('exam_master_detail', $batch);
-        $this->db->trans_complete();
-        return $this->db->trans_status();
     }
+
+    if (empty($batch)) {
+        return array('ok' => true, 'added' => 0, 'skipped' => $skipped);
+    }
+
+    $this->db->trans_start();
+    $this->db->insert_batch('exam_master_detail', $batch);
+    $this->db->trans_complete();
+
+    return array('ok' => $this->db->trans_status(), 'added' => $added, 'skipped' => $skipped);
+}
 
     public function delete_allocation($exam_id, $class_id)
     {
