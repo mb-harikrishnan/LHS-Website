@@ -1,9 +1,12 @@
 <?php
 /* Receives: $details, $perm, $is_admin, $assigned, $scope_class, $scope_div,
-             $classes (cmId, cmName), $divisions (dmId, dmName), $div_map, $exams (emId, emDisplayName), $grades */
+             $classes (cmId, cmName), $divisions (dmId, dmName), $div_map,
+             $exam_map (classId => [ {id, name}, ... ]  only active exams assigned in exam_master_detail), $grades */
 $can_add  = !empty($perm['can_add']);
 $can_edit = !empty($perm['can_edit']);
 $can_del  = !empty($perm['can_delete']);
+
+$exam_map = isset($exam_map) ? $exam_map : array();
 
 $classes_js = array(); foreach ($classes as $c)   { $classes_js[] = array('id' => (string)$c->cmId, 'name' => $c->cmName); }
 $divs_js    = array(); foreach ($divisions as $d) { $divs_js[]    = array('id' => (string)$d->dmId, 'name' => $d->dmName); }
@@ -207,7 +210,8 @@ $exams_js   = array(); foreach ($exams as $e)     { $exams_js[]   = array('id' =
   const CLASSES  = <?= json_encode($classes_js) ?>;
   const DIVS_ALL = <?= json_encode($divs_js) ?>;
   const DIV_MAP  = <?= json_encode($div_map) ?>;
-  const EXAMS    = <?= json_encode($exams_js) ?>;
+  const EXAMS    = <?= json_encode($exams_js) ?>;   // all active exams (admin sees these for every class)
+  const EXAM_MAP = <?= json_encode($exam_map) ?>;   // classId => [{id, name}] (active exams assigned to that class, for teachers)
   const GRADES   = <?= json_encode(array_values($grades)) ?>;
 
   let editing = null;   // row being edited, or null
@@ -219,7 +223,10 @@ $exams_js   = array(); foreach ($exams as $e)     { $exams_js[]   = array('id' =
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const showError = m => { errorEl.textContent = m; errorEl.hidden = false; };
   const hint = t => { area.innerHTML = '<div class="hint">' + esc(t) + '</div>'; };
-  const divsFor = c => (DIV_MAP[c] && DIV_MAP[c].length) ? DIV_MAP[c] : DIVS_ALL;
+  const divsFor  = c => (DIV_MAP[c] && DIV_MAP[c].length) ? DIV_MAP[c] : DIVS_ALL;
+  // admin: every active exam for any class; teacher: only exams assigned to the class in exam_master_detail
+  const examsFor = c => !c ? [] : (IS_ADMIN ? EXAMS : (EXAM_MAP[c] || []));
+  const examPlaceholder = c => !c ? 'Select Class first' : (examsFor(c).length ? 'Select Exam' : 'No exam assigned to this class');
 
   function fill(el, list, ph, value, fallbackName) {
     const l = list.slice();
@@ -361,12 +368,14 @@ $exams_js   = array(); foreach ($exams as $e)     { $exams_js[]   = array('id' =
 
     fill($('mClass'), CLASSES, 'Select Class', cls, m ? m.class_name : '');
     fill($('mDiv'), cls ? divsFor(cls) : [], cls ? 'Select Division' : 'Select Class first', div, m ? m.div_name : '');
-    fill($('mExam'), EXAMS, 'Select Exam', exam, m ? m.exam_name : '');
+    // exams: only those assigned to the selected class (exam_master_detail) and active.
+    // When viewing/editing an existing list, its exam name stays visible even if it was deactivated later.
+    fill($('mExam'), examsFor(cls), examPlaceholder(cls), exam, m ? m.exam_name : '');
 
     // class + division are read-only for non-admin; everything is locked while editing/viewing
     $('mClass').disabled = !!m || !IS_ADMIN;
     $('mDiv').disabled   = !!m || !IS_ADMIN || !cls;
-    $('mExam').disabled  = !!m;
+    $('mExam').disabled  = !!m || !cls;
 
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
@@ -385,7 +394,9 @@ $exams_js   = array(); foreach ($exams as $e)     { $exams_js[]   = array('id' =
   $('mClass').addEventListener('change', () => {
     const c = $('mClass').value;
     fill($('mDiv'), c ? divsFor(c) : [], c ? 'Select Division' : 'Select Class first', '');
-    $('mDiv').disabled = !c;
+    fill($('mExam'), examsFor(c), examPlaceholder(c), '');   // exam list follows the class
+    $('mDiv').disabled  = !c;
+    $('mExam').disabled = !c;
     loadSheet();
   });
   $('mDiv').addEventListener('change', loadSheet);

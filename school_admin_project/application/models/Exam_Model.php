@@ -444,4 +444,31 @@ public function save_allocation_multi($exam_ids, $class_ids, $subjects)
         $this->db->trans_complete();
         return $this->db->trans_status();
     }
+
+
+
+
+    public function get_class_exam_map()
+{
+    $rows = $this->db->distinct()
+        ->select('d.emdCmId, e.emId, e.emDisplayName')
+        ->from('exam_master_detail d')
+        ->join('exam_master e', 'e.emId = d.emdEmId')
+        ->where('e.emStatus', 1)          // <-- your "Active" column (change name if different)
+        ->order_by('e.emId')
+        ->get()->result();
+
+    $map = array();
+    foreach ($rows as $r) {
+        $map[(string)$r->emdCmId][] = array(
+            'id'   => (string)$r->emId,
+            'name' => $r->emDisplayName
+        );
+    }
+    return $map;
+}
+
+
+
+
 }

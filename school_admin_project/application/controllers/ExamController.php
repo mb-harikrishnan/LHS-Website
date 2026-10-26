@@ -417,6 +417,7 @@ public function Marksentry_list()
     $data['divisions']   = $this->Exam_Model->get_all_divisions();
     $data['div_map']     = $this->Exam_Model->get_class_division_map();
     $data['exams']       = $this->Exam_Model->fetch_open_exams();
+    $data['exam_map'] = $this->Exam_Model->get_class_exam_map();
     $data['grades']      = $this->grades;
 
     $this->load->view('header');
