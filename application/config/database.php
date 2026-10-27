@@ -59,19 +59,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | the query builder class.
 */
 
+$common_file = FCPATH . 'common_config.php';
+
+$config_values = require $common_file;
+
+$ip = $config_values['ip'];
+
 $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	// 'hostname' => 'localhost',
-	// 'username' => 'root',
-	// 'password' => '',
-	// 'database' => 'school_managment_db',
 
-	
-	
-	'hostname' => '103.122.182.25',
+	// 'hostname' => '103.122.182.25',
+	'hostname' => $ip,
 	'username' => 'lhs_demo',
 	'password' => 'lhsdemo@123',
 	'database' => 'lhs_demo',

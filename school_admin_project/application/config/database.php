@@ -70,12 +70,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | The $query_builder variables lets you determine whether or not to load
 | the query builder class.
 */
+
+$common_file = dirname(FCPATH) . '/common_config.php';
+
+$config_values = require $common_file;
+
+$ip = $config_values['ip'];
+
 $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-		'hostname' => '103.122.182.25',
+	'hostname' => $ip,
 	'username' => 'lhs_demo',
 	'password' => 'lhsdemo@123',
 	'database' => 'lhs_demo',
