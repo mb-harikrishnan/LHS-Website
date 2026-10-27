@@ -23,8 +23,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://localhost:8000/school_admin_project/';
 
+
+require_once dirname(FCPATH) . '/common_config.php';
+
+$config['base_url'] = $base_url_admin;
 /*
 |--------------------------------------------------------------------------
 | Index File
