@@ -11,14 +11,14 @@ if (!isset($pageStylesheets))    $pageStylesheets    = [];
 if (!isset($pageHeadScripts))    $pageHeadScripts    = [];
 
 // Brand text (change here only)
-$schoolNameMain = 'Little Heart';
+$schoolNameMain = 'Little Hearts School';
 $schoolNameSub  = 'School';
 
 /* ─────────────────────────────────────────────
    SESSION / USER
    ───────────────────────────────────────────── */
 $userId    = $this->session->userdata('id');
-$firstName = $this->session->userdata('c_username') ?: 'User';
+$firstName = $this->session->userdata('c_username') ?: 'Admin';
 $roleId    = (int) $this->session->userdata('user_role_id');
 $roleLabel = ($roleId === 1) ? 'Administrator' : $this->session->userdata('user_type');
 
