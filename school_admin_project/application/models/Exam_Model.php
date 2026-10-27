@@ -454,7 +454,9 @@ public function save_allocation_multi($exam_ids, $class_ids, $subjects)
         ->select('d.emdCmId, e.emId, e.emDisplayName')
         ->from('exam_master_detail d')
         ->join('exam_master e', 'e.emId = d.emdEmId')
-        ->where('e.emStatus', 1)          // <-- your "Active" column (change name if different)
+        // ->where('e.emStatus', 1)          // <-- your "Active" column (change name if different)
+        ->where('e.emActive', 1)         
+        ->where('e.emIsOpened', 1)         
         ->order_by('e.emId')
         ->get()->result();
 
