@@ -30,9 +30,8 @@
 
     <!-- NEW THEME: global design system (loaded before page internal CSS so pages always win) -->
     <link rel="stylesheet" href="<?php echo base_url('assets/css/newtheme.css'); ?>">
-    
 
-     <!-- Navbar polish + CREATIVE DROPDOWN -->
+    <!-- Navbar polish + CREATIVE DROPDOWN -->
     <style>
         /* dropdown items always read left-to-right */
         .dropdown-menu > li > a { text-align: left !important; }
@@ -423,7 +422,6 @@
 }
     </style>
 
-    
     <link rel="icon" href="<?php echo base_url(); ?>assets/images/favicon.png">
 
     <!--[if lt IE 9]>
@@ -643,11 +641,11 @@
     .lh-topbar-left span { white-space: nowrap; }
     .lh-topbar-left i { color: #f5a623; margin-right: 6px; }
     .lh-topbar-left a { color: #cfd8e6; text-decoration: none; }
-    .lh-topbar-left a:hover { color: #f5a623; }
+    /* .lh-topbar-left a:hover { color: #f5a623; } */
 
     .lh-topbar-right { display: flex; align-items: center; gap: 14px; }
     .lh-topbar-right a { color: #cfd8e6; text-decoration: none; font-size: 13px; }
-    .lh-topbar-right a:hover { color: #f5a623; }
+    /* .lh-topbar-right a:hover { color: #f5a623; } */
 
     .lh-affiliation {
         display: flex;
@@ -675,6 +673,96 @@
         .lh-topbar-grid { justify-content: center; text-align: center; }
         .lh-topbar-left { justify-content: center; }
     }
+</style>
+
+<!-- =====================================================
+     NO-ANIMATION DROPDOWN OVERRIDE (added — keep AFTER all other styles)
+     Dropdown normal aayi open/close aavum, moving/animation illa
+===================================================== -->
+<style>
+/* kill every transition/animation on the dropdown */
+.navbar .dropdown-menu,
+.navbar .navbar-nav > li.dropdown > .dropdown-menu,
+.navbar .dropdown-menu > li,
+.navbar .dropdown-menu > li > a,
+.navbar .dropdown-menu > li > a .dd-ico,
+.navbar .dropdown-menu > li > a::after,
+.navbar-nav > li > a .fa-caret-down {
+    transition: none !important;
+    transition-delay: 0s !important;
+    animation: none !important;
+    -webkit-animation: none !important;
+}
+
+/* no rotate/slide/scale on caret, icon tile, hover arrow */
+.navbar-nav > li.open > a .fa-caret-down,
+.navbar-nav > li.dropdown:hover > a .fa-caret-down { transform: none !important;display: none; }
+
+/* .navbar .dropdown-menu > li > a:hover .dd-ico,
+.navbar .dropdown-menu > li > a:focus .dd-ico { transform: none !important; } */
+
+.navbar .dropdown-menu > li > a::after { transform: translateY(-50%) !important; }
+
+/* desktop: menu just appears/disappears, items always fully visible */
+@media (min-width: 992px) {
+    .navbar .dropdown-menu { transform: none !important; }
+    .navbar .dropdown-menu > li {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
+
+nav.navbar.bootsnav ul.nav>li.dropdown>a.dropdown-toggle:after{
+    display: none !important;
+}
+</style>
+
+<!-- =====================================================
+     DESKTOP HOVER FIX (added — keep LAST, after all other styles)
+     Chila dropdown hover cheyyumbol kaanathirikkunnath / stuck aayi
+     nilkkunnath fix. Bootsnav JS idunna inline opacity/visibility/
+     height-ne override cheythu, open/close :hover kondu mathram
+     decide cheyyunnu.
+===================================================== -->
+<style>
+@media (min-width: 992px) {
+
+    /* menu lo-il bootsnav/jQuery ittu pokunna inline size styles neutralise */
+    .navbar .navbar-nav > li.dropdown > .dropdown-menu {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        z-index: 99999 !important;
+    }
+
+    /* CLOSED: mouse li-yil illa -> ellaavarum hidden (stuck .open / inline opacity matter alla) */
+    .navbar .navbar-nav > li.dropdown:not(:hover) > .dropdown-menu {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
+
+    /* OPEN: mouse li-yil (link, bridge, or menu) und -> ellaavarum visible */
+    .navbar .navbar-nav > li.dropdown:hover > .dropdown-menu {
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        display: block !important;
+    }
+
+    /* menu-yile rows hover-il ellaam kaanum */
+    .navbar .navbar-nav > li.dropdown:hover > .dropdown-menu > li {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+    }
+
+    /* hover bridge: link-um menu-um thammilulla gap-il mouse pokumbol menu close aakaathirikkaan */
+    .navbar .navbar-nav > li.dropdown::after {
+        height: 20px !important;
+        z-index: 99998;
+    }
+}
 </style>
 
 <!-- ===== MOBILE DROPDOWN FIX: one open at a time, tap again to close ===== -->
