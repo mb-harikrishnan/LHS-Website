@@ -1,7 +1,7 @@
 
       <!-- Footer -->
       <footer class="page-foot">
-        © 2026 Vidyodaya Public School — Admin Panel
+        © 2026 Little Hearts School — Admin Panel
       </footer>
     </div>
   </div>
