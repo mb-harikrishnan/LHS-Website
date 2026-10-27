@@ -626,46 +626,51 @@ public function submit_job_application()
      *             application/views/admission_admin.php
      * ===================================================== */
     private function _send_admission_mails($d)
-    {
-        $this->load->library('email');
-        $school = 'Little Hearts School';
- 
-        // From must be an address on your own domain (e.g. noreply@yourdomain.com)
-        $host = preg_replace('/^www\./', '', preg_replace('/:\d+$/', '', $this->input->server('HTTP_HOST')));
-        $from = 'noreply@' . $host;
- 
-        $this->email->initialize([
-            'protocol' => 'mail',
-            'mailtype' => 'html',
-            'charset'  => 'utf-8',
-            'newline'  => "\r\n",
-            'crlf'     => "\r\n",
-            'wordwrap' => TRUE,
-        ]);
- 
-        // 1) Parent: "we will contact you soon" + student details
-        $this->email->clear(TRUE);
-        $this->email->from($from, $school);
-        $this->email->reply_to($this->admin_email, $school);
-        $this->email->to($d['email']);
-        $this->email->subject('Admission enquiry received - ' . $school . ' (' . $d['ref'] . ')');
-        $this->email->message($this->load->view('admission_user', $d, TRUE));
-        if (!$this->email->send(FALSE)) {
-            log_message('error', 'Admission parent mail failed: ' . $this->email->print_debugger(['headers']));
-        }
- 
-        // 2) Admin: full student + parent details, reply goes to the parent
-        $this->email->clear(TRUE);
-        $this->email->from($from, $school . ' Website');
-        $this->email->reply_to($d['email'], $d['parent_name']);
-        $this->email->to($this->admin_email);
-        $this->email->subject('New admission enquiry: ' . $d['student_name'] . ' - ' . $d['class_applied'] . ' (' . $d['ref'] . ')');
-        $this->email->message($this->load->view('admission_admin', $d, TRUE));
-        if (!$this->email->send(FALSE)) {
-            log_message('error', 'Admission admin mail failed: ' . $this->email->print_debugger(['headers']));
-        }
+{
+    $this->load->library('email');
+    $school = 'Little Hearts School';
+
+    // Option A: Gmail SMTP (needs 2-Step Verification + an App Password)
+    $smtp_user = 'info.littleheartsschool@gmail.com';
+    $smtp_pass = 'info@123';   // 16-char Google App Password, NOT your normal password
+
+    $this->email->initialize([
+        'protocol'    => 'smtp',
+        'smtp_host'   => 'smtp.gmail.com',
+        'smtp_port'   => 587,
+        'smtp_crypto' => 'tls',
+        'smtp_user'   => $smtp_user,
+        'smtp_pass'   => $smtp_pass,
+        'smtp_timeout'=> 20,
+        'mailtype'    => 'html',
+        'charset'     => 'utf-8',
+        'newline'     => "\r\n",
+        'crlf'        => "\r\n",
+        'wordwrap'    => TRUE,
+    ]);
+
+    // 1) Parent / entered email
+    $this->email->clear(TRUE);
+    $this->email->from($smtp_user, $school);      // must be the SMTP account
+    $this->email->reply_to($this->admin_email, $school);
+    $this->email->to($d['email']);
+    $this->email->subject('Admission enquiry received - ' . $school . ' (' . $d['ref'] . ')');
+    $this->email->message($this->load->view('admission_user', $d, TRUE));
+    if (!$this->email->send(FALSE)) {
+        log_message('error', 'Parent mail failed: ' . $this->email->print_debugger(['headers']));
     }
 
+    // 2) Admin (yourself)
+    $this->email->clear(TRUE);
+    $this->email->from($smtp_user, $school . ' Website');
+    $this->email->reply_to($d['email'], $d['parent_name']);
+    $this->email->to($this->admin_email);
+    $this->email->subject('New admission enquiry: ' . $d['student_name'] . ' - ' . $d['class_applied'] . ' (' . $d['ref'] . ')');
+    $this->email->message($this->load->view('admission_admin', $d, TRUE));
+    if (!$this->email->send(FALSE)) {
+        log_message('error', 'Admin mail failed: ' . $this->email->print_debugger(['headers']));
+    }
+}
  
     /* ---------- Validation rules and messages ---------- */
    

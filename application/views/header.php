@@ -31,7 +31,7 @@
     <!-- NEW THEME: global design system (loaded before page internal CSS so pages always win) -->
     <link rel="stylesheet" href="<?php echo base_url('assets/css/newtheme.css'); ?>">
 
-    <!-- Navbar polish + CREATIVE DROPDOWN -->
+     <!-- Navbar polish + CREATIVE DROPDOWN -->
     <style>
         /* dropdown items always read left-to-right */
         .dropdown-menu > li > a { text-align: left !important; }
@@ -53,8 +53,8 @@
 
         /* no transform on nav links themselves (stops the menu shifting under the cursor) */
         .navbar-nav > li > a { transform: none !important; transition: color .2s ease, background-color .2s ease; }
-        .navbar-nav > li > a:hover,
-        .navbar-nav > li > a:focus { transform: none !important; }
+        /* .navbar-nav > li > a:hover,
+        .navbar-nav > li > a:focus { transform: none !important; } */
 
         /* =====================================================
            CREATIVE DROPDOWN — shared look (desktop + mobile)
@@ -141,7 +141,7 @@
         .navbar .dropdown-menu > li > a:hover::after,
         .navbar .dropdown-menu > li > a:focus::after {
             opacity: 1;
-            transform: translate(0, -50%);
+            /* transform: translate(0, -50%); */
         }
 
         /* current page inside a dropdown */
@@ -222,7 +222,7 @@
                 opacity: 1;
                 visibility: visible;
                 pointer-events: auto;
-                transform: translateY(0) scale(1);
+                
             }
 
             /* staggered entrance */
@@ -266,7 +266,7 @@
                 height: 3px;
                 border-radius: 3px 3px 0 0;
                 background: linear-gradient(90deg, #f5a623, #e2911a);
-                transform: translateX(-50%);
+             
                 transition: width .3s ease;
             }
             .navbar-nav > li:not(.dropdown):not(.lh-nav-login):not(.lh-nav-cta) > a:hover::after { width: 58%; }
@@ -422,6 +422,7 @@
 }
     </style>
 
+    
     <link rel="icon" href="<?php echo base_url(); ?>assets/images/favicon.png">
 
     <!--[if lt IE 9]>

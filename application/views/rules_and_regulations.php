@@ -187,6 +187,9 @@
   </div>
 </section>
 
+
+
+
 <style>
 /* ============================================================
    LITTLE HEARTS SCHOOL — SCHOOL UI LAYER v2 (internal per-page)
@@ -295,7 +298,7 @@ body,p,li,a,span,td,th,label,input,textarea,select,button{font-family:'Nunito Sa
     box-shadow:var(--fl-sh) !important;
     transition:transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease !important;
 }
-.admission_card:hover,.curriculum_card:hover,.fee_card:hover,.rules_card:hover,
+/* .admission_card:hover,.curriculum_card:hover,.fee_card:hover,.rules_card:hover,
 .study_card:hover,.support_card:hover,.disclosure_card:hover,.uniform_card:hover,
 .club_box:hover,.download_box:hover,
 .mission_box:hover,.fun_content_box:hover,.about-detail-box:hover,
@@ -304,7 +307,7 @@ body,p,li,a,span,td,th,label,input,textarea,select,button{font-family:'Nunito Sa
     transform:translateY(-8px) rotate(-.4deg) !important;
     box-shadow:0 26px 50px rgba(11,36,71,.17) !important;
     border-color:color-mix(in srgb, var(--acc) 45%, #fff) !important;
-}
+} */
 
 /* ---- icon chips: graduation-cap style rounded squares ---- */
 .admission_icon,.curriculum_icon,.fee_icon,.rules_icon,.support_icon,.study_header i,
@@ -314,11 +317,11 @@ body,p,li,a,span,td,th,label,input,textarea,select,button{font-family:'Nunito Sa
     box-shadow:0 10px 20px color-mix(in srgb, var(--acc) 35%, transparent) !important;
     transition:transform .35s cubic-bezier(.34,1.56,.64,1) !important;
 }
-.admission_card:hover .admission_icon,.curriculum_card:hover .curriculum_icon,
+/* .admission_card:hover .admission_icon,.curriculum_card:hover .curriculum_icon,
 .fee_card:hover .fee_icon,.rules_card:hover .rules_icon,.support_card:hover .support_icon,
 .discipline_item:hover i,.uniform_card:hover .uniform_icon,.note_card:hover .note_icon{
     transform:rotate(-8deg) scale(1.1);
-}
+} */
 
 /* ---- text colors ---- */
 .admission_card h3,.curriculum_card h3,.fee_card h3,.rules_card h3,.support_card h3,
@@ -346,9 +349,9 @@ body,p,li,a,span,td,th,label,input,textarea,select,button{font-family:'Nunito Sa
 .fee_table thead th,.uniform_table thead th,.disclosure_table thead th{
     font-family:'Fredoka' !important;font-weight:600;letter-spacing:.4px;
 }
-.disclosure_table tbody tr:hover td,.fee_table tbody tr:hover td,.uniform_table tbody tr:hover td{
+/* .disclosure_table tbody tr:hover td,.fee_table tbody tr:hover td,.uniform_table tbody tr:hover td{
     background:color-mix(in srgb, var(--acc) 7%, #fff) !important;
-}
+} */
 
 /* ---- buttons: pill with hard offset shadow (sticker feel) ---- */
 .btn_common,.btn_download,.view_btn,.apply_btn,.download_btn,.admission_btn,.submit_btn,.back_btn{
@@ -356,11 +359,11 @@ body,p,li,a,span,td,th,label,input,textarea,select,button{font-family:'Nunito Sa
     box-shadow:0 6px 0 color-mix(in srgb, var(--acc) 55%, #000) !important;
     transition:transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease !important;
 }
-.btn_common:hover,.btn_download:hover,.view_btn:hover,.apply_btn:hover,
+/* .btn_common:hover,.btn_download:hover,.view_btn:hover,.apply_btn:hover,
 .download_btn:hover,.admission_btn:hover,.submit_btn:hover{
     transform:translateY(-3px) !important;
     box-shadow:0 9px 0 color-mix(in srgb, var(--acc) 55%, #000) !important;
-}
+} */
 .view_btn,.btn_download,.apply_btn{
     background:linear-gradient(135deg, var(--acc), color-mix(in srgb, var(--acc) 75%, #000)) !important;
 }
@@ -435,13 +438,13 @@ body,p,li,a,span,td,th,label,input,textarea,select,button{font-family:'Nunito Sa
 .page_header .page-content { position: relative; z-index: 1; }
 
 /* cards lift with an accent strip (no layout shift) */
-.admission_card:hover, .curriculum_card:hover, .fee_card:hover, .rules_card:hover,
+/* .admission_card:hover, .curriculum_card:hover, .fee_card:hover, .rules_card:hover,
 .study_card:hover, .support_card:hover, .disclosure_card:hover, .uniform_card:hover,
 .club_box:hover, .download_box:hover, .mission_box:hover, .fun_content_box:hover,
 .about-detail-box:hover, .director-image-box:hover, .principal-image-box:hover,
 .news_box:hover, .teacher:hover, .note_card:hover {
     box-shadow: 0 26px 50px rgba(11, 36, 71, .17), inset 0 5px 0 var(--acc) !important;
-}
+} */
 
 /* gold glow blob for sections that lacked one */
 #mission_vision::after, #downloads::after, #news::after, #sports::after, #activities::after,
@@ -480,12 +483,12 @@ body,p,li,a,span,td,th,label,input,textarea,select,button{font-family:'Nunito Sa
         color-mix(in srgb, var(--acc) 20%, transparent), transparent 68%);
     transition:transform .45s cubic-bezier(.22,1,.36,1);
 }
-.admission_card:hover::after,.curriculum_card:hover::after,.fee_card:hover::after,
+/* .admission_card:hover::after,.curriculum_card:hover::after,.fee_card:hover::after,
 .rules_card:hover::after,.study_card:hover::after,.support_card:hover::after,
 .club_box:hover::after,.download_box:hover::after,.mission_box:hover::after,
 .fun_content_box:hover::after,.news_box:hover::after,.note_card:hover::after{
     transform:scale(1.3);
-}
+} */
 </style>
 
 
