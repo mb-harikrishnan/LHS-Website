@@ -13,16 +13,45 @@ public function get_teacher($emp_id)
         ->get()->row();
 }
 
-public function student_stats($class, $div)
+// public function student_stats($class, $div)
+// {
+//     $out = array('total' => 0, 'boys' => 0, 'girls' => 0);
+//     if ((int)$class <= 0) { return $out; }
+
+//     $this->db->select('smGender, COUNT(*) AS c')->from('students_master')
+//              ->where('smClass', (int)$class);
+//     if ((string)$div !== '' && (string)$div !== '0') {
+//         $this->db->where('smDiv', $div);
+//     }
+//     $rows = $this->db->group_by('smGender')->get()->result();
+
+//     foreach ($rows as $r) {
+//         $count = (int)$r->c;
+//         $out['total'] += $count;
+//         if ((int)$r->smGender === 1) {
+//             $out['boys'] += $count;      // 1 = boy
+//         } elseif ((int)$r->smGender === 0) {
+//             $out['girls'] += $count;     // 0 = girl
+//         }
+//     }
+//     return $out;
+// }
+
+
+public function student_stats($class = 0, $div = 0)
 {
     $out = array('total' => 0, 'boys' => 0, 'girls' => 0);
-    if ((int)$class <= 0) { return $out; }
 
-    $this->db->select('smGender, COUNT(*) AS c')->from('students_master')
-             ->where('smClass', (int)$class);
+    $this->db->select('smGender, COUNT(*) AS c')->from('students_master');
+
+    // 0 = no filter (admin sees everyone)
+    if ((int)$class > 0) {
+        $this->db->where('smClass', (int)$class);
+    }
     if ((string)$div !== '' && (string)$div !== '0') {
         $this->db->where('smDiv', $div);
     }
+
     $rows = $this->db->group_by('smGender')->get()->result();
 
     foreach ($rows as $r) {

@@ -3,14 +3,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class TeacherController extends CI_Controller
 {
-    // user_role_id => label shown on the dashboard. Edit to match your roles.
-    private $role_names = array(
-        1 => 'Administrator',
-        7 => 'Teacher'
-    );
 
-    // roles that see ALL active exams. Everyone else sees only their own (see Dashboard_model).
-    private $see_all_roles = array(1);
+
+  
 
     public function __construct()
     {
@@ -22,42 +17,83 @@ class TeacherController extends CI_Controller
         }
     }
 
-   public function teacherdashboard()
+//    public function teacherdashboard()
+// {
+//     $this->load->model('Exam_Model');
+
+//     $emp_id  = (int)$this->session->userdata('id');   // adjust to your login session key
+//     $teacher = $this->TeacherDashboard_model->get_teacher($emp_id);
+
+//     $class = $teacher ? (int)$teacher->emClass : 0;
+//     $div   = $teacher ? $teacher->emDiv : '';
+
+//     // running exams = open exams that have a mark allocation for this teacher's class
+//     $running = array();
+//     if ($class > 0) {
+//         $class_exam_ids = $this->TeacherDashboard_model->exam_ids_for_class($class);
+//         foreach ($this->Exam_Model->fetch_open_exams() as $e) {
+//             if (in_array((int)$e->emId, $class_exam_ids, true)) { $running[] = $e; }
+//         }
+//     }
+
+//     $sql= "SELECT dmName FROM division_master WHERE dmId =$div";
+//     $query = $this->db->query($sql);
+//     $res = $query->row()->dmName;
+
+//     $data['teacher'] = $teacher;
+//     $data['stats']   = $this->TeacherDashboard_model->student_stats($class, $div);
+//     $data['exams']   = $running;
+//     $data['news']    = $this->TeacherDashboard_model->latest_news(5);
+//     $data['division'] =$res;
+
+//     $this->load->view('header');
+//     $this->load->view('teacherdashboard', $data);
+//     $this->load->view('footer');
+// }
+
+
+public function teacherdashboard()
 {
     $this->load->model('Exam_Model');
 
-    $emp_id  = (int)$this->session->userdata('id');   // adjust to your login session key
-    $teacher = $this->TeacherDashboard_model->get_teacher($emp_id);
+    $emp_id   = (int)$this->session->userdata('id');
+    $is_admin = ($emp_id === 1);
+    $teacher  = $this->TeacherDashboard_model->get_teacher($emp_id);
 
-    $class = $teacher ? (int)$teacher->emClass : 0;
-    $div   = $teacher ? $teacher->emDiv : '';
+    // Admin: no class / division filter
+    $class = $is_admin ? 0 : ($teacher ? (int)$teacher->emClass : 0);
+    $div   = $is_admin ? 0 : ($teacher ? (int)$teacher->emDiv   : 0);
 
-    // running exams = open exams that have a mark allocation for this teacher's class
+    // Running exams
     $running = array();
-    if ($class > 0) {
+    if ($is_admin) {
+        $running = $this->Exam_Model->fetch_open_exams();          // all open exams
+    } elseif ($class > 0) {
         $class_exam_ids = $this->TeacherDashboard_model->exam_ids_for_class($class);
         foreach ($this->Exam_Model->fetch_open_exams() as $e) {
             if (in_array((int)$e->emId, $class_exam_ids, true)) { $running[] = $e; }
         }
     }
 
-    $sql= "SELECT dmName FROM division_master WHERE dmId =$div";
-    $query = $this->db->query($sql);
-    $res = $query->row()->dmName;
+    // Division name (only when a division exists)
+    $division = '';
+    if ($div > 0) {
+        $row = $this->db->select('dmName')->where('dmId', $div)
+                        ->get('division_master')->row();
+        $division = $row ? $row->dmName : '';
+    }
 
-    $data['teacher'] = $teacher;
-    $data['stats']   = $this->TeacherDashboard_model->student_stats($class, $div);
-    $data['exams']   = $running;
-    $data['news']    = $this->TeacherDashboard_model->latest_news(5);
-    $data['division'] =$res;
+    $data['is_admin'] = $is_admin;
+    $data['teacher']  = $teacher;
+    $data['stats']    = $this->TeacherDashboard_model->student_stats($class, $div);
+    $data['exams']    = $running;
+    $data['news']     = $this->TeacherDashboard_model->latest_news(5);
+    $data['division'] = $division;
 
     $this->load->view('header');
     $this->load->view('teacherdashboard', $data);
     $this->load->view('footer');
 }
-
-
-
 
 
 
