@@ -28,6 +28,12 @@ $route['save_news']   = 'NewsController/save_news';
 $route['delete_news'] = 'NewsController/delete_news';
 
 
+$route['teacher_news'] = 'NewsController/teacher_news';
+$route['save_te_news']   = 'NewsController/save_te_news';
+$route['delete_te_news'] = 'NewsController/delete_te_news';
+
+
+
 $route['gallery']                = 'GalleryController/gallery';
 $route['gallery_album/(:num)']   = 'GalleryController/gallery_album/$1';
 $route['save_gallery_images']    = 'GalleryController/save_gallery_images';

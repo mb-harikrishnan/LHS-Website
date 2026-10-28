@@ -19,14 +19,41 @@ class School_model extends CI_Model
     public function update_news($id, $data)
     {
         $this->db->where('n_slno', $id);
-        return $this->db->update('school_news', $data);
+        return $this->db->update('teacher_news', $data);
     }
 
     // soft delete
     public function delete_news($id)
     {
         $this->db->where('n_slno', $id);
-        return $this->db->update('school_news', array('c_status' => 'D'));
+        return $this->db->update('teacher_news', array('c_status' => 'D'));
+    }
+
+    public function get_all_teacher_news()
+    {
+        return $this->db
+            ->where_in('c_status', array('Y', 'N'))
+            ->order_by('n_slno', 'DESC')
+            ->get('teacher_news')
+            ->result();
+    }
+
+    public function insert_teacher_news($data)
+    {
+        return $this->db->insert('teacher_news', $data);
+    }
+
+    public function update_teacher_news($id, $data)
+    {
+        $this->db->where('n_slno', $id);
+        return $this->db->update('teacher_news', $data);
+    }
+
+    // soft delete
+    public function delete_teacher_news($id)
+    {
+        $this->db->where('n_slno', $id);
+        return $this->db->update('teacher_news', array('c_status' => 'D'));
     }
 
 
