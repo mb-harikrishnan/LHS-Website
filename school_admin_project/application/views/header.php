@@ -33,9 +33,29 @@ if ($initials === '') $initials = 'U';
 /* ─────────────────────────────────────────────
    ACADEMIC YEAR + NEWS (notifications)
    ───────────────────────────────────────────── */
-$query = $this->db->query("SELECT amYear FROM academic_master WHERE amIsCurrent = 1");
-$row   = $query->row();
-$res   = $row->amYear ?? '-';
+// $query = $this->db->query("SELECT amYear FROM academic_master WHERE amIsCurrent = 1");
+// $row   = $query->row();
+// $res   = $row->amYear ?? '-';
+
+/* ACADEMIC YEARS + SELECTED YEAR */
+$years = $this->db
+    ->query("SELECT amId, amYear, amIsCurrent FROM academic_master ORDER BY amYear DESC")
+    ->result();
+
+// Default = current year (amIsCurrent = 1)
+$currentAmId = 0;
+foreach ($years as $y) {
+    if ((int)$y->amIsCurrent === 1) { $currentAmId = (int)$y->amId; break; }
+}
+
+// Session value (if user picked something) otherwise the default
+$selectedAmId = (int) $this->session->userdata('selected_am_id');
+$validIds = array_map(function ($y) { return (int)$y->amId; }, $years);
+
+if (!$selectedAmId || !in_array($selectedAmId, $validIds, true)) {
+    $selectedAmId = $currentAmId;
+    $this->session->set_userdata('selected_am_id', $selectedAmId); // store default
+}
 
 $query1 = $this->db->query("SELECT COUNT(*) AS total FROM school_news WHERE c_status = 'Y'");
 $count  = $query1->row()->total ?? 0;
@@ -344,8 +364,15 @@ $navHtml = renderSidebarNav($menuSections, $activePage);
         <?php endif; ?>
 
         <div class="topbar-right">
-          <span class="year-chip" title="Current academic year"><?php echo htmlspecialchars($res); ?></span>
-
+          <!-- <span class="year-chip" title="Current academic year"><?php echo htmlspecialchars($res); ?></span> -->
+          <select id="yearSelect" class="year-chip" title="Academic year">
+            <?php foreach ($years as $y): ?>
+              <option value="<?php echo (int)$y->amId; ?>"
+                <?php echo ((int)$y->amId === $selectedAmId) ? 'selected' : ''; ?>>
+                <?php echo htmlspecialchars($y->amYear); ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
           <div class="notif-wrap">
             <button class="icon-btn" id="notif-btn" type="button" aria-label="Notifications" title="Notifications">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
@@ -403,4 +430,27 @@ $navHtml = renderSidebarNav($menuSections, $activePage);
       if (!panel.contains(e.target)) panel.classList.remove('open');
     });
   })();
+</script>
+
+
+<script>
+  (function () {
+  var sel = document.getElementById('yearSelect');
+  if (!sel) return;
+  sel.addEventListener('change', function () {
+    var body = new URLSearchParams();
+    body.append('am_id', this.value);
+    // If CSRF is enabled in CI:
+    // body.append('<?php echo $this->security->get_csrf_token_name(); ?>', '<?php echo $this->security->get_csrf_hash(); ?>');
+
+    fetch('<?php echo base_url("switch_year"); ?>', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body.toString()
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (d) { if (d.status) location.reload(); else alert(d.msg || 'Failed'); })
+    .catch(function () { alert('Something went wrong'); });
+  });
+})();
 </script>

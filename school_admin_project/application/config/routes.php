@@ -9,6 +9,7 @@ $route['login_submit'] = 'login/login_submit';
 
 
 $route['dashboard'] = 'DashboardController/dashboard';
+$route['switch_year'] = 'DashboardController/switch_year';
 
 $route['general_information'] = 'MandatoryController/general_information';
 $route['delete_document'] = 'MandatoryController/delete_document';

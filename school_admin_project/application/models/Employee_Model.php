@@ -90,6 +90,8 @@ public function get_divisions($class_id)
                 'emPhoneNo'   => $d['mobile'],
                 'emDesigId'   => $d['role_id'],
                 'emUserId' => $user_log_id,
+                'emAmId'      => (int) $this->session->userdata('selected_am_id'),   
+
             ]);
             $emp_id = $this->db->insert_id();
 
@@ -119,6 +121,8 @@ public function get_divisions($class_id)
             'emDiv'     => $d['division_id'],
             'emPhoneNo' => $d['mobile'],
             'emDesigId' => $d['role_id'],
+            'emAmId'    => (int) $this->session->userdata('selected_am_id'),    
+
         ];
         $ul = [
             'name'         => $d['mobile'],

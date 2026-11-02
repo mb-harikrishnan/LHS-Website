@@ -3,7 +3,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Subject_Model extends CI_Model
 {
 
+private function get_am_id()
+{
+    $amId = (int) $this->session->userdata('selected_am_id');
+    if ($amId > 0) return $amId;
 
+    $row = $this->db->select('amId')->where('amIsCurrent', 1)->get('academic_master')->row();
+    return $row ? (int) $row->amId : 0;
+}
 
 
 public function get_employee_class_div($user_id)
@@ -17,6 +24,9 @@ public function get_employee_class_div($user_id)
 /* filters: name (name or admission no), class (cmId), division (dmId) */
 private function _apply_student_filters($filters)
 {
+
+    $this->db->where('s.smAmId', $this->get_am_id());          
+
     if (!empty($filters['name'])) {
         $this->db->group_start();
         $this->db->like('s.smName', $filters['name']);

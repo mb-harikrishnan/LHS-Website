@@ -75,7 +75,11 @@ public function exam_ids_for_class($class)
 
 public function latest_news($limit = 5)
 {
-    return $this->db->order_by('d_date', 'DESC')->limit((int)$limit)
+    return $this->db->where('c_status', 'Y')
+                    ->order_by('d_date', 'DESC')
+                    // ->limit((int)$limit)
                     ->get('teacher_news')->result();
 }
+
+
 }

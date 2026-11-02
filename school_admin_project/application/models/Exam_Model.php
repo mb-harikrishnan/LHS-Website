@@ -5,6 +5,15 @@ class Exam_Model extends CI_Model
 {
     /* =====================  EXAMS  ===================== */
 
+    private function get_am_id()
+{
+    $amId = (int) $this->session->userdata('selected_am_id');
+    if ($amId > 0) return $amId;
+
+    $row = $this->db->select('amId')->where('amIsCurrent', 1)->get('academic_master')->row();
+    return $row ? (int) $row->amId : 0;
+}
+
     public function fetch_all_exams()
     {
         return $this->db->order_by('emDisplayOrder', 'ASC')->order_by('emId', 'ASC')
@@ -48,8 +57,19 @@ class Exam_Model extends CI_Model
         return ((int)$row->m) + 1;
     }
 
-    public function insert_exam($data)       { return $this->db->insert('exam_master', $data); }
-    public function update_exam($id, $data)  { return $this->db->where('emId', (int)$id)->update('exam_master', $data); }
+    
+    public function insert_exam($data)      
+    { 
+        $data['emAmId'] = $this->get_am_id();                
+
+        return $this->db->insert('exam_master', $data);
+    }
+    public function update_exam($id, $data)
+    { 
+        
+       $data['emAmId'] = $this->get_am_id();
+       return $this->db->where('emId', (int)$id)->update('exam_master', $data); 
+    }
     public function delete_exam($id)         { return $this->db->where('emId', (int)$id)->delete('exam_master'); }
 
 
@@ -219,7 +239,9 @@ public function save_allocation_multi($exam_ids, $class_ids, $subjects)
             foreach ($subjects as $s) {
                 $batch[] = array(
                     'emdEmId' => (int)$e, 'emdCmId' => (int)$c,
-                    'emdSmId' => (int)$s['id'], 'emdMaxMark' => (int)$s['marks']
+                    'emdSmId' => (int)$s['id'], 'emdMaxMark' => (int)$s['marks'],
+                    'emdAmId' => $this->get_am_id()                  
+
                 );
             }
             $added++;
@@ -264,6 +286,7 @@ public function save_allocation_multi($exam_ids, $class_ids, $subjects)
         $this->db->join('division_master dm', 'dm.dmId = es.esDmId');
         if ($class !== '') { $this->db->where('es.esCmId', (int)$class); }
         if ($div !== '')   { $this->db->where('es.esDmId', (int)$div); }
+        $this->db->where('es.esamId', $this->get_am_id());
         $this->db->group_by(array('es.esEmId', 'es.esCmId', 'es.esDmId', 'em.emDisplayName', 'em.emIsGrade', 'cm.cmName', 'dm.dmName'));
         $this->db->order_by('es.esEmId', 'DESC');
         $this->db->order_by('es.esCmId', 'ASC');
@@ -285,7 +308,10 @@ public function save_allocation_multi($exam_ids, $class_ids, $subjects)
     {
         $exam_id = (int)$exam_id; $class_id = (int)$class_id; $div_id = (int)$div_id;
 
-        $students = $this->db->where('smClass', $class_id)->where('smDiv', $div_id)->count_all_results('students_master');
+        $students = $this->db->where('smClass', $class_id)
+        ->where('smDiv', $div_id)
+        ->where('smAmId', $this->get_am_id())
+        ->count_all_results('students_master');
         $subjects = $this->db->where('emdEmId', $exam_id)->where('emdCmId', $class_id)->count_all_results('exam_master_detail');
 
         $sql = "SELECT COUNT(*) AS c
@@ -293,7 +319,7 @@ public function save_allocation_multi($exam_ids, $class_ids, $subjects)
                 JOIN exam_summary es ON es.esId = ed.edEsId
                 JOIN students_master st ON st.smId = ed.edSmId AND st.smClass = ? AND st.smDiv = ?
                 JOIN exam_master_detail emd ON emd.emdEmId = es.esEmId AND emd.emdCmId = es.esCmId AND emd.emdSmId = es.esSmId
-                WHERE es.esEmId = ? AND es.esCmId = ? AND es.esDmId = ?
+                WHERE  smAmId = " . $this->get_am_id() . " AND es.esEmId = ? AND es.esCmId = ? AND es.esDmId = ?
                   AND ed.edMark IS NOT NULL AND ed.edMark <> ''";
         $row = $this->db->query($sql, array($class_id, $div_id, $exam_id, $class_id, $div_id))->row();
 
@@ -337,6 +363,7 @@ public function save_allocation_multi($exam_ids, $class_ids, $subjects)
         return $this->db->select('smId AS id, smAdmissionNo AS adm_no, smName AS name')
                         ->where('smClass', (int)$class_id)
                         ->where('smDiv', (int)$div_id)
+                        ->where('smAmId', $this->get_am_id())
                         ->order_by('smName', 'ASC')
                         ->get('students_master')->result();
     }
@@ -394,7 +421,7 @@ public function save_allocation_multi($exam_ids, $class_ids, $subjects)
         if (!empty($old_ids)) {
             $this->db->where_in('edEsId', $old_ids)->delete('exam_detail');
         }
-
+        $amId = $this->get_am_id();
         $keep = array(); $rows = array();
         foreach ($batch as $b) {
             $sub = (int)$b['sub'];
@@ -403,18 +430,21 @@ public function save_allocation_multi($exam_ids, $class_ids, $subjects)
                     $keep[$sub] = $by_sub[$sub];
                     $this->db->where('esId', $keep[$sub])->update('exam_summary', array(
                         'esUserId' => $user_id > 0 ? (int)$user_id : NULL,
-                        'esTs'     => $now
+                        'esTs'     => $now,
+                        'esamId'   => $amId                                   // ← added
+
                     ));
                 } else {
                     $this->db->insert('exam_summary', array(
                         'esEmId' => $exam_id, 'esCmId' => $class_id, 'esDmId' => $div_id, 'esSmId' => $sub,
                         'esUserId' => $user_id > 0 ? (int)$user_id : NULL,
-                        'esTs' => $now, 'esFinalSubmit' => 0
+                        'esTs' => $now, 'esFinalSubmit' => 0,
+                        'esamId' => $amId  
                     ));
                     $keep[$sub] = (int)$this->db->insert_id();
                 }
             }
-            $rows[] = array('edEsId' => $keep[$sub], 'edSmId' => (int)$b['st'], 'edMark' => $b['mark']);
+            $rows[] = array('edEsId' => $keep[$sub], 'edSmId' => (int)$b['st'], 'edMark' => $b['mark'] ,'edAmId' => $amId);
         }
         if (!empty($rows)) {
             $this->db->insert_batch('exam_detail', $rows);

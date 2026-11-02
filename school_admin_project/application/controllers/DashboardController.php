@@ -43,7 +43,24 @@ class DashboardController extends CI_Controller
 
 
 
+ public function switch_year() {
+    $amId = (int) $this->input->post('am_id');
 
+    $row = $this->db->select('amId, amYear')
+                    ->where('amId', $amId)
+                    ->get('academic_master')->row();
+
+    if (!$row) {
+        echo json_encode(['status' => false, 'msg' => 'Invalid year']);
+        return;
+    }
+
+    // Remove old value, then set the new one
+    $this->session->unset_userdata('selected_am_id');
+    $this->session->set_userdata('selected_am_id', (int) $row->amId);
+
+    echo json_encode(['status' => true]);
+}
 
 
 

@@ -474,7 +474,8 @@ public function divition_list()
             'smCaste'        => $caste,
             'smMotherTongue' => $tongue,
             'smCountry'      => $country,
-            'smState'        => $state
+            'smState'        => $state,
+            'smAmId'         => (int)$this->session->userdata('selected_am_id')
         );
  
         if ($is_edit) {
