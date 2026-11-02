@@ -112,6 +112,7 @@ $route['delete_class_division'] = 'StudentController/delete_class_division';
  $route['students_list/(:num)'] = 'StudentController/students_list/$1';
  $route['save_student']         = 'StudentController/save_student';     // add + edit
  $route['delete_student']       = 'StudentController/delete_student';
+ $route['get_divisions/(:num)'] = 'StudentController/get_divisions/$1';
 
 
 $route['exam_list']   = 'ExamController/exam_list';
@@ -163,6 +164,11 @@ $route['contact']   = 'EnquiryController/contact';
 $route['read_contact'] = 'EnquiryController/read_contact';
 $route['admission']      = 'EnquiryController/admission';
 $route['read_admission'] = 'EnquiryController/read_admission';
+
+
+$route['promotion'] = 'PromotionController/promotion';
+
+
 
 
 $route['logout'] = 'Login/logout';

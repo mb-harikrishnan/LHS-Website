@@ -365,14 +365,25 @@ $navHtml = renderSidebarNav($menuSections, $activePage);
 
         <div class="topbar-right">
           <!-- <span class="year-chip" title="Current academic year"><?php echo htmlspecialchars($res); ?></span> -->
-          <select id="yearSelect" class="year-chip" title="Academic year">
+          <!-- <select id="academic_year" class="year-select">
             <?php foreach ($years as $y): ?>
               <option value="<?php echo (int)$y->amId; ?>"
                 <?php echo ((int)$y->amId === $selectedAmId) ? 'selected' : ''; ?>>
                 <?php echo htmlspecialchars($y->amYear); ?>
               </option>
             <?php endforeach; ?>
-          </select>
+          </select> -->
+
+          <div class="ydrop-wrap">
+            <select id="academic_year" class="year-select">
+              <?php foreach ($years as $y): ?>
+                <option value="<?php echo (int)$y->amId; ?>"
+                  <?php echo ((int)$y->amId === $selectedAmId) ? 'selected' : ''; ?>>
+                  <?php echo htmlspecialchars($y->amYear); ?>
+                </option>
+              <?php endforeach; ?>
+            </select>
+          </div>
           <div class="notif-wrap">
             <button class="icon-btn" id="notif-btn" type="button" aria-label="Notifications" title="Notifications">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
@@ -434,10 +445,54 @@ $navHtml = renderSidebarNav($menuSections, $activePage);
 
 
 <script>
-  (function () {
-  var sel = document.getElementById('yearSelect');
-  if (!sel) return;
-  sel.addEventListener('change', function () {
+(function () {
+  var wrap   = document.querySelector('.ydrop-wrap');
+  var select = document.getElementById('academic_year');
+  if (!wrap || !select) return;
+
+  /* ---------- build custom dropdown from the <select> ---------- */
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'ydrop-btn';
+  btn.innerHTML = '<span class="ydrop-label"></span>' +
+    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+    'stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+  btn.querySelector('.ydrop-label').textContent = select.options[select.selectedIndex].text;
+
+  var ul = document.createElement('ul');
+  ul.className = 'ydrop-menu';
+  Array.prototype.forEach.call(select.options, function (opt, i) {
+    var li = document.createElement('li');
+    li.textContent = opt.text;
+    li.dataset.index = i;
+    if (i === select.selectedIndex) li.classList.add('active');
+    ul.appendChild(li);
+  });
+
+  wrap.appendChild(btn);
+  wrap.appendChild(ul);
+  wrap.classList.add('enhanced');
+
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    wrap.classList.toggle('open');
+  });
+
+  ul.addEventListener('click', function (e) {
+    var li = e.target.closest('li');
+    if (!li) return;
+    select.selectedIndex = li.dataset.index;
+    ul.querySelectorAll('li').forEach(function (x) { x.classList.remove('active'); });
+    li.classList.add('active');
+    btn.querySelector('.ydrop-label').textContent = li.textContent;
+    wrap.classList.remove('open');
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+
+  document.addEventListener('click', function () { wrap.classList.remove('open'); });
+
+  /* ---------- switch academic year (fixed id) ---------- */
+  select.addEventListener('change', function () {
     var body = new URLSearchParams();
     body.append('am_id', this.value);
     // If CSRF is enabled in CI:
@@ -454,3 +509,64 @@ $navHtml = renderSidebarNav($menuSections, $activePage);
   });
 })();
 </script>
+
+
+<style>
+ .ydrop-wrap { position: relative; display: inline-block; }
+
+/* native select stays in the DOM (value + change event) but is hidden once JS runs */
+.ydrop-wrap.enhanced .year-select { display: none; }
+
+/* fallback styling if JS fails */
+.year-select {
+  appearance: none; -webkit-appearance: none;
+  padding: 8px 38px 8px 18px;
+  font-size: 14px; font-weight: 600; color: #1e1b4b;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234338ca' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 14px center / 14px;
+  border: 1.5px solid #c7c9f5; border-radius: 999px; cursor: pointer; outline: none;
+}
+
+/* custom dropdown */
+.ydrop-btn {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 16px;
+  font-size: 14px; font-weight: 600; color: #1e1b4b;
+  background: #fff; border: 1.5px solid #c7c9f5; border-radius: 999px;
+  cursor: pointer; transition: all .2s;
+}
+.ydrop-btn:hover, .ydrop-wrap.open .ydrop-btn {
+  border-color: #4338ca; box-shadow: 0 0 0 3px rgba(99,102,241,.2);
+}
+.ydrop-btn svg { color: #4338ca; transition: transform .2s; }
+.ydrop-wrap.open .ydrop-btn svg { transform: rotate(180deg); }
+
+.ydrop-menu {
+  position: absolute; top: calc(100% + 8px); right: 0; min-width: 100%;
+  margin: 0; padding: 6px; list-style: none;
+  background: #fff; border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(30,27,75,.25);
+  opacity: 0; visibility: hidden; transform: translateY(-6px);
+  transition: all .18s ease; z-index: 1000;
+
+  /* scroll */
+  max-height: 100px;          /* about 4 items; increase for more */
+  overflow-y: auto;
+  overscroll-behavior: contain;   /* page doesn't scroll when the list reaches its end */
+  scrollbar-width: thin;                      /* Firefox */
+  scrollbar-color: #a5a8f0 transparent;       /* Firefox */
+}
+
+/* Chrome / Edge / Safari scrollbar */
+.ydrop-menu::-webkit-scrollbar { width: 6px; }
+.ydrop-menu::-webkit-scrollbar-track { background: transparent; margin: 8px 0; }
+.ydrop-menu::-webkit-scrollbar-thumb { background: #c7c9f5; border-radius: 999px; }
+.ydrop-menu::-webkit-scrollbar-thumb:hover { background: #4338ca; }
+.ydrop-wrap.open .ydrop-menu { opacity: 1; visibility: visible; transform: none; }
+
+.ydrop-menu li {
+  padding: 9px 14px; font-size: 14px; font-weight: 500; color: #312e81;
+  border-radius: 9px; cursor: pointer; white-space: nowrap;
+}
+.ydrop-menu li:hover { background: #eef0ff; }
+.ydrop-menu li.active { background: #4338ca; color: #fff; }
+</style>

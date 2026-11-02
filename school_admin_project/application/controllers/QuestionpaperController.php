@@ -310,8 +310,7 @@ class QuestionpaperController extends CI_Controller
 /* ---------- LIST ---------- */
 public function accademic_list()
 {
-    $data['academic'] = $this->db->where('amIsCurrent', 1)
-                                 ->order_by('amYear', 'ASC')
+    $data['academic'] = $this->db->order_by('amYear', 'DESC')
                                  ->get('academic_master')
                                  ->result();
 

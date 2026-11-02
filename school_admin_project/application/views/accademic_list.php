@@ -15,6 +15,12 @@
 .field-hint{font-size:12px;color:#94a3b8;margin:0 0 8px}
 .field-error{color:#dc2626;font-size:13px;margin:8px 0 0}
 [hidden]{display:none !important}
+
+
+.badge-current{display:inline-block;margin-left:8px;padding:2px 10px;font-size:11px;font-weight:700;letter-spacing:.3px;border-radius:999px;background:#dcfce7;color:#15803d;border:1px solid #86efac;vertical-align:middle}
+tr.is-current{background:#f0fdf4}
+tr.is-current td:first-child{box-shadow:inset 3px 0 0 #16a34a}
+tr.is-current .v-title{font-weight:700;color:#15803d}
 </style>
 
 <main class="page">
@@ -50,7 +56,13 @@
           <?php foreach ($academic as $i => $a): ?>
           <tr data-id="<?= (int)$a->amId ?>" data-year="<?= html_escape($a->amYear) ?>">
             <td class="num"><?= $i + 1 ?></td>
-            <td class="v-title"><?= html_escape($a->amYear) ?></td>
+            <!-- <td class="v-title"><?= html_escape($a->amYear) ?></td> -->
+              <td class="v-title">
+                <?= html_escape($a->amYear) ?>
+                <?php if ((int)$a->amIsCurrent === 1): ?>
+                  <span class="badge-current">CURRENT</span>
+                <?php endif; ?>
+              </td>
             <td>
               <div class="row-actions" style="justify-content:flex-end;">
                 <button class="icon-btn" type="button" title="Edit" data-edit aria-label="Edit <?= html_escape($a->amYear) ?>">

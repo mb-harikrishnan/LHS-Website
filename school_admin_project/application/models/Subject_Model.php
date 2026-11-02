@@ -92,6 +92,19 @@ public function get_class_division_map()
     }
     return $map;
 }
+
+
+
+public function get_divisions_by_class($cmId)
+{
+    return $this->db
+        ->select('d.dmId AS id, d.dmName AS name')
+        ->from('class_division_allocation a')
+        ->join('division_master d', 'd.dmId = a.cdaDmId')
+        ->where('a.cdaCmId', (int)$cmId)
+        ->order_by('d.dmName', 'ASC')
+        ->get()->result_array();
+}
  
 /* ---------- single student ---------- */
 public function get_student($id)
@@ -186,6 +199,11 @@ public function get_all_classes()
 }
 
 public function get_all_divisions()
+{
+    return $this->db->order_by('dmName', 'ASC')->get('division_master')->result();
+}
+ 
+public function get_all_divisions_allocation()
 {
     return $this->db->order_by('dmName', 'ASC')->get('division_master')->result();
 }

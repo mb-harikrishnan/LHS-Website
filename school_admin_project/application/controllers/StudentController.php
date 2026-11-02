@@ -143,7 +143,15 @@ public function divition_list()
 
 
 
+public function get_divisions($cmId = 0)
+{
+    $rows = $this->Subject_Model->get_divisions_by_class((int)$cmId);
+    foreach ($rows as &$r) { $r['id'] = (string)$r['id']; }   // string ids, same as the dropdown values
 
+    $this->output
+         ->set_content_type('application/json')
+         ->set_output(json_encode($rows));
+}
 
     ///////////////////////////////
 
@@ -371,7 +379,7 @@ public function divition_list()
         $data['total']    = $total;
         $data['filters']  = $filters;
         $data['res']      = $this->Subject_Model->get_all_classes();
-        $data['res1']     = $this->Subject_Model->get_all_divisions();
+        $data['res1']     = $this->Subject_Model->get_all_divisions_allocation();
         $data['div_map']  = $this->Subject_Model->get_class_division_map();
         $data['perm']     = $scope['perm'];
         $data['is_admin'] = $scope['is_admin'];

@@ -296,6 +296,7 @@ textarea.field-input{min-height:80px;resize:vertical}
   const form = $('studentForm'), errorEl = $('formError'), saveBtn = $('saveBtn');
 
   const SAVE_URL   = '<?= site_url('save_student') ?>';
+  const DIV_URL = '<?= site_url('get_divisions') ?>/';
   const DELETE_URL = '<?= site_url('delete_student') ?>';
   const CSRF_NAME  = '<?= $this->security->get_csrf_token_name() ?>';
   let   CSRF_HASH  = '<?= $this->security->get_csrf_hash() ?>';
@@ -329,11 +330,29 @@ textarea.field-input{min-height:80px;resize:vertical}
   const strItems = arr => arr.map(v => ({ id: v, name: v }));
   const divsFor = c => (DIV_MAP[c] && DIV_MAP[c].length) ? DIV_MAP[c] : DIVS_ALL;
 
-  function loadDivisions(value) {
-    const c = $('cls').value;
-    fillSelect($('div'), c ? divsFor(c) : [], c ? 'Select Division' : 'Select Class first', value);
-    $('div').disabled = !IS_ADMIN || !c;
+async function loadDivisions(value) {
+  const el = $('div');
+  const c  = $('cls').value;
+
+  if (!c) {
+    fillSelect(el, [], 'Select Class first', '');
+    el.disabled = true;
+    return;
   }
+
+  fillSelect(el, [], 'Loading...', '');
+  el.disabled = true;
+
+  try {
+    const res  = await fetch(DIV_URL + encodeURIComponent(c));
+    const list = await res.json();
+    fillSelect(el, list, list.length ? 'Select Division' : 'No division assigned', value);
+  } catch (err) {
+    fillSelect(el, [], 'Failed to load divisions', '');
+  }
+
+  el.disabled = !IS_ADMIN;   // non-admin keeps the division locked
+}
   function loadStates(value) {
     const c = $('country').value;
     fillSelect($('state'), c && COUNTRIES[c] ? strItems(COUNTRIES[c]) : [], c ? 'Select State' : 'Select Country first', value);

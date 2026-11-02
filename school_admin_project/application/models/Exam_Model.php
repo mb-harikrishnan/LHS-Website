@@ -13,12 +13,17 @@ class Exam_Model extends CI_Model
     $row = $this->db->select('amId')->where('amIsCurrent', 1)->get('academic_master')->row();
     return $row ? (int) $row->amId : 0;
 }
+public function fetch_all_exams()
+{
+    $sessionYear = $this->session->userdata('selected_am_id');
 
-    public function fetch_all_exams()
-    {
-        return $this->db->order_by('emDisplayOrder', 'ASC')->order_by('emId', 'ASC')
-                        ->get('exam_master')->result();
-    }
+    return $this->db
+                ->where('emAmId', $sessionYear)
+                ->order_by('emDisplayOrder', 'ASC')
+                ->order_by('emId', 'ASC')
+                ->get('exam_master')
+                ->result();
+}
 
     public function fetch_open_exams()
     {
