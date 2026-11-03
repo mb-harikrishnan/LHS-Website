@@ -6,7 +6,7 @@ class Migration_Add_am_id_columns extends CI_Migration
 {
     public function up()
     {
-        // Employee Master
+        //Employee Master
         $this->dbforge->add_column('employee_master', [
             'emAmId' => [
                 'type' => 'INT',
@@ -41,6 +41,12 @@ class Migration_Add_am_id_columns extends CI_Migration
                 'default' => NULL
             ]
         ]);
+        $this->dbforge->add_column('academic_master', [
+            'c_status' => [
+                'type' => 'INT',
+                'default' => 0
+            ]
+        ]);
     }
 
     public function down()
@@ -52,5 +58,6 @@ class Migration_Add_am_id_columns extends CI_Migration
         $this->dbforge->drop_column('exam_master', 'emAmId');
 
         $this->dbforge->drop_column('exam_summary', 'esamId');
+        $this->dbforge->drop_column('academic_master', 'c_status');
     }
 }

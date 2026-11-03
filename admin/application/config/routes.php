@@ -169,6 +169,7 @@ $route['read_admission'] = 'EnquiryController/read_admission';
 $route['promotion']       = 'PromotionController/promotion';
 $route['promotion_stats'] = 'PromotionController/stats';
 $route['promotion_run']   = 'PromotionController/run';
+$route['promotion_run_all'] = 'PromotionController/run_all';
 
 
 
