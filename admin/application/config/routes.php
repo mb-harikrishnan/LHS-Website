@@ -172,5 +172,6 @@ $route['promotion_run']   = 'PromotionController/run';
 
 
 
+$route['Migration'] = 'Migration';
 $route['logout'] = 'Login/logout';
 
