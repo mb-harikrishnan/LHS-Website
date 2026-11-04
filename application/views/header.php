@@ -585,7 +585,7 @@
                             <button
                                 type="button"
                                 class="lh-login-btn"
-                                onclick="window.location.href='<?php echo base_url('school_admin_project'); ?>';"
+                                onclick="window.location.href='<?php echo base_url('admin'); ?>';"
                                 style="background: #3F51B5 !important; color: #fff !important; border: none; cursor: pointer; border-radius: 20px;">
                                 <i class="fa fa-user"></i> Login
                             </button>

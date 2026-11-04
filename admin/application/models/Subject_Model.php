@@ -49,6 +49,32 @@ public function count_all_students($filters = array())
 }
  
 /* one page of students, with class and division names */
+// public function fetch_all_student_details($limit, $start, $filters = array())
+// {
+//     $this->db->select('
+//         s.smId, s.smAdmissionNo, s.smAadharNo, s.smName, s.smClass, s.smDiv,
+//         s.smGender, s.smMobile, s.smDOB, s.smAddress, s.smReligion, s.smCaste,
+//         s.smMotherTongue, s.smCountry, s.smState,
+//         COALESCE(c.cmName, s.smClass) AS className,
+//         COALESCE(d.dmName, s.smDiv)   AS divName
+//     ', FALSE);
+//     $this->db->from('students_master s');
+//     $this->db->join('class_master c', 'c.cmId = s.smClass', 'left');
+//     $this->db->join('division_master d', 'd.dmId = s.smDiv', 'left');
+ 
+//     $this->_apply_student_filters($filters);
+ 
+//     // Class -> Division -> Girls (0) -> Boys (1) -> Name
+//     $this->db->order_by('s.smClass', 'ASC');
+//     $this->db->order_by('s.smDiv', 'ASC');
+//     $this->db->order_by('s.smGender', 'ASC');
+//     $this->db->order_by('s.smName', 'ASC');
+ 
+//     $this->db->limit((int)$limit, (int)$start);
+ 
+//     return $this->db->get()->result();
+// }
+
 public function fetch_all_student_details($limit, $start, $filters = array())
 {
     $this->db->select('
@@ -61,17 +87,21 @@ public function fetch_all_student_details($limit, $start, $filters = array())
     $this->db->from('students_master s');
     $this->db->join('class_master c', 'c.cmId = s.smClass', 'left');
     $this->db->join('division_master d', 'd.dmId = s.smDiv', 'left');
- 
+
     $this->_apply_student_filters($filters);
- 
-    // Class -> Division -> Girls (0) -> Boys (1) -> Name
+
+    // Class -> Division -> Girls (0) first -> Boys (1) -> Name A-Z
     $this->db->order_by('s.smClass', 'ASC');
     $this->db->order_by('s.smDiv', 'ASC');
-    $this->db->order_by('s.smGender', 'ASC');
-    $this->db->order_by('s.smName', 'ASC');
- 
+    $this->db->order_by("CASE
+        WHEN s.smGender = '0' THEN 0
+        WHEN s.smGender = '1' THEN 1
+        ELSE 2
+    END", 'ASC', FALSE);
+    $this->db->order_by('TRIM(s.smName)', 'ASC', FALSE);
+
     $this->db->limit((int)$limit, (int)$start);
- 
+
     return $this->db->get()->result();
 }
  
