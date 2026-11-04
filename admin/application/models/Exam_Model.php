@@ -363,15 +363,30 @@ public function save_allocation_multi($exam_ids, $class_ids, $subjects)
                         ->get()->result();
     }
 
+    // public function get_class_students($class_id, $div_id)
+    // {
+    //     return $this->db->select('smId AS id, smAdmissionNo AS adm_no, smName AS name')
+    //                     ->where('smClass', (int)$class_id)
+    //                     ->where('smDiv', (int)$div_id)
+    //                     ->where('smAmId', $this->get_am_id())
+    //                     ->order_by('smName', 'ASC')
+    //                     ->get('students_master')->result();
+    // }
+
     public function get_class_students($class_id, $div_id)
-    {
-        return $this->db->select('smId AS id, smAdmissionNo AS adm_no, smName AS name')
-                        ->where('smClass', (int)$class_id)
-                        ->where('smDiv', (int)$div_id)
-                        ->where('smAmId', $this->get_am_id())
-                        ->order_by('smName', 'ASC')
-                        ->get('students_master')->result();
-    }
+{
+    return $this->db->select('smId AS id, smAdmissionNo AS adm_no, smName AS name')
+                    ->where('smClass', (int)$class_id)
+                    ->where('smDiv', (int)$div_id)
+                    ->where('smAmId', $this->get_am_id())
+                    ->order_by("CASE
+                        WHEN smGender = '0' THEN 0
+                        WHEN smGender = '1' THEN 1
+                        ELSE 2
+                    END", 'ASC', FALSE)
+                    ->order_by('TRIM(smName)', 'ASC', FALSE)
+                    ->get('students_master')->result();
+}
 
     /* marks as [studentId][subjectId] => value */
     public function get_marks_map($exam_id, $class_id, $div_id)
