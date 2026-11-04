@@ -17,7 +17,9 @@ class Dashboard_Model extends CI_Model
 
   public function all_students_count()
   {
-      $sql   = "SELECT COUNT(smId) as totalCount FROM students_master WHERE smActive =1";
+    $smAmId = $this->session->userdata('selected_am_id');
+
+      $sql   = "SELECT COUNT(smId) as totalCount FROM students_master WHERE smActive =1 AND smAmId = $smAmId";
       $query = $this->db->query($sql);
       $res = $query->row()->totalCount ?? '';
 
@@ -46,7 +48,9 @@ class Dashboard_Model extends CI_Model
 
   public function exam_master()
   {
-      $sql   = "SELECT COUNT(emId) as totalCount FROM exam_master WHERE emActive = 1";
+    $smAmId = $this->session->userdata('selected_am_id');
+
+      $sql   = "SELECT COUNT(emId) as totalCount FROM exam_master WHERE emActive = 1 AND emAmId = $smAmId";
       $query = $this->db->query($sql);
       $res = $query->row()->totalCount ?? '';
 
@@ -54,6 +58,8 @@ class Dashboard_Model extends CI_Model
   }
 public function active_exam_list()
 {
+    $smAmId = $this->session->userdata('selected_am_id');
+
     $sql = "SELECT DISTINCT
                 em.emId,
                 em.emDisplayName,
@@ -63,7 +69,7 @@ public function active_exam_list()
             INNER JOIN exam_summary es ON es.esEmId = em.emId
             LEFT JOIN class_master cm   ON cm.cmId = es.esCmId
             LEFT JOIN division_master dm ON dm.dmId = es.esDmId
-            WHERE em.emActive = 1
+            WHERE em.emActive = 1 AND emAmid = $smAmId
             ORDER BY em.emId, cm.cmId, dm.dmId";
 
     return $this->db->query($sql)->result();

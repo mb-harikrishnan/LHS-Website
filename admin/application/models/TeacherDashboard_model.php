@@ -40,9 +40,14 @@ public function get_teacher($emp_id)
 
 public function student_stats($class = 0, $div = 0)
 {
+
+$smAmId = $this->session->userdata('selected_am_id');
     $out = array('total' => 0, 'boys' => 0, 'girls' => 0);
 
     $this->db->select('smGender, COUNT(*) AS c')->from('students_master');
+
+    $this->db->where('smAmId', $smAmId);
+
 
     // 0 = no filter (admin sees everyone)
     if ((int)$class > 0) {
