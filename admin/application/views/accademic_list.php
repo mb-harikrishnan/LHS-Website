@@ -1,4 +1,7 @@
-<?php /* Receives: $academic (rows of academic_master with amId, amYear) */ ?>
+<?php /* Receives: $academic (amId, amYear, amIsCurrent, c_status), $current, $nextName, $next */
+$curYear  = $current ? $current->amYear : '';
+$curDone  = $current ? ((int)$current->c_status === 1) : false;
+?>
 <style>
 .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:1000}
 .modal-overlay.open{display:flex}
@@ -16,8 +19,9 @@
 .field-error{color:#dc2626;font-size:13px;margin:8px 0 0}
 [hidden]{display:none !important}
 
-
+.head-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .badge-current{display:inline-block;margin-left:8px;padding:2px 10px;font-size:11px;font-weight:700;letter-spacing:.3px;border-radius:999px;background:#dcfce7;color:#15803d;border:1px solid #86efac;vertical-align:middle}
+.badge-promoted{display:inline-block;margin-left:6px;padding:2px 10px;font-size:11px;font-weight:700;letter-spacing:.3px;border-radius:999px;background:#e0e7ff;color:#4338ca;border:1px solid #c7d2fe;vertical-align:middle}
 tr.is-current{background:#f0fdf4}
 tr.is-current td:first-child{box-shadow:inset 3px 0 0 #16a34a}
 tr.is-current .v-title{font-weight:700;color:#15803d}
@@ -29,10 +33,18 @@ tr.is-current .v-title{font-weight:700;color:#15803d}
       <h1 class="page-title">Academic Year</h1>
       <p class="page-sub">Manage academic years</p>
     </div>
-    <button class="btn btn-primary" type="button" id="openAddModal">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-      Add Academic Year
-    </button>
+    <div class="head-actions">
+      <?php if ($current && $nextName): ?>
+        <button class="btn" type="button" id="changeYearBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          Change current year to <?= html_escape($nextName) ?>
+        </button>
+      <?php endif; ?>
+      <button class="btn btn-primary" type="button" id="openAddModal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        Add Academic Year
+      </button>
+    </div>
   </div>
 
   <div class="card">
@@ -54,15 +66,18 @@ tr.is-current .v-title{font-weight:700;color:#15803d}
         </thead>
         <tbody id="rows">
           <?php foreach ($academic as $i => $a): ?>
-          <tr data-id="<?= (int)$a->amId ?>" data-year="<?= html_escape($a->amYear) ?>">
+          <tr data-id="<?= (int)$a->amId ?>" data-year="<?= html_escape($a->amYear) ?>"
+              class="<?= ((int)$a->amIsCurrent === 1) ? 'is-current' : '' ?>">
             <td class="num"><?= $i + 1 ?></td>
-            <!-- <td class="v-title"><?= html_escape($a->amYear) ?></td> -->
-              <td class="v-title">
-                <?= html_escape($a->amYear) ?>
-                <?php if ((int)$a->amIsCurrent === 1): ?>
-                  <span class="badge-current">CURRENT</span>
+            <td class="v-title">
+              <?= html_escape($a->amYear) ?>
+              <?php if ((int)$a->amIsCurrent === 1): ?>
+                <span class="badge-current">CURRENT</span>
+                <?php if ((int)$a->c_status === 1): ?>
+                  <span class="badge-promoted">PROMOTED</span>
                 <?php endif; ?>
-              </td>
+              <?php endif; ?>
+            </td>
             <td>
               <div class="row-actions" style="justify-content:flex-end;">
                 <button class="icon-btn" type="button" title="Edit" data-edit aria-label="Edit <?= html_escape($a->amYear) ?>">
@@ -111,14 +126,71 @@ tr.is-current .v-title{font-weight:700;color:#15803d}
   const $ = id => document.getElementById(id);
   const modal = $('addModal'), form = $('addForm'), errorEl = $('formError'), saveBtn = $('saveBtn');
 
-  const SAVE_URL   = '<?= site_url('save_academic') ?>';
-  const DELETE_URL = '<?= site_url('delete_accademic') ?>';
-  const CSRF_NAME  = '<?= $this->security->get_csrf_token_name() ?>';
-  let   CSRF_HASH  = '<?= $this->security->get_csrf_hash() ?>';
+  const SAVE_URL    = '<?= site_url('save_academic') ?>';
+  const DELETE_URL  = '<?= site_url('delete_accademic') ?>';
+  const CHANGE_URL  = '<?= site_url('change_current_year') ?>';
+  const PROMOTE_URL = '<?= site_url('promotion') ?>';
+  const CSRF_NAME   = '<?= $this->security->get_csrf_token_name() ?>';
+  let   CSRF_HASH   = '<?= $this->security->get_csrf_hash() ?>';
+
+  const CUR_YEAR  = <?= json_encode($curYear) ?>;
+  const CUR_DONE  = <?= $curDone ? 'true' : 'false' ?>;
+  const NEXT_NAME = <?= json_encode($nextName) ?>;
+  const NEXT_OK   = <?= $next ? 'true' : 'false' ?>;
 
   let editId = 0;
 
   const showError = m => { errorEl.textContent = m; errorEl.hidden = false; };
+
+  /* ---------- change current year ---------- */
+  const changeBtn = $('changeYearBtn');
+  if (changeBtn) {
+    changeBtn.addEventListener('click', () => {
+
+      // 1) the present current year must already be promoted (c_status = 1)
+      if (!CUR_DONE) {
+        return Swal.fire({
+          icon: 'warning',
+          title: 'Promotion not done',
+          text: 'Promotion for ' + CUR_YEAR + ' is not done yet. Please do the promotion first, then change the current year.',
+          showCancelButton: true,
+          confirmButtonText: 'Go to Promotion',
+          cancelButtonText: 'Close'
+        }).then(r => { if (r.isConfirmed) location.href = PROMOTE_URL; });
+      }
+
+      // 2) the next year must exist
+      if (!NEXT_OK) {
+        return Swal.fire({ icon: 'error', title: 'Academic year missing',
+                           text: 'Academic year ' + NEXT_NAME + ' does not exist. Please add it first.' });
+      }
+
+      // 3) confirm, then change (the server checks everything again)
+      Swal.fire({
+        icon: 'question', title: 'Change current year?',
+        text: NEXT_NAME + ' will become the current academic year.',
+        showCancelButton: true, confirmButtonText: 'Yes, change', cancelButtonText: 'Cancel'
+      }).then(async r => {
+        if (!r.isConfirmed) return;
+        changeBtn.disabled = true;
+        const fd = new FormData();
+        fd.append(CSRF_NAME, CSRF_HASH);
+        try {
+          const res = await (await fetch(CHANGE_URL, { method: 'POST', body: fd })).json();
+          if (res.csrf) CSRF_HASH = res.csrf;
+          if (!res.status) {
+            changeBtn.disabled = false;
+            return Swal.fire({ icon: 'warning', title: 'Not allowed', text: res.msg });
+          }
+          Swal.fire({ icon: 'success', title: 'Done', text: res.msg, timer: 1500, showConfirmButton: false })
+              .then(() => location.reload());
+        } catch (err) {
+          changeBtn.disabled = false;
+          Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong.' });
+        }
+      });
+    });
+  }
 
   /* ---------- search + serial numbers ---------- */
   function refresh() {

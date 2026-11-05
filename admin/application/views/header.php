@@ -42,19 +42,27 @@ $years = $this->db
     ->query("SELECT amId, amYear, amIsCurrent FROM academic_master ORDER BY amYear DESC")
     ->result();
 
-// Default = current year (amIsCurrent = 1)
-$currentAmId = 0;
-foreach ($years as $y) {
-    if ((int)$y->amIsCurrent === 1) { $currentAmId = (int)$y->amId; break; }
-}
+// Get current academic year (amIsCurrent = 1)
+$currentYear = $this->db
+    ->where('amIsCurrent', 1)
+    ->get('academic_master')
+    ->row();
 
-// Session value (if user picked something) otherwise the default
-$selectedAmId = (int) $this->session->userdata('selected_am_id');
-$validIds = array_map(function ($y) { return (int)$y->amId; }, $years);
+$currentAmId = $currentYear ? (int)$currentYear->amId : 0;
 
+// Get session selected academic year
+$selectedAmId = (int)$this->session->userdata('selected_am_id');
+
+// Check whether selected ID exists
+$validIds = array_map(function ($y) {
+    return (int)$y->amId;
+}, $years);
+
+// If no valid session, select current academic year
 if (!$selectedAmId || !in_array($selectedAmId, $validIds, true)) {
     $selectedAmId = $currentAmId;
-    $this->session->set_userdata('selected_am_id', $selectedAmId); // store default
+
+    $this->session->set_userdata('selected_am_id', $selectedAmId);
 }
 
 $query1 = $this->db->query("SELECT COUNT(*) AS total FROM school_news WHERE c_status = 'Y'");

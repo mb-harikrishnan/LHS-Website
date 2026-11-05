@@ -308,11 +308,122 @@ class QuestionpaperController extends CI_Controller
     /////////////////////////////
 
 /* ---------- LIST ---------- */
+// public function accademic_list()
+// {
+//     $data['academic'] = $this->db->order_by('amYear', 'DESC')
+//                                  ->get('academic_master')
+//                                  ->result();
+
+//     $this->load->view('header');
+//     $this->load->view('accademic_list', $data);
+//     $this->load->view('footer');
+// }
+
+// /* ---------- ADD + EDIT (POST) ---------- */
+// public function save_academic()
+// {
+//     if ($this->input->method() !== 'post') {
+//         return $this->_academic_json(false, 'Invalid request.');
+//     }
+
+//     $id   = (int)$this->input->post('id');
+//     $year = trim((string)$this->input->post('year'));
+
+//     if ($year === '') {
+//         return $this->_academic_json(false, 'Please enter the academic year.');
+//     }
+//     if (!preg_match('/^\d{4}-\d{2}$/', $year)) {
+//         return $this->_academic_json(false, 'Use the format 2026-27.');
+//     }
+//     $start = (int)substr($year, 0, 4);
+//     $end   = (int)substr($year, 5, 2);
+//     if (($start + 1) % 100 !== $end) {
+//         return $this->_academic_json(false, 'The end year must follow the start year (e.g. 2026-27).');
+//     }
+
+//     // does this year already exist (other than the row being edited)?
+//     $exists = $this->db->where('amYear', $year)
+//                        ->where('amId !=', $id)
+//                        ->get('academic_master')
+//                        ->row();
+
+//     if ($id > 0) {                                   // ---- EDIT ----
+//         $cur = $this->db->where('amId', $id)->where('amIsCurrent', 1)->get('academic_master')->row();
+//         if (!$cur) {
+//             return $this->_academic_json(false, 'Academic year not found.');
+//         }
+//         if ($exists && (int)$exists->amIsCurrent === 1) {
+//             return $this->_academic_json(false, 'This academic year already exists.');
+//         }
+//         $ok = $this->db->where('amId', $id)->update('academic_master', array('amYear' => $year));
+//         return $this->_academic_json($ok, $ok ? 'Academic year updated successfully.' : 'Update failed.');
+//     }
+
+//     // ---- ADD ----
+//     if ($exists) {
+//         if ((int)$exists->amIsCurrent === 1) {
+//             return $this->_academic_json(false, 'This academic year already exists.');
+//         }
+//         // it was deleted earlier: bring it back instead of adding a duplicate
+//         $ok = $this->db->where('amId', $exists->amId)->update('academic_master', array('amIsCurrent' => 1));
+//         return $this->_academic_json($ok, $ok ? 'Academic year added successfully.' : 'Could not save.');
+//     }
+
+//     $ok = $this->db->insert('academic_master', array('amYear' => $year, 'amIsCurrent' => 1));
+//     return $this->_academic_json($ok, $ok ? 'Academic year added successfully.' : 'Could not save. Please try again.');
+// }
+
+// /* ---------- DELETE (POST) ---------- */
+// public function delete_accademic()
+// {
+//     if ($this->input->method() !== 'post') {
+//         return $this->_academic_json(false, 'Invalid request.');
+//     }
+
+//     $id = (int)$this->input->post('id');
+//     if ($id <= 0) {
+//         return $this->_academic_json(false, 'Academic year not found.');
+//     }
+
+//     $ok = $this->db->where('amId', $id)->update('academic_master', array('amIsCurrent' => 0));
+//     return $this->_academic_json($ok, $ok ? 'Academic year deleted successfully.' : 'Delete failed.');
+// }
+
+// /* ---------- JSON helper ---------- */
+// private function _academic_json($status, $msg)
+// {
+//     $this->output
+//         ->set_content_type('application/json')
+//         ->set_output(json_encode(array(
+//             'status' => (bool)$status,
+//             'msg'    => $msg,
+//             'csrf'   => $this->security->get_csrf_hash()
+//         )));
+// }
+
+
+
+
+
+/* ---------- LIST ---------- */
 public function accademic_list()
 {
     $data['academic'] = $this->db->order_by('amYear', 'DESC')
                                  ->get('academic_master')
                                  ->result();
+
+    // the current year (if several are marked current, the latest one) and the year after it
+    $current = $this->db->where('amIsCurrent', 1)
+                        ->order_by('amYear', 'DESC')
+                        ->limit(1)
+                        ->get('academic_master')
+                        ->row();
+
+    $nextName = $current ? $this->_academic_next_name($current->amYear) : '';
+
+    $data['current']  = $current;
+    $data['nextName'] = $nextName;
+    $data['next']     = $nextName ? $this->db->where('amYear', $nextName)->get('academic_master')->row() : null;
 
     $this->load->view('header');
     $this->load->view('accademic_list', $data);
@@ -346,30 +457,27 @@ public function save_academic()
                        ->where('amId !=', $id)
                        ->get('academic_master')
                        ->row();
+    if ($exists) {
+        return $this->_academic_json(false, 'This academic year already exists.');
+    }
 
     if ($id > 0) {                                   // ---- EDIT ----
-        $cur = $this->db->where('amId', $id)->where('amIsCurrent', 1)->get('academic_master')->row();
-        if (!$cur) {
+        $row = $this->db->where('amId', $id)->get('academic_master')->row();
+        if (!$row) {
             return $this->_academic_json(false, 'Academic year not found.');
-        }
-        if ($exists && (int)$exists->amIsCurrent === 1) {
-            return $this->_academic_json(false, 'This academic year already exists.');
         }
         $ok = $this->db->where('amId', $id)->update('academic_master', array('amYear' => $year));
         return $this->_academic_json($ok, $ok ? 'Academic year updated successfully.' : 'Update failed.');
     }
 
-    // ---- ADD ----
-    if ($exists) {
-        if ((int)$exists->amIsCurrent === 1) {
-            return $this->_academic_json(false, 'This academic year already exists.');
-        }
-        // it was deleted earlier: bring it back instead of adding a duplicate
-        $ok = $this->db->where('amId', $exists->amId)->update('academic_master', array('amIsCurrent' => 1));
-        return $this->_academic_json($ok, $ok ? 'Academic year added successfully.' : 'Could not save.');
-    }
+    // ---- ADD ---- a new year is NOT current. Only the very first year becomes current.
+    $isFirst = ($this->db->count_all('academic_master') === 0);
 
-    $ok = $this->db->insert('academic_master', array('amYear' => $year, 'amIsCurrent' => 1));
+    $ok = $this->db->insert('academic_master', array(
+        'amYear'      => $year,
+        'amIsCurrent' => $isFirst ? 1 : 0,
+        'c_status'    => 0
+    ));
     return $this->_academic_json($ok, $ok ? 'Academic year added successfully.' : 'Could not save. Please try again.');
 }
 
@@ -380,13 +488,75 @@ public function delete_accademic()
         return $this->_academic_json(false, 'Invalid request.');
     }
 
-    $id = (int)$this->input->post('id');
-    if ($id <= 0) {
+    $id  = (int)$this->input->post('id');
+    $row = $id > 0 ? $this->db->where('amId', $id)->get('academic_master')->row() : null;
+
+    if (!$row) {
         return $this->_academic_json(false, 'Academic year not found.');
     }
+    if ((int)$row->amIsCurrent === 1) {
+        return $this->_academic_json(false, 'The current academic year cannot be deleted.');
+    }
+    if ($this->db->where('smAmId', $id)->count_all_results('students_master') > 0) {
+        return $this->_academic_json(false, 'This academic year has students, so it cannot be deleted.');
+    }
 
-    $ok = $this->db->where('amId', $id)->update('academic_master', array('amIsCurrent' => 0));
+    $ok = $this->db->where('amId', $id)->delete('academic_master');
     return $this->_academic_json($ok, $ok ? 'Academic year deleted successfully.' : 'Delete failed.');
+}
+
+/* ---------- CHANGE CURRENT YEAR to the NEXT year (POST) ----------
+   Allowed only when the present current year (amIsCurrent = 1) is already promoted (c_status = 1). */
+public function change_current_year()
+{
+    if ($this->input->method() !== 'post') {
+        return $this->_academic_json(false, 'Invalid request.');
+    }
+
+    $current = $this->db->where('amIsCurrent', 1)
+                        ->order_by('amYear', 'DESC')
+                        ->limit(1)
+                        ->get('academic_master')
+                        ->row();
+
+    if (!$current) {
+        return $this->_academic_json(false, 'No current academic year is set.');
+    }
+
+    // promotion must be done first
+    if ((int)$current->c_status !== 1) {
+        return $this->_academic_json(false,
+            'Promotion for ' . $current->amYear . ' is not done yet. Please do the promotion first, then change the current year.');
+    }
+
+    $nextName = $this->_academic_next_name($current->amYear);
+    $next     = $nextName ? $this->db->where('amYear', $nextName)->get('academic_master')->row() : null;
+
+    if (!$next) {
+        return $this->_academic_json(false, 'Academic year ' . $nextName . ' does not exist. Please add it first.');
+    }
+
+    // ONE year current, every other year not current
+    $this->db->trans_start();
+    $this->db->query("UPDATE academic_master SET amIsCurrent = IF(amId = ?, 1, 0)", array((int)$next->amId));
+    $this->db->trans_complete();
+
+    if ($this->db->trans_status() === false) {
+        return $this->_academic_json(false, 'Could not change the current year. Please try again.');
+    }
+
+    // header year selector follows the new current year
+    $this->session->set_userdata('selected_am_id', (int)$next->amId);
+
+    return $this->_academic_json(true, $next->amYear . ' is now the current academic year.');
+}
+
+/* 2026-27 => 2027-28 */
+private function _academic_next_name($year)
+{
+    if (!preg_match('/^(\d{4})-(\d{2})$/', $year, $m)) return '';
+    $start = (int)$m[1] + 1;
+    return sprintf('%d-%02d', $start, ($start + 1) % 100);
 }
 
 /* ---------- JSON helper ---------- */
@@ -400,11 +570,6 @@ private function _academic_json($status, $msg)
             'csrf'   => $this->security->get_csrf_hash()
         )));
 }
-
-
-
-
-
 
 
 

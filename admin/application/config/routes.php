@@ -85,6 +85,7 @@ $route['delete_slider'] = 'QuestionpaperController/delete_slider';
 $route['accademic_list']   = 'QuestionpaperController/accademic_list';
 $route['save_academic']    = 'QuestionpaperController/save_academic';     // add + edit
 $route['delete_accademic'] = 'QuestionpaperController/delete_accademic';
+$route['change_current_year'] = 'QuestionpaperController/change_current_year';
 
 
 
@@ -165,11 +166,11 @@ $route['read_contact'] = 'EnquiryController/read_contact';
 $route['admission']      = 'EnquiryController/admission';
 $route['read_admission'] = 'EnquiryController/read_admission';
 
-
-$route['promotion']       = 'PromotionController/promotion';
-$route['promotion_stats'] = 'PromotionController/stats';
-$route['promotion_run']   = 'PromotionController/run';
+$route['promotion']         = 'PromotionController/promotion';
 $route['promotion_run_all'] = 'PromotionController/run_all';
+
+
+$route['division_allocation'] = 'PromotionController/division_allocation';
 
 
 

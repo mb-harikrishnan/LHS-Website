@@ -1,4 +1,4 @@
-<?php /* Receives: $current, $nextName, $next, $classes (cmId, cmName, boys, girls, total), $pending */
+<?php /* Receives: $current, $multiCurrent, $nextName, $next, $classes (cmId, cmName, toName, boys, girls, total), $pending */
 $sumBoys = $sumGirls = $sumTotal = 0;
 foreach ($classes as $c) { $sumBoys += (int)$c->boys; $sumGirls += (int)$c->girls; $sumTotal += (int)$c->total; }
 ?>
@@ -10,9 +10,8 @@ foreach ($classes as $c) { $sumBoys += (int)$c->boys; $sumGirls += (int)$c->girl
 .pr-arrow{color:#94a3b8;font-weight:700}
 
 .pr-warn{color:#b45309;background:#fffbeb;border:1px solid #fde68a;padding:10px 14px;border-radius:8px;font-size:13px;margin:0 0 16px}
-.pr-done{color:#166534;background:#f0fdf4;border:1px solid #bbf7d0;padding:10px 14px;border-radius:8px;font-size:13px;margin:18px 0 0}
+.pr-done{color:#166534;background:#f0fdf4;border:1px solid #bbf7d0;padding:12px 14px;border-radius:8px;font-size:13px;margin:18px 0 0}
 
-/* summary strip */
 .pr-summary{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 20px}
 .pr-sum{flex:1 1 140px;max-width:220px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 16px}
 .pr-sum .l{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:#64748b}
@@ -21,7 +20,6 @@ foreach ($classes as $c) { $sumBoys += (int)$c->boys; $sumGirls += (int)$c->girl
 
 .pr-title{font-size:13px;font-weight:600;color:#475569;margin:0 0 10px;text-transform:uppercase;letter-spacing:.4px}
 
-/* class grid */
 .pr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
 .pr-card{all:unset;box-sizing:border-box;cursor:pointer;display:block;background:#fff;border:1px solid #e2e8f0;
          border-radius:12px;padding:12px 14px;transition:transform .12s, box-shadow .12s, border-color .12s}
@@ -33,6 +31,7 @@ foreach ($classes as $c) { $sumBoys += (int)$c->boys; $sumGirls += (int)$c->girl
 .pr-card .bg span{flex:1;text-align:center;border-radius:6px;padding:3px 0}
 .pr-card .bg .b{background:#eff6ff;color:#2563eb}
 .pr-card .bg .g{background:#fdf2f8;color:#db2777}
+.pr-card .to{margin-top:8px;font-size:11px;font-weight:600;color:#6366f1}
 
 .pr-note{font-size:12px;color:#64748b;margin:14px 0 0}
 
@@ -40,7 +39,6 @@ foreach ($classes as $c) { $sumBoys += (int)$c->boys; $sumGirls += (int)$c->girl
 .pr-footer .sum{font-size:14px;color:#475569}
 .pr-footer .sum b{color:#0f172a;font-size:18px}
 
-/* modal (no library needed) */
 .pr-modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;
           z-index:99999;padding:16px}
 .pr-modal[hidden]{display:none}
@@ -57,6 +55,7 @@ foreach ($classes as $c) { $sumBoys += (int)$c->boys; $sumGirls += (int)$c->girl
 .pr-box.b{background:#eff6ff}.pr-box.b .v{color:#2563eb}
 .pr-box.g{background:#fdf2f8}.pr-box.g .v{color:#db2777}
 .pr-box.t{background:#f0fdf4}.pr-box.t .v{color:#15803d}
+.pr-dialog .mv{margin-top:16px;font-size:13px;font-weight:600;color:#6366f1}
 </style>
 
 <main class="page">
@@ -78,6 +77,10 @@ foreach ($classes as $c) { $sumBoys += (int)$c->boys; $sumGirls += (int)$c->girl
       <span class="pr-chip nxt">Next: <?= html_escape($nextName) ?></span>
     </div>
 
+    <?php if (!empty($multiCurrent)): ?>
+      <div class="pr-warn">More than one academic year is marked as current. The latest one (<b><?= html_escape($current->amYear) ?></b>) is being used. Please keep only one year as current.</div>
+    <?php endif; ?>
+
     <?php if (!$next): ?>
       <div class="pr-warn">Academic year <b><?= html_escape($nextName) ?></b> does not exist. Add it in Academic Year before promoting.</div>
     <?php endif; ?>
@@ -93,6 +96,7 @@ foreach ($classes as $c) { $sumBoys += (int)$c->boys; $sumGirls += (int)$c->girl
       <?php foreach ($classes as $c): ?>
         <button type="button" class="pr-card"
                 data-name="<?= html_escape($c->cmName) ?>"
+                data-to="<?= html_escape($c->toName) ?>"
                 data-boys="<?= (int)$c->boys ?>"
                 data-girls="<?= (int)$c->girls ?>"
                 data-total="<?= (int)$c->total ?>">
@@ -102,6 +106,7 @@ foreach ($classes as $c) { $sumBoys += (int)$c->boys; $sumGirls += (int)$c->girl
             <span class="b">B <?= (int)$c->boys ?></span>
             <span class="g">G <?= (int)$c->girls ?></span>
           </div>
+          <div class="to">&rarr; <?= html_escape($c->toName) ?></div>
         </button>
       <?php endforeach; ?>
     </div>
@@ -134,6 +139,7 @@ foreach ($classes as $c) { $sumBoys += (int)$c->boys; $sumGirls += (int)$c->girl
       <div class="pr-box g"><div class="l">Girls</div><div class="v" id="prGirls">0</div></div>
       <div class="pr-box t"><div class="l">Total</div><div class="v" id="prTotal">0</div></div>
     </div>
+    <div class="mv" id="prTo"></div>
   </div>
 </div>
 
@@ -141,29 +147,26 @@ foreach ($classes as $c) { $sumBoys += (int)$c->boys; $sumGirls += (int)$c->girl
 (function () {
   /* ---------- class modal ---------- */
   var modal = document.getElementById('prModal');
-  document.body.appendChild(modal);               // avoid any parent z-index / overflow issues
+  document.body.appendChild(modal);
 
-  function openModal(d) {
-    document.getElementById('prName').textContent  = d.name;
-    document.getElementById('prBoys').textContent  = d.boys;
-    document.getElementById('prGirls').textContent = d.girls;
-    document.getElementById('prTotal').textContent = d.total;
-    modal.hidden = false;
-  }
   function closeModal() { modal.hidden = true; }
 
   document.querySelectorAll('.pr-card').forEach(function (card) {
-    card.addEventListener('click', function () { openModal(card.dataset); });
+    card.addEventListener('click', function () {
+      var d = card.dataset;
+      document.getElementById('prName').textContent  = d.name;
+      document.getElementById('prBoys').textContent  = d.boys;
+      document.getElementById('prGirls').textContent = d.girls;
+      document.getElementById('prTotal').textContent = d.total;
+      document.getElementById('prTo').textContent    = 'Moves to ' + d.to + ' on promotion';
+      modal.hidden = false;
+    });
   });
   document.getElementById('prClose').addEventListener('click', closeModal);
   modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
 
-  /* ---------- promote all ---------- */
-  var btn = document.getElementById('promoteAllBtn');
-  if (!btn) return;
-
-  var RUN_URL   = '<?= site_url('promotion_run_all') ?>';
+  /* ---------- AJAX buttons ---------- */
   var CSRF_NAME = '<?= $this->security->get_csrf_token_name() ?>';
   var CSRF_HASH = '<?= $this->security->get_csrf_hash() ?>';
   var NEXT_NAME = '<?= html_escape($nextName) ?>';
@@ -174,12 +177,22 @@ foreach ($classes as $c) { $sumBoys += (int)$c->boys; $sumGirls += (int)$c->girl
     else { alert(msg); }
   }
 
-  async function run() {
+  function ask(title, text, yes, go) {
+    if (window.Swal) {
+      Swal.fire({ title: title, text: text, icon: 'question', showCancelButton: true,
+                  confirmButtonText: yes, cancelButtonText: 'Cancel' })
+          .then(function (r) { if (r.isConfirmed) go(); });
+    } else if (confirm(title + '\n\n' + text)) {
+      go();
+    }
+  }
+
+  async function post(btn, url) {
     btn.disabled = true;
     try {
       var fd = new FormData();
       fd.append(CSRF_NAME, CSRF_HASH);
-      var res = await (await fetch(RUN_URL, { method: 'POST', body: fd })).json();
+      var res = await (await fetch(url, { method: 'POST', body: fd })).json();
       if (res.csrf) CSRF_HASH = res.csrf;
       notify(!!res.status, res.msg);
       if (res.status) { setTimeout(function () { location.reload(); }, 1500); return; }
@@ -189,15 +202,15 @@ foreach ($classes as $c) { $sumBoys += (int)$c->boys; $sumGirls += (int)$c->girl
     btn.disabled = false;
   }
 
-  btn.addEventListener('click', function () {
-    var text = TOTAL + ' students will be moved to ' + NEXT_NAME + '. This can be done only once.';
-    if (window.Swal) {
-      Swal.fire({ title: 'Promote all classes?', text: text, icon: 'question', showCancelButton: true,
-                  confirmButtonText: 'Yes, promote all', cancelButtonText: 'Cancel' })
-          .then(function (r) { if (r.isConfirmed) run(); });
-    } else if (confirm('Promote all classes?\n\n' + text)) {
-      run();
-    }
-  });
+  var promoteBtn = document.getElementById('promoteAllBtn');
+  if (promoteBtn) {
+    promoteBtn.addEventListener('click', function () {
+      ask('Promote all classes?',
+          TOTAL + ' students will be moved to ' + NEXT_NAME + ' and to their next class. This can be done only once.',
+          'Yes, promote all',
+          function () { post(promoteBtn, '<?= site_url('promotion_run_all') ?>'); });
+    });
+  }
+
 })();
 </script>
