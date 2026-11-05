@@ -170,8 +170,9 @@ $route['promotion']         = 'PromotionController/promotion';
 $route['promotion_run_all'] = 'PromotionController/run_all';
 
 
-$route['division_allocation'] = 'PromotionController/division_allocation';
-
+$route['division_allocation']      = 'DivisionAllocationController/division_allocation';
+$route['division_students']        = 'DivisionAllocationController/students';
+$route['division_allocation_save'] = 'DivisionAllocationController/save';
 
 
 $route['Migration'] = 'Migration';
