@@ -98,44 +98,46 @@ class promotion_Model extends CI_Model
        ===================================================== */
 
     /* Boys / girls / total per promotable class, in school order, with the class they move to */
-    public function get_all_class_stats($yearId)
-    {
-        $map  = $this->class_map();
-        $rows = $this->db->query("
-            SELECT c.cmId, c.cmName,
-                   COUNT(s.smClass)                AS total,
-                   COALESCE(SUM(s.smGender = 1),0) AS boys,
-                   COALESCE(SUM(s.smGender = 0),0) AS girls
-            FROM class_master c
-            LEFT JOIN students_master s
-                   ON s.smClass = c.cmId AND s.smAmId = ?
-            GROUP BY c.cmId, c.cmName", [(int)$yearId])->result();
+ public function get_all_class_stats($yearId)
+{
+    $map  = $this->class_map();
+    $rows = $this->db->query("
+        SELECT c.cmId, c.cmName,
+               COUNT(s.smClass)                AS total,
+               COALESCE(SUM(s.smGender = 1),0) AS boys,
+               COALESCE(SUM(s.smGender = 0),0) AS girls
+        FROM class_master c
+        LEFT JOIN students_master s
+               ON s.smClass = c.cmId AND s.smAmId = ? AND s.smActive = 1
+        GROUP BY c.cmId, c.cmName", [(int)$yearId])->result();
 
-        $out = [];
-        foreach ($rows as $r) {
-            if (!isset($map[(int)$r->cmId])) continue;
-            $r->toName = $map[(int)$r->cmId]['toName'];
-            $out[] = $r;
-        }
-        return $this->sort_classes($out);
+    $out = [];
+    foreach ($rows as $r) {
+        if (!isset($map[(int)$r->cmId])) continue;
+        $r->toName = $map[(int)$r->cmId]['toName'];
+        $out[] = $r;
     }
+    return $this->sort_classes($out);
+}
 
     /* Students of $fromYear that are not yet in $toYear (promotable classes only) */
-    public function count_pending($fromYearId, $toYearId)
-    {
-        $ids = array_keys($this->class_map());
-        if (!$ids) return 0;
+public function count_pending($fromYearId, $toYearId)
+{
+    $ids = array_keys($this->class_map());
+    if (!$ids) return 0;
 
-        return (int)$this->db->query("
-            SELECT COUNT(*) AS c
-            FROM students_master s
-            WHERE s.smAmId = ?
-              AND s.smClass IN (" . implode(',', $ids) . ")
-              AND NOT EXISTS (
-                  SELECT 1 FROM students_master n
-                  WHERE n.smAdmissionNo = s.smAdmissionNo AND n.smAmId = ?
-              )", [(int)$fromYearId, (int)$toYearId])->row()->c;
-    }
+    return (int)$this->db->query("
+        SELECT COUNT(*) AS c
+        FROM students_master s
+        WHERE s.smAmId = ?
+          AND s.smActive = 1
+          AND s.smClass IN (" . implode(',', $ids) . ")
+          AND NOT EXISTS (
+              SELECT 1 FROM students_master n
+              WHERE n.smId = s.smId AND n.smAmId = ?
+          )", [(int)$fromYearId, (int)$toYearId])->row()->c;
+}
+
 
     /* =====================================================
        PROMOTION
@@ -147,70 +149,75 @@ class promotion_Model extends CI_Model
        Returns: -1 = already promoted / not current, false = failed, otherwise number copied
        ===================================================== */
     public function promote_all($fromYearId, $toYearId)
-    {
-        $map = $this->class_map();
-        if (!$map) return false;
+{
+    $map = $this->class_map();
+    if (!$map) return false;
 
-        $case = '';
-        foreach ($map as $from => $m) {
-            $case .= ' WHEN ' . (int)$from . ' THEN ' . (int)$m['to'];
-        }
-        $ids = implode(',', array_keys($map));
-
-        // every column of students_master except the primary key
-        $insertCols = []; $selectCols = [];
-        foreach ($this->db->field_data('students_master') as $f) {
-            if (!empty($f->primary_key) || $f->name === 'smId') continue;
-
-            $insertCols[] = '`' . $f->name . '`';
-            if ($f->name === 'smClass')      $selectCols[] = "CASE s.`smClass` $case END";
-            elseif ($f->name === 'smAmId')   $selectCols[] = '?';
-            else                             $selectCols[] = 's.`' . $f->name . '`';
-        }
-        if (!in_array('`smClass`', $insertCols, true) || !in_array('`smAmId`', $insertCols, true)) return false;
-        $insertCols = implode(', ', $insertCols);
-        $selectCols = implode(', ', $selectCols);
-
-        $this->db->trans_begin();
-
-        // 1) target year check
-        $to = $this->db->query("SELECT amId FROM academic_master
-                                WHERE amId = ? AND amIsCurrent = 0 AND amId <> ?",
-                                [(int)$toYearId, (int)$fromYearId])->row();
-        if (!$to) {
-            $this->db->trans_rollback();
-            return false;
-        }
-
-        // 2) lock the source year
-        $this->db->query("UPDATE academic_master
-                          SET c_status = 1
-                          WHERE amId = ? AND amIsCurrent = 1 AND c_status = 0", [(int)$fromYearId]);
-
-        if ($this->db->affected_rows() === 0) {
-            $this->db->trans_rollback();
-            return -1;
-        }
-
-        // 3) copy ALL columns of every student: new smAmId + NEXT smClass (smId is auto, so it is skipped)
-        $this->db->query("
-            INSERT INTO students_master ($insertCols)
-            SELECT $selectCols
-            FROM students_master s
-            WHERE s.smAmId = ?
-              AND s.smClass IN ($ids)
-              AND NOT EXISTS (
-                  SELECT 1 FROM students_master n
-                  WHERE n.smAdmissionNo = s.smAdmissionNo AND n.smAmId = ?
-              )", [(int)$toYearId, (int)$fromYearId, (int)$toYearId]);
-
-        $count = $this->db->affected_rows();
-
-        if ($this->db->trans_status() === false) {
-            $this->db->trans_rollback();
-            return false;
-        }
-        $this->db->trans_commit();
-        return $count;
+    $case = '';
+    foreach ($map as $from => $m) {
+        $case .= ' WHEN ' . (int)$from . ' THEN ' . (int)$m['to'];
     }
+    $ids = implode(',', array_keys($map));
+
+    // every column of students_master INCLUDING smId (same smId carried to the new year)
+    $insertCols = []; $selectCols = [];
+    foreach ($this->db->field_data('students_master') as $f) {
+        $insertCols[] = '`' . $f->name . '`';
+        if ($f->name === 'smClass')      $selectCols[] = "CASE s.`smClass` $case END";
+        elseif ($f->name === 'smAmId')   $selectCols[] = '?';
+        else                             $selectCols[] = 's.`' . $f->name . '`';
+    }
+    if (!in_array('`smClass`', $insertCols, true) || !in_array('`smAmId`', $insertCols, true)) return false;
+    $insertCols = implode(', ', $insertCols);
+    $selectCols = implode(', ', $selectCols);
+
+    $this->db->trans_begin();
+
+    // 1) target year check
+    $to = $this->db->query("SELECT amId FROM academic_master
+                            WHERE amId = ? AND amIsCurrent = 0 AND amId <> ?",
+                            [(int)$toYearId, (int)$fromYearId])->row();
+    if (!$to) {
+        $this->db->trans_rollback();
+        return false;
+    }
+
+    // 2) lock the source year
+    $this->db->query("UPDATE academic_master
+                      SET c_status = 1
+                      WHERE amId = ? AND amIsCurrent = 1 AND c_status = 0", [(int)$fromYearId]);
+
+    if ($this->db->affected_rows() === 0) {
+        $this->db->trans_rollback();
+        return -1;
+    }
+
+    // 3) copy ACTIVE students only, same smId, new smAmId + NEXT smClass
+    $this->db->query("
+        INSERT INTO students_master ($insertCols)
+        SELECT $selectCols
+        FROM students_master s
+        WHERE s.smAmId = ?
+          AND s.smActive = 1
+          AND s.smClass IN ($ids)
+          AND NOT EXISTS (
+              SELECT 1 FROM students_master n
+              WHERE n.smId = s.smId AND n.smAmId = ?
+          )", [(int)$toYearId, (int)$fromYearId, (int)$toYearId]);
+
+    $count = $this->db->affected_rows();
+
+    if ($this->db->trans_status() === false) {
+        $this->db->trans_rollback();
+        return false;
+    }
+    $this->db->trans_commit();
+    return $count;
+}
+
+
+
+
+
+
 }

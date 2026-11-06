@@ -175,6 +175,10 @@ $route['division_students']        = 'DivisionAllocationController/students';
 $route['division_allocation_save'] = 'DivisionAllocationController/save';
 
 
+
+$route['mark_entry_list'] = 'Reports/mark_entry_list';
+
+
 $route['Migration'] = 'Migration';
 $route['logout'] = 'Login/logout';
 
