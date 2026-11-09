@@ -56,6 +56,17 @@ public function teacherdashboard()
 {
     $this->load->model('Exam_Model');
 
+
+    // Make sure academic year is in session
+    if (!$this->session->userdata('selected_am_id')) {
+        $row = $this->db->select('amId')    
+                        ->where('amIsCurrent', 1)          
+                        ->get('academic_master')->row(); 
+        if ($row) {
+            $this->session->set_userdata('selected_am_id', $row->amId);
+        }
+    }
+
     $emp_id   = (int)$this->session->userdata('id');
     $is_admin = ($emp_id === 1);
     $teacher  = $this->TeacherDashboard_model->get_teacher($emp_id);

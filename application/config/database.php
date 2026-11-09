@@ -64,6 +64,9 @@ $common_file = FCPATH . 'common_config.php';
 $config_values = require $common_file;
 
 $ip = $config_values['ip'];
+$username = $config_values['username'];
+$password = $config_values['password'];
+$database = $config_values['database'];
 
 $active_group = 'default';
 $query_builder = TRUE;
@@ -73,9 +76,9 @@ $db['default'] = array(
 
 	// 'hostname' => '103.122.182.25',
 	'hostname' => $ip,
-	'username' => 'lhs_demo',
-	'password' => 'lhsdemo@123',
-	'database' => 'lhs_demo',
+    'username' => $username,
+	'password' => $password,
+	'database' => $database,
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

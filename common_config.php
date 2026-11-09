@@ -9,7 +9,10 @@ $ip = '103.122.182.25';
 return [
     'base_url' => $base_url,
     'base_url_admin' => $base_url_admin,
-    'ip' => $ip
+    'ip' => $ip,
+    'username' => 'lhs_demo',
+    'password' => 'lhsdemo@123',
+    'database' => 'lhs_demo',
 ];
 
 

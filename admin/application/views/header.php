@@ -39,7 +39,7 @@ if ($initials === '') $initials = 'U';
 
 /* ACADEMIC YEARS + SELECTED YEAR */
 $years = $this->db
-    ->query("SELECT amId, amYear, amIsCurrent FROM academic_master ORDER BY amYear DESC")
+    ->query("SELECT amId, amYear, amIsCurrent FROM academic_master WHERE c_status = 1 ORDER BY amYear DESC")
     ->result();
 
 // Get current academic year (amIsCurrent = 1)
