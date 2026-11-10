@@ -148,7 +148,76 @@ public function count_pending($fromYearId, $toYearId)
        Class 12 is never copied.
        Returns: -1 = already promoted / not current, false = failed, otherwise number copied
        ===================================================== */
-    public function promote_all($fromYearId, $toYearId)
+//     public function promote_all($fromYearId, $toYearId)
+// {
+//     $map = $this->class_map();
+//     if (!$map) return false;
+
+//     $case = '';
+//     foreach ($map as $from => $m) {
+//         $case .= ' WHEN ' . (int)$from . ' THEN ' . (int)$m['to'];
+//     }
+//     $ids = implode(',', array_keys($map));
+
+//     // every column of students_master INCLUDING smId (same smId carried to the new year)
+//     $insertCols = []; $selectCols = [];
+//     foreach ($this->db->field_data('students_master') as $f) {
+//         $insertCols[] = '`' . $f->name . '`';
+//         if ($f->name === 'smClass')      $selectCols[] = "CASE s.`smClass` $case END";
+//         elseif ($f->name === 'smAmId')   $selectCols[] = '?';
+//         else                             $selectCols[] = 's.`' . $f->name . '`';
+//     }
+//     if (!in_array('`smClass`', $insertCols, true) || !in_array('`smAmId`', $insertCols, true)) return false;
+//     $insertCols = implode(', ', $insertCols);
+//     $selectCols = implode(', ', $selectCols);
+
+//     $this->db->trans_begin();
+
+//     // 1) target year check
+//     $to = $this->db->query("SELECT amId FROM academic_master
+//                             WHERE amId = ? AND amIsCurrent = 0 AND amId <> ?",
+//                             [(int)$toYearId, (int)$fromYearId])->row();
+//     if (!$to) {
+//         $this->db->trans_rollback();
+//         return false;
+//     }
+
+//     // 2) lock the source year
+//     $this->db->query("UPDATE academic_master
+//                       SET c_status = 1
+//                       WHERE amId = ? AND amIsCurrent = 1 AND c_status = 0", [(int)$fromYearId]);
+
+//     if ($this->db->affected_rows() === 0) {
+//         $this->db->trans_rollback();
+//         return -1;
+//     }
+
+//     // 3) copy ACTIVE students only, same smId, new smAmId + NEXT smClass
+//     $this->db->query("
+//         INSERT INTO students_master ($insertCols)
+//         SELECT $selectCols
+//         FROM students_master s
+//         WHERE s.smAmId = ?
+//           AND s.smActive = 1
+//           AND s.smClass IN ($ids)
+//           AND NOT EXISTS (
+//               SELECT 1 FROM students_master n
+//               WHERE n.smId = s.smId AND n.smAmId = ?
+//           )", [(int)$toYearId, (int)$fromYearId, (int)$toYearId]);
+
+//     $count = $this->db->affected_rows();
+
+//     if ($this->db->trans_status() === false) {
+//         $this->db->trans_rollback();
+//         return false;
+//     }
+//     $this->db->trans_commit();
+//     return $count;
+// }
+
+
+
+public function promote_all($fromYearId, $toYearId)
 {
     $map = $this->class_map();
     if (!$map) return false;
@@ -159,9 +228,10 @@ public function count_pending($fromYearId, $toYearId)
     }
     $ids = implode(',', array_keys($map));
 
-    // every column of students_master INCLUDING smId (same smId carried to the new year)
+    // every column EXCEPT smId (auto-increment generates a new one)
     $insertCols = []; $selectCols = [];
     foreach ($this->db->field_data('students_master') as $f) {
+        if ($f->name === 'smId') continue;
         $insertCols[] = '`' . $f->name . '`';
         if ($f->name === 'smClass')      $selectCols[] = "CASE s.`smClass` $case END";
         elseif ($f->name === 'smAmId')   $selectCols[] = '?';
@@ -173,26 +243,15 @@ public function count_pending($fromYearId, $toYearId)
 
     $this->db->trans_begin();
 
-    // 1) target year check
     $to = $this->db->query("SELECT amId FROM academic_master
                             WHERE amId = ? AND amIsCurrent = 0 AND amId <> ?",
                             [(int)$toYearId, (int)$fromYearId])->row();
-    if (!$to) {
-        $this->db->trans_rollback();
-        return false;
-    }
+    if (!$to) { $this->db->trans_rollback(); return false; }
 
-    // 2) lock the source year
-    $this->db->query("UPDATE academic_master
-                      SET c_status = 1
+    $this->db->query("UPDATE academic_master SET c_status = 1
                       WHERE amId = ? AND amIsCurrent = 1 AND c_status = 0", [(int)$fromYearId]);
+    if ($this->db->affected_rows() === 0) { $this->db->trans_rollback(); return -1; }
 
-    if ($this->db->affected_rows() === 0) {
-        $this->db->trans_rollback();
-        return -1;
-    }
-
-    // 3) copy ACTIVE students only, same smId, new smAmId + NEXT smClass
     $this->db->query("
         INSERT INTO students_master ($insertCols)
         SELECT $selectCols
@@ -207,17 +266,10 @@ public function count_pending($fromYearId, $toYearId)
 
     $count = $this->db->affected_rows();
 
-    if ($this->db->trans_status() === false) {
-        $this->db->trans_rollback();
-        return false;
-    }
+    if ($this->db->trans_status() === false) { $this->db->trans_rollback(); return false; }
     $this->db->trans_commit();
     return $count;
 }
-
-
-
-
 
 
 }
