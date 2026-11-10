@@ -82,12 +82,11 @@ $route['delete_slider'] = 'QuestionpaperController/delete_slider';
 
 
 
-$route['accademic_list']   = 'QuestionpaperController/accademic_list';
-$route['save_academic']    = 'QuestionpaperController/save_academic';     // add + edit
-$route['delete_accademic'] = 'QuestionpaperController/delete_accademic';
-$route['change_current_year'] = 'QuestionpaperController/change_current_year';
-
-
+$route['accademic_list']      = 'QuestionpaperController/accademic_list';
+$route['save_academic']       = 'QuestionpaperController/save_academic';     // add + edit
+$route['delete_accademic']    = 'QuestionpaperController/delete_accademic';
+$route['set_current_year']    = 'QuestionpaperController/set_current_year';  // NEW
+$route['toggle_academic_active'] = 'QuestionpaperController/toggle_academic_active'; // NEW
 
 $route['term_list']   = 'QuestionpaperController/term_list';
 $route['save_term']   = 'QuestionpaperController/save_term';     // add + edit

@@ -1,7 +1,4 @@
-<?php /* Receives: $academic (amId, amYear, amIsCurrent, c_status), $current, $nextName, $next */
-$curYear  = $current ? $current->amYear : '';
-$curDone  = $current ? ((int)$current->c_status === 1) : false;
-?>
+<?php /* Receives: $academic (amId, amYear, amIsCurrent, amActive) */ ?>
 <style>
 .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:1000}
 .modal-overlay.open{display:flex}
@@ -19,12 +16,22 @@ $curDone  = $current ? ((int)$current->c_status === 1) : false;
 .field-error{color:#dc2626;font-size:13px;margin:8px 0 0}
 [hidden]{display:none !important}
 
-.head-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .badge-current{display:inline-block;margin-left:8px;padding:2px 10px;font-size:11px;font-weight:700;letter-spacing:.3px;border-radius:999px;background:#dcfce7;color:#15803d;border:1px solid #86efac;vertical-align:middle}
-.badge-promoted{display:inline-block;margin-left:6px;padding:2px 10px;font-size:11px;font-weight:700;letter-spacing:.3px;border-radius:999px;background:#e0e7ff;color:#4338ca;border:1px solid #c7d2fe;vertical-align:middle}
+.badge-off{display:inline-block;margin-left:8px;padding:2px 10px;font-size:11px;font-weight:700;border-radius:999px;background:#f1f5f9;color:#64748b;border:1px solid #cbd5e1;vertical-align:middle}
 tr.is-current{background:#f0fdf4}
 tr.is-current td:first-child{box-shadow:inset 3px 0 0 #16a34a}
 tr.is-current .v-title{font-weight:700;color:#15803d}
+tr.is-inactive .v-title{color:#94a3b8}
+
+.cur-check{width:18px;height:18px;cursor:pointer;accent-color:#16a34a}
+/* toggle switch */
+.switch{position:relative;display:inline-block;width:42px;height:24px}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:#cbd5e1;border-radius:999px;cursor:pointer;transition:.2s}
+.slider:before{content:"";position:absolute;height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.switch input:checked + .slider{background:#16a34a}
+.switch input:checked + .slider:before{transform:translateX(18px)}
+.switch input:focus-visible + .slider{outline:2px solid #6366f1;outline-offset:2px}
 </style>
 
 <main class="page">
@@ -33,13 +40,7 @@ tr.is-current .v-title{font-weight:700;color:#15803d}
       <h1 class="page-title">Academic Year</h1>
       <p class="page-sub">Manage academic years</p>
     </div>
-    <div class="head-actions">
-      <?php if ($current && $nextName): ?>
-        <button class="btn" type="button" id="changeYearBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          Change current year to <?= html_escape($nextName) ?>
-        </button>
-      <?php endif; ?>
+    <div>
       <button class="btn btn-primary" type="button" id="openAddModal">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
         Add Academic Year
@@ -61,22 +62,33 @@ tr.is-current .v-title{font-weight:700;color:#15803d}
           <tr>
             <th style="width:80px">Sl No</th>
             <th>Academic Year</th>
+            <th style="width:110px;text-align:center">Current</th>
+            <th style="width:110px;text-align:center">Active</th>
             <th style="width:110px;text-align:right">Actions</th>
           </tr>
         </thead>
         <tbody id="rows">
           <?php foreach ($academic as $i => $a): ?>
           <tr data-id="<?= (int)$a->amId ?>" data-year="<?= html_escape($a->amYear) ?>"
-              class="<?= ((int)$a->amIsCurrent === 1) ? 'is-current' : '' ?>">
+              class="<?= ((int)$a->amIsCurrent === 1) ? 'is-current' : '' ?> <?= ((int)$a->amActive !== 1) ? 'is-inactive' : '' ?>">
             <td class="num"><?= $i + 1 ?></td>
             <td class="v-title">
               <?= html_escape($a->amYear) ?>
-              <?php if ((int)$a->amIsCurrent === 1): ?>
-                <span class="badge-current">CURRENT</span>
-                <?php if ((int)$a->c_status === 1): ?>
-                  <span class="badge-promoted">PROMOTED</span>
-                <?php endif; ?>
-              <?php endif; ?>
+              <?php if ((int)$a->amIsCurrent === 1): ?><span class="badge-current">CURRENT</span><?php endif; ?>
+              <?php if ((int)$a->amActive !== 1): ?><span class="badge-off">DISABLED</span><?php endif; ?>
+            </td>
+            <td style="text-align:center">
+              <input type="checkbox" class="cur-check" data-current
+                     title="Set as current year"
+                     aria-label="Set <?= html_escape($a->amYear) ?> as current year"
+                     <?= ((int)$a->amIsCurrent === 1) ? 'checked' : '' ?>>
+            </td>
+            <td style="text-align:center">
+              <label class="switch" title="Enable / Disable">
+                <input type="checkbox" data-active aria-label="Enable <?= html_escape($a->amYear) ?>"
+                       <?= ((int)$a->amActive === 1) ? 'checked' : '' ?>>
+                <span class="slider"></span>
+              </label>
             </td>
             <td>
               <div class="row-actions" style="justify-content:flex-end;">
@@ -128,68 +140,23 @@ tr.is-current .v-title{font-weight:700;color:#15803d}
 
   const SAVE_URL    = '<?= site_url('save_academic') ?>';
   const DELETE_URL  = '<?= site_url('delete_accademic') ?>';
-  const CHANGE_URL  = '<?= site_url('change_current_year') ?>';
-  const PROMOTE_URL = '<?= site_url('promotion') ?>';
+  const CURRENT_URL = '<?= site_url('set_current_year') ?>';
+  const ACTIVE_URL  = '<?= site_url('toggle_academic_active') ?>';
   const CSRF_NAME   = '<?= $this->security->get_csrf_token_name() ?>';
   let   CSRF_HASH   = '<?= $this->security->get_csrf_hash() ?>';
-
-  const CUR_YEAR  = <?= json_encode($curYear) ?>;
-  const CUR_DONE  = <?= $curDone ? 'true' : 'false' ?>;
-  const NEXT_NAME = <?= json_encode($nextName) ?>;
-  const NEXT_OK   = <?= $next ? 'true' : 'false' ?>;
 
   let editId = 0;
 
   const showError = m => { errorEl.textContent = m; errorEl.hidden = false; };
 
-  /* ---------- change current year ---------- */
-  const changeBtn = $('changeYearBtn');
-  if (changeBtn) {
-    changeBtn.addEventListener('click', () => {
-
-      // 1) the present current year must already be promoted (c_status = 1)
-      if (!CUR_DONE) {
-        return Swal.fire({
-          icon: 'warning',
-          title: 'Promotion not done',
-          text: 'Promotion for ' + CUR_YEAR + ' is not done yet. Please do the promotion first, then change the current year.',
-          showCancelButton: true,
-          confirmButtonText: 'Go to Promotion',
-          cancelButtonText: 'Close'
-        }).then(r => { if (r.isConfirmed) location.href = PROMOTE_URL; });
-      }
-
-      // 2) the next year must exist
-      if (!NEXT_OK) {
-        return Swal.fire({ icon: 'error', title: 'Academic year missing',
-                           text: 'Academic year ' + NEXT_NAME + ' does not exist. Please add it first.' });
-      }
-
-      // 3) confirm, then change (the server checks everything again)
-      Swal.fire({
-        icon: 'question', title: 'Change current year?',
-        text: NEXT_NAME + ' will become the current academic year.',
-        showCancelButton: true, confirmButtonText: 'Yes, change', cancelButtonText: 'Cancel'
-      }).then(async r => {
-        if (!r.isConfirmed) return;
-        changeBtn.disabled = true;
-        const fd = new FormData();
-        fd.append(CSRF_NAME, CSRF_HASH);
-        try {
-          const res = await (await fetch(CHANGE_URL, { method: 'POST', body: fd })).json();
-          if (res.csrf) CSRF_HASH = res.csrf;
-          if (!res.status) {
-            changeBtn.disabled = false;
-            return Swal.fire({ icon: 'warning', title: 'Not allowed', text: res.msg });
-          }
-          Swal.fire({ icon: 'success', title: 'Done', text: res.msg, timer: 1500, showConfirmButton: false })
-              .then(() => location.reload());
-        } catch (err) {
-          changeBtn.disabled = false;
-          Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong.' });
-        }
-      });
-    });
+  /* ---------- small POST helper (keeps CSRF fresh) ---------- */
+  async function post(url, data) {
+    const fd = new FormData();
+    Object.keys(data).forEach(k => fd.append(k, data[k]));
+    fd.append(CSRF_NAME, CSRF_HASH);
+    const res = await (await fetch(url, { method: 'POST', body: fd })).json();
+    if (res.csrf) CSRF_HASH = res.csrf;
+    return res;
   }
 
   /* ---------- search + serial numbers ---------- */
@@ -240,15 +207,9 @@ tr.is-current .v-title{font-weight:700;color:#15803d}
     const s = +year.slice(0, 4), en = +year.slice(5);
     if ((s + 1) % 100 !== en) return showError('The end year must follow the start year (e.g. 2026-27).');
 
-    const fd = new FormData();
-    fd.append('id', editId);
-    fd.append('year', year);
-    fd.append(CSRF_NAME, CSRF_HASH);
-
     saveBtn.disabled = true;
     try {
-      const res = await (await fetch(SAVE_URL, { method: 'POST', body: fd })).json();
-      if (res.csrf) CSRF_HASH = res.csrf;
+      const res = await post(SAVE_URL, { id: editId, year: year });
       if (!res.status) return showError(res.msg);
       close();
       Swal.fire({ icon: 'success', title: 'Success', text: res.msg, timer: 1500, showConfirmButton: false })
@@ -256,6 +217,61 @@ tr.is-current .v-title{font-weight:700;color:#15803d}
     } catch (err) {
       showError('Something went wrong. Please try again.');
     } finally { saveBtn.disabled = false; }
+  });
+
+  /* ---------- current checkbox + active switch ---------- */
+  $('rows').addEventListener('change', async e => {
+    const tr = e.target.closest('tr');
+    if (!tr) return;
+    const id = +tr.dataset.id, year = tr.dataset.year;
+
+    // ---- make this year current ----
+    if (e.target.matches('[data-current]')) {
+      const box = e.target;
+
+      // unticking the current year is not allowed: one year must always be current
+      if (!box.checked) {
+        box.checked = true;
+        return Swal.fire({ icon: 'info', title: 'One year must be current',
+                           text: 'To change it, tick another academic year.' });
+      }
+
+      box.checked = false; // stays unticked until the server confirms
+      const r = await Swal.fire({
+        icon: 'question', title: 'Change current year?',
+        text: year + ' will become the current academic year.',
+        showCancelButton: true, confirmButtonText: 'Yes, change', cancelButtonText: 'Cancel'
+      });
+      if (!r.isConfirmed) return;
+
+      try {
+        const res = await post(CURRENT_URL, { id: id });
+        if (!res.status) return Swal.fire({ icon: 'warning', title: 'Not allowed', text: res.msg });
+        Swal.fire({ icon: 'success', title: 'Done', text: res.msg, timer: 1500, showConfirmButton: false })
+            .then(() => location.reload());
+      } catch (err) {
+        Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong.' });
+      }
+      return;
+    }
+
+    // ---- enable / disable (amActive 1 / 0) ----
+    if (e.target.matches('[data-active]')) {
+      const sw = e.target, want = sw.checked ? 1 : 0;
+      sw.disabled = true;
+      try {
+        const res = await post(ACTIVE_URL, { id: id, active: want });
+        if (!res.status) {
+          sw.checked = !want;                       // revert
+          return Swal.fire({ icon: 'warning', title: 'Not allowed', text: res.msg });
+        }
+        Swal.fire({ icon: 'success', title: 'Done', text: res.msg, timer: 1200, showConfirmButton: false })
+            .then(() => location.reload());
+      } catch (err) {
+        sw.checked = !want;
+        Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong.' });
+      } finally { sw.disabled = false; }
+    }
   });
 
   /* ---------- edit / delete ---------- */
@@ -273,12 +289,8 @@ tr.is-current .v-title{font-weight:700;color:#15803d}
         confirmButtonText: 'Yes, delete it', cancelButtonText: 'Cancel'
       }).then(async r => {
         if (!r.isConfirmed) return;
-        const fd = new FormData();
-        fd.append('id', id);
-        fd.append(CSRF_NAME, CSRF_HASH);
         try {
-          const res = await (await fetch(DELETE_URL, { method: 'POST', body: fd })).json();
-          if (res.csrf) CSRF_HASH = res.csrf;
+          const res = await post(DELETE_URL, { id: id });
           if (!res.status) return Swal.fire({ icon: 'error', title: 'Error', text: res.msg });
           Swal.fire({ icon: 'success', title: 'Deleted!', text: res.msg, timer: 1500, showConfirmButton: false })
               .then(() => location.reload());
