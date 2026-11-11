@@ -95,59 +95,16 @@ class FeeReports extends CI_Controller
     private function _render($spec)
     {
         $year = $this->Fee_model->get_year($this->amId);
-        $spec += array('filters' => array(), 'group' => false, 'note' => '', 'need' => '', 'count_label' => 'rows');
         $spec['year'] = $year ? $year->amYear : '';
-
-        if ($this->input->get('export') === 'csv') return $this->_csv($spec);
-
-        $data = array(
-            'r'       => $spec,
+        $spec['hub']  = $spec['menu'] === 'STUDENT_REPORTS' ? 'reports/students' : 'reports/fees';
+        $this->load->library('Report_view');
+        $this->report_view->output($spec, array(
             'f'       => $this->f,
             'classes' => $this->Subject_Model->get_all_classes(),
             'div_map' => $this->Subject_Model->get_class_division_map(),
             'fees'    => $this->Fee_model->get_fees($this->amId),
             'modes'   => Fee_model::$pay_modes,
-        );
-        $this->load->view('header', array('pageTitle' => $spec['title'], 'activePage' => $spec['menu'],
-                                          'pageStylesheets' => array(base_url('assets/css/fee.css'))));
-        $this->load->view('report_table', $data);
-        $this->load->view('footer');
-    }
-
-    private function _csv($spec)
-    {
-        $name = preg_replace('/[^a-z0-9]+/i', '_', strtolower($spec['title'])) . '_' . date('Ymd') . '.csv';
-        header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename="' . $name . '"');
-        $out = fopen('php://output', 'w');
-        fwrite($out, "\xEF\xBB\xBF");   // UTF-8 BOM for Excel
-
-        $head = array();
-        if ($spec['group']) $head[] = 'Group';
-        foreach ($spec['columns'] as $c) $head[] = $c['label'];
-        fputcsv($out, $head);
-
-        $tot = array();
-        foreach ($spec['rows'] as $row) {
-            $line = array();
-            if ($spec['group']) $line[] = $row['_group'];
-            foreach ($spec['columns'] as $c) {
-                $v = isset($row[$c['key']]) ? $row[$c['key']] : '';
-                if (($c['type'] ?? '') === 'money') $v = $v === '' ? '' : number_format((float)$v, 2, '.', '');
-                $line[] = $v;
-                if (!empty($c['total'])) $tot[$c['key']] = ($tot[$c['key']] ?? 0) + (float)(isset($row[$c['key']]) ? $row[$c['key']] : 0);
-            }
-            fputcsv($out, $line);
-        }
-        if ($tot) {
-            $line = $spec['group'] ? array('') : array();
-            foreach ($spec['columns'] as $i => $c) {
-                $line[] = isset($tot[$c['key']]) ? number_format($tot[$c['key']], 2, '.', '') : ($i === 0 ? 'TOTAL' : '');
-            }
-            fputcsv($out, $line);
-        }
-        fclose($out);
-        exit;
+        ));
     }
 
     /* ================================================================
@@ -161,6 +118,10 @@ class FeeReports extends CI_Controller
                 array('reports/student_list', 'Student List', 'All students with personal and contact details'),
                 array('reports/student_class_wise', 'Student Class Wise List', 'Students grouped by class and division with boys / girls count'),
                 array('reports/student_fee_list', 'Student Fee List', 'Fees allotted to each student and the yearly total'),
+            ),
+            'Attendance' => array(
+                array('reports/attendance_register', 'Attendance Register', 'Month-wise day by day attendance of a class'),
+                array('reports/attendance_summary', 'Attendance Summary', 'Present / absent / % per student for a period, below-75% list'),
             ),
         ));
     }

@@ -44,7 +44,7 @@ $csv_url = site_url($r['route']) . '?' . http_build_query(array_merge($qs, array
       <p class="page-sub">Academic year <?= html_escape($r['year']) ?><?= $r['note'] ? ' · ' . html_escape($r['note']) : '' ?></p>
     </div>
     <div class="page-actions">
-      <a class="btn btn-secondary" href="<?= site_url($r['menu'] === 'STUDENT_REPORTS' ? 'reports/students' : 'reports/fees') ?>">All Reports</a>
+      <a class="btn btn-secondary" href="<?= site_url($r['hub']) ?>">All Reports</a>
       <a class="btn btn-secondary" href="<?= html_escape($csv_url) ?>">Excel (CSV)</a>
       <button class="btn btn-primary" type="button" onclick="window.print()">Print</button>
     </div>
@@ -107,6 +107,15 @@ $csv_url = site_url($r['route']) . '?' . http_build_query(array_merge($qs, array
               <?php foreach ($modes as $m): ?><option <?= $f['mode'] === $m ? 'selected' : '' ?>><?= html_escape($m) ?></option><?php endforeach; ?>
             </select></div>
         <?php endif; ?>
+        <?php foreach ($r['selects'] as $sel): ?>
+          <div class="fb"><label for="rs_<?= html_escape($sel['name']) ?>"><?= html_escape($sel['label']) ?></label>
+            <select class="field-input" id="rs_<?= html_escape($sel['name']) ?>" name="<?= html_escape($sel['name']) ?>">
+              <option value=""><?= html_escape(isset($sel['all']) ? $sel['all'] : 'All') ?></option>
+              <?php foreach ($sel['options'] as $v => $l): ?>
+                <option value="<?= html_escape($v) ?>" <?= (string)$sel['value'] === (string)$v ? 'selected' : '' ?>><?= html_escape($l) ?></option>
+              <?php endforeach; ?>
+            </select></div>
+        <?php endforeach; ?>
         <?php if (isset($has['group'])): ?>
           <div class="fb"><label for="rgrp">Group by</label>
             <select class="field-input" id="rgrp" name="group">

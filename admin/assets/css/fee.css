@@ -109,3 +109,17 @@ textarea.field-input{height:auto;min-height:70px;padding:9px 10px;resize:vertica
   .table-wrap{overflow:visible}
   body{background:#fff}
 }
+
+/* store */
+.table tr.row-warn td{background:#fff1f2}
+.doc-head{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px 16px;padding:16px 20px;border-bottom:1px solid #e2e8f0}
+.doc-add{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:14px 20px;border-bottom:1px solid #e2e8f0;background:#f8fafc}
+.doc-add .field-input{max-width:420px}
+.doc-total{display:grid;grid-template-columns:1fr 320px;gap:20px;padding:16px 20px;border-top:1px solid #e2e8f0}
+.tot-box div{display:flex;justify-content:space-between;padding:5px 0;font-size:14px}
+.tot-box .grand{border-top:2px solid #1e293b;margin-top:6px;padding-top:8px;font-size:18px;font-weight:800}
+.stu-pick{position:relative}
+.stu-drop{position:absolute;left:0;right:0;top:100%;z-index:20;background:#fff;border:1px solid #cbd5e1;border-radius:8px;box-shadow:0 10px 24px rgba(0,0,0,.12);max-height:280px;overflow:auto}
+.stu-drop button{display:block;width:100%;text-align:left;padding:8px 12px;border:0;background:#fff;cursor:pointer;font:inherit}
+.stu-drop button:hover{background:#eef2ff}
+@media (max-width:800px){.doc-total{grid-template-columns:1fr}}

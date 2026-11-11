@@ -168,6 +168,11 @@ if (!function_exists('menuIcon')) {
             'exam'      => '<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6M9 16h6"/>',
             'disclosure'=> '<path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9L9.2 3.9A2 2 0 0 0 7.5 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/>',
             'gallery'   => '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/>',
+            'store'     => '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
+            'fee'       => '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/>',
+            'report'    => '<path d="M3 3v18h18"/><path d="M7 16v-4M12 16V8M17 16v-6"/>',
+            'parent'    => '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/>',
+            'account'   => '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/><path d="M9 7h7M9 11h5"/>',
         ];
         foreach ($icons as $key => $svg) {
             if (strpos($n, $key) !== false) return $svg;
@@ -204,7 +209,7 @@ if (!function_exists('renderSidebarNav')) {
                     </a>
 
                 <?php else: ?>
-                    <div class="side-group<?php echo $childActive ? ' open' : ''; ?>">
+                    <div class="side-group<?php echo $childActive ? ' open' : ''; ?>" data-key="<?php echo htmlspecialchars($parent->menu_name); ?>">
                         <button class="side-link<?php echo $isActive ? ' active' : ''; ?>" type="button" data-submenu>
                             <span class="side-ic">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><?php echo $icon; ?></svg>
@@ -353,6 +358,94 @@ $navHtml = renderSidebarNav($menuSections, $activePage);
         </a>
       </div>
     </aside>
+
+    <script>
+    /* Sidebar keeps its place between pages:
+       - the menu item of the current URL is highlighted and its group opened
+       - groups the user opened stay open, and each sidebar keeps its scroll position
+       Runs right after the sidebars are in the page, before they are painted. */
+    (function () {
+      var KEY_OPEN = 'lhs.sb.open', KEY_SCROLL = 'lhs.sb.scroll.';
+      var store = {
+        get: function (k) { try { return window.sessionStorage.getItem(k); } catch (e) { return null; } },
+        set: function (k, v) { try { window.sessionStorage.setItem(k, v); } catch (e) {} }
+      };
+      var bars = [document.getElementById('sidebar'), document.getElementById('drawer')].filter(Boolean);
+      var norm = function (u) {
+        var a = document.createElement('a'); a.href = u;
+        return a.pathname.replace(/\/+$/, '').toLowerCase();
+      };
+      var here = norm(location.href);
+
+      var open = [];
+      try { open = JSON.parse(store.get(KEY_OPEN) || '[]') || []; } catch (e) { open = []; }
+
+      bars.forEach(function (bar) {
+        var nav = bar.querySelector('.side-nav');
+        if (!nav) return;
+
+        // highlight the link of the current page (longest matching path wins)
+        var best = null, bestLen = -1;
+        nav.querySelectorAll('a.side-link, a.side-sub').forEach(function (a) {
+          var raw = a.getAttribute('href') || '';
+          if (raw === '' || raw.charAt(0) === '#') return;
+          var p = norm(a.href);
+          if (p && (here === p || here.indexOf(p + '/') === 0) && p.length > bestLen) { best = a; bestLen = p.length; }
+        });
+        if (best) {
+          nav.querySelectorAll('a.side-link.active, a.side-sub.active').forEach(function (a) { if (a !== best) a.classList.remove('active'); });
+          best.classList.add('active');
+          var grp = best.closest('.side-group');
+          if (grp) {
+            grp.classList.add('open');
+            var btn = grp.querySelector('[data-submenu]');
+            if (btn) btn.classList.add('active');
+            if (open.indexOf(grp.dataset.key) === -1) open.push(grp.dataset.key);
+          }
+        }
+
+        // re-open groups the user had open
+        nav.querySelectorAll('.side-group').forEach(function (g) {
+          if (open.indexOf(g.dataset.key) !== -1) g.classList.add('open');
+        });
+
+        // restore scroll, or bring the active item into view on the first visit
+        var saved = store.get(KEY_SCROLL + bar.id);
+        if (saved !== null) {
+          nav.scrollTop = parseInt(saved, 10) || 0;
+        } else if (best) {
+          var top = best.offsetTop - nav.offsetTop, h = nav.clientHeight;
+          if (top > h - 60) nav.scrollTop = top - h / 3;
+        }
+
+        var saveScroll = function () { store.set(KEY_SCROLL + bar.id, String(nav.scrollTop)); };
+        var t;
+        nav.addEventListener('scroll', function () { clearTimeout(t); t = setTimeout(saveScroll, 120); }, { passive: true });
+        nav.addEventListener('click', function (e) {
+          if (e.target.closest('a')) saveScroll();
+          // footer.php toggles the group on click; record the state right after it
+          if (e.target.closest('[data-submenu]')) setTimeout(saveOpen, 0);
+        });
+      });
+
+      function saveOpen() {
+        var keys = [];
+        bars.forEach(function (bar) {
+          bar.querySelectorAll('.side-group.open').forEach(function (g) {
+            if (keys.indexOf(g.dataset.key) === -1) keys.push(g.dataset.key);
+          });
+        });
+        store.set(KEY_OPEN, JSON.stringify(keys));
+      }
+      saveOpen();
+      window.addEventListener('pagehide', function () {
+        bars.forEach(function (bar) {
+          var nav = bar.querySelector('.side-nav');
+          if (nav) store.set(KEY_SCROLL + bar.id, String(nav.scrollTop));
+        });
+      });
+    })();
+    </script>
 
     <!-- Main Content Column (closed in footer.php) -->
     <div class="main">

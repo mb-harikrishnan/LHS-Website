@@ -218,3 +218,104 @@ $route['reports/special_fee_due']          = 'FeeReports/special_fee_due';
 $route['Migration'] = 'Migration';
 $route['logout'] = 'Login/logout';
 
+
+/* ---------- School store ---------- */
+$route['store_items']                 = 'StoreController/store_items';
+$route['store_item_code']             = 'StoreController/store_item_code';
+$route['store_item_save']             = 'StoreController/store_item_save';
+$route['store_item_delete']           = 'StoreController/store_item_delete';
+$route['store_category_save']         = 'StoreController/store_category_save';
+$route['store_suppliers']             = 'StoreController/store_suppliers';
+$route['store_supplier_save']         = 'StoreController/store_supplier_save';
+$route['store_supplier_delete']       = 'StoreController/store_supplier_delete';
+$route['store_kits']                  = 'StoreController/store_kits';
+$route['store_kit_save']              = 'StoreController/store_kit_save';
+$route['store_kit_delete']            = 'StoreController/store_kit_delete';
+$route['store_stock']                 = 'StoreController/store_stock';
+$route['store_adjust']                = 'StoreController/store_adjust';
+$route['store_purchases']             = 'StoreController/store_purchases';
+$route['store_purchase_new']          = 'StoreController/store_purchase_new';
+$route['store_purchase_save']         = 'StoreController/store_purchase_save';
+$route['store_purchase/(:num)']       = 'StoreController/store_purchase_view/$1';
+$route['store_purchase_cancel']       = 'StoreController/store_purchase_cancel';
+$route['store_invoices']              = 'StoreController/store_invoices';
+$route['store_invoice_new']           = 'StoreController/store_invoice_new';
+$route['store_invoice_save']          = 'StoreController/store_invoice_save';
+$route['store_invoice/(:num)']        = 'StoreController/store_invoice/$1';
+$route['store_payment_save']          = 'StoreController/store_payment_save';
+$route['store_invoice_cancel']        = 'StoreController/store_invoice_cancel';
+$route['store_students']              = 'StoreController/store_students';
+
+$route['reports/store']                   = 'StoreReports/index';
+$route['reports/store_stock_summary']     = 'StoreReports/stock_summary';
+$route['reports/store_low_stock']         = 'StoreReports/low_stock';
+$route['reports/store_stock_ledger']      = 'StoreReports/stock_ledger';
+$route['reports/store_sales_register']    = 'StoreReports/sales_register';
+$route['reports/store_item_sales']        = 'StoreReports/item_sales';
+$route['reports/store_collections']       = 'StoreReports/collections';
+$route['reports/store_outstanding']       = 'StoreReports/outstanding';
+$route['reports/store_purchase_register'] = 'StoreReports/purchase_register';
+
+/* ---------- Accounts ---------- */
+$route['acc_vouchers']            = 'AccountsController/acc_vouchers';
+$route['acc_voucher_new']         = 'AccountsController/acc_voucher_new';
+$route['acc_voucher_edit/(:num)'] = 'AccountsController/acc_voucher_edit/$1';
+$route['acc_voucher_save']        = 'AccountsController/acc_voucher_save';
+$route['acc_voucher/(:num)']      = 'AccountsController/acc_voucher/$1';
+$route['acc_voucher_cancel']      = 'AccountsController/acc_voucher_cancel';
+$route['acc_ledgers']             = 'AccountsController/acc_ledgers';
+$route['acc_ledger_save']         = 'AccountsController/acc_ledger_save';
+$route['acc_ledger_delete']       = 'AccountsController/acc_ledger_delete';
+$route['acc_group_save']          = 'AccountsController/acc_group_save';
+$route['acc_group_delete']        = 'AccountsController/acc_group_delete';
+$route['acc_banking']             = 'AccountsController/acc_banking';
+$route['acc_reconcile/(:num)']    = 'AccountsController/acc_reconcile/$1';
+$route['acc_reconcile_save']      = 'AccountsController/acc_reconcile_save';
+$route['acc_settings']            = 'AccountsController/acc_settings';
+$route['acc_settings_save']       = 'AccountsController/acc_settings_save';
+$route['acc_sync']                = 'AccountsController/acc_sync';
+
+$route['reports/accounts']              = 'AccountReports/index';
+$route['reports/acc_day_book']          = 'AccountReports/day_book';
+$route['reports/acc_ledger']            = 'AccountReports/ledger';
+$route['reports/acc_cash_book']         = 'AccountReports/cash_book';
+$route['reports/acc_bank_book']         = 'AccountReports/bank_book';
+$route['reports/acc_trial_balance']     = 'AccountReports/trial_balance';
+$route['reports/acc_profit_loss']       = 'AccountReports/profit_loss';
+$route['reports/acc_balance_sheet']     = 'AccountReports/balance_sheet';
+$route['reports/acc_receipts_payments'] = 'AccountReports/receipts_payments';
+$route['reports/acc_party_balances']    = 'AccountReports/party_balances';
+
+/* ---------- Attendance ---------- */
+$route['attendance']                  = 'AttendanceController/attendance';
+$route['attendance_save']             = 'AttendanceController/attendance_save';
+$route['reports/attendance_register'] = 'AttendanceController/attendance_register';
+$route['reports/attendance_summary']  = 'AttendanceController/attendance_summary';
+
+/* ---------- Parent portal: admin side ---------- */
+$route['parent_accounts']        = 'ParentAdmin/parent_accounts';
+$route['parent_student_search']  = 'ParentAdmin/parent_student_search';
+$route['parent_save']            = 'ParentAdmin/parent_save';
+$route['parent_reset_password']  = 'ParentAdmin/parent_reset_password';
+$route['parent_delete']          = 'ParentAdmin/parent_delete';
+$route['parent_bulk_create']     = 'ParentAdmin/parent_bulk_create';
+$route['parent_notices']         = 'ParentAdmin/parent_notices';
+$route['parent_notice_save']     = 'ParentAdmin/parent_notice_save';
+$route['parent_notice_delete']   = 'ParentAdmin/parent_notice_delete';
+$route['parent_publish']         = 'ParentAdmin/parent_publish';
+$route['parent_publish_toggle']  = 'ParentAdmin/parent_publish_toggle';
+
+/* ---------- Parent portal: parents ---------- */
+$route['parent']                 = 'ParentPortal/index';
+$route['parent/login']           = 'ParentPortal/login';
+$route['parent/logout']          = 'ParentPortal/logout';
+$route['parent/child/(:num)']    = 'ParentPortal/child/$1';
+$route['parent/attendance']      = 'ParentPortal/attendance';
+$route['parent/results']         = 'ParentPortal/results';
+$route['parent/fees']            = 'ParentPortal/fees';
+$route['parent/store']           = 'ParentPortal/store';
+$route['parent/notices']         = 'ParentPortal/notices';
+$route['parent/profile']         = 'ParentPortal/profile';
+$route['parent/password']        = 'ParentPortal/password';
+$route['parent/receipt/(:num)']  = 'ParentPortal/receipt/$1';
+$route['parent/invoice/(:num)']  = 'ParentPortal/invoice/$1';
