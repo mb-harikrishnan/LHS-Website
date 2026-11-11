@@ -1,12 +1,12 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 class StudentController extends CI_Controller
 {
-    
+
     private $student_genders = array('0' => 'Female', '1' => 'Male');
 
-   function __construct()
+    function __construct()
     {
         parent::__construct();
         $this->load->model('Class_division_model');
@@ -14,25 +14,21 @@ class StudentController extends CI_Controller
         $this->load->model('Subject_Model');
         $this->load->model('Fee_model');
 
-         if($this->session->userdata(SESSION_VARIABLE))		
-		{
-
+        if ($this->session->userdata(SESSION_VARIABLE)) {
+        } else {
+            redirect('login', 'refresh');
         }
-		else
-		{
-		    redirect('login', 'refresh');
-		}
     }
 
-public function divition_list()
+    public function divition_list()
     {
         $data['divisions'] = $this->Division_model->get_all_divisions();
- 
+
         $this->load->view('header');
         $this->load->view('divition_list', $data);
         $this->load->view('footer');
     }
- 
+
     /* ---------- helpers ---------- */
     private function _division_json($status, $msg)
     {
@@ -44,13 +40,13 @@ public function divition_list()
                 'csrf'   => $this->security->get_csrf_hash()
             )));
     }
- 
+
     /* trim and collapse repeated spaces */
     private function _division_clean($name)
     {
         return trim(preg_replace('/\s+/', ' ', (string)$name));
     }
- 
+
     /* returns an error message, or '' when the name is valid */
     private function _division_error($name, $exclude_id = 0)
     {
@@ -68,7 +64,7 @@ public function divition_list()
         }
         return '';
     }
- 
+
     /* ---------- ADD (POST) ---------- */
     public function insert_divition()
     {
@@ -76,17 +72,17 @@ public function divition_list()
             return $this->_division_json(false, 'Invalid request.');
         }
         $this->load->model('Division_model');
- 
+
         $name = $this->_division_clean($this->input->post('name'));
         $err  = $this->_division_error($name, 0);
         if ($err !== '') {
             return $this->_division_json(false, $err);
         }
- 
+
         $ok = $this->Division_model->insert_division($name);
         return $this->_division_json($ok, $ok ? 'Division added successfully.' : 'Could not save. Please try again.');
     }
- 
+
     /* ---------- EDIT / UPDATE (POST) ---------- */
     public function update_divition()
     {
@@ -94,22 +90,22 @@ public function divition_list()
             return $this->_division_json(false, 'Invalid request.');
         }
         $this->load->model('Division_model');
- 
+
         $id = (int)$this->input->post('id');
         if (!$id || !$this->Division_model->get_division($id)) {
             return $this->_division_json(false, 'Division not found.');
         }
- 
+
         $name = $this->_division_clean($this->input->post('name'));
         $err  = $this->_division_error($name, $id);   // ignores this division itself
         if ($err !== '') {
             return $this->_division_json(false, $err);
         }
- 
+
         $ok = $this->Division_model->update_division($id, $name);
         return $this->_division_json($ok, $ok ? 'Division updated successfully.' : 'Update failed.');
     }
- 
+
     /* ---------- DELETE (POST) ---------- */
     public function delete_divition_table()
     {
@@ -117,18 +113,18 @@ public function divition_list()
             return $this->_division_json(false, 'Invalid request.');
         }
         $this->load->model('Division_model');
- 
+
         $id = (int)$this->input->post('id');
         if (!$id || !$this->Division_model->get_division($id)) {
             return $this->_division_json(false, 'Division not found.');
         }
- 
+
         // block delete while a class still uses this division
         $used = $this->Division_model->used_count($id);
         if ($used > 0) {
             return $this->_division_json(false, 'This division is used in ' . $used . ' class(es). Remove it from those classes first.');
         }
- 
+
         $ok = $this->Division_model->delete_division($id);
         return $this->_division_json($ok, $ok ? 'Division deleted successfully.' : 'Delete failed.');
     }
@@ -144,30 +140,32 @@ public function divition_list()
 
 
 
-public function get_divisions($cmId = 0)
-{
-    $rows = $this->Subject_Model->get_divisions_by_class((int)$cmId);
-    foreach ($rows as &$r) { $r['id'] = (string)$r['id']; }   // string ids, same as the dropdown values
+    public function get_divisions($cmId = 0)
+    {
+        $rows = $this->Subject_Model->get_divisions_by_class((int)$cmId);
+        foreach ($rows as &$r) {
+            $r['id'] = (string)$r['id'];
+        }   // string ids, same as the dropdown values
 
-    $this->output
-         ->set_content_type('application/json')
-         ->set_output(json_encode($rows));
-}
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($rows));
+    }
 
     ///////////////////////////////
 
- public function class_divition_list()
+    public function class_divition_list()
     {
- 
+
         $data['allocations'] = $this->Class_division_model->get_all_allocations();
         $data['classes']     = $this->Class_division_model->get_classes();
         $data['divisions']   = $this->Class_division_model->get_divisions();
- 
+
         $this->load->view('header');
         $this->load->view('class_divition_list', $data);
         $this->load->view('footer');
     }
- 
+
     /* ---------- helper ---------- */
     private function _cd_json($status, $msg)
     {
@@ -179,7 +177,7 @@ public function get_divisions($cmId = 0)
                 'csrf'   => $this->security->get_csrf_hash()
             )));
     }
- 
+
     /* ---------- ADD + EDIT (POST) ----------
        class_id   : class_master.cmId
        divisions[]: division_master.dmId values
@@ -189,33 +187,35 @@ public function get_divisions($cmId = 0)
         if ($this->input->method() !== 'post') {
             return $this->_cd_json(false, 'Invalid request.');
         }
- 
+
         $class_id = (int)$this->input->post('class_id');
         $is_edit  = (int)$this->input->post('is_edit') === 1;
         $raw      = $this->input->post('divisions');
- 
+
         // class must exist
         if (!$class_id || !$this->Class_division_model->get_class_division($class_id)) {
             return $this->_cd_json(false, 'Please select a valid class.');
         }
- 
+
         // divisions: at least one, all must be real division ids
         $div_ids = array();
         if (is_array($raw)) {
             foreach ($raw as $v) {
                 $v = (int)$v;
-                if ($v > 0) { $div_ids[] = $v; }
+                if ($v > 0) {
+                    $div_ids[] = $v;
+                }
             }
         }
         $div_ids = array_values(array_unique($div_ids));
- 
+
         if (empty($div_ids)) {
             return $this->_cd_json(false, 'Please select at least one division.');
         }
         if ($this->Class_division_model->count_valid_divisions($div_ids) !== count($div_ids)) {
             return $this->_cd_json(false, 'One or more selected divisions are invalid.');
         }
- 
+
         // add: class must not already have divisions / edit: it must have
         $existing = $this->Class_division_model->get_selected_divisions($class_id);
         if (!$is_edit && !empty($existing)) {
@@ -224,12 +224,12 @@ public function get_divisions($cmId = 0)
         if ($is_edit && empty($existing)) {
             return $this->_cd_json(false, 'Class division not found.');
         }
- 
+
         $ok = $this->Class_division_model->save_allocation($class_id, $div_ids);
         $msg = $is_edit ? 'Updated successfully.' : 'Added successfully.';
         return $this->_cd_json($ok, $ok ? $msg : 'Could not save. Please try again.');
     }
- 
+
     /* ---------- DELETE (POST): removes all divisions from the class ---------- */
     public function delete_class_division()
     {
@@ -237,15 +237,15 @@ public function get_divisions($cmId = 0)
             return $this->_cd_json(false, 'Invalid request.');
         }
         $this->load->model('Class_division_model');
- 
+
         $class_id = (int)$this->input->post('class_id');
         if (!$class_id || empty($this->Class_division_model->get_selected_divisions($class_id))) {
             return $this->_cd_json(false, 'Class division not found.');
         }
- 
+
         $ok = $this->Class_division_model->delete_allocation($class_id);
         return $this->_cd_json($ok, $ok ? 'Deleted successfully.' : 'Delete failed.');
-    }   
+    }
 
 
 
@@ -253,15 +253,15 @@ public function get_divisions($cmId = 0)
     //////////////////////////////
 
 
-  private function _student_scope()
+    private function _student_scope()
     {
- 
+
         $role = (int)$this->session->userdata('user_role_id');
         $uid  = (int)$this->session->userdata('id');   // login user id; change the key if your login stores it under another name
- 
+
         $menu = $this->Subject_Model->get_menu_id_by_link('students_list');
         $perm = $this->Subject_Model->get_permissions($role, $menu);
- 
+
         $scope = array(
             'is_admin' => ($role === 1),
             'perm'     => is_array($perm) ? $perm : array(),   // keys used: can_view, can_add, can_edit, can_delete
@@ -269,7 +269,7 @@ public function get_divisions($cmId = 0)
             'class'    => '',
             'division' => ''
         );
- 
+
         if (!$scope['is_admin']) {
             $emp = $this->Subject_Model->get_employee_class_div($uid);
             if ($emp && !empty($emp->emClass) && !empty($emp->emDiv)) {
@@ -281,13 +281,13 @@ public function get_divisions($cmId = 0)
         }
         return $scope;
     }
- 
+
     /* is this student inside the user's class + division? */
     private function _student_in_scope($row, $scope)
     {
         return (string)$row->smClass === $scope['class'] && (string)$row->smDiv === $scope['division'];
     }
- 
+
     private function _student_json($status, $msg)
     {
         $this->output
@@ -298,18 +298,18 @@ public function get_divisions($cmId = 0)
                 'csrf'   => $this->security->get_csrf_hash()
             )));
     }
- 
+
     private function _student_clean($v)
     {
         return trim(preg_replace('/\s+/', ' ', (string)$v));
     }
- 
+
     /* ---------- LIST PAGE ---------- */
     public function students_list($page = 0)
     {
         $this->load->library('pagination');
         $scope = $this->_student_scope();
- 
+
         // no view permission -> message and stop
         if (empty($scope['perm']['can_view'])) {
             $this->load->view('header');
@@ -317,10 +317,10 @@ public function get_divisions($cmId = 0)
             $this->load->view('footer');
             return;
         }
- 
+
         $per_page = 20;
         $page     = max(0, (int)$page);
- 
+
         // filters: admin may choose class / division, everyone else is locked to their own
         $filters = array('name' => trim((string)$this->input->get('name')), 'class' => '', 'division' => '');
         if ($scope['is_admin']) {
@@ -330,13 +330,14 @@ public function get_divisions($cmId = 0)
             $filters['class']    = $scope['class'];
             $filters['division'] = $scope['division'];
         }
- 
+
         $total   = 0;
         $details = array();
- 
+        $data['roles'] = $this->Subject_Model->get_user_roles(!$scope['is_admin']);
         if ($scope['assigned']) {
             $total = $this->Subject_Model->count_all_students($filters);
- 
+
+
             // page is beyond the last one (e.g. after deleting the last row): go back to the last page
             if ($page > 0 && $page >= $total) {
                 $last = ($total > 0) ? (int)(floor(($total - 1) / $per_page) * $per_page) : 0;
@@ -344,10 +345,10 @@ public function get_divisions($cmId = 0)
                 redirect(($last > 0 ? 'students_list/' . $last : 'students_list') . ($qs !== '' ? '?' . $qs : ''));
                 return;
             }
- 
+
             $details = $this->Subject_Model->fetch_all_student_details($per_page, $page, $filters);
         }
- 
+
         // pagination (page links keep the ?name=&class=&division= filters)
         $config = array(
             'base_url'           => site_url('students_list'),
@@ -372,7 +373,7 @@ public function get_divisions($cmId = 0)
             'next_link'          => '&rsaquo;'
         );
         $this->pagination->initialize($config);
- 
+
         $data['details']  = $details;
         $data['links']    = $this->pagination->create_links();
         $data['start']    = $page;
@@ -386,23 +387,127 @@ public function get_divisions($cmId = 0)
         $data['is_admin'] = $scope['is_admin'];
         $data['assigned'] = $scope['assigned'];
         $data['genders']  = $this->student_genders;
- 
+
         $this->load->view('header');
         $this->load->view('students_list', $data);
         $this->load->view('footer');
     }
- 
+
     /* ---------- ADD + EDIT (POST) ---------- */
+    // public function save_student()
+    // {
+    //     if ($this->input->method() !== 'post') {
+    //         return $this->_student_json(false, 'Invalid request.');
+    //     }
+    //     $scope = $this->_student_scope();
+
+    //     $id      = (int)$this->input->post('id');
+    //     $is_edit = $id > 0;
+
+    //     // permission
+    //     if (empty($scope['perm'][$is_edit ? 'can_edit' : 'can_add'])) {
+    //         return $this->_student_json(false, 'You do not have permission to do this.');
+    //     }
+    //     if (!$scope['is_admin'] && !$scope['assigned']) {
+    //         return $this->_student_json(false, 'No class and division is assigned to your account.');
+    //     }
+
+    //     // when editing, the student must exist and (for non-admin) belong to the user's class + division
+    //     if ($is_edit) {
+    //         $old = $this->Subject_Model->get_student($id);
+    //         if (!$old) {
+    //             return $this->_student_json(false, 'Student not found.');
+    //         }
+    //         if (!$scope['is_admin'] && !$this->_student_in_scope($old, $scope)) {
+    //             return $this->_student_json(false, 'You are not allowed to change this student.');
+    //         }
+    //     }
+
+    //     // posted values
+    //     $adm      = $this->_student_clean($this->input->post('adm_no'));
+    //     $aadhar   = trim((string)$this->input->post('aadhar'));
+    //     $name     = $this->_student_clean($this->input->post('name'));
+    //     $gender   = (string)$this->input->post('gender');
+    //     $dob      = trim((string)$this->input->post('dob'));
+    //     $mobile   = trim((string)$this->input->post('mobile'));
+    //     $class    = (string)$this->input->post('class_id');
+    //     $division = (string)$this->input->post('division_id');
+    //     $religion = $this->_student_clean($this->input->post('religion'));
+    //     $caste    = $this->_student_clean($this->input->post('caste'));
+    //     $tongue   = $this->_student_clean($this->input->post('tongue'));
+    //     $address  = trim((string)$this->input->post('address'));
+    //     $country  = $this->_student_clean($this->input->post('country'));
+    //     $state    = $this->_student_clean($this->input->post('state'));
+
+    //     // non-admin: class and division are always the user's own, whatever was posted
+    //     if (!$scope['is_admin']) {
+    //         $class    = $scope['class'];
+    //         $division = $scope['division'];
+    //     }
+
+    //     // validation
+    //     if ($adm === '')                                  return $this->_student_json(false, 'Please enter the admission number.');
+    //     if (mb_strlen($adm) > 30)                         return $this->_student_json(false, 'Admission number must be 30 characters or fewer.');
+    //     if ($this->Subject_Model->admission_no_exists($adm, $id)) return $this->_student_json(false, 'This admission number already exists.');
+    //     if (!preg_match('/^\d{12}$/', $aadhar))           return $this->_student_json(false, 'Aadhar number must be 12 digits.');
+    //     if ($name === '')                                 return $this->_student_json(false, 'Please enter the student name.');
+    //     if (mb_strlen($name) > 100)                       return $this->_student_json(false, 'Student name must be 100 characters or fewer.');
+    //     if (!array_key_exists($gender, $this->student_genders)) return $this->_student_json(false, 'Please select the gender.');
+
+    //     if ($dob !== '') {
+    //         $d = DateTime::createFromFormat('Y-m-d', $dob);
+    //         if (!$d || $d->format('Y-m-d') !== $dob || $dob > date('Y-m-d')) {
+    //             return $this->_student_json(false, 'Please enter a valid date of birth.');
+    //         }
+    //     }
+    //     if ($mobile !== '' && !preg_match('/^\d{10}$/', $mobile)) return $this->_student_json(false, 'Mobile number must be 10 digits.');
+
+    //     if ($class === '' || !$this->Subject_Model->class_exists_by_id($class))        return $this->_student_json(false, 'Please select a valid class.');
+    //     if ($division === '' || !$this->Subject_Model->division_exists_by_id($division)) return $this->_student_json(false, 'Please select a valid division.');
+
+    //     foreach (array($religion, $caste, $tongue, $country, $state) as $v) {
+    //         if (mb_strlen($v) > 50) return $this->_student_json(false, 'Religion, caste, mother tongue, country and state must be 50 characters or fewer.');
+    //     }
+    //     if (mb_strlen($address) > 500) return $this->_student_json(false, 'Address must be 500 characters or fewer.');
+
+    //     $row = array(
+    //         'smAdmissionNo'  => $adm,
+    //         'smAadharNo'     => $aadhar,
+    //         'smName'         => $name,
+    //         'smClass'        => $class,
+    //         'smDiv'          => $division,
+    //         'smGender'       => $gender,
+    //         'smMobile'       => $mobile,
+    //         'smDOB'          => ($dob !== '') ? $dob : NULL,   // smDOB must allow NULL
+    //         'smAddress'      => $address,
+    //         'smReligion'     => $religion,
+    //         'smCaste'        => $caste,
+    //         'smMotherTongue' => $tongue,
+    //         'smCountry'      => $country,
+    //         'smState'        => $state,
+    //         'smAmId'         => (int)$this->session->userdata('selected_am_id')
+    //     );
+
+    //     if ($is_edit) {
+    //         $ok = $this->Subject_Model->update_student($id, $row);
+    //         return $this->_student_json($ok, $ok ? 'Student updated successfully.' : 'Update failed.');
+    //     }
+
+    //     $ok = $this->Subject_Model->insert_student($row);
+    //     return $this->_student_json($ok, $ok ? 'Student added successfully.' : 'Could not save. Please try again.');
+    // }
+
+
     public function save_student()
     {
         if ($this->input->method() !== 'post') {
             return $this->_student_json(false, 'Invalid request.');
         }
         $scope = $this->_student_scope();
- 
+
         $id      = (int)$this->input->post('id');
         $is_edit = $id > 0;
- 
+
         // permission
         if (empty($scope['perm'][$is_edit ? 'can_edit' : 'can_add'])) {
             return $this->_student_json(false, 'You do not have permission to do this.');
@@ -410,7 +515,7 @@ public function get_divisions($cmId = 0)
         if (!$scope['is_admin'] && !$scope['assigned']) {
             return $this->_student_json(false, 'No class and division is assigned to your account.');
         }
- 
+
         // when editing, the student must exist and (for non-admin) belong to the user's class + division
         if ($is_edit) {
             $old = $this->Subject_Model->get_student($id);
@@ -421,7 +526,7 @@ public function get_divisions($cmId = 0)
                 return $this->_student_json(false, 'You are not allowed to change this student.');
             }
         }
- 
+
         // posted values
         $adm      = $this->_student_clean($this->input->post('adm_no'));
         $aadhar   = trim((string)$this->input->post('aadhar'));
@@ -437,13 +542,13 @@ public function get_divisions($cmId = 0)
         $address  = trim((string)$this->input->post('address'));
         $country  = $this->_student_clean($this->input->post('country'));
         $state    = $this->_student_clean($this->input->post('state'));
- 
+
         // non-admin: class and division are always the user's own, whatever was posted
         if (!$scope['is_admin']) {
             $class    = $scope['class'];
             $division = $scope['division'];
         }
- 
+
         // validation
         if ($adm === '')                                  return $this->_student_json(false, 'Please enter the admission number.');
         if (mb_strlen($adm) > 30)                         return $this->_student_json(false, 'Admission number must be 30 characters or fewer.');
@@ -452,7 +557,7 @@ public function get_divisions($cmId = 0)
         if ($name === '')                                 return $this->_student_json(false, 'Please enter the student name.');
         if (mb_strlen($name) > 100)                       return $this->_student_json(false, 'Student name must be 100 characters or fewer.');
         if (!array_key_exists($gender, $this->student_genders)) return $this->_student_json(false, 'Please select the gender.');
- 
+
         if ($dob !== '') {
             $d = DateTime::createFromFormat('Y-m-d', $dob);
             if (!$d || $d->format('Y-m-d') !== $dob || $dob > date('Y-m-d')) {
@@ -460,15 +565,15 @@ public function get_divisions($cmId = 0)
             }
         }
         if ($mobile !== '' && !preg_match('/^\d{10}$/', $mobile)) return $this->_student_json(false, 'Mobile number must be 10 digits.');
- 
+
         if ($class === '' || !$this->Subject_Model->class_exists_by_id($class))        return $this->_student_json(false, 'Please select a valid class.');
         if ($division === '' || !$this->Subject_Model->division_exists_by_id($division)) return $this->_student_json(false, 'Please select a valid division.');
- 
+
         foreach (array($religion, $caste, $tongue, $country, $state) as $v) {
             if (mb_strlen($v) > 50) return $this->_student_json(false, 'Religion, caste, mother tongue, country and state must be 50 characters or fewer.');
         }
         if (mb_strlen($address) > 500) return $this->_student_json(false, 'Address must be 500 characters or fewer.');
- 
+
         $row = array(
             'smAdmissionNo'  => $adm,
             'smAadharNo'     => $aadhar,
@@ -486,76 +591,16 @@ public function get_divisions($cmId = 0)
             'smState'        => $state,
             'smAmId'         => (int)$this->session->userdata('selected_am_id')
         );
- 
-        // fees selected in the form: fees[fmId] = amount per installment (only when the fee section was loaded)
-        $amId      = $this->Fee_model->get_am_id();
-        $fee_plan  = null;
-        if ($this->input->post('fees_loaded') === '1') {
-            $fee_plan = $this->_student_fee_plan($is_edit ? $id : 0, $amId);
-            if (is_string($fee_plan)) return $this->_student_json(false, $fee_plan);
-        }
 
-        $this->db->trans_start();
         if ($is_edit) {
             $ok = $this->Subject_Model->update_student($id, $row);
-        } else {
-            $ok = $this->Subject_Model->insert_student($row);
-            $id = $ok ? (int)$this->db->insert_id() : 0;
-        }
-        if ($ok && $id && $fee_plan !== null) {
-            $this->_apply_student_fee_plan($id, $amId, $fee_plan);
-        }
-        $this->db->trans_complete();
-        $ok = $ok && $this->db->trans_status();
-
-        if ($is_edit) {
             return $this->_student_json($ok, $ok ? 'Student updated successfully.' : 'Update failed.');
         }
+
+        $ok = $this->Subject_Model->insert_student($row);
         return $this->_student_json($ok, $ok ? 'Student added successfully.' : 'Could not save. Please try again.');
     }
 
-    /* validated fee selection: ['add' => [fmId => amount], 'remove' => [fmId]] or an error message */
-    private function _student_fee_plan($smId, $amId)
-    {
-        $posted = $this->input->post('fees');
-        $posted = is_array($posted) ? $posted : array();
-        $prates = $this->input->post('fee_rate');          // fmId => rate id (VARIABLE fees)
-        $prates = is_array($prates) ? $prates : array();
-        $fees   = array();
-        foreach ($this->Fee_model->get_fees($amId) as $f) $fees[(int)$f->fmId] = $f;
-        $current = $smId ? $this->Fee_model->get_student_allocations($smId, $amId) : array();
-
-        $plan = array('add' => array(), 'remove' => array());
-        foreach ($posted as $fmId => $amt) {
-            $fmId = (int)$fmId;
-            if (!isset($fees[$fmId])) return 'A selected fee is not valid for this academic year.';
-            $amt = trim((string)$amt);
-            if (!preg_match('/^\d{1,8}(\.\d{1,2})?$/', $amt)) return 'Enter a valid amount for ' . $fees[$fmId]->fmName . '.';
-            $rate = (int)(isset($prates[$fmId]) ? $prates[$fmId] : 0);
-            if ($rate && !$this->Fee_model->find_rate($fees[$fmId], $rate)) return 'The selected ' . $fees[$fmId]->fmName . ' rate is not valid.';
-            $plan['add'][$fmId] = array('amount' => round((float)$amt, 2), 'rate' => $rate ?: null);
-        }
-        foreach ($current as $fmId => $a) {
-            if (isset($plan['add'][$fmId])) continue;
-            if ($a->paid > 0) return $a->fmName . ' cannot be removed because fees are already paid. Cancel the receipts first.';
-            $plan['remove'][] = $fmId;
-        }
-        return $plan;
-    }
-
-    private function _apply_student_fee_plan($smId, $amId, $plan)
-    {
-        $current = $this->Fee_model->get_student_allocations($smId, $amId);
-        foreach ($plan['add'] as $fmId => $p) {
-            if (isset($current[$fmId]) && abs((float)$current[$fmId]->sfaAmount - $p['amount']) < 0.001
-                && (int)$current[$fmId]->sfaFmrId === (int)$p['rate']) continue;   // unchanged
-            $this->Fee_model->allocate($smId, $amId, $fmId, $p['amount'], (int)$this->session->userdata('id'), $p['rate']);
-        }
-        foreach ($plan['remove'] as $fmId) {
-            $this->Fee_model->deallocate($smId, $amId, $fmId);
-        }
-    }
- 
     /* ---------- DELETE (POST) ---------- */
     public function delete_student()
     {
@@ -563,11 +608,11 @@ public function get_divisions($cmId = 0)
             return $this->_student_json(false, 'Invalid request.');
         }
         $scope = $this->_student_scope();
- 
+
         if (empty($scope['perm']['can_delete'])) {
             return $this->_student_json(false, 'You do not have permission to do this.');
         }
- 
+
         $id  = (int)$this->input->post('id');
         $row = $id ? $this->Subject_Model->get_student($id) : null;
         if (!$row) {
@@ -576,7 +621,7 @@ public function get_divisions($cmId = 0)
         if (!$scope['is_admin'] && (!$scope['assigned'] || !$this->_student_in_scope($row, $scope))) {
             return $this->_student_json(false, 'You are not allowed to delete this student.');
         }
- 
+
         if ($this->Fee_model->student_has_payments($id)) {
             return $this->_student_json(false, 'This student has fee receipts. Cancel the receipts before deleting the student.');
         }
@@ -588,25 +633,4 @@ public function get_divisions($cmId = 0)
         $ok = $ok && $this->db->trans_status();
         return $this->_student_json($ok, $ok ? 'Student deleted successfully.' : 'Delete failed.');
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

@@ -11,60 +11,135 @@ class Login extends CI_Controller
     }
 
     // GET /login  -> shows the page
-    public function index()
-    {
-        if ($this->session->userdata('c_username')) {
-            redirect($this->session->userdata('user_role_id') == 1 ? 'dashboard' : 'teacherdashboard');
+    // public function index()
+    // {
+    //     if ($this->session->userdata('c_username')) {
+    //         redirect($this->session->userdata('user_role_id') == 1 ? 'dashboard' : 'teacherdashboard');
+    //     }
+    //     $this->load->view('login');  
+    // }
+
+public function index()
+{
+    if ($this->session->userdata('c_username')) {
+        $type = strtolower(trim($this->session->userdata('user_type')));
+        if ($type === 'parent') {
+            redirect('parentdashboard');
         }
-        $this->load->view('login');   // application/views/login.php
+        redirect($this->session->userdata('user_role_id') == 1 ? 'dashboard' : 'teacherdashboard');
+    }
+    $this->load->view('login');
+}
+    public function login_submit()
+{
+    $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[3]|max_length[30]|regex_match[/^[a-zA-Z0-9._]+$/]');
+    $this->form_validation->set_rules('password', 'Password', 'required|min_length[6]|max_length[50]');
+
+    if ($this->form_validation->run() === FALSE) {
+        return $this->_json(['status' => 'error', 'message' => strip_tags(validation_errors())]);
     }
 
+    $username = $this->input->post('username', TRUE);
+    $password = $this->input->post('password');
+    $remember = (int) $this->input->post('remember');
+
+    $user = $this->login_db->login_checking($username, $password);
+
+    if (!$user) {
+        return $this->_json(['status' => 'error', 'message' => 'Invalid username or password']);
+    }
+
+    $is_parent = (strtolower(trim($user->user_type)) === 'parent');
+
+    // Get display name from the right table
+    if ($is_parent) {
+        $row = $this->db->select('smName')
+                        ->where('smUser', $user->user_id)   // <-- change to your real column name
+                        ->limit(1)
+                        ->get('students_master')               // <-- change to your real table name
+                        ->row();
+        $res = $row->smName ?? '';
+    } else {
+        $row = $this->db->select('emName')
+                        ->where('emUserId', $user->user_id)
+                        ->limit(1)
+                        ->get('employee_master')
+                        ->row();
+        $res = $row->emName ?? '';
+    }
+
+    // prevent session fixation
+    $this->session->sess_regenerate(TRUE);
+
+    $sess_array = [
+        'id'           => $user->user_id,
+        'c_username'   => $res,
+        'user_role_id' => $user->user_role_id,   // parent's role id stays in session
+        'login_time'   => date('Y-m-d H:i:s'),
+        'remember'     => $remember,
+        'user_type'    => $user->user_type
+    ];
+
+    $this->session->set_userdata($sess_array);
+    $this->session->set_userdata(SESSION_VARIABLE, $sess_array);
+
+    // Redirect by type
+    if ($is_parent) {
+        $redirect = base_url('parentdashboard');
+    } elseif ($user->user_role_id == 1) {
+        $redirect = base_url('dashboard');
+    } else {
+        $redirect = base_url('teacherdashboard');
+    }
+
+    return $this->_json(['status' => 'success', 'redirect' => $redirect]);
+}
     // POST /login_submit  -> returns JSON for the AJAX call
-    public function login_submit()
-    {
+    // public function login_submit()
+    // {
        
 
-        $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[3]|max_length[30]|regex_match[/^[a-zA-Z0-9._]+$/]');
-        $this->form_validation->set_rules('password', 'Password', 'required|min_length[6]|max_length[50]');
+    //     $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[3]|max_length[30]|regex_match[/^[a-zA-Z0-9._]+$/]');
+    //     $this->form_validation->set_rules('password', 'Password', 'required|min_length[6]|max_length[50]');
 
-        if ($this->form_validation->run() === FALSE) {
-            return $this->_json(['status' => 'error', 'message' => strip_tags(validation_errors())]);
-        }
+    //     if ($this->form_validation->run() === FALSE) {
+    //         return $this->_json(['status' => 'error', 'message' => strip_tags(validation_errors())]);
+    //     }
 
-        $username = $this->input->post('username', TRUE);
-        $password = $this->input->post('password');           // don't xss-clean/trim passwords
-        $remember = (int) $this->input->post('remember');
+    //     $username = $this->input->post('username', TRUE);
+    //     $password = $this->input->post('password');           // don't xss-clean/trim passwords
+    //     $remember = (int) $this->input->post('remember');
 
-        $user = $this->login_db->login_checking($username, $password);
+    //     $user = $this->login_db->login_checking($username, $password);
 
-        if (!$user) {
-            return $this->_json(['status' => 'error', 'message' => 'Invalid username or password']);
-        }
+    //     if (!$user) {
+    //         return $this->_json(['status' => 'error', 'message' => 'Invalid username or password']);
+    //     }
 
-        $sql = "SELECT emName FROM employee_master WHERE emUserId=' $user->user_id'";
-        $query = $this->db->query($sql);
-        $res = $query->row()->emName ?? '';
+    //     $sql = "SELECT emName FROM employee_master WHERE emUserId=' $user->user_id'";
+    //     $query = $this->db->query($sql);
+    //     $res = $query->row()->emName ?? '';
 
-        // prevent session fixation
-        $this->session->sess_regenerate(TRUE);
+    //     // prevent session fixation
+    //     $this->session->sess_regenerate(TRUE);
 
-        $sess_array = [
-            'id'           => $user->user_id,
-            'c_username'   => $res,
-            'user_role_id' => $user->user_role_id,
-            'login_time'   => date('Y-m-d H:i:s'),
-            'remember'     => $remember,
-            'user_type'    =>$user->user_type
-        ];
+    //     $sess_array = [
+    //         'id'           => $user->user_id,
+    //         'c_username'   => $res,
+    //         'user_role_id' => $user->user_role_id,
+    //         'login_time'   => date('Y-m-d H:i:s'),
+    //         'remember'     => $remember,
+    //         'user_type'    =>$user->user_type
+    //     ];
 
-        $this->session->set_userdata($sess_array);
-        $this->session->set_userdata(SESSION_VARIABLE, $sess_array);
+    //     $this->session->set_userdata($sess_array);
+    //     $this->session->set_userdata(SESSION_VARIABLE, $sess_array);
 
-        // adjust "1" to your real admin role id
-        $redirect = ($user->user_role_id == 1) ? base_url('dashboard') : base_url('teacherdashboard');
+    //     // adjust "1" to your real admin role id
+    //     $redirect = ($user->user_role_id == 1) ? base_url('dashboard') : base_url('teacherdashboard');
 
-        return $this->_json(['status' => 'success', 'redirect' => $redirect]);
-    }
+    //     return $this->_json(['status' => 'success', 'redirect' => $redirect]);
+    // }
 
     public function logout()
     {

@@ -240,4 +240,57 @@ public function get_all_divisions_allocation()
  
 
 
+/* roles for the dropdown (status = 1). Non-admins don't get the admin role. */
+public function get_user_roles($exclude_admin = false)
+{
+    $this->db->where('status', 1);
+    if ($exclude_admin) {
+        $this->db->where('role_id !=', 1);
+    }
+    return $this->db->order_by('role_name', 'ASC')->get('user_roles')->result();
+}
+
+public function get_user_role($role_id)
+{
+    return $this->db->where('role_id', (int)$role_id)->where('status', 1)
+                    ->get('user_roles')->row();
+}
+
+/* is this login name (phone number) already taken? */
+public function login_name_exists($name)
+{
+    return $this->db->where('name', $name)->count_all_results('user_login') > 0;
+}
+
+/* inserts into user_login and returns the new user_id */
+public function insert_user_login($data)
+{
+    $this->db->insert('user_login', $data);
+    return (int)$this->db->insert_id();
+}
+
+
+
+
+
+
+/* returns the user_id of an existing login with this name (mobile), or 0 if none.
+   If the same number exists more than once, the oldest login is used. */
+public function get_user_id_by_name($name)
+{
+    $row = $this->db->select('user_id')
+                    ->where('name', $name)
+                    ->order_by('user_id', 'ASC')
+                    ->limit(1)
+                    ->get('user_login')
+                    ->row();
+    return $row ? (int)$row->user_id : 0;
+}
+
+
+
+
+
+
+
 }

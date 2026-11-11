@@ -5,6 +5,7 @@
      $filters  name / class / division                        $total, $start, $per_page
      $res      class_master rows (cmId, cmName)               $res1      division_master rows (dmId, dmName)
      $div_map  class id => [{id, name}]                       $genders   value => label
+     $roles    user_roles rows (role_id, role_name)
      $perm     can_view / can_add / can_edit / can_delete     $is_admin, $assigned */
 
 $can_add  = !empty($perm['can_add']);
@@ -15,6 +16,8 @@ $classes_js = array();
 foreach ($res as $c) { $classes_js[] = array('id' => (string)$c->cmId, 'name' => $c->cmName); }
 $divs_js = array();
 foreach ($res1 as $d) { $divs_js[] = array('id' => (string)$d->dmId, 'name' => $d->dmName); }
+$roles_js = array();
+foreach ($roles as $r) { $roles_js[] = array('id' => (string)$r->role_id, 'name' => $r->role_name); }
 
 $from = ($total > 0) ? $start + 1 : 0;
 $to   = min($start + $per_page, $total);
@@ -40,6 +43,7 @@ $has_filter = ($filters['name'] !== '') || ($is_admin && ($filters['class'] !== 
 .field-input:disabled{cursor:not-allowed;opacity:.7}
 textarea.field-input{min-height:80px;resize:vertical}
 .field-error{color:#dc2626;font-size:13px;margin:14px 0 0}
+.field-hint{display:block;font-size:12px;color:#64748b;margin-top:4px}
 .d-item{padding:10px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px}
 .d-item small{display:block;font-size:11px;font-weight:700;text-transform:uppercase;color:#64748b;margin-bottom:3px}
 .d-item span{font-size:14px;word-break:break-word}
@@ -244,8 +248,9 @@ textarea.field-input{min-height:80px;resize:vertical}
             <select class="field-input" id="gender"></select></div>
           <div><label class="field-label" for="dob">Date of Birth</label>
             <input class="field-input" type="date" id="dob"></div>
-          <div><label class="field-label" for="mobile">Mobile Number</label>
-            <input class="field-input" id="mobile" placeholder="Enter Mobile Number" inputmode="numeric" maxlength="10"></div>
+          <div><label class="field-label" for="mobile">Mobile Number <span class="req" id="mobileReq">*</span></label>
+            <input class="field-input" id="mobile" placeholder="Enter Mobile Number" inputmode="numeric" maxlength="10">
+            <small class="field-hint" id="mobileHint">This number will be the login username (password: number@123).</small></div>
         </div>
 
         <div class="sec-title">Academic Information</div>
@@ -254,6 +259,8 @@ textarea.field-input{min-height:80px;resize:vertical}
             <select class="field-input" id="cls"></select></div>
           <div><label class="field-label" for="div">Division <span class="req">*</span></label>
             <select class="field-input" id="div"></select></div>
+          <div id="roleWrap"><label class="field-label" for="role">User Role <span class="req">*</span></label>
+            <select class="field-input" id="role"></select></div>
         </div>
 
         <div class="sec-title">Fees</div>
@@ -310,7 +317,7 @@ textarea.field-input{min-height:80px;resize:vertical}
   const form = $('studentForm'), errorEl = $('formError'), saveBtn = $('saveBtn');
 
   const SAVE_URL   = '<?= site_url('save_student') ?>';
-  const DIV_URL = '<?= site_url('get_divisions') ?>/';
+  const DIV_URL    = '<?= site_url('get_divisions') ?>/';
   const DELETE_URL = '<?= site_url('delete_student') ?>';
   const FEE_URL    = '<?= site_url('student_fee_options') ?>';
   const CSRF_NAME  = '<?= $this->security->get_csrf_token_name() ?>';
@@ -324,6 +331,7 @@ textarea.field-input{min-height:80px;resize:vertical}
   const DIVS_ALL  = <?= json_encode($divs_js) ?>;      // [{id, name}]
   const DIV_MAP   = <?= json_encode($div_map) ?>;      // classId -> [{id, name}]
   const GENDERS   = <?= json_encode($genders) ?>;      // value -> label
+  const ROLES     = <?= json_encode($roles_js) ?>;     // [{id, name}] from user_roles
   const COUNTRIES = { India: ['Kerala','Tamil Nadu','Karnataka','Andhra Pradesh','Telangana','Maharashtra','Delhi'],
                       Other: ['Other'] };
 
@@ -345,29 +353,29 @@ textarea.field-input{min-height:80px;resize:vertical}
   const strItems = arr => arr.map(v => ({ id: v, name: v }));
   const divsFor = c => (DIV_MAP[c] && DIV_MAP[c].length) ? DIV_MAP[c] : DIVS_ALL;
 
-async function loadDivisions(value) {
-  const el = $('div');
-  const c  = $('cls').value;
+  async function loadDivisions(value) {
+    const el = $('div');
+    const c  = $('cls').value;
 
-  if (!c) {
-    fillSelect(el, [], 'Select Class first', '');
+    if (!c) {
+      fillSelect(el, [], 'Select Class first', '');
+      el.disabled = true;
+      return;
+    }
+
+    fillSelect(el, [], 'Loading...', '');
     el.disabled = true;
-    return;
+
+    try {
+      const res  = await fetch(DIV_URL + encodeURIComponent(c));
+      const list = await res.json();
+      fillSelect(el, list, list.length ? 'Select Division' : 'No division assigned', value);
+    } catch (err) {
+      fillSelect(el, [], 'Failed to load divisions', '');
+    }
+
+    el.disabled = !IS_ADMIN;   // non-admin keeps the division locked
   }
-
-  fillSelect(el, [], 'Loading...', '');
-  el.disabled = true;
-
-  try {
-    const res  = await fetch(DIV_URL + encodeURIComponent(c));
-    const list = await res.json();
-    fillSelect(el, list, list.length ? 'Select Division' : 'No division assigned', value);
-  } catch (err) {
-    fillSelect(el, [], 'Failed to load divisions', '');
-  }
-
-  el.disabled = !IS_ADMIN;   // non-admin keeps the division locked
-}
   function loadStates(value) {
     const c = $('country').value;
     fillSelect($('state'), c && COUNTRIES[c] ? strItems(COUNTRIES[c]) : [], c ? 'Select State' : 'Select Country first', value);
@@ -443,6 +451,12 @@ async function loadDivisions(value) {
     $('formTitle').textContent = s ? 'Edit Student' : 'Add Student';
     saveBtn.textContent = s ? 'Update' : 'Save';
 
+    // user role + login hint only matter when adding (the login is created on add)
+    $('roleWrap').hidden   = !!s;
+    $('mobileReq').hidden  = !!s;
+    $('mobileHint').hidden = !!s;
+    fillSelect($('role'), ROLES, 'Select User Role', '');
+
     $('admNo').value = s ? s.adm_no : '';
     $('aadhar').value = s ? s.aadhar : '';
     $('name').value = s ? s.name : '';
@@ -501,22 +515,26 @@ async function loadDivisions(value) {
     e.preventDefault();
     const v = id => $(id).value.trim();
     const id = +$('sId').value;
+    const isAdd = id === 0;
     const adm = v('admNo'), aadhar = v('aadhar'), name = v('name'), mobile = v('mobile');
-    const cls = $('cls').value, div = $('div').value;
+    const cls = $('cls').value, div = $('div').value, role = $('role').value;
 
     if (!adm) return showError('Please enter the admission number.');
     if (!/^\d{12}$/.test(aadhar)) return showError('Aadhar number must be 12 digits.');
     if (!name) return showError('Please enter the student name.');
     if (!$('gender').value) return showError('Please select the gender.');
     if ($('dob').value && $('dob').value > new Date().toISOString().slice(0, 10)) return showError('Date of birth cannot be in the future.');
+    if (isAdd && !mobile) return showError('Please enter the mobile number (used as login username).');
     if (mobile && !/^\d{10}$/.test(mobile)) return showError('Mobile number must be 10 digits.');
     if (!cls) return showError('Please select a class.');
     if (!div) return showError('Please select a division.');
+    if (isAdd && !role) return showError('Please select a user role.');
 
     const fd = new FormData();
     fd.append('id', id); fd.append('adm_no', adm); fd.append('aadhar', aadhar); fd.append('name', name);
     fd.append('gender', $('gender').value); fd.append('dob', $('dob').value); fd.append('mobile', mobile);
     fd.append('class_id', cls); fd.append('division_id', div);
+    if (isAdd) fd.append('role_id', role);
     fd.append('religion', v('religion')); fd.append('caste', v('caste')); fd.append('tongue', v('tongue'));
     fd.append('address', v('address')); fd.append('country', $('country').value); fd.append('state', $('state').value);
     if (feesLoaded) {

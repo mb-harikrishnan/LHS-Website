@@ -1,11 +1,12 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 $route['default_controller'] = 'Login';
 
 
 $route['login']        = 'login';
 $route['login_submit'] = 'login/login_submit';
+
 
 
 $route['dashboard'] = 'DashboardController/dashboard';
@@ -64,11 +65,11 @@ $route['delete_vaccancy_list'] = 'VaccancyController/delete_vaccancy_list';
 $route['save_vaccancy'] = 'VaccancyController/save_vaccancy';
 
 
-  $route['apply_members']       = 'VaccancyController/apply_members';
- $route['delete_application']  = 'VaccancyController/delete_application';
+$route['apply_members']       = 'VaccancyController/apply_members';
+$route['delete_application']  = 'VaccancyController/delete_application';
 
 
- 
+
 $route['questionpaper_list'] = 'QuestionPaperController/questionpaper_list';
 $route['insert_paper']       = 'QuestionPaperController/insert_paper';   // add + edit
 $route['delete_paper']       = 'QuestionPaperController/delete_papper';
@@ -108,11 +109,11 @@ $route['delete_class_division'] = 'StudentController/delete_class_division';
 
 
 
- $route['students_list']        = 'StudentController/students_list';
- $route['students_list/(:num)'] = 'StudentController/students_list/$1';
- $route['save_student']         = 'StudentController/save_student';     // add + edit
- $route['delete_student']       = 'StudentController/delete_student';
- $route['get_divisions/(:num)'] = 'StudentController/get_divisions/$1';
+$route['students_list']        = 'StudentController/students_list';
+$route['students_list/(:num)'] = 'StudentController/students_list/$1';
+$route['save_student']         = 'StudentController/save_student';     // add + edit
+$route['delete_student']       = 'StudentController/delete_student';
+$route['get_divisions/(:num)'] = 'StudentController/get_divisions/$1';
 
 
 $route['exam_list']   = 'ExamController/exam_list';
@@ -176,6 +177,28 @@ $route['division_allocation_save'] = 'DivisionAllocationController/save';
 
 
 $route['mark_entry_list'] = 'Reports/mark_entry_list';
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////   PARENTS LOGIN    //////////////////////////////
+
+$route['parentdashboard'] = 'Parentdashboard';
+$route['mychilld'] = 'Parentdashboard/mychilld';
+$route['attendence'] = 'Parentdashboard/attendence';
+$route['fees'] = 'Parentdashboard/fees';
+$route['receipt/(:any)'] = 'Parentdashboard/receipt/$1';
+
+
+
+$route['results'] = 'Parentdashboard/results';
+$route['notice'] = 'Parentdashboard/notice';
+
 
 
 /* ---------- Fee management ---------- */
