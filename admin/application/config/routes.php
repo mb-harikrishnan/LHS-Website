@@ -179,6 +179,43 @@ $route['division_allocation_save'] = 'DivisionAllocationController/save';
 $route['mark_entry_list'] = 'Reports/mark_entry_list';
 
 
+/* ---------- Fee management ---------- */
+$route['fee_master']             = 'FeeController/fee_master';
+$route['fee_save']               = 'FeeController/fee_save';
+$route['fee_delete']             = 'FeeController/fee_delete';
+$route['fee_copy']               = 'FeeController/fee_copy';
+
+$route['fee_allocation']         = 'FeeController/fee_allocation';
+$route['fee_allocation_save']    = 'FeeController/fee_allocation_save';
+$route['student_fee_options']    = 'FeeController/student_fee_options';
+
+$route['fee_collection']         = 'FeeController/fee_collection';      // Fee Register
+$route['fee_students']           = 'FeeController/fee_students';
+$route['fee_student_dues']       = 'FeeController/fee_student_dues';
+$route['fee_collect']            = 'FeeController/fee_collect';
+$route['fee_receipt/(:num)']     = 'FeeController/fee_receipt/$1';
+
+$route['fee_management']         = 'FeeController/fee_management';      // Receipts
+$route['fee_management/(:num)']  = 'FeeController/fee_management/$1';
+$route['fee_receipt_cancel']     = 'FeeController/fee_receipt_cancel';
+
+/* ---------- Reports ---------- */
+$route['reports/students']                 = 'FeeReports/students';
+$route['reports/fees']                     = 'FeeReports/fees';
+$route['reports/student_list']             = 'FeeReports/student_list';
+$route['reports/student_class_wise']       = 'FeeReports/student_class_wise';
+$route['reports/student_fee_list']         = 'FeeReports/student_fee_list';
+$route['reports/fee_collection_register']  = 'FeeReports/fee_collection_register';
+$route['reports/student_fee_register']     = 'FeeReports/student_fee_register';
+$route['reports/fee_paid_class_wise']      = 'FeeReports/fee_paid_class_wise';
+$route['reports/fee_due_register']         = 'FeeReports/fee_due_register';
+$route['reports/fee_due_amount_register']  = 'FeeReports/fee_due_amount_register';
+$route['reports/balance_due_register']     = 'FeeReports/balance_due_register';
+$route['reports/fee_collection_mismatch']  = 'FeeReports/fee_collection_mismatch';
+$route['reports/special_fee_collection']   = 'FeeReports/special_fee_collection';
+$route['reports/special_fee_due']          = 'FeeReports/special_fee_due';
+
+
 $route['Migration'] = 'Migration';
 $route['logout'] = 'Login/logout';
 

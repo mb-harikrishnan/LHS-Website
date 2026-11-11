@@ -71,6 +71,15 @@ textarea.field-input{min-height:80px;resize:vertical}
 .pager a:hover{background:#eef2ff;border-color:#6366f1}
 .pager .active span{background:#4f46e5;color:#fff;border-color:#4f46e5}
 .notice{padding:28px;text-align:center;color:#64748b}
+
+/* fees in the student form */
+.fee-tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.fee-tbl td{padding:7px 8px;border-bottom:1px solid #e2e8f0;vertical-align:middle}
+.fee-tbl tr:last-child td{border-bottom:0}
+.fee-tbl input[type=checkbox]{width:16px;height:16px}
+.fee-tbl .fee-amt{width:110px;padding:6px 8px;border:1px solid #cbd5e1;border-radius:6px;text-align:right;font:inherit}
+.fee-tbl small{color:#64748b}
+.fee-note{font-size:12px;color:#64748b;margin:6px 0 0}
 </style>
 
 <main class="page">
@@ -246,6 +255,10 @@ textarea.field-input{min-height:80px;resize:vertical}
             <select class="field-input" id="div"></select></div>
         </div>
 
+        <div class="sec-title">Fees</div>
+        <div id="feeBox"><p class="fee-note">Loading fees…</p></div>
+        <p class="fee-note">Tick the fees for this student. Amount is per installment; installments and due dates come from Fee Master.</p>
+
         <div class="sec-title">Personal Details</div>
         <div class="grid">
           <div><label class="field-label" for="religion">Religion</label>
@@ -298,6 +311,7 @@ textarea.field-input{min-height:80px;resize:vertical}
   const SAVE_URL   = '<?= site_url('save_student') ?>';
   const DIV_URL = '<?= site_url('get_divisions') ?>/';
   const DELETE_URL = '<?= site_url('delete_student') ?>';
+  const FEE_URL    = '<?= site_url('student_fee_options') ?>';
   const CSRF_NAME  = '<?= $this->security->get_csrf_token_name() ?>';
   let   CSRF_HASH  = '<?= $this->security->get_csrf_hash() ?>';
 
@@ -362,6 +376,48 @@ async function loadDivisions(value) {
   $('cls').addEventListener('change', () => loadDivisions(''));
   $('country').addEventListener('change', () => loadStates(''));
 
+  /* ---------- fees ---------- */
+  let FEES = [], feesLoaded = false;
+  const inr = n => Number(n || 0).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  const feeAmountFor = (f, cls) => (f.class_amounts && f.class_amounts[cls] !== undefined) ? f.class_amounts[cls] : f.default;
+
+  async function loadFees(studentId, cls, isNew) {
+    feesLoaded = false;
+    const box = $('feeBox');
+    box.innerHTML = '<p class="fee-note">Loading fees…</p>';
+    try {
+      FEES = await (await fetch(FEE_URL + '?' + new URLSearchParams({student: studentId || 0, class: cls || 0}))).json();
+    } catch (e) {
+      box.innerHTML = '<p class="fee-note">Could not load fees. The student can still be saved; fees will not change.</p>';
+      return;
+    }
+    if (!FEES.length) { box.innerHTML = '<p class="fee-note">No fees in Fee Master for this academic year.</p>'; feesLoaded = true; return; }
+    box.innerHTML = '<table class="fee-tbl"><tbody>' + FEES.map(f => {
+      const on = f.allotted || (isNew && f.auto);
+      const locked = f.paid > 0;
+      return `<tr data-fee="${f.id}">
+        <td style="width:30px"><input type="checkbox" class="fee-on" ${on ? 'checked' : ''} ${locked ? 'disabled' : ''} aria-label="${esc(f.name)}"></td>
+        <td><strong>${esc(f.name)}</strong>${f.special ? ' <span class="tag">Special</span>' : ''}<br>
+            <small>${esc(f.frequency)} × ${f.installments}${locked ? ' · ₹' + inr(f.paid) + ' paid (cannot remove)' : ''}</small></td>
+        <td style="text-align:right">₹ <input class="fee-amt" inputmode="decimal" value="${f.amount}" data-touched="${f.allotted ? 1 : 0}"></td>
+      </tr>`;
+    }).join('') + '</tbody></table>';
+    feesLoaded = true;
+  }
+
+  // class changed: re-price fees the user has not typed an amount for
+  function repriceFees() {
+    const cls = $('cls').value;
+    document.querySelectorAll('#feeBox tr[data-fee]').forEach(tr => {
+      const inp = tr.querySelector('.fee-amt');
+      if (inp.dataset.touched === '1') return;
+      const f = FEES.find(x => x.id === +tr.dataset.fee);
+      if (f) inp.value = feeAmountFor(f, cls);
+    });
+  }
+  $('feeBox').addEventListener('input', e => { if (e.target.classList.contains('fee-amt')) e.target.dataset.touched = '1'; });
+  $('cls').addEventListener('change', repriceFees);
+
   /* ---------- add / edit form ---------- */
   function openForm(s) {
     form.reset(); errorEl.hidden = true;
@@ -390,6 +446,7 @@ async function loadDivisions(value) {
     $('address').value = s ? s.address || '' : '';
     fillSelect($('country'), strItems(Object.keys(COUNTRIES)), 'Select Country', s ? s.country : '');
     loadStates(s ? s.state : '');
+    loadFees(s ? s.id : 0, cls, !s);
 
     show(formModal); $('admNo').focus();
   }
@@ -444,6 +501,17 @@ async function loadDivisions(value) {
     fd.append('class_id', cls); fd.append('division_id', div);
     fd.append('religion', v('religion')); fd.append('caste', v('caste')); fd.append('tongue', v('tongue'));
     fd.append('address', v('address')); fd.append('country', $('country').value); fd.append('state', $('state').value);
+    if (feesLoaded) {
+      let badFee = '';
+      fd.append('fees_loaded', '1');
+      document.querySelectorAll('#feeBox tr[data-fee]').forEach(tr => {
+        if (!tr.querySelector('.fee-on').checked) return;
+        const amt = tr.querySelector('.fee-amt').value.trim();
+        if (!/^\d+(\.\d{1,2})?$/.test(amt)) badFee = tr.querySelector('strong').textContent;
+        fd.append('fees[' + tr.dataset.fee + ']', amt);
+      });
+      if (badFee) return showError('Enter a valid amount for ' + badFee + '.');
+    }
     fd.append(CSRF_NAME, CSRF_HASH);
 
     saveBtn.disabled = true;

@@ -12,6 +12,7 @@ class StudentController extends CI_Controller
         $this->load->model('Class_division_model');
         $this->load->model('Division_model');
         $this->load->model('Subject_Model');
+        $this->load->model('Fee_model');
 
          if($this->session->userdata(SESSION_VARIABLE))		
 		{
@@ -486,13 +487,68 @@ public function get_divisions($cmId = 0)
             'smAmId'         => (int)$this->session->userdata('selected_am_id')
         );
  
+        // fees selected in the form: fees[fmId] = amount per installment (only when the fee section was loaded)
+        $amId      = $this->Fee_model->get_am_id();
+        $fee_plan  = null;
+        if ($this->input->post('fees_loaded') === '1') {
+            $fee_plan = $this->_student_fee_plan($is_edit ? $id : 0, $amId);
+            if (is_string($fee_plan)) return $this->_student_json(false, $fee_plan);
+        }
+
+        $this->db->trans_start();
         if ($is_edit) {
             $ok = $this->Subject_Model->update_student($id, $row);
+        } else {
+            $ok = $this->Subject_Model->insert_student($row);
+            $id = $ok ? (int)$this->db->insert_id() : 0;
+        }
+        if ($ok && $id && $fee_plan !== null) {
+            $this->_apply_student_fee_plan($id, $amId, $fee_plan);
+        }
+        $this->db->trans_complete();
+        $ok = $ok && $this->db->trans_status();
+
+        if ($is_edit) {
             return $this->_student_json($ok, $ok ? 'Student updated successfully.' : 'Update failed.');
         }
- 
-        $ok = $this->Subject_Model->insert_student($row);
         return $this->_student_json($ok, $ok ? 'Student added successfully.' : 'Could not save. Please try again.');
+    }
+
+    /* validated fee selection: ['add' => [fmId => amount], 'remove' => [fmId]] or an error message */
+    private function _student_fee_plan($smId, $amId)
+    {
+        $posted = $this->input->post('fees');
+        $posted = is_array($posted) ? $posted : array();
+        $fees   = array();
+        foreach ($this->Fee_model->get_fees($amId) as $f) $fees[(int)$f->fmId] = $f;
+        $current = $smId ? $this->Fee_model->get_student_allocations($smId, $amId) : array();
+
+        $plan = array('add' => array(), 'remove' => array());
+        foreach ($posted as $fmId => $amt) {
+            $fmId = (int)$fmId;
+            if (!isset($fees[$fmId])) return 'A selected fee is not valid for this academic year.';
+            $amt = trim((string)$amt);
+            if (!preg_match('/^\d{1,8}(\.\d{1,2})?$/', $amt)) return 'Enter a valid amount for ' . $fees[$fmId]->fmName . '.';
+            $plan['add'][$fmId] = round((float)$amt, 2);
+        }
+        foreach ($current as $fmId => $a) {
+            if (isset($plan['add'][$fmId])) continue;
+            if ($a->paid > 0) return $a->fmName . ' cannot be removed because fees are already paid. Cancel the receipts first.';
+            $plan['remove'][] = $fmId;
+        }
+        return $plan;
+    }
+
+    private function _apply_student_fee_plan($smId, $amId, $plan)
+    {
+        $current = $this->Fee_model->get_student_allocations($smId, $amId);
+        foreach ($plan['add'] as $fmId => $amt) {
+            if (isset($current[$fmId]) && abs((float)$current[$fmId]->sfaAmount - $amt) < 0.001) continue;   // unchanged
+            $this->Fee_model->allocate($smId, $amId, $fmId, $amt, (int)$this->session->userdata('id'));
+        }
+        foreach ($plan['remove'] as $fmId) {
+            $this->Fee_model->deallocate($smId, $amId, $fmId);
+        }
     }
  
     /* ---------- DELETE (POST) ---------- */
@@ -516,7 +572,15 @@ public function get_divisions($cmId = 0)
             return $this->_student_json(false, 'You are not allowed to delete this student.');
         }
  
+        if ($this->Fee_model->student_has_payments($id)) {
+            return $this->_student_json(false, 'This student has fee receipts. Cancel the receipts before deleting the student.');
+        }
+
+        $this->db->trans_start();
+        $this->Fee_model->delete_student_fees($id);
         $ok = $this->Subject_Model->delete_student($id);
+        $this->db->trans_complete();
+        $ok = $ok && $this->db->trans_status();
         return $this->_student_json($ok, $ok ? 'Student deleted successfully.' : 'Delete failed.');
     }
 
