@@ -84,14 +84,17 @@ class FeeController extends CI_Controller
         if (empty($perm['can_view'])) return $this->_deny_page();
 
         $amId = $this->Fee_model->get_am_id();
+        $fees = $this->Fee_model->get_fees($amId);
+        foreach ($fees as $f) $f->rate_usage = Fee_model::is_variable($f) ? $this->Fee_model->rate_usage($f->fmId) : array();
         $data = array(
-            'fees'        => $this->Fee_model->get_fees($amId),
+            'fees'        => $fees,
             'classes'     => $this->Subject_Model->get_all_classes(),
             'years'       => $this->Fee_model->get_years(),
             'year'        => $this->Fee_model->get_year($amId),
             'am_id'       => $amId,
             'frequencies' => Fee_model::$frequencies,
             'fine_types'  => Fee_model::$fine_types,
+            'amount_types'=> Fee_model::$amount_types,
             'perm'        => $perm,
         );
         $this->_page('fee_master', $data, 'Fee Master', 'FEE_MASTER');
@@ -112,7 +115,9 @@ class FeeController extends CI_Controller
         }
 
         $name   = trim(preg_replace('/\s+/', ' ', (string)$this->input->post('name')));
+        $atype  = (string)$this->input->post('amount_type');
         $amount = $this->_money($this->input->post('amount'));
+        if ($atype === 'VARIABLE' && $amount === null) $amount = 0.0;   // default amount is optional
         $freq   = (string)$this->input->post('frequency');
         $inst   = (int)$this->input->post('installments');
         $month  = (int)$this->input->post('start_month');
@@ -125,6 +130,7 @@ class FeeController extends CI_Controller
 
         if ($name === '' || mb_strlen($name) > 100)          return $this->_json(false, 'Enter a fee name (max 100 characters).');
         if ($this->Fee_model->fee_name_exists($name, $amId, $id)) return $this->_json(false, 'A fee with this name already exists for this academic year.');
+        if (!isset(Fee_model::$amount_types[$atype]))        return $this->_json(false, 'Select the amount type.');
         if ($amount === null || $amount === false)           return $this->_json(false, 'Enter a valid amount.');
         if (!isset(Fee_model::$frequencies[$freq]))           return $this->_json(false, 'Select how the fee is collected.');
         $max = Fee_model::$frequencies[$freq]['max'];
@@ -148,9 +154,45 @@ class FeeController extends CI_Controller
             }
         }
 
+        // rates of a VARIABLE fee (stop / distance slab + amount)
+        $rates = array();
+        if ($atype === 'VARIABLE') {
+            $rid  = (array)$this->input->post('rate_id');
+            $rnm  = (array)$this->input->post('rate_name');
+            $ramt = (array)$this->input->post('rate_amount');
+            $seen = array();
+            $own  = array();
+            if ($id) foreach ($old->rates as $rt) $own[(int)$rt->id] = $rt->name;
+            foreach ($rnm as $i => $rn) {
+                $rn = trim(preg_replace('/\s+/', ' ', (string)$rn));
+                $ra = $this->_money(isset($ramt[$i]) ? $ramt[$i] : '');
+                $ri = (int)(isset($rid[$i]) ? $rid[$i] : 0);
+                if ($rn === '' && $ra === null) continue;                 // empty line
+                if ($rn === '' || mb_strlen($rn) > 100)  return $this->_json(false, 'Every rate needs a name (stop / distance), max 100 characters.');
+                if ($ra === null || $ra === false)       return $this->_json(false, 'Enter a valid amount for ' . $rn . '.');
+                if (isset($seen[mb_strtolower($rn)]))    return $this->_json(false, $rn . ' is listed twice.');
+                if ($ri && !isset($own[$ri])) $ri = 0;                    // not a rate of this fee
+                $seen[mb_strtolower($rn)] = true;
+                $rates[] = array('id' => $ri, 'name' => $rn, 'amount' => $ra);
+            }
+            if (count($rates) > 200) return $this->_json(false, 'A fee can have at most 200 rates.');
+
+            // a rate that students use cannot be removed while the fee stays VARIABLE
+            if ($id && Fee_model::is_variable($old)) {
+                $kept  = array_map(function ($r) { return (int)$r['id']; }, $rates);
+                $usage = $this->Fee_model->rate_usage($id);
+                foreach ($own as $rId => $rName) {
+                    if (!in_array($rId, $kept, true) && !empty($usage[$rId])) {
+                        return $this->_json(false, $rName . ' is used by ' . $usage[$rId] . ' student(s). Move them to another rate before removing it.');
+                    }
+                }
+            }
+        }
+
         $row = array(
             'fmName'          => $name,
             'fmAmount'        => $amount,
+            'fmAmountType'    => $atype,
             'fmDescription'   => $desc,
             'fmFrequency'     => $freq,
             'fmInstallments'  => $inst,
@@ -170,7 +212,8 @@ class FeeController extends CI_Controller
             $row['fmUser'] = $this->_user();
         }
 
-        $ok = $this->Fee_model->save_fee($id, $row, $classAmounts, $id && $this->input->post('apply_existing'));
+        $ok = $this->Fee_model->save_fee($id, $row, $atype === 'VARIABLE' ? array() : $classAmounts,
+                                         $id && $this->input->post('apply_existing'), $rates);
         return $this->_json((bool)$ok, $ok ? ($id ? 'Fee updated.' : 'Fee added.') : 'Could not save. Please try again.');
     }
 
@@ -211,68 +254,106 @@ class FeeController extends CI_Controller
         if (empty($perm['can_view'])) return $this->_deny_page();
 
         $amId  = $this->Fee_model->get_am_id();
-        $class = (string)$this->input->get('class');
-        $div   = (string)$this->input->get('division');
-        $fmId  = (int)$this->input->get('fee');
+        $class = ctype_digit((string)$this->input->get('class')) ? (string)$this->input->get('class') : '';
+        $div   = ctype_digit((string)$this->input->get('division')) ? (string)$this->input->get('division') : '';
 
-        $fee = $fmId ? $this->Fee_model->get_fee($fmId) : null;
-        if ($fee && (int)$fee->fmAmId !== $amId) $fee = null;
+        $fees = $this->Fee_model->get_fees($amId, true);   // active fees only
+        $students = $class !== '' ? $this->Fee_model->class_students($amId, $class, $div) : array();
+        $grid = $this->Fee_model->allocation_grid($amId, array_map(function ($s) { return (int)$s->smId; }, $students));
+
+        // default amount of each fee for this class (FIXED: class-wise / default, VARIABLE: default)
+        $defaults = array();
+        foreach ($fees as $f) $defaults[(int)$f->fmId] = $class !== '' ? $this->Fee_model->resolve_amount($f, $class) : (float)$f->fmAmount;
 
         $data = array(
-            'fees'     => $this->Fee_model->get_fees($amId),
+            'fees'     => $fees,
             'classes'  => $this->Subject_Model->get_all_classes(),
             'div_map'  => $this->Subject_Model->get_class_division_map(),
-            'filters'  => array('class' => $class, 'division' => $div, 'fee' => $fmId),
-            'fee'      => $fee,
-            'students' => ($fee && $class !== '') ? $this->Fee_model->class_students_for_fee($amId, $class, $div, $fmId) : array(),
-            'default_amount' => ($fee && $class !== '') ? $this->Fee_model->resolve_amount($fee, $class) : 0,
+            'filters'  => array('class' => $class, 'division' => $div),
+            'students' => $students,
+            'grid'     => $grid,
+            'defaults' => $defaults,
             'perm'     => $perm,
         );
         $this->_page('fee_allocation', $data, 'Fee Allocation', 'FEE_ALLOCATION');
     }
 
+    /**
+     * POST
+     *   listed[]                 students shown on screen
+     *   fees_listed[]            fees shown on screen (columns)
+     *   alloc[smId][fmId][amount] / [rate]   ticked cells only
+     * Ticked cells are allotted (or re-priced); unticked cells that were allotted are removed
+     * (unless something is already paid).
+     */
     public function fee_allocation_save()
     {
         if ($this->input->method() !== 'post') return $this->_json(false, 'Invalid request.');
         $perm = $this->_perm('fee_allocation');
         if (empty($perm['can_edit']) && empty($perm['can_add'])) return $this->_json(false, 'You do not have permission to do this.');
 
-        $amId = $this->Fee_model->get_am_id();
-        $fmId = (int)$this->input->post('fee');
-        $fee  = $this->Fee_model->get_fee($fmId);
-        if (!$fee || (int)$fee->fmAmId !== $amId) return $this->_json(false, 'Select a fee of the current academic year.');
+        $amId   = $this->Fee_model->get_am_id();
+        $listed = array_values(array_unique(array_map('intval', (array)$this->input->post('listed'))));
+        $fmIds  = array_values(array_unique(array_map('intval', (array)$this->input->post('fees_listed'))));
+        $alloc  = $this->input->post('alloc');
+        $alloc  = is_array($alloc) ? $alloc : array();
+        if (!$listed || !$fmIds) return $this->_json(false, 'Nothing to save.');
 
-        $listed  = array_map('intval', (array)$this->input->post('listed'));   // students shown on screen
-        $checked = (array)$this->input->post('amount');                          // smId => amount (checked only)
+        // fees must belong to the current academic year
+        $fees = array();
+        foreach ($fmIds as $fmId) {
+            $f = $this->Fee_model->get_fee($fmId);
+            if (!$f || (int)$f->fmAmId !== $amId) return $this->_json(false, 'A fee on the screen is not from the current academic year. Reload the page.');
+            $fees[$fmId] = $f;
+        }
+        // students must be in the current academic year
+        $valid = array();
+        foreach ($listed as $smId) if ($this->Fee_model->get_student($smId, $amId)) $valid[$smId] = true;
 
-        // validate everything before writing
-        $amounts = array();
-        foreach ($checked as $smId => $v) {
-            $m = $this->_money($v);
-            if ($m === false || $m === null) return $this->_json(false, 'Enter a valid amount for every selected student.');
-            $amounts[(int)$smId] = $m;
+        // validate every ticked cell before writing
+        $plan = array();
+        foreach ($alloc as $smId => $cells) {
+            $smId = (int)$smId;
+            if (!isset($valid[$smId]) || !is_array($cells)) continue;
+            foreach ($cells as $fmId => $c) {
+                $fmId = (int)$fmId;
+                if (!isset($fees[$fmId])) continue;
+                $m = $this->_money(is_array($c) && isset($c['amount']) ? $c['amount'] : '');
+                if ($m === false || $m === null) return $this->_json(false, 'Enter a valid ' . $fees[$fmId]->fmName . ' amount for every ticked student.');
+                $rate = (int)(is_array($c) && isset($c['rate']) ? $c['rate'] : 0);
+                if ($rate && (!Fee_model::is_variable($fees[$fmId]) || !$this->Fee_model->find_rate($fees[$fmId], $rate))) {
+                    return $this->_json(false, 'A selected ' . $fees[$fmId]->fmName . ' rate is not valid. Reload the page.');
+                }
+                $plan[$smId][$fmId] = array('amount' => $m, 'rate' => $rate ?: null);
+            }
         }
 
-        $added = 0; $removed = 0; $blocked = array();
+        $current = $this->Fee_model->allocation_grid($amId, array_keys($valid));
+        $added = 0; $changed = 0; $removed = 0; $blocked = 0;
+
         $this->db->trans_start();
-        foreach ($listed as $smId) {
-            if (!$this->Fee_model->get_student($smId, $amId)) continue;
-            if (isset($amounts[$smId])) {
-                $this->Fee_model->allocate($smId, $amId, $fmId, $amounts[$smId], $this->_user());
-                $added++;
-            } else {
-                $had = $this->db->where(array('sfaSmId' => $smId, 'sfaFmId' => $fmId, 'sfaAmId' => $amId, 'sfaActive' => 1))
-                                ->count_all_results('student_fee_allocation') > 0;
-                if ($had) {
+        foreach (array_keys($valid) as $smId) {
+            foreach ($fees as $fmId => $f) {
+                $now = isset($current[$smId][$fmId]) ? $current[$smId][$fmId] : null;
+                if (isset($plan[$smId][$fmId])) {
+                    $p = $plan[$smId][$fmId];
+                    if ($now && abs($now['amount'] - $p['amount']) < 0.001 && (int)$now['rate'] === (int)$p['rate']) continue;
+                    $this->Fee_model->allocate($smId, $amId, $fmId, $p['amount'], $this->_user(), $p['rate']);
+                    $now ? $changed++ : $added++;
+                } elseif ($now) {
                     if ($this->Fee_model->deallocate($smId, $amId, $fmId)) $removed++;
-                    else $blocked[] = $smId;
+                    else $blocked++;
                 }
             }
         }
         $this->db->trans_complete();
 
-        $msg = 'Saved. ' . $added . ' student(s) allotted' . ($removed ? ', ' . $removed . ' removed' : '') . '.';
-        if ($blocked) $msg .= ' ' . count($blocked) . ' student(s) were not removed because fees are already paid.';
+        $parts = array();
+        if ($added)   $parts[] = $added . ' allotted';
+        if ($changed) $parts[] = $changed . ' updated';
+        if ($removed) $parts[] = $removed . ' removed';
+        $msg = $parts ? 'Saved: ' . implode(', ', $parts) . '.' : 'No changes.';
+        if ($blocked) $msg .= ' ' . $blocked . ' fee(s) were not removed because they are already paid.';
         return $this->_json($this->db->trans_status(), $msg);
     }
 
@@ -299,8 +380,11 @@ class FeeController extends CI_Controller
                 'installments' => (int)$f->fmInstallments,
                 'special'      => (int)$f->fmIsSpecial,
                 'auto'         => (int)$f->fmAutoAssign,
+                'variable'     => Fee_model::is_variable($f) ? 1 : 0,
+                'rates'        => $f->rates,
+                'rate'         => $has ? (int)$alloc[$f->fmId]->sfaFmrId : 0,
                 'default'      => (float)$f->fmAmount,
-                'class_amounts'=> $f->class_amounts,
+                'class_amounts'=> (object)$f->class_amounts,
                 'amount'       => $has ? (float)$alloc[$f->fmId]->sfaAmount : $this->Fee_model->resolve_amount($f, $class),
                 'allotted'     => $has,
                 'paid'         => $has ? (float)$alloc[$f->fmId]->paid : 0,
@@ -379,6 +463,7 @@ class FeeController extends CI_Controller
             $dues[] = array(
                 'id'       => (int)$d->sfdId,
                 'fee'      => $d->fmName,
+                'rate'     => (string)$d->fmrName,
                 'special'  => (int)$d->fmIsSpecial,
                 'year'     => $d->amYear,
                 'current'  => $current,

@@ -1,6 +1,6 @@
 <?php
 /* Fee Master
-   $fees (with class_amounts, alloc_count), $classes, $years, $year, $am_id, $frequencies, $fine_types, $perm */
+   $fees (with class_amounts, rates, alloc_count), $classes, $years, $year, $am_id, $frequencies, $fine_types, $amount_types, $perm */
 $can_add  = !empty($perm['can_add']);
 $can_edit = !empty($perm['can_edit']);
 $can_del  = !empty($perm['can_delete']);
@@ -41,6 +41,10 @@ foreach ($classes as $c) $classes_js[] = array('id' => (string)$c->cmId, 'name' 
             if ($f->fmFineType === 'FIXED')   $fine = '₹' . fee_money($f->fmFineAmount) . ' once';
             if ($f->fmFineType === 'PER_DAY') $fine = '₹' . fee_money($f->fmFineAmount) . '/day' . ((float)$f->fmFineMax > 0 ? ' (max ₹' . fee_money($f->fmFineMax) . ')' : '');
             if ($f->fmFineType !== 'NONE' && (int)$f->fmFineGraceDays > 0) $fine .= ' after ' . (int)$f->fmFineGraceDays . 'd';
+            $variable = $f->fmAmountType === 'VARIABLE';
+            $ramts = array_map(function ($x) { return $x->amount; }, $f->rates);
+            $rmin = $ramts ? min($ramts) : null;
+            $rmax = $ramts ? max($ramts) : null;
             $row = array(
               'id' => (int)$f->fmId, 'name' => $f->fmName, 'amount' => (float)$f->fmAmount, 'description' => (string)$f->fmDescription,
               'frequency' => $f->fmFrequency, 'installments' => (int)$f->fmInstallments, 'start_month' => (int)$f->fmStartMonth,
@@ -48,6 +52,7 @@ foreach ($classes as $c) $classes_js[] = array('id' => (string)$c->cmId, 'name' 
               'fine_type' => $f->fmFineType, 'fine_amount' => (float)$f->fmFineAmount, 'fine_grace' => (int)$f->fmFineGraceDays,
               'fine_max' => (float)$f->fmFineMax, 'order' => (int)$f->fmOrder, 'active' => (int)$f->fmActive,
               'class_amounts' => (object)$f->class_amounts, 'alloc_count' => (int)$f->alloc_count,
+              'amount_type' => $f->fmAmountType, 'rates' => $f->rates, 'rate_usage' => (object)$f->rate_usage,
             );
         ?>
           <tr data-f="<?= html_escape(json_encode($row)) ?>">
@@ -56,11 +61,18 @@ foreach ($classes as $c) $classes_js[] = array('id' => (string)$c->cmId, 'name' 
               <strong><?= html_escape($f->fmName) ?></strong>
               <?php if ($f->fmIsSpecial): ?> <span class="badge badge-purple">Special</span><?php endif; ?>
               <?php if ($f->fmAutoAssign): ?> <span class="badge badge-info">Auto</span><?php endif; ?>
-              <?php if ($f->class_amounts): ?><div class="small muted">Class-wise amounts set for <?= count($f->class_amounts) ?> class(es)</div><?php endif; ?>
+              <?php if ($f->fmAmountType === 'VARIABLE'): ?> <span class="badge badge-amber">Varies</span><?php endif; ?>
+              <?php if ($variable): ?><div class="small muted">Varies per student<?= $f->rates ? ' · ' . count($f->rates) . ' rate(s)' : ' · amount typed per student' ?></div>
+              <?php elseif ($f->class_amounts): ?><div class="small muted">Class-wise amounts set for <?= count($f->class_amounts) ?> class(es)</div><?php endif; ?>
             </td>
             <td><?= html_escape($fq) ?> × <?= (int)$f->fmInstallments ?></td>
-            <td class="num">₹<?= fee_money($f->fmAmount) ?></td>
-            <td class="num">₹<?= fee_money($f->fmAmount * $f->fmInstallments) ?></td>
+            <?php if ($variable): ?>
+              <td class="num"><?= $rmin === null ? 'Varies' : '₹' . fee_money($rmin) . ($rmax > $rmin ? ' – ₹' . fee_money($rmax) : '') ?></td>
+              <td class="num">—</td>
+            <?php else: ?>
+              <td class="num">₹<?= fee_money($f->fmAmount) ?></td>
+              <td class="num">₹<?= fee_money($f->fmAmount * $f->fmInstallments) ?></td>
+            <?php endif; ?>
             <td><?= (int)$f->fmDueDay ?> <?= substr($months[(int)$f->fmStartMonth] ?? '', 0, 3) ?></td>
             <td class="small"><?= html_escape($fine) ?></td>
             <td class="num"><?= (int)$f->alloc_count ?></td>
@@ -93,7 +105,11 @@ foreach ($classes as $c) $classes_js[] = array('id' => (string)$c->cmId, 'name' 
         <div class="grid">
           <div><label class="field-label" for="fName">Fee Name <span class="req">*</span></label>
             <input class="field-input" id="fName" maxlength="100" placeholder="e.g. Tuition Fee"></div>
-          <div><label class="field-label" for="fAmount">Amount per Installment (₹) <span class="req">*</span></label>
+          <div><label class="field-label" for="fAType">Amount <span class="req">*</span></label>
+            <select class="field-input" id="fAType">
+              <?php foreach ($amount_types as $k => $l): ?><option value="<?= $k ?>"><?= html_escape($l) ?></option><?php endforeach; ?>
+            </select></div>
+          <div><label class="field-label" for="fAmount" id="amtLabel">Amount per Installment (₹) <span class="req">*</span></label>
             <input class="field-input" id="fAmount" inputmode="decimal" placeholder="0.00">
             <span class="field-hint" id="yearTotal"></span></div>
           <div class="full"><label class="field-label" for="fDesc">Description</label>
@@ -131,8 +147,20 @@ foreach ($classes as $c) $classes_js[] = array('id' => (string)$c->cmId, 'name' 
             <input class="field-input" id="fFineMax" inputmode="decimal" placeholder="0 = no limit"></div>
         </div>
 
-        <div class="sec-title">Class-wise Amount <span class="muted" style="text-transform:none;font-weight:400">(leave blank to use the amount above)</span></div>
-        <div class="grid g4" id="classAmounts"></div>
+        <div id="rateSec" hidden>
+          <div class="sec-title">Rates <span class="muted" style="text-transform:none;font-weight:400">(stops or distance slabs — amount per installment)</span></div>
+          <table class="table compact" style="margin-bottom:8px">
+            <thead><tr><th>Stop / Distance</th><th class="num" style="width:160px">Amount (₹)</th><th class="num" style="width:90px">Students</th><th style="width:60px"></th></tr></thead>
+            <tbody id="rateRows"></tbody>
+          </table>
+          <button type="button" class="btn btn-secondary btn-sm" id="addRate">+ Add rate</button>
+          <p class="field-hint">Students are given one of these rates in Fee Allocation or the student form, or an amount typed for them. Leave the list empty to type every student's amount.</p>
+        </div>
+
+        <div id="classSec">
+          <div class="sec-title">Class-wise Amount <span class="muted" style="text-transform:none;font-weight:400">(leave blank to use the amount above)</span></div>
+          <div class="grid g4" id="classAmounts"></div>
+        </div>
 
         <div class="sec-title">Options</div>
         <div class="grid">
@@ -201,11 +229,33 @@ foreach ($classes as $c) $classes_js[] = array('id' => (string)$c->cmId, 'name' 
     $('schedHint').textContent = 'Due dates: ' + months.map(x => d + ' ' + x).join(', ');
     const amt = parseFloat($('fAmount').value) || 0;
     $('yearTotal').textContent = n > 1 ? `${n} installments → ₹${inr(amt * n)} for the year` : '';
+    const variable = $('fAType').value === 'VARIABLE';
+    $('rateSec').hidden = !variable;
+    $('classSec').hidden = variable;
+    $('amtLabel').innerHTML = variable ? 'Default Amount (₹) <span class="muted">(optional)</span>' : 'Amount per Installment (₹) <span class="req">*</span>';
+    if (variable) $('yearTotal').textContent = 'Used when a student has no rate selected.';
     const ft = $('fFineType').value;
     document.querySelectorAll('[data-fine]').forEach(x => x.hidden = ft === 'NONE');
     document.querySelector('[data-fine-max]').hidden = ft !== 'PER_DAY';
   }
-  ['fFreq','fInst','fMonth','fDay','fAmount','fFineType'].forEach(id => $(id).addEventListener('input', refreshHints));
+  ['fFreq','fInst','fMonth','fDay','fAmount','fFineType','fAType'].forEach(id => $(id).addEventListener('input', refreshHints));
+  $('fAType').addEventListener('change', refreshHints);
+
+  /* ---------- rates editor ---------- */
+  let USAGE = {};
+  function rateRow(r) {
+    const used = r && r.id && USAGE[r.id] ? USAGE[r.id] : 0;
+    const tr = document.createElement('tr');
+    tr.dataset.id = r && r.id ? r.id : 0;
+    tr.innerHTML = `<td><input class="field-input r-name" maxlength="100" placeholder="e.g. Kottayam Town / 0-5 km" value="${esc(r ? r.name : '')}"></td>
+      <td class="num"><input class="field-input r-amt" inputmode="decimal" style="text-align:right" value="${r ? r.amount : ''}"></td>
+      <td class="num">${used || '—'}</td>
+      <td><button type="button" class="act-btn rm r-del" ${used ? 'disabled title="Used by students"' : ''}>✕</button></td>`;
+    $('rateRows').appendChild(tr);
+    return tr;
+  }
+  $('addRate').addEventListener('click', () => rateRow(null).querySelector('.r-name').focus());
+  $('rateRows').addEventListener('click', e => { const b = e.target.closest('.r-del'); if (b && !b.disabled) b.closest('tr').remove(); });
   $('fFreq').addEventListener('change', () => { $('fInst').value = $('fFreq').selectedOptions[0].dataset.def; refreshHints(); });
 
   function openForm(f) {
@@ -213,7 +263,11 @@ foreach ($classes as $c) $classes_js[] = array('id' => (string)$c->cmId, 'name' 
     $('fId').value = f ? f.id : 0;
     $('formTitle').textContent = f ? 'Edit Fee' : 'Add Fee';
     $('fName').value = f ? f.name : '';
-    $('fAmount').value = f ? f.amount : '';
+    $('fAType').value = f ? f.amount_type : 'FIXED';
+    $('fAmount').value = f ? (f.amount_type === 'VARIABLE' && !f.amount ? '' : f.amount) : '';
+    USAGE = f && f.rate_usage ? f.rate_usage : {};
+    $('rateRows').innerHTML = '';
+    (f && f.rates ? f.rates : []).forEach(rateRow);
     $('fDesc').value = f ? f.description : '';
     $('fFreq').value = f ? f.frequency : 'MONTHLY';
     $('fInst').value = f ? f.installments : 12;
@@ -255,11 +309,24 @@ foreach ($classes as $c) $classes_js[] = array('id' => (string)$c->cmId, 'name' 
   $('feeForm').addEventListener('submit', async e => {
     e.preventDefault();
     if (!$('fName').value.trim()) return showErr('Enter the fee name.');
-    if (!/^\d+(\.\d{1,2})?$/.test($('fAmount').value.trim())) return showErr('Enter a valid amount.');
+    const variable = $('fAType').value === 'VARIABLE';
+    const amtTxt = $('fAmount').value.trim();
+    if (!(variable && amtTxt === '') && !/^\d+(\.\d{1,2})?$/.test(amtTxt)) return showErr('Enter a valid amount.');
+    let rateErr = '';
+    const rateLines = variable ? Array.from($('rateRows').querySelectorAll('tr')).map(tr => ({
+      id: tr.dataset.id, name: tr.querySelector('.r-name').value.trim(), amount: tr.querySelector('.r-amt').value.trim()
+    })).filter(r => r.name !== '' || r.amount !== '') : [];
+    rateLines.forEach(r => {
+      if (!r.name) rateErr = 'Every rate needs a stop / distance name.';
+      else if (!/^\d+(\.\d{1,2})?$/.test(r.amount)) rateErr = 'Enter a valid amount for ' + r.name + '.';
+    });
+    if (rateErr) return showErr(rateErr);
     const fd = new FormData();
     fd.append('id', $('fId').value);
     fd.append('name', $('fName').value.trim());
-    fd.append('amount', $('fAmount').value.trim());
+    fd.append('amount', amtTxt);
+    fd.append('amount_type', $('fAType').value);
+    rateLines.forEach(r => { fd.append('rate_id[]', r.id); fd.append('rate_name[]', r.name); fd.append('rate_amount[]', r.amount); });
     fd.append('description', $('fDesc').value.trim());
     fd.append('frequency', $('fFreq').value);
     fd.append('installments', $('fInst').value);

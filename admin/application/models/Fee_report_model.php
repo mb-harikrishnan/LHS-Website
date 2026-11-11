@@ -60,9 +60,11 @@ class Fee_report_model extends CI_Model
         $sql = "SELECT f.sfdId, f.sfdSmId, f.sfdFmId, f.sfdInstNo, f.sfdPeriod, f.sfdDueDate, f.sfdAmount,
                        m.fmName, m.fmIsSpecial, m.fmFineType, m.fmFineAmount, m.fmFineGraceDays, m.fmFineMax, m.fmOrder,
                        s.smAdmissionNo, s.smName, s.smMobile, s.smClass, s.smDiv, c.cmName, d.dmName,
-                       COALESCE(p.paid, 0) AS paid, COALESCE(p.fine_paid, 0) AS fine_paid
+                       COALESCE(p.paid, 0) AS paid, COALESCE(p.fine_paid, 0) AS fine_paid, fr.fmrName
                 FROM student_fee_due f
                 JOIN fee_master m ON m.fmId = f.sfdFmId
+                LEFT JOIN student_fee_allocation a ON a.sfaId = f.sfdSfaId
+                LEFT JOIN fee_master_rate fr ON fr.fmrId = a.sfaFmrId
                 JOIN students_master s ON s.smId = f.sfdSmId AND s.smAmId = f.sfdAmId
                 LEFT JOIN class_master c ON c.cmId = s.smClass
                 LEFT JOIN division_master d ON d.dmId = s.smDiv

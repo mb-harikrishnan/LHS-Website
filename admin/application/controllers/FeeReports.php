@@ -278,15 +278,16 @@ class FeeReports extends CI_Controller
             $id = (int)$d->sfdSmId;
             if (!isset($by[$id])) {
                 $by[$id] = array('_group' => $this->_cls($d), 'adm' => $d->smAdmissionNo, 'name' => $d->smName,
-                                 'mobile' => $d->smMobile, 'total' => 0);
+                                 'mobile' => $d->smMobile, 'total' => 0, 'stops' => array());
             }
             $k = 'fee_' . $d->sfdFmId;
             $by[$id][$k] = ($by[$id][$k] ?? 0) + (float)$d->sfdAmount;
+            if ($d->fmrName) $by[$id]['stops'][$d->fmName] = $d->fmName . ': ' . $d->fmrName;
             $by[$id]['total'] += (float)$d->sfdAmount;
             $fees[(int)$d->sfdFmId] = true;
         }
         $rows = array(); $i = 0;
-        foreach ($by as $r) { $r['sl'] = ++$i; $rows[] = $r; }
+        foreach ($by as $r) { $r['sl'] = ++$i; $r['stops'] = implode(', ', $r['stops']); $rows[] = $r; }
 
         $this->_render(array(
             'title' => 'Student Fee List', 'menu' => 'STUDENT_REPORTS', 'route' => 'reports/student_fee_list',
@@ -296,7 +297,8 @@ class FeeReports extends CI_Controller
                 array(array('key' => 'sl', 'label' => '#'), array('key' => 'adm', 'label' => 'Adm No'),
                       array('key' => 'name', 'label' => 'Name'), array('key' => 'mobile', 'label' => 'Mobile')),
                 $this->_fee_columns($fees),
-                array(array('key' => 'total', 'label' => 'Total', 'type' => 'money', 'total' => true))
+                array(array('key' => 'total', 'label' => 'Total', 'type' => 'money', 'total' => true),
+                      array('key' => 'stops', 'label' => 'Stop / Slab'))
             ),
             'rows' => $rows, 'count_label' => 'students',
         ));

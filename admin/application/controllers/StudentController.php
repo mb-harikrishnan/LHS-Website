@@ -519,6 +519,8 @@ public function get_divisions($cmId = 0)
     {
         $posted = $this->input->post('fees');
         $posted = is_array($posted) ? $posted : array();
+        $prates = $this->input->post('fee_rate');          // fmId => rate id (VARIABLE fees)
+        $prates = is_array($prates) ? $prates : array();
         $fees   = array();
         foreach ($this->Fee_model->get_fees($amId) as $f) $fees[(int)$f->fmId] = $f;
         $current = $smId ? $this->Fee_model->get_student_allocations($smId, $amId) : array();
@@ -529,7 +531,9 @@ public function get_divisions($cmId = 0)
             if (!isset($fees[$fmId])) return 'A selected fee is not valid for this academic year.';
             $amt = trim((string)$amt);
             if (!preg_match('/^\d{1,8}(\.\d{1,2})?$/', $amt)) return 'Enter a valid amount for ' . $fees[$fmId]->fmName . '.';
-            $plan['add'][$fmId] = round((float)$amt, 2);
+            $rate = (int)(isset($prates[$fmId]) ? $prates[$fmId] : 0);
+            if ($rate && !$this->Fee_model->find_rate($fees[$fmId], $rate)) return 'The selected ' . $fees[$fmId]->fmName . ' rate is not valid.';
+            $plan['add'][$fmId] = array('amount' => round((float)$amt, 2), 'rate' => $rate ?: null);
         }
         foreach ($current as $fmId => $a) {
             if (isset($plan['add'][$fmId])) continue;
@@ -542,9 +546,10 @@ public function get_divisions($cmId = 0)
     private function _apply_student_fee_plan($smId, $amId, $plan)
     {
         $current = $this->Fee_model->get_student_allocations($smId, $amId);
-        foreach ($plan['add'] as $fmId => $amt) {
-            if (isset($current[$fmId]) && abs((float)$current[$fmId]->sfaAmount - $amt) < 0.001) continue;   // unchanged
-            $this->Fee_model->allocate($smId, $amId, $fmId, $amt, (int)$this->session->userdata('id'));
+        foreach ($plan['add'] as $fmId => $p) {
+            if (isset($current[$fmId]) && abs((float)$current[$fmId]->sfaAmount - $p['amount']) < 0.001
+                && (int)$current[$fmId]->sfaFmrId === (int)$p['rate']) continue;   // unchanged
+            $this->Fee_model->allocate($smId, $amId, $fmId, $p['amount'], (int)$this->session->userdata('id'), $p['rate']);
         }
         foreach ($plan['remove'] as $fmId) {
             $this->Fee_model->deallocate($smId, $amId, $fmId);

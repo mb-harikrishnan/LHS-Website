@@ -77,8 +77,9 @@ textarea.field-input{min-height:80px;resize:vertical}
 .fee-tbl td{padding:7px 8px;border-bottom:1px solid #e2e8f0;vertical-align:middle}
 .fee-tbl tr:last-child td{border-bottom:0}
 .fee-tbl input[type=checkbox]{width:16px;height:16px}
-.fee-tbl .fee-amt{width:110px;padding:6px 8px;border:1px solid #cbd5e1;border-radius:6px;text-align:right;font:inherit}
+.fee-tbl .fee-amt{width:110px;height:var(--control-h-sm);padding:0 8px;border:1px solid #cbd5e1;border-radius:6px;text-align:right;font:inherit}
 .fee-tbl small{color:#64748b}
+.fee-tbl .fee-rate{max-width:190px;height:var(--control-h-sm);padding:0 6px;border:1px solid #cbd5e1;border-radius:6px;font:inherit;font-size:13px}
 .fee-note{font-size:12px;color:#64748b;margin:6px 0 0}
 </style>
 
@@ -399,7 +400,9 @@ async function loadDivisions(value) {
         <td style="width:30px"><input type="checkbox" class="fee-on" ${on ? 'checked' : ''} ${locked ? 'disabled' : ''} aria-label="${esc(f.name)}"></td>
         <td><strong>${esc(f.name)}</strong>${f.special ? ' <span class="tag">Special</span>' : ''}<br>
             <small>${esc(f.frequency)} × ${f.installments}${locked ? ' · ₹' + inr(f.paid) + ' paid (cannot remove)' : ''}</small></td>
-        <td style="text-align:right">₹ <input class="fee-amt" inputmode="decimal" value="${f.amount}" data-touched="${f.allotted ? 1 : 0}"></td>
+        <td style="text-align:right;white-space:nowrap">${f.variable && f.rates.length ? `<select class="fee-rate" aria-label="Stop / distance">
+              <option value="">Typed amount</option>${f.rates.map(r => `<option value="${r.id}" ${f.rate === r.id ? 'selected' : ''}>${esc(r.name)} (₹${inr(r.amount)})</option>`).join('')}
+            </select> ` : ''}₹ <input class="fee-amt" inputmode="decimal" value="${f.variable && !f.allotted && f.rates.length ? '' : f.amount}" data-touched="${f.allotted || f.variable ? 1 : 0}"></td>
       </tr>`;
     }).join('') + '</tbody></table>';
     feesLoaded = true;
@@ -415,7 +418,22 @@ async function loadDivisions(value) {
       if (f) inp.value = feeAmountFor(f, cls);
     });
   }
-  $('feeBox').addEventListener('input', e => { if (e.target.classList.contains('fee-amt')) e.target.dataset.touched = '1'; });
+  $('feeBox').addEventListener('input', e => {
+    if (!e.target.classList.contains('fee-amt')) return;
+    e.target.dataset.touched = '1';
+    const tr = e.target.closest('tr'), sel = tr.querySelector('.fee-rate');
+    if (sel && sel.value) {   // typed amount different from the rate -> typed amount
+      const f = FEES.find(x => x.id === +tr.dataset.fee), r = f.rates.find(x => x.id === +sel.value);
+      if (r && parseFloat(e.target.value) !== r.amount) sel.value = '';
+    }
+    if (e.target.value.trim() !== '') tr.querySelector('.fee-on').checked = true;
+  });
+  $('feeBox').addEventListener('change', e => {
+    if (!e.target.classList.contains('fee-rate')) return;
+    const tr = e.target.closest('tr'), f = FEES.find(x => x.id === +tr.dataset.fee);
+    const r = f.rates.find(x => x.id === +e.target.value);
+    if (r) { tr.querySelector('.fee-amt').value = r.amount; tr.querySelector('.fee-on').checked = true; }
+  });
   $('cls').addEventListener('change', repriceFees);
 
   /* ---------- add / edit form ---------- */
@@ -509,6 +527,8 @@ async function loadDivisions(value) {
         const amt = tr.querySelector('.fee-amt').value.trim();
         if (!/^\d+(\.\d{1,2})?$/.test(amt)) badFee = tr.querySelector('strong').textContent;
         fd.append('fees[' + tr.dataset.fee + ']', amt);
+        const rs = tr.querySelector('.fee-rate');
+        if (rs && rs.value) fd.append('fee_rate[' + tr.dataset.fee + ']', rs.value);
       });
       if (badFee) return showError('Enter a valid amount for ' + badFee + '.');
     }

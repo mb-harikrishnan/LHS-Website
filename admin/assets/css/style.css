@@ -74,6 +74,39 @@ button, input, select, textarea {
   font-family: inherit;
 }
 
+/* --------------------------------------------------------------------------
+   One height for every single-line control (text, number, date, search,
+   dropdown) and for buttons, on every page.
+   :where() keeps specificity at zero, so page styles can still set padding,
+   colours and widths; only the height is shared.
+   -------------------------------------------------------------------------- */
+:root {
+  --control-h: 40px;     /* fields, dropdowns, buttons */
+  --control-h-sm: 32px;  /* controls inside table cells, .btn-sm */
+}
+:where(input:not([type=checkbox], [type=radio], [type=file], [type=range], [type=hidden],
+                 [type=color], [type=image], [type=submit], [type=button], [type=reset]), select) {
+  height: var(--control-h);
+  line-height: normal;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+:where(select[multiple], select[size]:not([size="1"])) {
+  height: auto;
+}
+/* number spinners and date pickers: keep the inner controls inside the same height */
+:where(input[type=number])::-webkit-inner-spin-button,
+:where(input[type=number])::-webkit-outer-spin-button {
+  height: calc(var(--control-h) - 12px);
+}
+:where(input[type=date], input[type=time], input[type=datetime-local], input[type=month])::-webkit-datetime-edit {
+  padding: 0;
+}
+/* small variant: add class "sm" to a field; also used inside compact tables */
+:where(input.sm, select.sm, .table.compact input:not([type=checkbox], [type=radio]), .table.compact select) {
+  height: var(--control-h-sm);
+}
+
 /* ==========================================================================
    APP CONTAINER & LAYOUT
    ========================================================================== */
@@ -697,6 +730,9 @@ aside.sidebar.drawer.open {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  height: var(--control-h);
+  box-sizing: border-box;
+  white-space: nowrap;
   padding: 9px 16px;
   border-radius: 12px;
   font-size: 13.5px;
@@ -776,6 +812,7 @@ aside.sidebar.drawer.open {
 
 .btn-sm {
   padding: 6px 12px;
+  height: var(--control-h-sm);
   font-size: 12.5px;
   border-radius: 8px;
 }

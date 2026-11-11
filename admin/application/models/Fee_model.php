@@ -36,7 +36,8 @@ class Fee_model extends CI_Model
     /* stop with a clear message when the fee migration has not been run on this database */
     public function require_schema()
     {
-        if (!$this->db->table_exists('student_fee_due') || !$this->db->field_exists('fmOrder', 'fee_master')) {
+        if (!$this->db->table_exists('student_fee_due') || !$this->db->table_exists('fee_master_rate')
+            || !$this->db->field_exists('sfaFmrId', 'student_fee_allocation')) {
             show_error('The fee module tables are not set up on this database yet. Log in as admin and open '
                 . site_url('Migration') . ' once to create them.', 500, 'Fee module not installed');
         }
@@ -73,27 +74,35 @@ class Fee_model extends CI_Model
 
     /* ================================================================
        FEE MASTER
+       fmAmountType FIXED    : fmAmount, or the class-wise amount
+                    VARIABLE : amount differs per student (conveyance by stop / distance).
+                               Optional rate list (fee_master_rate); fmAmount is only a default.
        ================================================================ */
+    public static $amount_types = array(
+        'FIXED'    => 'Fixed (same for all / class-wise)',
+        'VARIABLE' => 'Varies per student (stop / distance)',
+    );
+
     public function get_fees($amId, $active_only = false, $special = null)
     {
         $this->db->where('fmAmId', (int)$amId);
         if ($active_only) $this->db->where('fmActive', 1);
         if ($special !== null) $this->db->where('fmIsSpecial', $special ? 1 : 0);
         $rows = $this->db->order_by('fmOrder', 'ASC')->order_by('fmName', 'ASC')->get('fee_master')->result();
+        if (!$rows) return $rows;
 
-        // attach class-wise amounts {cmId: amount}
-        $map = $this->_class_amount_map(array_map(function ($r) { return (int)$r->fmId; }, $rows));
+        $ids   = array_map(function ($r) { return (int)$r->fmId; }, $rows);
+        $map   = $this->_class_amount_map($ids);
+        $rates = $this->_rate_map($ids);
+        $cnt   = $this->db->select('sfaFmId, COUNT(*) c', false)->where_in('sfaFmId', $ids)->where('sfaActive', 1)
+                          ->group_by('sfaFmId')->get('student_fee_allocation')->result();
+        $c = array();
+        foreach ($cnt as $x) $c[$x->sfaFmId] = (int)$x->c;
+
         foreach ($rows as $r) {
             $r->class_amounts = isset($map[$r->fmId]) ? $map[$r->fmId] : array();
-            $r->alloc_count   = 0;
-        }
-        if ($rows) {
-            $ids = array_map(function ($r) { return (int)$r->fmId; }, $rows);
-            $cnt = $this->db->select('sfaFmId, COUNT(*) c', false)->where_in('sfaFmId', $ids)->where('sfaActive', 1)
-                            ->group_by('sfaFmId')->get('student_fee_allocation')->result();
-            $c = array();
-            foreach ($cnt as $x) $c[$x->sfaFmId] = (int)$x->c;
-            foreach ($rows as $r) $r->alloc_count = isset($c[$r->fmId]) ? $c[$r->fmId] : 0;
+            $r->rates         = isset($rates[$r->fmId]) ? $rates[$r->fmId] : array();
+            $r->alloc_count   = isset($c[$r->fmId]) ? $c[$r->fmId] : 0;
         }
         return $rows;
     }
@@ -102,10 +111,17 @@ class Fee_model extends CI_Model
     {
         $r = $this->db->where('fmId', (int)$fmId)->get('fee_master')->row();
         if ($r) {
-            $map = $this->_class_amount_map(array((int)$fmId));
+            $map   = $this->_class_amount_map(array((int)$fmId));
+            $rates = $this->_rate_map(array((int)$fmId));
             $r->class_amounts = isset($map[$r->fmId]) ? $map[$r->fmId] : array();
+            $r->rates         = isset($rates[$r->fmId]) ? $rates[$r->fmId] : array();
         }
         return $r;
+    }
+
+    public static function is_variable($fee)
+    {
+        return isset($fee->fmAmountType) && $fee->fmAmountType === 'VARIABLE';
     }
 
     private function _class_amount_map($fmIds)
@@ -117,6 +133,38 @@ class Fee_model extends CI_Model
         return $map;
     }
 
+    /* [fmId => [ {id, name, amount}, ... ]] */
+    private function _rate_map($fmIds)
+    {
+        $map = array();
+        if (empty($fmIds)) return $map;
+        $rows = $this->db->where_in('fmrFmId', $fmIds)->order_by('fmrOrder', 'ASC')->order_by('fmrName', 'ASC')
+                         ->get('fee_master_rate')->result();
+        foreach ($rows as $r) {
+            $map[$r->fmrFmId][] = (object)array('id' => (int)$r->fmrId, 'name' => $r->fmrName, 'amount' => (float)$r->fmrAmount);
+        }
+        return $map;
+    }
+
+    /* rate object of a fee, or null */
+    public function find_rate($fee, $fmrId)
+    {
+        if (!$fmrId || empty($fee->rates)) return null;
+        foreach ($fee->rates as $rt) if ((int)$rt->id === (int)$fmrId) return $rt;
+        return null;
+    }
+
+    /* how many active allocations use each rate: [fmrId => count] */
+    public function rate_usage($fmId)
+    {
+        $out = array();
+        $rows = $this->db->select('sfaFmrId, COUNT(*) c', false)->where('sfaFmId', (int)$fmId)
+                         ->where('sfaFmrId IS NOT NULL', null, false)->group_by('sfaFmrId')
+                         ->get('student_fee_allocation')->result();
+        foreach ($rows as $r) $out[(int)$r->sfaFmrId] = (int)$r->c;
+        return $out;
+    }
+
     public function fee_name_exists($name, $amId, $exclude_id = 0)
     {
         $this->db->where('LOWER(fmName)', mb_strtolower($name))->where('fmAmId', (int)$amId);
@@ -124,22 +172,35 @@ class Fee_model extends CI_Model
         return $this->db->count_all_results('fee_master') > 0;
     }
 
-    /* installment amount of a fee for a class */
-    public function resolve_amount($fee, $cmId)
+    /**
+     * Installment amount of a fee for a student.
+     * VARIABLE fee: amount of the chosen rate, else the default fmAmount.
+     * FIXED fee   : class-wise amount, else fmAmount.
+     */
+    public function resolve_amount($fee, $cmId, $fmrId = null)
     {
         if (is_numeric($fee)) $fee = $this->get_fee($fee);
         if (!$fee) return 0.0;
+        if (self::is_variable($fee)) {
+            $rt = $this->find_rate($fee, $fmrId);
+            return $rt ? (float)$rt->amount : (float)$fee->fmAmount;
+        }
         $k = (string)(int)$cmId;
         return isset($fee->class_amounts[$k]) ? (float)$fee->class_amounts[$k] : (float)$fee->fmAmount;
     }
 
     /**
      * Insert / update a fee.
-     * $class_amounts : [cmId => amount] (only classes that differ from the default amount)
-     * $apply_existing: re-price already allotted students to the new amount (unpaid installments only)
+     * $class_amounts : [cmId => amount] (FIXED fees; only classes that differ from the default)
+     * $rates         : [ ['id' => fmrId|0, 'name' => .., 'amount' => ..], ... ] (VARIABLE fees)
+     *                  rates left out are deleted (the controller checks they are not in use)
+     * $apply_existing: re-price already allotted students (unpaid installments only).
+     *                  VARIABLE fees: only students with a rate chosen; typed amounts are kept.
      */
-    public function save_fee($fmId, $data, $class_amounts, $apply_existing = false)
+    public function save_fee($fmId, $data, $class_amounts, $apply_existing = false, $rates = array())
     {
+        $variable = isset($data['fmAmountType']) && $data['fmAmountType'] === 'VARIABLE';
+
         $this->db->trans_start();
         if ($fmId) {
             $this->db->where('fmId', (int)$fmId)->update('fee_master', $data);
@@ -149,25 +210,50 @@ class Fee_model extends CI_Model
         }
 
         $this->db->where('fmcFmId', (int)$fmId)->delete('fee_master_class');
-        foreach ($class_amounts as $cmId => $amt) {
-            $this->db->insert('fee_master_class', array('fmcFmId' => $fmId, 'fmcCmId' => (int)$cmId, 'fmcAmount' => $amt));
+        if (!$variable) {
+            foreach ($class_amounts as $cmId => $amt) {
+                $this->db->insert('fee_master_class', array('fmcFmId' => $fmId, 'fmcCmId' => (int)$cmId, 'fmcAmount' => $amt));
+            }
         }
+
+        // rates: update kept ones, insert new ones, delete the rest
+        $keep = array();
+        if ($variable) {
+            foreach (array_values($rates) as $i => $rt) {
+                $row = array('fmrFmId' => $fmId, 'fmrName' => $rt['name'], 'fmrAmount' => $rt['amount'], 'fmrOrder' => $i + 1);
+                if (!empty($rt['id'])) {
+                    $this->db->where('fmrId', (int)$rt['id'])->where('fmrFmId', $fmId)->update('fee_master_rate', $row);
+                    $keep[] = (int)$rt['id'];
+                } else {
+                    $this->db->insert('fee_master_rate', $row);
+                    $keep[] = (int)$this->db->insert_id();
+                }
+            }
+        }
+        $this->db->where('fmrFmId', $fmId);
+        if ($keep) $this->db->where_not_in('fmrId', $keep);
+        $this->db->delete('fee_master_rate');
+        // students whose rate no longer exists keep their amount, typed manually from now on
+        $this->db->where('sfaFmId', $fmId)->where('sfaFmrId IS NOT NULL', null, false);
+        if ($keep) $this->db->where_not_in('sfaFmrId', $keep);
+        $this->db->update('student_fee_allocation', array('sfaFmrId' => null));
 
         if ($apply_existing) {
             $fee = $this->get_fee($fmId);
-            $allocs = $this->db->select('a.sfaId, s.smClass')
+            $allocs = $this->db->select('a.sfaId, a.sfaFmrId, s.smClass')
                 ->from('student_fee_allocation a')
                 ->join('students_master s', 's.smId = a.sfaSmId AND s.smAmId = a.sfaAmId', 'left')
                 ->where('a.sfaFmId', (int)$fmId)->get()->result();
             foreach ($allocs as $a) {
+                if ($variable && !$this->find_rate($fee, $a->sfaFmrId)) continue;   // typed amount: keep
                 $this->db->where('sfaId', $a->sfaId)->update('student_fee_allocation',
-                    array('sfaAmount' => $this->resolve_amount($fee, $a->smClass)));
+                    array('sfaAmount' => $this->resolve_amount($fee, $a->smClass, $a->sfaFmrId)));
             }
         }
         $this->db->trans_complete();
 
         if ($this->db->trans_status()) {
-            $this->sync_fee_dues($fmId);   // installments / dates may have changed
+            $this->sync_fee_dues($fmId);   // installments / dates / amounts may have changed
             return $fmId;
         }
         return 0;
@@ -187,22 +273,25 @@ class Fee_model extends CI_Model
     {
         $this->db->trans_start();
         $this->db->where('fmcFmId', (int)$fmId)->delete('fee_master_class');
+        $this->db->where('fmrFmId', (int)$fmId)->delete('fee_master_rate');
         $this->db->where('fmId', (int)$fmId)->delete('fee_master');
         $this->db->trans_complete();
         return $this->db->trans_status();
     }
 
-    /* copy fees (and class amounts) of one year into another; skips names that already exist */
+    /* copy fees (with class amounts and rates) of one year into another; skips names that already exist */
     public function copy_fees($fromAmId, $toAmId, $user)
     {
         $copied = 0;
         foreach ($this->get_fees($fromAmId) as $f) {
             if ($this->fee_name_exists($f->fmName, $toAmId)) continue;
             $row = (array)$f;
-            unset($row['fmId'], $row['fmTs'], $row['class_amounts'], $row['alloc_count']);
+            unset($row['fmId'], $row['fmTs'], $row['class_amounts'], $row['rates'], $row['alloc_count']);
             $row['fmAmId'] = (int)$toAmId;
             $row['fmUser'] = $user;
-            if ($this->save_fee(0, $row, $f->class_amounts)) $copied++;
+            $rates = array();
+            foreach ($f->rates as $rt) $rates[] = array('id' => 0, 'name' => $rt->name, 'amount' => $rt->amount);
+            if ($this->save_fee(0, $row, $f->class_amounts, false, $rates)) $copied++;
         }
         return $copied;
     }
@@ -351,12 +440,13 @@ class Fee_model extends CI_Model
         return $out;
     }
 
-    /* allot (or re-price) a fee to a student, then build its dues */
-    public function allocate($smId, $amId, $fmId, $amount, $user = null)
+    /* allot (or re-price) a fee to a student, then build its dues. $fmrId = chosen rate of a VARIABLE fee */
+    public function allocate($smId, $amId, $fmId, $amount, $user = null, $fmrId = null)
     {
         $row = $this->db->where(array('sfaSmId' => (int)$smId, 'sfaFmId' => (int)$fmId, 'sfaAmId' => (int)$amId))
                         ->get('student_fee_allocation')->row();
-        $data = array('sfaAmount' => round((float)$amount, 2), 'sfaActive' => 1, 'sfaUser' => $user);
+        $data = array('sfaAmount' => round((float)$amount, 2), 'sfaFmrId' => $fmrId ? (int)$fmrId : null,
+                      'sfaActive' => 1, 'sfaUser' => $user);
         if ($row) {
             $this->db->where('sfaId', $row->sfaId)->update('student_fee_allocation', $data);
             $sfaId = (int)$row->sfaId;
@@ -457,18 +547,45 @@ class Fee_model extends CI_Model
             ->get()->row();
     }
 
-    /* students of a class (+division) with their allocation of one fee */
-    public function class_students_for_fee($amId, $cmId, $dmId, $fmId)
+    /* students of a class (+division) */
+    public function class_students($amId, $cmId, $dmId = '')
     {
-        $this->db->select('s.smId, s.smAdmissionNo, s.smName, s.smDiv, d.dmName, a.sfaId, a.sfaAmount, a.sfaActive')
+        $this->db->select('s.smId, s.smAdmissionNo, s.smName, s.smClass, s.smDiv, d.dmName')
             ->from('students_master s')
             ->join('division_master d', 'd.dmId = s.smDiv', 'left')
-            ->join('student_fee_allocation a', 'a.sfaSmId = s.smId AND a.sfaAmId = s.smAmId AND a.sfaFmId = ' . (int)$fmId . ' AND a.sfaActive = 1', 'left')
             ->where('s.smAmId', (int)$amId)->where('s.smClass', (int)$cmId);
         if ($dmId !== '') $this->db->where('s.smDiv', (int)$dmId);
-        $rows = $this->db->order_by('d.dmName', 'ASC')->order_by('s.smName', 'ASC')->get()->result();
-        foreach ($rows as $r) $r->paid = $r->sfaId ? $this->allocation_paid($r->sfaId) : 0;
-        return $rows;
+        return $this->db->order_by('d.dmName', 'ASC')->order_by('s.smName', 'ASC')->get()->result();
+    }
+
+    /* active allocations of many students: [smId][fmId] => {amount, rate, paid} */
+    public function allocation_grid($amId, $smIds)
+    {
+        $out = array();
+        if (empty($smIds)) return $out;
+        $rows = $this->db->select('sfaId, sfaSmId, sfaFmId, sfaAmount, sfaFmrId')
+            ->where('sfaAmId', (int)$amId)->where('sfaActive', 1)->where_in('sfaSmId', array_map('intval', $smIds))
+            ->get('student_fee_allocation')->result();
+        if (!$rows) return $out;
+
+        // paid per allocation in one query
+        $paid = array();
+        $p = $this->db->select('f.sfdSfaId, SUM(d.frdAmount) paid', false)
+            ->from('fee_receipt_detail d')
+            ->join('fee_receipt r', 'r.frId = d.frdFrId AND r.frCancelled = 0')
+            ->join('student_fee_due f', 'f.sfdId = d.frdSfdId')
+            ->where_in('f.sfdSfaId', array_map(function ($r) { return (int)$r->sfaId; }, $rows))
+            ->group_by('f.sfdSfaId')->get()->result();
+        foreach ($p as $x) $paid[(int)$x->sfdSfaId] = (float)$x->paid;
+
+        foreach ($rows as $r) {
+            $out[(int)$r->sfaSmId][(int)$r->sfaFmId] = array(
+                'amount' => (float)$r->sfaAmount,
+                'rate'   => $r->sfaFmrId ? (int)$r->sfaFmrId : 0,
+                'paid'   => isset($paid[(int)$r->sfaId]) ? $paid[(int)$r->sfaId] : 0,
+            );
+        }
+        return $out;
     }
 
     /* ================================================================
@@ -480,9 +597,10 @@ class Fee_model extends CI_Model
      */
     public function get_student_dues($smId, $amId = null, $only_open = true, $asOf = null)
     {
-        $this->db->select('f.*, m.fmName, m.fmIsSpecial, m.fmFineType, m.fmFineAmount, m.fmFineGraceDays, m.fmFineMax, m.fmOrder, y.amYear')
+        $this->db->select('f.*, m.fmName, m.fmIsSpecial, m.fmFineType, m.fmFineAmount, m.fmFineGraceDays, m.fmFineMax, m.fmOrder, y.amYear, fr.fmrName')
             ->from('student_fee_due f')
             ->join('student_fee_allocation a', 'a.sfaId = f.sfdSfaId')
+            ->join('fee_master_rate fr', 'fr.fmrId = a.sfaFmrId', 'left')
             ->join('fee_master m', 'm.fmId = f.sfdFmId')
             ->join('academic_master y', 'y.amId = f.sfdAmId', 'left')
             ->where('f.sfdSmId', (int)$smId);

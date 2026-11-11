@@ -63,7 +63,7 @@ $can_collect = !empty($perm['can_add']);
             <button type="button" class="btn btn-ghost btn-sm" id="selNone">Clear</button>
           </div>
           <div class="act-row" style="align-items:center;margin-left:auto">
-            <input class="field-input" id="recv" style="width:140px" inputmode="decimal" placeholder="Amount received" aria-label="Amount received">
+            <input class="field-input sm" id="recv" style="width:140px" inputmode="decimal" placeholder="Amount received" aria-label="Amount received">
             <label class="check small"><input type="checkbox" id="withFine" checked> with fine</label>
             <button type="button" class="btn btn-primary btn-sm" id="distribute">Distribute</button>
           </div>
@@ -198,7 +198,7 @@ $can_collect = !empty($perm['can_add']);
       const st = !open ? '<span class="badge badge-green">Paid</span>' : (d.paid > 0 ? '<span class="badge badge-amber">Part paid</span>' : '');
       return `<tr data-id="${d.id}">
         <td>${open && CAN_COLLECT ? `<input type="checkbox" class="pick" aria-label="Select">` : ''}</td>
-        <td>${esc(d.fee)}${d.special ? ' <span class="badge badge-purple">Special</span>' : ''}${tag}</td>
+        <td>${esc(d.fee)}${d.rate ? ' <span class="small muted">· ' + esc(d.rate) + '</span>' : ''}${d.special ? ' <span class="badge badge-purple">Special</span>' : ''}${tag}</td>
         <td>${esc(d.period)} ${st}</td>
         <td class="${d.overdue ? 'bad-txt' : ''}">${dmy(d.due_date)}</td>
         <td class="num">${inr(d.amount)}</td>
