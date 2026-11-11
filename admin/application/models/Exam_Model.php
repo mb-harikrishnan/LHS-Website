@@ -245,7 +245,7 @@ public function save_allocation_multi($exam_ids, $class_ids, $subjects)
                 $batch[] = array(
                     'emdEmId' => (int)$e, 'emdCmId' => (int)$c,
                     'emdSmId' => (int)$s['id'], 'emdMaxMark' => (int)$s['marks'],
-                    'emdAmId' => $this->get_am_id()                  
+                    // 'emdAmId' => $this->get_am_id()                  
 
                 );
             }
@@ -324,7 +324,7 @@ public function save_allocation_multi($exam_ids, $class_ids, $subjects)
                 JOIN exam_summary es ON es.esId = ed.edEsId
                 JOIN students_master st ON st.smId = ed.edSmId AND st.smClass = ? AND st.smDiv = ?
                 JOIN exam_master_detail emd ON emd.emdEmId = es.esEmId AND emd.emdCmId = es.esCmId AND emd.emdSmId = es.esSmId
-                WHERE  smAmId = " . $this->get_am_id() . " AND es.esEmId = ? AND es.esCmId = ? AND es.esDmId = ?
+                WHERE  st.smAmId = " . $this->get_am_id() . " AND es.esEmId = ? AND es.esCmId = ? AND es.esDmId = ?
                   AND ed.edMark IS NOT NULL AND ed.edMark <> ''";
         $row = $this->db->query($sql, array($class_id, $div_id, $exam_id, $class_id, $div_id))->row();
 

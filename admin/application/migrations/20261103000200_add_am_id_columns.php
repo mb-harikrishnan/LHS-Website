@@ -47,6 +47,13 @@ class Migration_Add_am_id_columns extends CI_Migration
                 'default' => 0
             ]
         ]);
+
+         $this->dbforge->add_column('academic_master', [
+            'amActive' => [
+                'type' => 'INT',
+                'default' => 0
+            ]
+        ]);
     }
 
     public function down()

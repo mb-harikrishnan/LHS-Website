@@ -12,15 +12,27 @@
 class Division_model extends CI_Model
 {
     /* all divisions with the number of classes that use each one */
+    // public function get_all_divisions()
+    // {
+    //     $sql = "SELECT d.dmId, d.dmName, COUNT(a.cdaDmId) AS used_count
+    //             FROM division_master d
+    //             LEFT JOIN class_division_allocation a ON a.cdaDmId = d.dmId
+    //             GROUP BY d.dmId, d.dmName
+    //             ORDER BY d.dmName ASC";
+    //     return $this->db->query($sql)->result();
+    // }
+
     public function get_all_divisions()
-    {
-        $sql = "SELECT d.dmId, d.dmName, COUNT(a.cdaDmId) AS used_count
-                FROM division_master d
-                LEFT JOIN class_division_allocation a ON a.cdaDmId = d.dmId
-                GROUP BY d.dmId, d.dmName
-                ORDER BY d.dmName ASC";
-        return $this->db->query($sql)->result();
-    }
+{
+    $sql = "SELECT d.dmId, d.dmName,
+                   COUNT(DISTINCT a.cdaCmId) AS used_count
+            FROM division_master d
+            LEFT JOIN class_division_allocation a ON a.cdaDmId = d.dmId
+            GROUP BY d.dmId, d.dmName
+            ORDER BY d.dmName ASC";
+    return $this->db->query($sql)->result();
+}
+
 
     /* one division or NULL */
     public function get_division($id)
@@ -48,12 +60,21 @@ class Division_model extends CI_Model
                         ->update('division_master', array('dmName' => $name));
     }
 
-    /* how many classes use this division */
+    // /* how many classes use this division */
+    // public function used_count($id)
+    // {
+    //     return (int)$this->db->where('cdaDmId', (int)$id)
+    //                          ->count_all_results('class_division_allocation');
+    // }
+
     public function used_count($id)
-    {
-        return (int)$this->db->where('cdaDmId', (int)$id)
-                             ->count_all_results('class_division_allocation');
-    }
+{
+    $row = $this->db->select('COUNT(DISTINCT cdaCmId) AS c', false)
+                    ->where('cdaDmId', (int)$id)
+                    ->get('class_division_allocation')
+                    ->row();
+    return (int)$row->c;
+}
 
     public function delete_division($id)
     {
