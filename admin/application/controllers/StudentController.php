@@ -332,9 +332,10 @@ public function get_divisions($cmId = 0)
  
         $total   = 0;
         $details = array();
- 
+       $data['roles'] = $this->Subject_Model->get_user_roles(!$scope['is_admin']);
         if ($scope['assigned']) {
             $total = $this->Subject_Model->count_all_students($filters);
+            
  
             // page is beyond the last one (e.g. after deleting the last row): go back to the last page
             if ($page > 0 && $page >= $total) {
@@ -392,109 +393,246 @@ public function get_divisions($cmId = 0)
     }
  
     /* ---------- ADD + EDIT (POST) ---------- */
+    // public function save_student()
+    // {
+    //     if ($this->input->method() !== 'post') {
+    //         return $this->_student_json(false, 'Invalid request.');
+    //     }
+    //     $scope = $this->_student_scope();
+ 
+    //     $id      = (int)$this->input->post('id');
+    //     $is_edit = $id > 0;
+ 
+    //     // permission
+    //     if (empty($scope['perm'][$is_edit ? 'can_edit' : 'can_add'])) {
+    //         return $this->_student_json(false, 'You do not have permission to do this.');
+    //     }
+    //     if (!$scope['is_admin'] && !$scope['assigned']) {
+    //         return $this->_student_json(false, 'No class and division is assigned to your account.');
+    //     }
+ 
+    //     // when editing, the student must exist and (for non-admin) belong to the user's class + division
+    //     if ($is_edit) {
+    //         $old = $this->Subject_Model->get_student($id);
+    //         if (!$old) {
+    //             return $this->_student_json(false, 'Student not found.');
+    //         }
+    //         if (!$scope['is_admin'] && !$this->_student_in_scope($old, $scope)) {
+    //             return $this->_student_json(false, 'You are not allowed to change this student.');
+    //         }
+    //     }
+ 
+    //     // posted values
+    //     $adm      = $this->_student_clean($this->input->post('adm_no'));
+    //     $aadhar   = trim((string)$this->input->post('aadhar'));
+    //     $name     = $this->_student_clean($this->input->post('name'));
+    //     $gender   = (string)$this->input->post('gender');
+    //     $dob      = trim((string)$this->input->post('dob'));
+    //     $mobile   = trim((string)$this->input->post('mobile'));
+    //     $class    = (string)$this->input->post('class_id');
+    //     $division = (string)$this->input->post('division_id');
+    //     $religion = $this->_student_clean($this->input->post('religion'));
+    //     $caste    = $this->_student_clean($this->input->post('caste'));
+    //     $tongue   = $this->_student_clean($this->input->post('tongue'));
+    //     $address  = trim((string)$this->input->post('address'));
+    //     $country  = $this->_student_clean($this->input->post('country'));
+    //     $state    = $this->_student_clean($this->input->post('state'));
+ 
+    //     // non-admin: class and division are always the user's own, whatever was posted
+    //     if (!$scope['is_admin']) {
+    //         $class    = $scope['class'];
+    //         $division = $scope['division'];
+    //     }
+ 
+    //     // validation
+    //     if ($adm === '')                                  return $this->_student_json(false, 'Please enter the admission number.');
+    //     if (mb_strlen($adm) > 30)                         return $this->_student_json(false, 'Admission number must be 30 characters or fewer.');
+    //     if ($this->Subject_Model->admission_no_exists($adm, $id)) return $this->_student_json(false, 'This admission number already exists.');
+    //     if (!preg_match('/^\d{12}$/', $aadhar))           return $this->_student_json(false, 'Aadhar number must be 12 digits.');
+    //     if ($name === '')                                 return $this->_student_json(false, 'Please enter the student name.');
+    //     if (mb_strlen($name) > 100)                       return $this->_student_json(false, 'Student name must be 100 characters or fewer.');
+    //     if (!array_key_exists($gender, $this->student_genders)) return $this->_student_json(false, 'Please select the gender.');
+ 
+    //     if ($dob !== '') {
+    //         $d = DateTime::createFromFormat('Y-m-d', $dob);
+    //         if (!$d || $d->format('Y-m-d') !== $dob || $dob > date('Y-m-d')) {
+    //             return $this->_student_json(false, 'Please enter a valid date of birth.');
+    //         }
+    //     }
+    //     if ($mobile !== '' && !preg_match('/^\d{10}$/', $mobile)) return $this->_student_json(false, 'Mobile number must be 10 digits.');
+ 
+    //     if ($class === '' || !$this->Subject_Model->class_exists_by_id($class))        return $this->_student_json(false, 'Please select a valid class.');
+    //     if ($division === '' || !$this->Subject_Model->division_exists_by_id($division)) return $this->_student_json(false, 'Please select a valid division.');
+ 
+    //     foreach (array($religion, $caste, $tongue, $country, $state) as $v) {
+    //         if (mb_strlen($v) > 50) return $this->_student_json(false, 'Religion, caste, mother tongue, country and state must be 50 characters or fewer.');
+    //     }
+    //     if (mb_strlen($address) > 500) return $this->_student_json(false, 'Address must be 500 characters or fewer.');
+ 
+    //     $row = array(
+    //         'smAdmissionNo'  => $adm,
+    //         'smAadharNo'     => $aadhar,
+    //         'smName'         => $name,
+    //         'smClass'        => $class,
+    //         'smDiv'          => $division,
+    //         'smGender'       => $gender,
+    //         'smMobile'       => $mobile,
+    //         'smDOB'          => ($dob !== '') ? $dob : NULL,   // smDOB must allow NULL
+    //         'smAddress'      => $address,
+    //         'smReligion'     => $religion,
+    //         'smCaste'        => $caste,
+    //         'smMotherTongue' => $tongue,
+    //         'smCountry'      => $country,
+    //         'smState'        => $state,
+    //         'smAmId'         => (int)$this->session->userdata('selected_am_id')
+    //     );
+ 
+    //     if ($is_edit) {
+    //         $ok = $this->Subject_Model->update_student($id, $row);
+    //         return $this->_student_json($ok, $ok ? 'Student updated successfully.' : 'Update failed.');
+    //     }
+ 
+    //     $ok = $this->Subject_Model->insert_student($row);
+    //     return $this->_student_json($ok, $ok ? 'Student added successfully.' : 'Could not save. Please try again.');
+    // }
+ 
+
     public function save_student()
-    {
-        if ($this->input->method() !== 'post') {
-            return $this->_student_json(false, 'Invalid request.');
-        }
-        $scope = $this->_student_scope();
- 
-        $id      = (int)$this->input->post('id');
-        $is_edit = $id > 0;
- 
-        // permission
-        if (empty($scope['perm'][$is_edit ? 'can_edit' : 'can_add'])) {
-            return $this->_student_json(false, 'You do not have permission to do this.');
-        }
-        if (!$scope['is_admin'] && !$scope['assigned']) {
-            return $this->_student_json(false, 'No class and division is assigned to your account.');
-        }
- 
-        // when editing, the student must exist and (for non-admin) belong to the user's class + division
-        if ($is_edit) {
-            $old = $this->Subject_Model->get_student($id);
-            if (!$old) {
-                return $this->_student_json(false, 'Student not found.');
-            }
-            if (!$scope['is_admin'] && !$this->_student_in_scope($old, $scope)) {
-                return $this->_student_json(false, 'You are not allowed to change this student.');
-            }
-        }
- 
-        // posted values
-        $adm      = $this->_student_clean($this->input->post('adm_no'));
-        $aadhar   = trim((string)$this->input->post('aadhar'));
-        $name     = $this->_student_clean($this->input->post('name'));
-        $gender   = (string)$this->input->post('gender');
-        $dob      = trim((string)$this->input->post('dob'));
-        $mobile   = trim((string)$this->input->post('mobile'));
-        $class    = (string)$this->input->post('class_id');
-        $division = (string)$this->input->post('division_id');
-        $religion = $this->_student_clean($this->input->post('religion'));
-        $caste    = $this->_student_clean($this->input->post('caste'));
-        $tongue   = $this->_student_clean($this->input->post('tongue'));
-        $address  = trim((string)$this->input->post('address'));
-        $country  = $this->_student_clean($this->input->post('country'));
-        $state    = $this->_student_clean($this->input->post('state'));
- 
-        // non-admin: class and division are always the user's own, whatever was posted
-        if (!$scope['is_admin']) {
-            $class    = $scope['class'];
-            $division = $scope['division'];
-        }
- 
-        // validation
-        if ($adm === '')                                  return $this->_student_json(false, 'Please enter the admission number.');
-        if (mb_strlen($adm) > 30)                         return $this->_student_json(false, 'Admission number must be 30 characters or fewer.');
-        if ($this->Subject_Model->admission_no_exists($adm, $id)) return $this->_student_json(false, 'This admission number already exists.');
-        if (!preg_match('/^\d{12}$/', $aadhar))           return $this->_student_json(false, 'Aadhar number must be 12 digits.');
-        if ($name === '')                                 return $this->_student_json(false, 'Please enter the student name.');
-        if (mb_strlen($name) > 100)                       return $this->_student_json(false, 'Student name must be 100 characters or fewer.');
-        if (!array_key_exists($gender, $this->student_genders)) return $this->_student_json(false, 'Please select the gender.');
- 
-        if ($dob !== '') {
-            $d = DateTime::createFromFormat('Y-m-d', $dob);
-            if (!$d || $d->format('Y-m-d') !== $dob || $dob > date('Y-m-d')) {
-                return $this->_student_json(false, 'Please enter a valid date of birth.');
-            }
-        }
-        if ($mobile !== '' && !preg_match('/^\d{10}$/', $mobile)) return $this->_student_json(false, 'Mobile number must be 10 digits.');
- 
-        if ($class === '' || !$this->Subject_Model->class_exists_by_id($class))        return $this->_student_json(false, 'Please select a valid class.');
-        if ($division === '' || !$this->Subject_Model->division_exists_by_id($division)) return $this->_student_json(false, 'Please select a valid division.');
- 
-        foreach (array($religion, $caste, $tongue, $country, $state) as $v) {
-            if (mb_strlen($v) > 50) return $this->_student_json(false, 'Religion, caste, mother tongue, country and state must be 50 characters or fewer.');
-        }
-        if (mb_strlen($address) > 500) return $this->_student_json(false, 'Address must be 500 characters or fewer.');
- 
-        $row = array(
-            'smAdmissionNo'  => $adm,
-            'smAadharNo'     => $aadhar,
-            'smName'         => $name,
-            'smClass'        => $class,
-            'smDiv'          => $division,
-            'smGender'       => $gender,
-            'smMobile'       => $mobile,
-            'smDOB'          => ($dob !== '') ? $dob : NULL,   // smDOB must allow NULL
-            'smAddress'      => $address,
-            'smReligion'     => $religion,
-            'smCaste'        => $caste,
-            'smMotherTongue' => $tongue,
-            'smCountry'      => $country,
-            'smState'        => $state,
-            'smAmId'         => (int)$this->session->userdata('selected_am_id')
-        );
- 
-        if ($is_edit) {
-            $ok = $this->Subject_Model->update_student($id, $row);
-            return $this->_student_json($ok, $ok ? 'Student updated successfully.' : 'Update failed.');
-        }
- 
-        $ok = $this->Subject_Model->insert_student($row);
-        return $this->_student_json($ok, $ok ? 'Student added successfully.' : 'Could not save. Please try again.');
+{
+    if ($this->input->method() !== 'post') {
+        return $this->_student_json(false, 'Invalid request.');
     }
- 
+    $scope = $this->_student_scope();
+
+    $id      = (int)$this->input->post('id');
+    $is_edit = $id > 0;
+
+    if (empty($scope['perm'][$is_edit ? 'can_edit' : 'can_add'])) {
+        return $this->_student_json(false, 'You do not have permission to do this.');
+    }
+    if (!$scope['is_admin'] && !$scope['assigned']) {
+        return $this->_student_json(false, 'No class and division is assigned to your account.');
+    }
+
+    if ($is_edit) {
+        $old = $this->Subject_Model->get_student($id);
+        if (!$old) {
+            return $this->_student_json(false, 'Student not found.');
+        }
+        if (!$scope['is_admin'] && !$this->_student_in_scope($old, $scope)) {
+            return $this->_student_json(false, 'You are not allowed to change this student.');
+        }
+    }
+
+    // posted values
+    $adm      = $this->_student_clean($this->input->post('adm_no'));
+    $aadhar   = trim((string)$this->input->post('aadhar'));
+    $name     = $this->_student_clean($this->input->post('name'));
+    $gender   = (string)$this->input->post('gender');
+    $dob      = trim((string)$this->input->post('dob'));
+    $mobile   = trim((string)$this->input->post('mobile'));
+    $class    = (string)$this->input->post('class_id');
+    $division = (string)$this->input->post('division_id');
+    $religion = $this->_student_clean($this->input->post('religion'));
+    $caste    = $this->_student_clean($this->input->post('caste'));
+    $tongue   = $this->_student_clean($this->input->post('tongue'));
+    $address  = trim((string)$this->input->post('address'));
+    $country  = $this->_student_clean($this->input->post('country'));
+    $state    = $this->_student_clean($this->input->post('state'));
+    $role_id  = (int)$this->input->post('role_id');
+
+    if (!$scope['is_admin']) {
+        $class    = $scope['class'];
+        $division = $scope['division'];
+    }
+
+    // validation
+    if ($adm === '')                                  return $this->_student_json(false, 'Please enter the admission number.');
+    if (mb_strlen($adm) > 30)                         return $this->_student_json(false, 'Admission number must be 30 characters or fewer.');
+    if ($this->Subject_Model->admission_no_exists($adm, $id)) return $this->_student_json(false, 'This admission number already exists.');
+    if (!preg_match('/^\d{12}$/', $aadhar))           return $this->_student_json(false, 'Aadhar number must be 12 digits.');
+    if ($name === '')                                 return $this->_student_json(false, 'Please enter the student name.');
+    if (mb_strlen($name) > 100)                       return $this->_student_json(false, 'Student name must be 100 characters or fewer.');
+    if (!array_key_exists($gender, $this->student_genders)) return $this->_student_json(false, 'Please select the gender.');
+
+    if ($dob !== '') {
+        $d = DateTime::createFromFormat('Y-m-d', $dob);
+        if (!$d || $d->format('Y-m-d') !== $dob || $dob > date('Y-m-d')) {
+            return $this->_student_json(false, 'Please enter a valid date of birth.');
+        }
+    }
+    if ($mobile !== '' && !preg_match('/^\d{10}$/', $mobile)) return $this->_student_json(false, 'Mobile number must be 10 digits.');
+
+    if ($class === '' || !$this->Subject_Model->class_exists_by_id($class))          return $this->_student_json(false, 'Please select a valid class.');
+    if ($division === '' || !$this->Subject_Model->division_exists_by_id($division)) return $this->_student_json(false, 'Please select a valid division.');
+
+    foreach (array($religion, $caste, $tongue, $country, $state) as $v) {
+        if (mb_strlen($v) > 50) return $this->_student_json(false, 'Religion, caste, mother tongue, country and state must be 50 characters or fewer.');
+    }
+    if (mb_strlen($address) > 500) return $this->_student_json(false, 'Address must be 500 characters or fewer.');
+
+    $row = array(
+        'smAdmissionNo'  => $adm,
+        'smAadharNo'     => $aadhar,
+        'smName'         => $name,
+        'smClass'        => $class,
+        'smDiv'          => $division,
+        'smGender'       => $gender,
+        'smMobile'       => $mobile,
+        'smDOB'          => ($dob !== '') ? $dob : NULL,
+        'smAddress'      => $address,
+        'smReligion'     => $religion,
+        'smCaste'        => $caste,
+        'smMotherTongue' => $tongue,
+        'smCountry'      => $country,
+        'smState'        => $state,
+        'smAmId'         => (int)$this->session->userdata('selected_am_id')
+    );
+
+    /* ---------- EDIT: login account is left untouched ---------- */
+    if ($is_edit) {
+        $ok = $this->Subject_Model->update_student($id, $row);
+        return $this->_student_json($ok, $ok ? 'Student updated successfully.' : 'Update failed.');
+    }
+
+    /* ---------- ADD: create the login first, then the student ---------- */
+   /* 1) mobile already has a login -> reuse that user_id, no new user_login row */
+$existing_user_id = $this->Subject_Model->get_user_id_by_name($mobile);
+if ($existing_user_id > 0) {
+    $row['smUser'] = $existing_user_id;
+    $ok = $this->Subject_Model->insert_student($row);
+    return $this->_student_json($ok, $ok ? 'Student added successfully.' : 'Could not save. Please try again.');
+}
+
+/* 2) new mobile -> create the login, then the student */
+$role = $this->Subject_Model->get_user_role($role_id);
+if (!$role) {
+    return $this->_student_json(false, 'Please select a user role.');
+}
+if (!$scope['is_admin'] && (int)$role->role_id === 1) {
+    return $this->_student_json(false, 'You are not allowed to assign this role.');
+}
+
+    $this->db->trans_start();
+
+    $user_id = $this->Subject_Model->insert_user_login(array(
+        'name'         => $mobile,
+        'password'     => md5($mobile . '@123'),
+        'user_type'    => strtolower($role->role_name),
+        'user_role_id' => (int)$role->role_id,
+        'status'       => 1
+    ));
+
+    if ($user_id > 0) {
+        $row['smUser'] = $user_id;
+        $this->Subject_Model->insert_student($row);
+    }
+
+    $this->db->trans_complete();   // rolls back both inserts if either failed
+
+    $ok = ($user_id > 0 && $this->db->trans_status() !== FALSE);
+    return $this->_student_json($ok, $ok ? 'Student added successfully.' : 'Could not save. Please try again.');
+}
     /* ---------- DELETE (POST) ---------- */
     public function delete_student()
     {

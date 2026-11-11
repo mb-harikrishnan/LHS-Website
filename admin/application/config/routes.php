@@ -8,6 +8,7 @@ $route['login']        = 'login';
 $route['login_submit'] = 'login/login_submit';
 
 
+
 $route['dashboard'] = 'DashboardController/dashboard';
 $route['switch_year'] = 'DashboardController/switch_year';
 
@@ -176,6 +177,20 @@ $route['division_allocation_save'] = 'DivisionAllocationController/save';
 
 
 $route['mark_entry_list'] = 'Reports/mark_entry_list';
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////   PARENTS LOGIN    //////////////////////////////
+
+$route['parentdashboard'] = 'Parentdashboard';
+
+
 
 
 $route['Migration'] = 'Migration';
