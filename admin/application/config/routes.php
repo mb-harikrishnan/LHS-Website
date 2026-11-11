@@ -189,7 +189,15 @@ $route['mark_entry_list'] = 'Reports/mark_entry_list';
 //////////////////////////////////////////   PARENTS LOGIN    //////////////////////////////
 
 $route['parentdashboard'] = 'Parentdashboard';
+$route['mychilld'] = 'Parentdashboard/mychilld';
+$route['attendence'] = 'Parentdashboard/attendence';
+$route['fees'] = 'Parentdashboard/fees';
+$route['receipt/(:any)'] = 'Parentdashboard/receipt/$1';
 
+
+
+$route['results'] = 'Parentdashboard/results';
+$route['notice'] = 'Parentdashboard/notice';
 
 
 
