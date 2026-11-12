@@ -14,6 +14,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  *   STORE_PAYMENT  store invoice payments  Dr Cash/Bank   Cr Store Debtors
  *   STORE_PURCHASE store purchases         Dr Store Stock, GST Input   Cr <supplier>
  *   STOCK_MOVE     opening stock / stock adjustments
+ *   PAY_RUN        approved payroll        Dr Teaching / Non-Teaching Staff Salary, PF & ESI Contribution
+ *                                          Cr Salary Payable, PF / ESI / PT / TDS payable, Staff Salary Advances
+ *   PAY_PAYMENT    salary payments         Dr Salary Payable   Cr Cash/Bank
+ *   PAY_ADVANCE    salary advances given   Dr Staff Salary Advances   Cr Cash/Bank
  * A cancelled receipt / invoice / purchase cancels its voucher.
  */
 class Accounts_model extends CI_Model
@@ -29,7 +33,8 @@ class Accounts_model extends CI_Model
     public static $natures = array('ASSET' => 'Assets', 'LIABILITY' => 'Liabilities', 'EQUITY' => 'Capital & Reserves',
                                    'INCOME' => 'Income', 'EXPENSE' => 'Expenses');
     public static $sources = array('FEE_RECEIPT' => 'Fee receipt', 'STORE_INVOICE' => 'Store invoice', 'STORE_PAYMENT' => 'Store payment',
-                                   'STORE_PURCHASE' => 'Store purchase', 'STOCK_MOVE' => 'Stock entry');
+                                   'STORE_PURCHASE' => 'Store purchase', 'STOCK_MOVE' => 'Stock entry',
+                                   'PAY_RUN' => 'Payroll', 'PAY_PAYMENT' => 'Salary payment', 'PAY_ADVANCE' => 'Salary advance');
 
     private $settings = null;
 
@@ -443,6 +448,14 @@ class Accounts_model extends CI_Model
                 $out['cancelled'] += $this->_cancel_where_source_cancelled('STORE_INVOICE', 'store_invoice', 'sinId', 'sinCancelled', 'Store invoice cancelled');
                 $out['cancelled'] += $this->_cancel_where_source_cancelled('STORE_PURCHASE', 'store_purchase', 'spId', 'spCancelled', 'Store purchase cancelled');
             }
+            if ($this->db->table_exists('pay_batch_slip')) {
+                $out['posted']    += $this->_post_payroll($start);
+                $out['posted']    += $this->_post_salary_payments($start);
+                $out['posted']    += $this->_post_salary_advances($start);
+                $out['cancelled'] += $this->_cancel_where_source_cancelled('PAY_RUN', 'pay_approval', 'paId', 'paCancelled', 'Payroll reopened');
+                $out['cancelled'] += $this->_cancel_where_source_cancelled('PAY_PAYMENT', 'pay_batch', 'pbId', 'pbCancelled', 'Salary payment cancelled');
+                $out['cancelled'] += $this->_cancel_where_source_cancelled('PAY_ADVANCE', 'pay_advance', 'padId', 'padCancelled', 'Salary advance cancelled');
+            }
         } finally {
             $this->db->query("SELECT RELEASE_LOCK('lhs_acc_sync')");
         }
@@ -564,6 +577,87 @@ class Accounts_model extends CI_Model
         return $n;
     }
 
+    /* liability ledger of a payroll deduction / employer contribution (employee + employer PF go to one PF Payable) */
+    private function _pay_liability($key, $pcId, $name)
+    {
+        $map = array('PF' => array('PF', 'PF Payable'), 'PF_ER' => array('PF', 'PF Payable'), 'ESI' => array('ESI', 'ESI Payable'),
+                     'ESI_ER' => array('ESI', 'ESI Payable'), 'PT' => array('PT', 'Professional Tax Payable'), 'TDS' => array('TDS', 'TDS Payable'));
+        if (isset($map[$key])) {
+            return $this->key_ledger('PAY_LIAB:' . $map[$key][0], $map[$key][1], in_array($key, array('PT', 'TDS'), true) ? 'TAXES' : 'PROVISIONS');
+        }
+        return $this->key_ledger('PAY_LIAB:C' . (int)$pcId, $name . ' Payable', 'PROVISIONS');
+    }
+
+    private function _post_payroll($start)
+    {
+        $n = 0;
+        $rows = $this->_unposted("SELECT a.*, r.prMonth FROM pay_approval a JOIN pay_run r ON r.prId = a.paPrId
+                LEFT JOIN acc_voucher v ON v.avSource = 'PAY_RUN' AND v.avSourceId = a.paId
+                WHERE v.avId IS NULL AND a.paCancelled = 0 AND a.paDate >= ? ORDER BY a.paDate, a.paId LIMIT 500", array($start));
+        foreach ($rows as $a) {
+            $lines = array();
+            // earnings by staff category
+            foreach ($this->db->query("SELECT s.psCategory, SUM(l.pslAmount) amt FROM pay_slip_line l JOIN pay_slip s ON s.psId = l.pslPsId
+                                       WHERE s.psPrId = ? AND l.pslType = 'EARNING' GROUP BY s.psCategory", array($a->paPrId))->result() as $e) {
+                $lines[] = $e->psCategory === 'TEACHING'
+                    ? array('ledger' => $this->key_ledger('PAY_TEACHING', 'Teaching Staff Salary', 'SALARIES'), 'dr' => $e->amt, 'cr' => 0)
+                    : array('ledger' => $this->key_ledger('PAY_NONTEACHING', 'Non-Teaching Staff Salary', 'SALARIES'), 'dr' => $e->amt, 'cr' => 0);
+            }
+            // deductions, employer contributions, advance recovery
+            $liab = array(); $er = 0;
+            foreach ($this->db->query("SELECT l.pslKind, l.pslType, l.pslKey, l.pslPcId, MAX(l.pslName) nm, SUM(l.pslAmount) amt
+                                       FROM pay_slip_line l JOIN pay_slip s ON s.psId = l.pslPsId
+                                       WHERE s.psPrId = ? AND l.pslType <> 'EARNING' GROUP BY l.pslKind, l.pslType, l.pslKey, l.pslPcId", array($a->paPrId))->result() as $d) {
+                if ($d->pslType === 'EMPLOYER') $er += $d->amt;
+                if ($d->pslKind === 'ADV')       $l = $this->key_ledger('PAY_ADV', 'Staff Salary Advances', 'ADVANCES');
+                elseif ($d->pslKind === 'EXTRA') $l = $this->key_ledger('PAY_OTHER_DED', 'Salary Deductions (Other)', 'OTHER_INCOME');
+                else                             $l = $this->_pay_liability($d->pslKey, $d->pslPcId, $d->nm);
+                $liab[$l] = (isset($liab[$l]) ? $liab[$l] : 0) + $d->amt;
+            }
+            if ($er > 0) $lines[] = array('ledger' => $this->key_ledger('PAY_ER', 'PF & ESI Contribution', 'SALARIES'), 'dr' => $er, 'cr' => 0);
+            foreach ($liab as $l => $amt) $lines[] = array('ledger' => $l, 'dr' => 0, 'cr' => $amt);
+            $net = (float)$this->db->query('SELECT COALESCE(SUM(psNet),0) n FROM pay_slip WHERE psPrId = ?', array($a->paPrId))->row()->n;
+            $lines[] = array('ledger' => $this->key_ledger('PAY_PAYABLE', 'Salary Payable', 'PROVISIONS'), 'dr' => 0, 'cr' => $net);
+            $n += $this->_auto('JOURNAL', $a->paDate, 'Salary for ' . date('F Y', strtotime($a->prMonth)), 'Payroll ' . date('m/Y', strtotime($a->prMonth)),
+                               $lines, 'PAY_RUN', $a->paId);
+        }
+        return $n;
+    }
+
+    private function _post_salary_payments($start)
+    {
+        $n = 0;
+        $rows = $this->_unposted("SELECT b.*, r.prMonth FROM pay_batch b JOIN pay_run r ON r.prId = b.pbPrId
+                LEFT JOIN acc_voucher v ON v.avSource = 'PAY_PAYMENT' AND v.avSourceId = b.pbId
+                WHERE v.avId IS NULL AND b.pbCancelled = 0 AND b.pbDate >= ? ORDER BY b.pbDate, b.pbId LIMIT 500", array($start));
+        foreach ($rows as $b) {
+            $who = $this->db->query("SELECT COUNT(*) c, MAX(s.psName) nm FROM pay_batch_slip x JOIN pay_slip s ON s.psId = x.pbsPsId WHERE x.pbsPbId = ?", array($b->pbId))->row();
+            $lines = array(
+                array('ledger' => $this->key_ledger('PAY_PAYABLE', 'Salary Payable', 'PROVISIONS'), 'dr' => $b->pbAmount, 'cr' => 0),
+                array('ledger' => $this->mode_ledger($b->pbMode), 'dr' => 0, 'cr' => $b->pbAmount),
+            );
+            $n += $this->_auto('PAYMENT', $b->pbDate, 'Salary paid for ' . date('F Y', strtotime($b->prMonth)) . ' - '
+                               . ((int)$who->c === 1 ? $who->nm : $who->c . ' staff'), $b->pbRef, $lines, 'PAY_PAYMENT', $b->pbId);
+        }
+        return $n;
+    }
+
+    private function _post_salary_advances($start)
+    {
+        $n = 0;
+        $rows = $this->_unposted("SELECT a.*, p.peName FROM pay_advance a JOIN pay_employee p ON p.peId = a.padPeId
+                LEFT JOIN acc_voucher v ON v.avSource = 'PAY_ADVANCE' AND v.avSourceId = a.padId
+                WHERE v.avId IS NULL AND a.padCancelled = 0 AND a.padDate >= ? ORDER BY a.padDate, a.padId LIMIT 500", array($start));
+        foreach ($rows as $a) {
+            $lines = array(
+                array('ledger' => $this->key_ledger('PAY_ADV', 'Staff Salary Advances', 'ADVANCES'), 'dr' => $a->padAmount, 'cr' => 0),
+                array('ledger' => $this->mode_ledger($a->padMode), 'dr' => 0, 'cr' => $a->padAmount),
+            );
+            $n += $this->_auto('PAYMENT', $a->padDate, 'Salary advance to ' . $a->peName, $a->padRef, $lines, 'PAY_ADVANCE', $a->padId);
+        }
+        return $n;
+    }
+
     /* how many source records are still waiting to be posted */
     public function pending_counts()
     {
@@ -577,6 +671,11 @@ class Accounts_model extends CI_Model
             $c['Store invoices']  = $q("SELECT COUNT(*) n FROM store_invoice i LEFT JOIN acc_voucher v ON v.avSource='STORE_INVOICE' AND v.avSourceId=i.sinId WHERE v.avId IS NULL AND i.sinCancelled=0 AND i.sinTotal > 0 AND i.sinDate >= ?");
             $c['Store payments']  = $q("SELECT COUNT(*) n FROM store_payment p LEFT JOIN acc_voucher v ON v.avSource='STORE_PAYMENT' AND v.avSourceId=p.spayId WHERE v.avId IS NULL AND p.spayDate >= ?");
             $c['Store purchases'] = $q("SELECT COUNT(*) n FROM store_purchase p LEFT JOIN acc_voucher v ON v.avSource='STORE_PURCHASE' AND v.avSourceId=p.spId WHERE v.avId IS NULL AND p.spCancelled=0 AND p.spDate >= ?");
+        }
+        if ($this->db->table_exists('pay_batch_slip')) {
+            $c['Approved payrolls'] = $q("SELECT COUNT(*) n FROM pay_approval a LEFT JOIN acc_voucher v ON v.avSource='PAY_RUN' AND v.avSourceId=a.paId WHERE v.avId IS NULL AND a.paCancelled=0 AND a.paDate >= ?");
+            $c['Salary payments']   = $q("SELECT COUNT(*) n FROM pay_batch b LEFT JOIN acc_voucher v ON v.avSource='PAY_PAYMENT' AND v.avSourceId=b.pbId WHERE v.avId IS NULL AND b.pbCancelled=0 AND b.pbDate >= ?");
+            $c['Salary advances']   = $q("SELECT COUNT(*) n FROM pay_advance a LEFT JOIN acc_voucher v ON v.avSource='PAY_ADVANCE' AND v.avSourceId=a.padId WHERE v.avId IS NULL AND a.padCancelled=0 AND a.padDate >= ?");
         }
         return $c;
     }

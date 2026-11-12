@@ -7,6 +7,7 @@ $ncols  = count($cols);
 $has    = array_flip($r['filters']);
 $totals = array();
 foreach ($cols as $c) if (!empty($c['total'])) $totals[$c['key']] = 0;
+$zero   = $totals;   // all 0: start of every group's subtotal
 
 $cell = function ($c, $row) {
     $v = isset($row[$c['key']]) ? $row[$c['key']] : '';
@@ -34,6 +35,7 @@ $sumRow = function ($label, $sums, $count, $cls) use ($cols) {
     return $h . '</tr>';
 };
 
+$period_txt = !empty($r['period']) ? html_escape($r['period']) : 'Academic year ' . html_escape($r['year']);
 $qs = $_GET; unset($qs['export']);
 $csv_url = site_url($r['route']) . '?' . http_build_query(array_merge($qs, array('export' => 'csv')));
 ?>
@@ -41,7 +43,7 @@ $csv_url = site_url($r['route']) . '?' . http_build_query(array_merge($qs, array
   <div class="page-header no-print">
     <div>
       <h1 class="page-title"><?= html_escape($r['title']) ?></h1>
-      <p class="page-sub">Academic year <?= html_escape($r['year']) ?><?= $r['note'] ? ' · ' . html_escape($r['note']) : '' ?></p>
+      <p class="page-sub"><?= $period_txt ?><?= $r['note'] ? ' · ' . html_escape($r['note']) : '' ?></p>
     </div>
     <div class="page-actions">
       <a class="btn btn-secondary" href="<?= site_url($r['hub']) ?>">All Reports</a>
@@ -63,6 +65,16 @@ $csv_url = site_url($r['route']) . '?' . http_build_query(array_merge($qs, array
         <?php if (isset($has['from'])): ?>
           <div class="fb"><label for="rfrom">From</label><input class="field-input" type="date" id="rfrom" name="from" value="<?= html_escape($f['from']) ?>"></div>
           <div class="fb"><label for="rto">To</label><input class="field-input" type="date" id="rto" name="to" value="<?= html_escape($f['to']) ?>"></div>
+        <?php endif; ?>
+        <?php if (isset($has['day'])): ?>
+          <div class="fb"><label for="rday">Date</label><input class="field-input" type="date" id="rday" name="day" value="<?= html_escape($f['day']) ?>" max="<?= date('Y-m-d') ?>"></div>
+        <?php endif; ?>
+        <?php if (isset($has['month'])): ?>
+          <div class="fb"><label for="rmonth">Month</label><input class="field-input" type="month" id="rmonth" name="month" value="<?= html_escape($f['month']) ?>"></div>
+        <?php endif; ?>
+        <?php if (isset($has['months'])): ?>
+          <div class="fb"><label for="rfm">From month</label><input class="field-input" type="month" id="rfm" name="from_month" value="<?= html_escape($f['from_month']) ?>"></div>
+          <div class="fb"><label for="rtm">To month</label><input class="field-input" type="month" id="rtm" name="to_month" value="<?= html_escape($f['to_month']) ?>"></div>
         <?php endif; ?>
         <?php if (isset($has['as_of'])): ?>
           <div class="fb"><label for="rasof">As on</label><input class="field-input" type="date" id="rasof" name="as_of" value="<?= html_escape($f['as_of']) ?>"></div>
@@ -139,7 +151,7 @@ $csv_url = site_url($r['route']) . '?' . http_build_query(array_merge($qs, array
 
     <div class="print-head">
       <h2>Little Hearts School</h2>
-      <p><strong><?= html_escape($r['title']) ?></strong> · Academic year <?= html_escape($r['year']) ?></p>
+      <p><strong><?= html_escape($r['title']) ?></strong> · <?= $period_txt ?></p>
       <?php if ($r['note']): ?><p><?= html_escape($r['note']) ?></p><?php endif; ?>
       <p>Printed on <?= date('d-m-Y H:i') ?></p>
     </div>
@@ -154,11 +166,11 @@ $csv_url = site_url($r['route']) . '?' . http_build_query(array_merge($qs, array
         </tr></thead>
         <tbody>
         <?php
-          $grp = null; $gsum = $totals; $gcount = 0;
+          $grp = null; $gsum = $zero; $gcount = 0;
           foreach ($r['rows'] as $row):
             if ($r['group'] && $row['_group'] !== $grp):
               if ($grp !== null) echo $sumRow('Sub Total', $gsum, $gcount, 'row-sub');
-              $grp = $row['_group']; $gsum = $totals; $gcount = 0; ?>
+              $grp = $row['_group']; $gsum = $zero; $gcount = 0; ?>
               <tr class="row-group"><td colspan="<?= $ncols ?>"><?= html_escape($grp) ?></td></tr>
           <?php endif;
             $gcount++;

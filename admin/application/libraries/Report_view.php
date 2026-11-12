@@ -14,7 +14,7 @@ class Report_view
     {
         $CI =& get_instance();
         $spec += array('filters' => array(), 'selects' => array(), 'group' => false, 'note' => '', 'need' => '',
-                       'count_label' => 'rows', 'year' => '', 'hub' => '');
+                       'count_label' => 'rows', 'year' => '', 'hub' => '', 'period' => '');
         $data += array('f' => array(), 'classes' => array(), 'div_map' => array(), 'fees' => array(), 'modes' => array());
 
         if ($CI->input->get('export') === 'csv') {

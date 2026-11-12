@@ -1,9 +1,9 @@
-<?php /* $title, $groups = [section => [[route, name, description], ...]] */ ?>
+<?php /* $title, $groups = [section => [[route, name, description], ...]], optional $sub */ ?>
 <main class="page">
   <div class="page-header">
     <div>
       <h1 class="page-title"><?= html_escape($title) ?></h1>
-      <p class="page-sub">All reports use the academic year selected at the top. Each report can be printed or downloaded as Excel (CSV).</p>
+      <p class="page-sub"><?= isset($sub) ? html_escape($sub) : 'All reports use the academic year selected at the top.' ?> Each report can be printed or downloaded as Excel (CSV).</p>
     </div>
   </div>
   <?php foreach ($groups as $section => $items): ?>
