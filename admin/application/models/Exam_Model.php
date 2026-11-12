@@ -359,7 +359,8 @@ public function save_allocation_multi($exam_ids, $class_ids, $subjects)
                         ->join('subject_master sm', 'sm.smId = emd.emdSmId')
                         ->where('emd.emdEmId', (int)$exam_id)
                         ->where('emd.emdCmId', (int)$class_id)
-                        ->order_by('sm.smDisplayOrder', 'ASC')
+                        // ->order_by('sm.smDisplayOrder', 'ASC')
+                         ->order_by('CAST(sm.smDisplayOrder AS UNSIGNED)', 'ASC', false)
                         ->get()->result();
     }
 
@@ -464,7 +465,7 @@ public function save_allocation_multi($exam_ids, $class_ids, $subjects)
                     $keep[$sub] = (int)$this->db->insert_id();
                 }
             }
-            $rows[] = array('edEsId' => $keep[$sub], 'edSmId' => (int)$b['st'], 'edMark' => $b['mark'] ,'edAmId' => $amId);
+            $rows[] = array('edEsId' => $keep[$sub], 'edSmId' => (int)$b['st'], 'edMark' => $b['mark'] );
         }
         if (!empty($rows)) {
             $this->db->insert_batch('exam_detail', $rows);
